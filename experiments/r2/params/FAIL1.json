@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "test failure path",
+  "negative_prompt": "blurry",
+  "input_image": "missing_r2_input.png",
+  "seed": 9999,
+  "width": 1024,
+  "height": 576,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2a/FAIL_TEST"
+}

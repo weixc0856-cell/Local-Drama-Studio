@@ -1,0 +1,98 @@
+[
+  {
+    "id": "A1",
+    "keyframe": "KF1",
+    "frames": 73,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A1.json",
+    "out": "experiments/r2/runs/A1",
+    "reference": {
+      "source": "assets/keyframes/kf01_river_first_moon.png",
+      "input_name": "r2_kf1.png"
+    }
+  },
+  {
+    "id": "A2",
+    "keyframe": "KF1",
+    "frames": 121,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A2.json",
+    "out": "experiments/r2/runs/A2",
+    "reference": {
+      "source": "assets/keyframes/kf01_river_first_moon.png",
+      "input_name": "r2_kf1.png"
+    }
+  },
+  {
+    "id": "A3",
+    "keyframe": "KF2",
+    "frames": 73,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A3.json",
+    "out": "experiments/r2/runs/A3",
+    "reference": {
+      "source": "assets/keyframes/kf02_flower_forest_moon.png",
+      "input_name": "r2_kf2.png"
+    }
+  },
+  {
+    "id": "A4",
+    "keyframe": "KF2",
+    "frames": 121,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A4.json",
+    "out": "experiments/r2/runs/A4",
+    "reference": {
+      "source": "assets/keyframes/kf02_flower_forest_moon.png",
+      "input_name": "r2_kf2.png"
+    }
+  },
+  {
+    "id": "A5",
+    "keyframe": "KF3",
+    "frames": 73,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A5.json",
+    "out": "experiments/r2/runs/A5",
+    "reference": {
+      "source": "assets/keyframes/kf03_lone_boat_night.png",
+      "input_name": "r2_kf3.png"
+    }
+  },
+  {
+    "id": "A6",
+    "keyframe": "KF3",
+    "frames": 121,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A6.json",
+    "out": "experiments/r2/runs/A6",
+    "reference": {
+      "source": "assets/keyframes/kf03_lone_boat_night.png",
+      "input_name": "r2_kf3.png"
+    }
+  },
+  {
+    "id": "A7",
+    "keyframe": "KF4",
+    "frames": 73,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A7.json",
+    "out": "experiments/r2/runs/A7",
+    "reference": {
+      "source": "assets/keyframes/kf04_dawn_setting_moon.png",
+      "input_name": "r2_kf4.png"
+    }
+  },
+  {
+    "id": "A8",
+    "keyframe": "KF4",
+    "frames": 121,
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A8.json",
+    "out": "experiments/r2/runs/A8",
+    "reference": {
+      "source": "assets/keyframes/kf04_dawn_setting_moon.png",
+      "input_name": "r2_kf4.png"
+    }
+  }
+]

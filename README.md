@@ -36,7 +36,9 @@
 | R1-C FLUX 16:9 资产 | ✅ `PASS_VERIFIED`：11 次生成，768×432，70-102 s/张，峰值 2.84 GiB |
 | R1-D 关键帧 | ✅ `PASS_VERIFIED`（保留 KF4 光源歧义） |
 | R1-E 批处理/续跑/恢复 | ✅ `PASS_VERIFIED` |
-| R2-R7 | ⛔ 按约束停在 R1 |
+| R2-A 1024×576 边界测试 | ✅ 73 帧 `PASS_VERIFIED`；121 帧 `PASS_LIMITED`（A4 漂色） |
+| R2-B 实际镜头 | ⛔ 未执行 |
+| R3-R7 | ⛔ 未执行 |
 
 ```powershell
 # 任何时候查看真实状态（不会猜测，未执行即 NOT_RUN）
@@ -50,6 +52,14 @@ scripts\doctor.ps1
 - 四张关键帧：江畔初月、花林月照、孤舟远行、落月晨曦；见 [assets/keyframes/](assets/keyframes/)。
 - 一致性对比：参考图辅助在空间锚点上更稳，纯文字色板接近但地貌会漂移。
 - 明确未做：1080p、视频、人物一致性。下一步 R2 必须先解决 Wan 的 /32 分辨率约束（1024×576）。
+
+### R2-A 结论摘要
+
+- 1024×576 可行：73 帧 40-43 分钟 / 3 秒，121 帧 66-69 分钟 / 5 秒，峰值 ≤6.12 GiB，无 OOM。
+- **默认 73 帧**；121 帧的 A4 花林出现肉眼可见的绿色漂移。
+- 动作幅度普遍偏小；“孤舟漂移”几乎没有位移。
+- 全 Wan 的 90 秒片约 20 小时；4-6 个 Wan 镜头 + 静帧推拉的混合方案约 4-5 小时。
+- 停在 R2-A，未进入 R2-B。
 
 ### R0 结论摘要
 
@@ -169,3 +179,6 @@ drama resume <project>       # 断点续跑                      [R7]
 | [docs/R1_VISUAL_DESIGN.md](docs/R1_VISUAL_DESIGN.md) | 《春江花月夜》视觉规范 |
 | [docs/R1_TEST_PLAN.md](docs/R1_TEST_PLAN.md) | R1 实验与关键帧计划 |
 | [docs/R1_TEST_REPORT.md](docs/R1_TEST_REPORT.md) | R1 实际结果、对比与限制 |
+| [docs/R2_TEST_PLAN.md](docs/R2_TEST_PLAN.md) | R2-A/R2-B 计划 |
+| [docs/R2_TEST_REPORT.md](docs/R2_TEST_REPORT.md) | R2-A 实测结果与生产预算 |
+| [docs/CONTENT_PACKS.md](docs/CONTENT_PACKS.md) | 通用主题包与共享层边界 |

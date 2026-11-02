@@ -78,7 +78,7 @@ def stage_reference(job: dict) -> dict | None:
     }
 
 
-def run_job(job: dict, force: bool = False) -> dict:
+def run_job(job: dict, force: bool = False, timeout: int = 1800) -> dict:
     job_id = job["id"]
     out_dir = (ROOT / job["out"]).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -105,7 +105,7 @@ def run_job(job: dict, force: bool = False) -> dict:
             "--out",
             str(out_dir),
             "--timeout",
-            "1800",
+            str(timeout),
         ]
         proc = subprocess.run(
             cmd,
@@ -181,6 +181,7 @@ def main() -> int:
     parser.add_argument("--jobs", required=True, type=Path)
     parser.add_argument("--only", default="", help="comma-separated job ids")
     parser.add_argument("--force", action="store_true", help="ignore existing success metadata")
+    parser.add_argument("--timeout", type=int, default=1800, help="per-job timeout in seconds")
     args = parser.parse_args()
 
     jobs = read_json(ROOT / args.jobs)
@@ -191,7 +192,7 @@ def main() -> int:
     results = []
     for job in jobs:
         print(f"[job] {job['id']} -> {job['out']}")
-        result = run_job(job, force=args.force)
+        result = run_job(job, force=args.force, timeout=args.timeout)
         print(f"[job] {job['id']} {result['status']} attempts={result.get('attempts')}")
         results.append(result)
 
@@ -204,7 +205,8 @@ def main() -> int:
         },
         "results": results,
     }
-    write_json(ROOT / "experiments" / "r1" / "batch_manifest.json", summary)
+    manifest_path = ROOT / args.jobs.parent / f"{args.jobs.stem}_manifest.json"
+    write_json(manifest_path, summary)
     print(json.dumps(summary["counts"], ensure_ascii=False))
     return 0 if summary["counts"]["failed"] == 0 else 1
 

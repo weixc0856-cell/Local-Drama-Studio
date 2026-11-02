@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Slow push-in toward the flowering trees; a gentle breeze moves the branches and falling petals; mist drifts between the trees; the moon reflection shimmers. No camera shake, no fast motion.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, flicker, strobing, rapid motion, zoom jump, text, watermark",
+  "input_image": "r2_kf2.png",
+  "seed": 2201,
+  "width": 1024,
+  "height": 576,
+  "frames": 121,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2a/A4_KF2_121"
+}

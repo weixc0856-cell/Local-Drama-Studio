@@ -8,7 +8,7 @@ Local AI short-drama production lab: script → storyboard → character/scene a
 
 ComfyUI is **only** the generation engine. Python (`src/drama_studio`) owns business state, scheduling, retries and quality gates. FFmpeg owns composition. The local LLM (`D:\AI`) and CosyVoice (`D:\AI\CosyVoice-Runtime`) are external HTTP services.
 
-**Current state: R0 and R1 complete and verified. R2-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
+**Current state: R0, R1, and R2-A complete and verified. R2-B and R3-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
 
 ## Hard environment invariants
 
@@ -62,6 +62,8 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `docs/ARCHITECTURE.md` — the full target design: SQLite state machine, ComfyUI protocol, prompt locking, GPU rules, FFmpeg pipeline. Implemented modules are only those listed above; everything else there is planned.
 - `docs/R0_TEST_REPORT.md` — R0 measured facts and limits. Read §6 before proposing R1/R2 work.
 - `docs/R1_TEST_REPORT.md` — R1 assets, reference-edit results, consistency limits, and the /32 constraint for Wan.
+- `docs/R2_TEST_REPORT.md` — R2-A measured cost/quality; 73 frames is the default, 121 has color drift.
+- `docs/CONTENT_PACKS.md` — shared layer vs per-theme content pack; do not hardcode one poem in code.
 
 Planned modules (not implemented; do not assume they exist): `state.py`, `comfy_client.py`, `generation/`, `script_engine/`, `storyboard/`, `character_manager/`, `audio/`, `subtitles/`, `editing/`, `quality/`, `storage/`, `orchestrator.py`.
 
@@ -87,4 +89,6 @@ Project state model when implemented: per-project `state.db` is authoritative; `
 - Keep seed, prompt, model hash and workflow hash with every asset.
 - Pin the goal to a 30-45 s, 3-5 shot episode; measured budget is ~7-10 h of generation per episode.
 - Keyframe consistency: use the J2 reference (`assets/visual_style/reference/style_ref_river_16x9.png`) and `ReferenceLatent`; repeated prompts alone are not consistency evidence.
-- **Wan video resolution must be divisible by 32.** Keyframes are 768×432 (432/32=13.5), so R2 must resize/pad to 1024×576 (16:9) or use 832×480 before I2V.
+- **Wan video resolution must be divisible by 32.** Keyframes are 768×432 (432/32=13.5), so R2 uses 1024×576 (16:9) before I2V.
+- **R2-A measured:** 1024×576 / 73 frames ≈ 40-43 min per 3 s shot; 121 frames ≈ 66-69 min per 5 s shot; peak VRAM ≤6.12 GiB. Default to 73 frames. A4 (flower, 121 frames) showed a visible green color drift; always check first/last frames.
+- **Production shape:** don't run Wan on every shot. Budget 4-6 Wan hero shots per 90 s, with stills + slow pan/zoom for the rest (~4-5 h vs ~20 h all-Wan).

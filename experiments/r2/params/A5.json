@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "The lone boat drifts slowly toward the far mountains; the moonlight path on the water shimmers; gentle ripples; distant mist moves. Slow, minimal motion.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, flicker, strobing, rapid motion, zoom jump, text, watermark",
+  "input_image": "r2_kf3.png",
+  "seed": 2301,
+  "width": 1024,
+  "height": 576,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2a/A5_KF3_73"
+}

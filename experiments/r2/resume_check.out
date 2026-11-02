@@ -1,0 +1,17 @@
+[job] A1 -> experiments/r2/runs/A1
+[job] A1 skipped attempts=1
+[job] A2 -> experiments/r2/runs/A2
+[job] A2 skipped attempts=1
+[job] A3 -> experiments/r2/runs/A3
+[job] A3 skipped attempts=1
+[job] A4 -> experiments/r2/runs/A4
+[job] A4 skipped attempts=1
+[job] A5 -> experiments/r2/runs/A5
+[job] A5 skipped attempts=1
+[job] A6 -> experiments/r2/runs/A6
+[job] A6 skipped attempts=1
+[job] A7 -> experiments/r2/runs/A7
+[job] A7 skipped attempts=1
+[job] A8 -> experiments/r2/runs/A8
+[job] A8 skipped attempts=1
+{"success": 0, "skipped": 8, "failed": 0}

@@ -1,0 +1,26 @@
+{
+  "job_id": "FAIL1",
+  "status": "failed",
+  "attempts": 3,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_wan_i2v_api.json",
+  "params": {
+    "positive_prompt": "test failure path",
+    "negative_prompt": "blurry",
+    "input_image": "missing_r2_input.png",
+    "seed": 9999,
+    "width": 1024,
+    "height": 576,
+    "frames": 73,
+    "steps": 20,
+    "cfg": 5.0,
+    "shift": 8.0,
+    "filename_prefix": "r2a/FAIL_TEST"
+  },
+  "reference": {
+    "source": "D:\\Local-Drama-Studio\\assets\\keyframes\\kf01_river_first_moon.png",
+    "input_name": "r2_kf01.png",
+    "sha256": "4f40d33c031357ee234e8175e423383789f38cb5c560ac27015835090864a723"
+  },
+  "error": "Traceback (most recent call last):\n  File \"D:\\Local-Drama-Studio\\scripts\\r0_comfy_probe.py\", line 159, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"D:\\Local-Drama-Studio\\scripts\\r0_comfy_probe.py\", line 94, in main\n    response = _post(\"/prompt\", {\"prompt\": workflow, \"client_id\": str(uuid.uuid4())})\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Local-Drama-Studio\\scripts\\r0_comfy_probe.py\", line 60, in _post\n    with OPENER.open(req, timeout=30) as resp:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\99236\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\request.py\", line 521, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\99236\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\request.py\", line 630, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\99236\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\request.py\", line 559, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\99236\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\request.py\", line 492, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"C:\\Users\\99236\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\request.py\", line 639, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 400: Bad Request",
+  "created_at": "2026-11-03T04:50:48"
+}

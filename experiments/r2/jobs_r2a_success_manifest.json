@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-11-03T04:52:38",
+  "counts": {
+    "success": 8,
+    "skipped": 0,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "A1",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 2413.69,
+      "peak_vram_used_bytes": 5815869440,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00001_.png"
+      ]
+    },
+    {
+      "id": "A2",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 3945.44,
+      "peak_vram_used_bytes": 5408302080,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A2\\A2_KF1_121_00001_.png"
+      ]
+    },
+    {
+      "id": "A3",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 2580.58,
+      "peak_vram_used_bytes": 6568586240,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A3\\A3_KF2_73_00001_.png"
+      ]
+    },
+    {
+      "id": "A4",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 4151.22,
+      "peak_vram_used_bytes": 5277459968,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A4\\A4_KF2_121_00001_.png"
+      ]
+    },
+    {
+      "id": "A5",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 2546.73,
+      "peak_vram_used_bytes": 5815869440,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A5\\A5_KF3_73_00001_.png"
+      ]
+    },
+    {
+      "id": "A6",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 3983.77,
+      "peak_vram_used_bytes": 5260060160,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A6\\A6_KF3_121_00001_.png"
+      ]
+    },
+    {
+      "id": "A7",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 2552.86,
+      "peak_vram_used_bytes": 5921644032,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00001_.png"
+      ]
+    },
+    {
+      "id": "A8",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 3982.39,
+      "peak_vram_used_bytes": 5261534720,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A8\\A8_KF4_121_00001_.png"
+      ]
+    }
+  ]
+}

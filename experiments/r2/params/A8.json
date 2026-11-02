@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Morning mist drifts across the river; the low moon sinks behind the ridge; warm dawn light slowly brightens; subtle water ripples. Slow, minimal motion.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, flicker, strobing, rapid motion, zoom jump, text, watermark",
+  "input_image": "r2_kf4.png",
+  "seed": 2401,
+  "width": 1024,
+  "height": 576,
+  "frames": 121,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2a/A8_KF4_121"
+}

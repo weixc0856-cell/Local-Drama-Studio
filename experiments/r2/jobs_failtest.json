@@ -1,0 +1,22 @@
+[
+  {
+    "id": "FAIL1",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/FAIL1.json",
+    "out": "experiments/r2/runs/FAIL1",
+    "reference": {
+      "source": "assets/keyframes/kf01_river_first_moon.png",
+      "input_name": "r2_kf01.png"
+    }
+  },
+  {
+    "id": "A1",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2/params/A1.json",
+    "out": "experiments/r2/runs/A1",
+    "reference": {
+      "source": "assets/keyframes/kf01_river_first_moon.png",
+      "input_name": "r2_kf01.png"
+    }
+  }
+]

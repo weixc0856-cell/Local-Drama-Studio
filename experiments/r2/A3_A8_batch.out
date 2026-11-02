@@ -1,0 +1,13 @@
+[job] A3 -> experiments/r2/runs/A3
+[job] A3 success attempts=1
+[job] A4 -> experiments/r2/runs/A4
+[job] A4 success attempts=1
+[job] A5 -> experiments/r2/runs/A5
+[job] A5 success attempts=1
+[job] A6 -> experiments/r2/runs/A6
+[job] A6 success attempts=1
+[job] A7 -> experiments/r2/runs/A7
+[job] A7 success attempts=1
+[job] A8 -> experiments/r2/runs/A8
+[job] A8 success attempts=1
+{"success": 6, "skipped": 0, "failed": 0}

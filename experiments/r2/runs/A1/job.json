@@ -1,0 +1,397 @@
+{
+  "job_id": "A1",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_wan_i2v_api.json",
+  "workflow_sha256": "d5f0a6c29db8f59b435af3eb75542341403761477a516942ebfb7d12d603f8db",
+  "params": {
+    "positive_prompt": "Slow cinematic push-in over the river at dusk; the pale moon rises slightly; thin mist drifts across the water; petals float on the current; subtle ripples. No camera shake, no fast motion.",
+    "negative_prompt": "blurry, low quality, distorted face, extra limbs, flicker, strobing, rapid motion, zoom jump, text, watermark",
+    "input_image": "r2_kf1.png",
+    "seed": 2101,
+    "width": 1024,
+    "height": 576,
+    "frames": 73,
+    "steps": 20,
+    "cfg": 5.0,
+    "shift": 8.0,
+    "filename_prefix": "r2a/A1_KF1_73"
+  },
+  "reference": {
+    "source": "D:\\Local-Drama-Studio\\assets\\keyframes\\kf01_river_first_moon.png",
+    "input_name": "r2_kf1.png",
+    "sha256": "4f40d33c031357ee234e8175e423383789f38cb5c560ac27015835090864a723"
+  },
+  "prompt_id": "4fb19db1-a403-4c88-b626-f0cf3200afc2",
+  "submitted_at": "2026-11-02T21:32:27",
+  "elapsed_seconds": 2413.69,
+  "peak_vram_used_bytes": 5815869440,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00001_.png",
+      "sha256": "47ca55bfbcdc92654d55729935394565c179122ea69cf4dd4a3a0dd2796bceea",
+      "bytes": 997078
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00002_.png",
+      "sha256": "e88bfdeb045aa195cc9dc620679e634db98ae3a50424ed2f30c09aee57b638a2",
+      "bytes": 1035556
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00003_.png",
+      "sha256": "613870d36691b888d7c9cefde1b7453e109b2b9ca28784a657a18d4db3531289",
+      "bytes": 1041854
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00004_.png",
+      "sha256": "d27ee383e0ed95cfd511f2470e990cc8c4f3d193caec51cdbf630cac4fac067c",
+      "bytes": 1039254
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00005_.png",
+      "sha256": "fac2cfa972102ae6a1d315aa83c69dac9e7047c9e8cac20c95cec478e1b6c44d",
+      "bytes": 993841
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00006_.png",
+      "sha256": "e1298e86aafc2d969ff8481e2a0904dabda65a138aaae73854b1b42c25d02a1c",
+      "bytes": 1032156
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00007_.png",
+      "sha256": "daf5acf61c34f826eb6cf9561ae10ba70af82e57bcc5938b174a71153ffb07d6",
+      "bytes": 1014325
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00008_.png",
+      "sha256": "317e1ab62d7170fb5114d03a5ba8c0d292f1344fb49ac412c6155304f81e628d",
+      "bytes": 1031783
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00009_.png",
+      "sha256": "96673da5adc8627203e7c31ea3b29f759b0cedfe8cb51668bd36cc1ba869fb56",
+      "bytes": 994110
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00010_.png",
+      "sha256": "6898969e58ffe3623a8a80719813d0ee28789da9ec2c01ce755c91984f1ec29e",
+      "bytes": 1036164
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00011_.png",
+      "sha256": "e8211f9b43f0550e87796f5e3cbf4bd6c92f0d3d92b20c500ce0975b2b4392d6",
+      "bytes": 1031790
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00012_.png",
+      "sha256": "4d609442c794b64c0a04a91ca6c528fe4822971af298f47d654a411438e5757f",
+      "bytes": 1034328
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00013_.png",
+      "sha256": "904e43477ad1c1349b9bf19ce9d04bafb344fc302c4134e211d90e22a1df8efc",
+      "bytes": 1010063
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00014_.png",
+      "sha256": "d8c87fb0561df2db890bb6e868e612e09ccdf5f624d0ba41e36bb7fecd007c81",
+      "bytes": 1045484
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00015_.png",
+      "sha256": "fd350187c4abffa95f7c904b4aef27667752881cb865d23d28058aa96808399e",
+      "bytes": 1046046
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00016_.png",
+      "sha256": "9d92ddb4f3203270fa2fd9c3b18b1e36895fb2afb3f2dbc80d3cb421d74c436f",
+      "bytes": 1042170
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00017_.png",
+      "sha256": "34695e85663cf3343b106bcb7480c049be5eac759ec199f535e5f4b55535215a",
+      "bytes": 1006312
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00018_.png",
+      "sha256": "8e56b55978bb7aa537bf82b4e32667dc6f39eb44b4ea0bdfb0527857c241cb87",
+      "bytes": 1041188
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00019_.png",
+      "sha256": "e2119676876d6e016f65f77853bf2c1febb51fd735dc76a704e8083cf8bfc717",
+      "bytes": 1040272
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00020_.png",
+      "sha256": "a254f19586e843a448e00905c49384acb6d3fdb39b0a19e79bf95fdcc5f23227",
+      "bytes": 1026258
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00021_.png",
+      "sha256": "121ece6a1cd20b13a1c10b319ac34908ada3f7ff53d4d2ae458ff12e6a3c9917",
+      "bytes": 1009272
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00022_.png",
+      "sha256": "96c4229bbbd7c5f8fdcf57b282048f020c0fa9d889e2a51d03d18e04719fe068",
+      "bytes": 1043301
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00023_.png",
+      "sha256": "2b4769d451e37d2f026fa2b5dcf33f041737d27501eb31f57579053c410dc025",
+      "bytes": 1040619
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00024_.png",
+      "sha256": "fc8585cf69c70bee033d03e66f0458bce212cdb3471169a8e159645fa295d560",
+      "bytes": 1033071
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00025_.png",
+      "sha256": "4c4a415289de7d2d3dc122cae6e1f0261e63b7263e7b87b36b4bda059525cb52",
+      "bytes": 1002333
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00026_.png",
+      "sha256": "b4cfa09cea74a9c68941ae25a48caf051338f0dfec3c6d19e86d03433dc66a89",
+      "bytes": 1032311
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00027_.png",
+      "sha256": "60ae5b1d440510963ad2b84fecd69d5cedb568acfebe3474713f4f14e6d1198b",
+      "bytes": 1033446
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00028_.png",
+      "sha256": "954df96bff8cc85487613298fb1b7bd6a8ed0f0b76c704755f15df8a2a156436",
+      "bytes": 1030706
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00029_.png",
+      "sha256": "af8164a3a09ea99c30e9d6a392d2f797db675e8660b9334226fc15516140ad10",
+      "bytes": 1003720
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00030_.png",
+      "sha256": "9304f3980b7db083678eab62e01319a7ec9586fab5e4b5f5069c21d7405e57b2",
+      "bytes": 1034307
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00031_.png",
+      "sha256": "c45e843e7a73e6abe1842c5fa26c34346edb41030d1ebca3a1fa9a16b5226158",
+      "bytes": 1036843
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00032_.png",
+      "sha256": "245c290dfa73aa75ed6ca1114d8a785d2ae0eb24a05382748f3d21aae929846b",
+      "bytes": 1027331
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00033_.png",
+      "sha256": "37ec5c53428113a82abf159eaea6996bb011106758ea33173f0171decc2bc167",
+      "bytes": 987314
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00034_.png",
+      "sha256": "64674e40d0ed1ab160dd281aa79960e3162c36ddae4994148b5f36eee264956a",
+      "bytes": 1017461
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00035_.png",
+      "sha256": "21b72a75a3794b829efb705137eb14504f37bf10bd7a8f48cbab96556ba3bf7d",
+      "bytes": 1010104
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00036_.png",
+      "sha256": "09f8c39168230caa903a3e9c4f5076ae5dcc1726ab38cfb3a575e8db500527d8",
+      "bytes": 1012619
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00037_.png",
+      "sha256": "cf5b3cb861e6fe91810b5f2a063b91c2e73566dc819572d4bf28221a5ef3d91e",
+      "bytes": 988505
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00038_.png",
+      "sha256": "98479c1bf112e24778d97953b29e969d858d28c59e1cbfcbbf28bf60aee0178a",
+      "bytes": 1023030
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00039_.png",
+      "sha256": "f4bef8ddaf25762ffc287ac78d820748e8cbc1cd21868520308b93424b1579a3",
+      "bytes": 1023186
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00040_.png",
+      "sha256": "9caaf7b7d0cb895bbb0e13f1bf20ac81d30a877c3daa33c61fdb514f39b245fd",
+      "bytes": 1023191
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00041_.png",
+      "sha256": "9b083a48ae673fdca598c41bcfe26f3f6484863a4ab8ea452660a5b7054df918",
+      "bytes": 997893
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00042_.png",
+      "sha256": "ad2cdfaff6daa30ed892ac64a5fe3b816b3beaa676df99a7997daff50bb9e265",
+      "bytes": 1026197
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00043_.png",
+      "sha256": "f819e0085be8af3e069df0e5023e06a3459f0e6776a5202b0412f48ff5ae5fdc",
+      "bytes": 1025842
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00044_.png",
+      "sha256": "f35560ede1bdebf46041d888c23a90651b236a608e7b1c50472084108af05268",
+      "bytes": 1026291
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00045_.png",
+      "sha256": "395609a663435ada4f8f879b0c31bdbcb80fb20aee8973d35e7404fef4215b21",
+      "bytes": 993276
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00046_.png",
+      "sha256": "9769ecaf890e8804140b7e6abeca696f9a32e3cc6010bdb88f511fbc3d7b0971",
+      "bytes": 1029275
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00047_.png",
+      "sha256": "0b9d1122e9f6a3d7c905277ef7b0f3148da5d5f1098fcf1372071790950ee804",
+      "bytes": 1033642
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00048_.png",
+      "sha256": "859e7fbb3bc14dc987340c671d6dcc90c5239b3129f928e37a80ed357db37123",
+      "bytes": 1029249
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00049_.png",
+      "sha256": "7a17f09e76bf7b24b93c4d0a091734bf36a353d5799ecb7768898743c13bac22",
+      "bytes": 998173
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00050_.png",
+      "sha256": "ba838418924791ba7139a77550b0a2924b7917a34d7a68e327166b9c301ac328",
+      "bytes": 1029814
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00051_.png",
+      "sha256": "b8a7339f55f7a2b4a2bbe34c63fc20c018a83148d0aa7ea8e78ed8ef3a3e65f8",
+      "bytes": 1019011
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00052_.png",
+      "sha256": "9fd35c24e8279dbaf0f4a3f0a40f6363d26d952510baa43d0f53315d57953bc3",
+      "bytes": 1024863
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00053_.png",
+      "sha256": "489be355c99191592ad22d9628ea3824060099f0760487486ce23303bae8762a",
+      "bytes": 995061
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00054_.png",
+      "sha256": "d193e4e3d69d13264480ee72d1b2b70854c4e5a9b58b916439388f3600fc0a26",
+      "bytes": 1028393
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00055_.png",
+      "sha256": "bdb04629e7c2e9422999cc39ff178a6b8670be9a61a57f06aaa4d84736f7afce",
+      "bytes": 1014748
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00056_.png",
+      "sha256": "b3f9f568bf2aa901b603e7c602773c86f472ddebc4eabe32a0454b4ebdc79d54",
+      "bytes": 1015289
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00057_.png",
+      "sha256": "7e5400dc3bc9f72f66819ef65e4c7ef3ab3003cab81ed7c85cc35b9dd67204d8",
+      "bytes": 983801
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00058_.png",
+      "sha256": "88142c4a5b0044b62eb5b904032df226ab9c7f1c9cff37c12a0ca1a130ee0e37",
+      "bytes": 1027601
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00059_.png",
+      "sha256": "3dd0c9ce8283dde3e51bd82a5b002a3180b5c6aa5e4ed860544aa303bf76ce3d",
+      "bytes": 1026820
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00060_.png",
+      "sha256": "0c991cd8aa607a3178c48ff099d102bd91204499b73536b569362a186dd59aae",
+      "bytes": 1025396
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00061_.png",
+      "sha256": "f93ea28958334d01122435671a0bd74835f5fbf7f4bc06a3d854211d4e26cca2",
+      "bytes": 984139
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00062_.png",
+      "sha256": "0a883cd1efbe482b9dc1e4949d817d97c32bd847e39d28e496f5230fbc7253bb",
+      "bytes": 1023580
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00063_.png",
+      "sha256": "5995686e79cf7abd591679079598cbffbc3c1be1e104b2271eb256c939cd7c78",
+      "bytes": 1025157
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00064_.png",
+      "sha256": "9b52d4ab2f95dff93acf1835de12eb47582d8ef78ca440468d3ca9e95821053d",
+      "bytes": 1031435
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00065_.png",
+      "sha256": "d3b7e8191e6807cf80bcbfe782f3a8bd649ee33b9aae570591220f2877f8d586",
+      "bytes": 1000681
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00066_.png",
+      "sha256": "e18952d9aa322f57e75866ae141bd4767beca8842f69a3ea54c7f914578be45b",
+      "bytes": 1031758
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00067_.png",
+      "sha256": "cd7ed558d725ac92ffc1e45b177de391145b565187d428fb5bd8d94668eb1404",
+      "bytes": 1023516
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00068_.png",
+      "sha256": "c8d01315fea1ae06140768aa111a5e2e60d9e7ef0d833d3d138fd1d30834648b",
+      "bytes": 1016486
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00069_.png",
+      "sha256": "6e7ca793708dc52c2f1e26c1f13a73f8df5e6f4edaafc86c437179d439d1484a",
+      "bytes": 977878
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00070_.png",
+      "sha256": "f1695ef7dd8db4e40649d9e1140bbbb221791cbbe92f9e4e6dbc0bd910709fad",
+      "bytes": 1011492
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00071_.png",
+      "sha256": "5255f32dd9c3736119fda4a42c747ba124990b133c31005573ffdb529abed68b",
+      "bytes": 1011064
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00072_.png",
+      "sha256": "3d70240bdeae193c1811ca8d14ae707415f416b9247f04f846edb9051284134c",
+      "bytes": 1021343
+    },
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A1\\A1_KF1_73_00073_.png",
+      "sha256": "774a0d196387e52bbada0cdb5dc9097ce3c29937f2905cef847b240f8b7d1145",
+      "bytes": 1000385
+    }
+  ],
+  "created_at": "2026-11-02T22:12:42"
+}

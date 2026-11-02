@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-11-03T04:52:29",
+  "counts": {
+    "success": 0,
+    "skipped": 8,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "A1",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A2",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A3",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A4",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A5",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A6",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A7",
+      "status": "skipped",
+      "attempts": 1
+    },
+    {
+      "id": "A8",
+      "status": "skipped",
+      "attempts": 1
+    }
+  ]
+}

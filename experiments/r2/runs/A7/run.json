@@ -1,0 +1,204 @@
+{
+  "prompt_id": "dceba287-82c2-4198-b332-039e7f78c913",
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_wan_i2v_api.json",
+  "submitted_at": "2026-11-03T03:00:35",
+  "elapsed_seconds": 2552.86,
+  "peak_vram_used_bytes": 5921644032,
+  "outputs": [
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00001_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00002_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00003_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00004_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00005_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00006_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00007_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00008_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00009_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00010_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00011_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00012_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00013_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00014_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00015_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00016_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00017_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00018_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00019_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00020_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00021_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00022_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00023_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00024_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00025_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00026_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00027_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00028_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00029_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00030_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00031_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00032_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00033_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00034_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00035_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00036_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00037_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00038_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00039_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00040_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00041_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00042_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00043_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00044_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00045_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00046_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00047_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00048_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00049_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00050_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00051_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00052_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00053_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00054_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00055_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00056_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00057_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00058_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00059_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00060_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00061_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00062_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00063_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00064_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00065_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00066_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00067_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00068_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00069_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00070_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00071_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00072_.png",
+    "D:\\Local-Drama-Studio\\experiments\\r2\\runs\\A7\\A7_KF4_73_00073_.png"
+  ],
+  "system_stats_before": {
+    "system": {
+      "os": "win32",
+      "ram_total": 68393086976,
+      "ram_free": 18316898304,
+      "comfyui_version": "0.43.0",
+      "required_frontend_version": "1.57.6",
+      "installed_templates_version": "0.11.100",
+      "required_templates_version": "0.11.100",
+      "comfy_package_versions": [
+        {
+          "name": "comfyui-frontend-package",
+          "installed": "1.57.6",
+          "required": "1.57.6"
+        },
+        {
+          "name": "comfyui-workflow-templates",
+          "installed": "0.11.100",
+          "required": "0.11.100"
+        },
+        {
+          "name": "comfyui-embedded-docs",
+          "installed": "0.5.15",
+          "required": "0.5.15"
+        },
+        {
+          "name": "comfy-aimdo",
+          "installed": "0.6.0",
+          "required": "0.6.0"
+        },
+        {
+          "name": "comfy-kitchen",
+          "installed": "0.2.40",
+          "required": "0.2.40"
+        }
+      ],
+      "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+      "pytorch_version": "2.15.0+xpu",
+      "embedded_python": false,
+      "deploy_environment": "local-git",
+      "argv": [
+        "main.py",
+        "--listen",
+        "127.0.0.1",
+        "--port",
+        "8188",
+        "--disable-auto-launch"
+      ]
+    },
+    "devices": [
+      {
+        "name": "xpu:0 Intel(R) Arc(TM) A750 Graphics",
+        "type": "xpu",
+        "index": 0,
+        "vram_total": 8321540096,
+        "vram_free": 6896809472,
+        "torch_vram_total": 1426063360,
+        "torch_vram_free": 1332736
+      }
+    ]
+  },
+  "system_stats_after": {
+    "system": {
+      "os": "win32",
+      "ram_total": 68393086976,
+      "ram_free": 19594866688,
+      "comfyui_version": "0.43.0",
+      "required_frontend_version": "1.57.6",
+      "installed_templates_version": "0.11.100",
+      "required_templates_version": "0.11.100",
+      "comfy_package_versions": [
+        {
+          "name": "comfyui-frontend-package",
+          "installed": "1.57.6",
+          "required": "1.57.6"
+        },
+        {
+          "name": "comfyui-workflow-templates",
+          "installed": "0.11.100",
+          "required": "0.11.100"
+        },
+        {
+          "name": "comfyui-embedded-docs",
+          "installed": "0.5.15",
+          "required": "0.5.15"
+        },
+        {
+          "name": "comfy-aimdo",
+          "installed": "0.6.0",
+          "required": "0.6.0"
+        },
+        {
+          "name": "comfy-kitchen",
+          "installed": "0.2.40",
+          "required": "0.2.40"
+        }
+      ],
+      "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+      "pytorch_version": "2.15.0+xpu",
+      "embedded_python": false,
+      "deploy_environment": "local-git",
+      "argv": [
+        "main.py",
+        "--listen",
+        "127.0.0.1",
+        "--port",
+        "8188",
+        "--disable-auto-launch"
+      ]
+    },
+    "devices": [
+      {
+        "name": "xpu:0 Intel(R) Arc(TM) A750 Graphics",
+        "type": "xpu",
+        "index": 0,
+        "vram_total": 8321540096,
+        "vram_free": 6896809472,
+        "torch_vram_total": 1426063360,
+        "torch_vram_free": 1332736
+      }
+    ]
+  }
+}

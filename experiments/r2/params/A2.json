@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Slow cinematic push-in over the river at dusk; the pale moon rises slightly; thin mist drifts across the water; petals float on the current; subtle ripples. No camera shake, no fast motion.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, flicker, strobing, rapid motion, zoom jump, text, watermark",
+  "input_image": "r2_kf1.png",
+  "seed": 2101,
+  "width": 1024,
+  "height": 576,
+  "frames": 121,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2a/A2_KF1_121"
+}

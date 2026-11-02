@@ -1,0 +1,5 @@
+[job] FAIL1 -> experiments/r2/runs/FAIL1
+[job] FAIL1 failed attempts=3
+[job] A1 -> experiments/r2/runs/A1
+[job] A1 skipped attempts=1
+{"success": 0, "skipped": 1, "failed": 1}

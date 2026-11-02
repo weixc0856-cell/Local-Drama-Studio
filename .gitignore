@@ -36,3 +36,6 @@ docs/local/
 # OS
 Thumbs.db
 desktop.ini
+
+# R2 frame sequences are reproducible and large; keep JSON + clips + contact sheets
+experiments/r2/runs/*/*.png
