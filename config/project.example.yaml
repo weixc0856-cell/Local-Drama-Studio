@@ -1,0 +1,18 @@
+# 复制到 projects/<project_id>/project.yaml 后修改。
+# 这是 R4 才启用的项目级配置；当前仅作为契约示例。
+project_id: demo_drama
+title: "最后一通电话"
+story_file: "input/story.md"
+
+duration_target_seconds: 45
+shot_count_target: 4
+aspect_ratio: "1:1"          # R0/R1 先 512x512；R5 后再评估 9:16
+
+# 覆盖全局配置（字段与 config/*.yaml 对应）
+overrides:
+  generation:
+    image_profile: r0_image
+    video_profile: r0_video_i2v
+  audio:
+    mode: sft
+  style: "cinematic, realistic, cold night tones"

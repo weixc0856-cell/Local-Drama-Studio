@@ -1,0 +1,36 @@
+# Paths are resolved against the project root unless absolute.
+paths:
+  models_root: "D:/AI/models"
+  runtime_root: "runtime"
+  projects_root: "projects"
+  logs_root: "logs"
+  workflows_root: "workflows"
+
+comfyui:
+  host: "127.0.0.1"
+  port: 8188
+  startup_timeout_seconds: 180
+  request_timeout_seconds: 600
+  workflow_timeout_seconds: 1800
+  poll_interval_seconds: 2
+
+# The 8080 instance on this machine belongs to another scheduled task that
+# requires an API key (observed 2026-11-02: HTTP 401). The drama pipeline
+# therefore targets a project-owned llama.cpp instance on 8081.
+llm:
+  base_url: "http://127.0.0.1:8081/v1"
+  api_key: "sk-local"
+  model: "Qwen3.5-4B"
+  temperature: 0.2
+  max_repair_attempts: 2
+
+# CosyVoice runtime already exists at D:\AI\CosyVoice-Runtime (CPU, port 50000).
+tts:
+  base_url: "http://127.0.0.1:50000"
+  mode: "sft"          # sft = preset speakers; zero_shot = reference wav per character
+  sample_rate: 48000   # final mix sample rate; CosyVoice outputs 24k/22.05k
+
+ffmpeg:
+  binary: "ffmpeg"
+  ffprobe: "ffprobe"
+  threads: 8

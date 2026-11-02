@@ -1,0 +1,13 @@
+# Copied to runtime/ComfyUI/extra_model_paths.yaml by scripts/setup.ps1.
+#
+# The two diffusion GGUFs stay at the TOP LEVEL of D:\AI\models because
+# D:\AI\start_server.bat scans only that level. Companion files live in
+# text_encoders/ and vae/ subfolders. Both layouts are exposed here without
+# moving or duplicating several GB of weights.
+ai_shared:
+  base_path: D:/AI/models
+  diffusion_models: |
+    .
+    diffusion_models
+  text_encoders: text_encoders
+  vae: vae

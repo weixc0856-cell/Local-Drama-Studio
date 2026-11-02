@@ -1,0 +1,45 @@
+# R0 profiles are deliberately minimal: lowest viable resolution/frames, not
+# a quality target. Calibrate only after R0-C / R0-D produce measured evidence.
+profiles:
+  r0_image:
+    model: flux_2_klein_4b
+    width: 512
+    height: 512
+    steps: 4
+    cfg: 1.0
+    sampler: euler
+    scheduler: simple
+    seed: 42
+    batch_size: 1
+
+  r0_video_t2v:
+    model: wan_2_2_ti2v_5b
+    width: 512
+    height: 512
+    frames: 33          # Wan requires 4n+1
+    fps: 24
+    steps: 20
+    cfg: 5.0
+    shift: 8.0
+    seed: 42
+
+  r0_video_i2v:
+    model: wan_2_2_ti2v_5b
+    width: 512
+    height: 512
+    frames: 33
+    fps: 24
+    steps: 20
+    cfg: 5.0
+    shift: 8.0
+    seed: 42
+
+limits:
+  max_concurrent_generation_jobs: 1   # one GPU tenant at a time
+  max_retries: 2
+  retry_backoff_seconds: 30
+  image_timeout_seconds: 600
+  video_timeout_seconds: 1800
+
+# Verified constraints for Wan 2.2: width/height divisible by 16, frame count
+# 4n+1. FLUX.2 klein: 4 steps, CFG 1.0, euler/simple, no negative prompt.

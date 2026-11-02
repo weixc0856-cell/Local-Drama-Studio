@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "portrait of a 32-year-old Chinese man with short black hair, dark coat, sitting in a dim apartment at night, phone screen lighting his face, cinematic, realistic, shallow depth of field",
+  "seed": 42,
+  "width": 512,
+  "height": 512,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r0/flux_t2i"
+}

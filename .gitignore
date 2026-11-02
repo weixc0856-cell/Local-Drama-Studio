@@ -1,0 +1,38 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Runtime engines (ComfyUI + its torch/XPU venv) are installed locally, never committed
+runtime/ComfyUI/
+runtime/*.7z
+runtime/*.zip
+
+# Models never enter this repo (canonical store: D:\AI\models)
+models/
+*.gguf
+*.safetensors
+*.ckpt
+*.pth
+
+# Generated project artifacts
+projects/*/assets/
+projects/*/shots/
+projects/*/audio/
+projects/*/subtitles/
+projects/*/renders/
+projects/*/state.db
+projects/*/manifest.json
+
+# Logs and local reports
+logs/
+docs/local/
+*.log
+*.pid
+
+# OS
+Thumbs.db
+desktop.ini

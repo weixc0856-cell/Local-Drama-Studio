@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "The man slowly raises the phone to his ear, subtle breathing and head movement, phone screen glow, cinematic, realistic.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, text, watermark",
+  "input_image": "r0_keyframe.png",
+  "seed": 42,
+  "width": 512,
+  "height": 512,
+  "frames": 33,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r0/wan_i2v"
+}
