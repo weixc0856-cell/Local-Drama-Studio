@@ -1,0 +1,29 @@
+{
+  "job_id": "J6",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "A river bend in classical Tang-dynasty China, the near-left bank covered with a grove of flowering plum trees under bright moonlight, petals falling over the water, the moon high in the upper left, silver-blue light, mist between the trees, distant mountains across the river, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 1201,
+    "width": 768,
+    "height": 432,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J6_flower_text"
+  },
+  "reference": null,
+  "prompt_id": "0050e6ae-181b-4db2-b8e8-77d3190c67c6",
+  "submitted_at": "2026-11-02T21:07:52",
+  "elapsed_seconds": 72.55,
+  "peak_vram_used_bytes": 2960103936,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J6\\J6_flower_text_00001_.png",
+      "sha256": "9fc5b4cb66fc6c57f8f30637ee89a55dfe72fbad941fbd59978e48d91d879190",
+      "bytes": 720776
+    }
+  ],
+  "created_at": "2026-11-02T21:09:04"
+}

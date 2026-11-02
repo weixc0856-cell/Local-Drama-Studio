@@ -1,0 +1,60 @@
+{
+  "project": "春江花月夜",
+  "aspect_ratio": "16:9",
+  "resolution": [
+    768,
+    432
+  ],
+  "style_reference": "assets/visual_style/reference/style_ref_river_16x9.png",
+  "sequence": [
+    {
+      "id": "KF1",
+      "name": "江畔初月",
+      "time": "after sunset",
+      "file": "assets\\keyframes\\kf01_river_first_moon.png",
+      "source_job": "J11",
+      "sha256": "4f40d33c031357ee234e8175e423383789f38cb5c560ac27015835090864a723",
+      "seed": 1102
+    },
+    {
+      "id": "KF2",
+      "name": "花林月照",
+      "time": "early night",
+      "file": "assets\\keyframes\\kf02_flower_forest_moon.png",
+      "source_job": "J3",
+      "sha256": "79287c9bef70bf830a084f7ac83e036decf388a06d67f47c7e8bc6655d98dc83",
+      "seed": 1201
+    },
+    {
+      "id": "KF3",
+      "name": "孤舟远行",
+      "time": "deep night",
+      "file": "assets\\keyframes\\kf03_lone_boat_night.png",
+      "source_job": "J4",
+      "sha256": "76e4f6a4293d81ab6316dae8872312777e0553b1884ec2dd568f3d4c3d5d4364",
+      "seed": 1301
+    },
+    {
+      "id": "KF4",
+      "name": "落月晨曦",
+      "time": "before sunrise",
+      "file": "assets\\keyframes\\kf04_dawn_setting_moon.png",
+      "source_job": "J5",
+      "sha256": "c4735760ea0ba3b74ba9ca9cd984d852f815a937fe227aa139c041c96ea703a8",
+      "seed": 1401
+    }
+  ],
+  "moon_path": "KF1 low left -> KF2 upper left -> KF3 upper center -> KF4 right",
+  "shared_anchors": {
+    "river_bend": "near bank at the bottom, far mountains upper right",
+    "flower_forest": "near-left bank in KF2",
+    "boat": "center-left moving toward the far mountains in KF3",
+    "reference_job": "J2 (river_16x9)"
+  },
+  "consistency_method": "KF1/KF2/KF3/KF4 are all edits conditioned on the J2 reference image; prompts control time and content.",
+  "known_limits": [
+    "KF4 warm orb is ambiguous between setting moon and rising sun.",
+    "KF2/KF3 moon positions are high; the moon path is schematic, not astronomical.",
+    "No video continuity or 1080p upscale has been verified."
+  ]
+}

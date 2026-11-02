@@ -1,0 +1,29 @@
+{
+  "job_id": "J8",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "A river bend in classical Tang-dynasty China just before sunrise, the moon low on the right horizon, pale gold light on the horizon, thick morning mist over the water, cool blue shadows, distant mountains across the river, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 1401,
+    "width": 768,
+    "height": 432,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J8_dawn_text"
+  },
+  "reference": null,
+  "prompt_id": "ce4f6152-488e-450a-a8a2-6a2cc6926a79",
+  "submitted_at": "2026-11-02T21:10:17",
+  "elapsed_seconds": 72.5,
+  "peak_vram_used_bytes": 2923404288,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J8\\J8_dawn_text_00001_.png",
+      "sha256": "4a82563dceb5f234f0ee615b7b0e55a6a97cb259af248d6dacd27c813ea669c7",
+      "bytes": 627116
+    }
+  ],
+  "created_at": "2026-11-02T21:11:29"
+}

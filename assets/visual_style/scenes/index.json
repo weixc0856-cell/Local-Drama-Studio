@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "river_moon_night",
+    "title": "江面月夜",
+    "job": "J2",
+    "file": "assets\\visual_style\\scenes\\river_moon_night.png",
+    "sha256": "679fbf720e22b905b9c79e3eabad8b0f0a043c01d3b9f14b567b4485e9dc7a36"
+  },
+  {
+    "slug": "first_moon_dusk",
+    "title": "江畔初月",
+    "job": "J11",
+    "file": "assets\\visual_style\\scenes\\first_moon_dusk.png",
+    "sha256": "4f40d33c031357ee234e8175e423383789f38cb5c560ac27015835090864a723"
+  },
+  {
+    "slug": "flower_forest_moon",
+    "title": "花林月照",
+    "job": "J3",
+    "file": "assets\\visual_style\\scenes\\flower_forest_moon.png",
+    "sha256": "79287c9bef70bf830a084f7ac83e036decf388a06d67f47c7e8bc6655d98dc83"
+  },
+  {
+    "slug": "lone_boat_night",
+    "title": "孤舟远行",
+    "job": "J4",
+    "file": "assets\\visual_style\\scenes\\lone_boat_night.png",
+    "sha256": "76e4f6a4293d81ab6316dae8872312777e0553b1884ec2dd568f3d4c3d5d4364"
+  },
+  {
+    "slug": "distant_mountains_night",
+    "title": "远山",
+    "job": "J10",
+    "file": "assets\\visual_style\\scenes\\distant_mountains_night.png",
+    "sha256": "fe1a294165c402dd73a248bf0921a3ce2c891cf786ed4a1eac34192015c325f7"
+  },
+  {
+    "slug": "dawn_river",
+    "title": "晨曦",
+    "job": "J5",
+    "file": "assets\\visual_style\\scenes\\dawn_river.png",
+    "sha256": "c4735760ea0ba3b74ba9ca9cd984d852f815a937fe227aa139c041c96ea703a8"
+  }
+]

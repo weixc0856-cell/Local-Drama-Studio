@@ -9,6 +9,7 @@
 | `flux_character_api.json` | 人物定妆参考图 | R1 |
 | `flux_scene_api.json` | 场景 / 道具参考图 | R1 |
 | `flux_keyframe_api.json` | 分镜首帧（可带参考图） | R1/R5 |
+| `r1_flux_edit_api.json` | 参考图 / 图像编辑（`ReferenceLatent`） | R1 已验证 |
 | `wan_t2v_api.json` | 文生视频 | R2 |
 | `wan_i2v_api.json` | 首帧图生视频 | R2 |
 
@@ -42,6 +43,12 @@
 ```
 
 数值占位符在替换时会转成 JSON number，不是字符串。
+
+## 已实际验证
+
+- `r0_flux_t2i_api.json`：R0-C 512×512；R1 768×432 文生图（11 次任务）。
+- `r0_wan_t2v_api.json`、`r0_wan_i2v_api.json`：R0-D/R0-E，20 步。
+- `r1_flux_edit_api.json`：R1 参考图条件，`LoadImage → VAEEncode → ReferenceLatent`；768×432。
 
 ## 版本登记
 

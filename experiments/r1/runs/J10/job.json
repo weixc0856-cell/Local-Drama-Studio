@@ -1,0 +1,29 @@
+{
+  "job_id": "J10",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Layered distant mountains beyond a wide calm river at night in classical Tang-dynasty China, ink-wash silhouettes fading into mist, moonlight rim on the peaks, a low band of silver fog, sparse reeds at the very bottom edge, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 1601,
+    "width": 768,
+    "height": 432,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J10_distant_mountains"
+  },
+  "reference": null,
+  "prompt_id": "c4fdd7c0-3d8c-4614-8195-e9bef3ab616b",
+  "submitted_at": "2026-11-02T21:12:51",
+  "elapsed_seconds": 70.51,
+  "peak_vram_used_bytes": 2923404288,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J10\\J10_distant_mountains_00001_.png",
+      "sha256": "fe1a294165c402dd73a248bf0921a3ce2c891cf786ed4a1eac34192015c325f7",
+      "bytes": 662386
+    }
+  ],
+  "created_at": "2026-11-02T21:14:02"
+}

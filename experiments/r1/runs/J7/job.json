@@ -1,0 +1,29 @@
+{
+  "job_id": "J7",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "A wide river bend in classical Tang-dynasty China at deep night, a single small wooden boat with one distant figure silhouette in the middle of the river moving toward the far mountains, a long moonlight path on the water, distant mountain silhouettes, reeds at the near bank, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no face close-up",
+    "seed": 1301,
+    "width": 768,
+    "height": 432,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J7_boat_text"
+  },
+  "reference": null,
+  "prompt_id": "78b1e526-3480-4a1d-84ce-3490fab6fc6b",
+  "submitted_at": "2026-11-02T21:09:04",
+  "elapsed_seconds": 72.52,
+  "peak_vram_used_bytes": 2923404288,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J7\\J7_boat_text_00001_.png",
+      "sha256": "c9d9692a8776108ced31afed5785f2eaea34424dd616a696fd30800a6a7dbbd7",
+      "bytes": 670774
+    }
+  ],
+  "created_at": "2026-11-02T21:10:17"
+}

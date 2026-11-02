@@ -1,0 +1,12 @@
+[
+  {
+    "id": "J11",
+    "workflow": "workflows/r1_flux_edit_api.json",
+    "params": "experiments/r1/params/J11.json",
+    "out": "experiments/r1/runs/J11",
+    "reference": {
+      "source": "experiments/r1/runs/r1a_river_16x9/river_16x9_00001_.png",
+      "input_name": "r1_ref_river.png"
+    }
+  }
+]

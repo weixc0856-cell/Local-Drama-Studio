@@ -1,0 +1,29 @@
+{
+  "job_id": "J9",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Wide cinematic view of a great river at dusk in classical Tang-dynasty China, a pale new moon low on the left horizon, the last warm afterglow fading above the far mountains, thin silver mist over the water, reeds at the near bank, scattered falling petals on the current, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 1102,
+    "width": 768,
+    "height": 432,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J9_first_moon"
+  },
+  "reference": null,
+  "prompt_id": "c5e7a837-5938-40ef-b427-933f99cbcf27",
+  "submitted_at": "2026-11-02T21:11:38",
+  "elapsed_seconds": 72.47,
+  "peak_vram_used_bytes": 2923404288,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J9\\J9_first_moon_00001_.png",
+      "sha256": "534494ffe75e9700a9f5ac4e77396408e2f070e43c6813c1e3e7c24ab04f1da8",
+      "bytes": 679783
+    }
+  ],
+  "created_at": "2026-11-02T21:12:51"
+}

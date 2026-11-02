@@ -31,12 +31,25 @@
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
 | R0-D Wan 视频 | ✅ `PASS_VERIFIED`：T2V/I2V 512×512×33 帧，20 步；I2V 约 10 分钟 |
 | R0-E 模型互斥 / 重载 | ✅ `PASS_VERIFIED`：3 轮 FLUX↔Wan 切换无 OOM |
-| 短剧业务功能（R1-R7） | ⛔ R0 已完成，按约束停在这里 |
+| R1-A 项目审查 | ✅ `PASS_VERIFIED`（[R1_AUDIT](docs/R1_AUDIT.md)） |
+| R1-B 视觉规范 | ✅ `PASS_VERIFIED`（[R1_VISUAL_DESIGN](docs/R1_VISUAL_DESIGN.md)） |
+| R1-C FLUX 16:9 资产 | ✅ `PASS_VERIFIED`：11 次生成，768×432，70-102 s/张，峰值 2.84 GiB |
+| R1-D 关键帧 | ✅ `PASS_VERIFIED`（保留 KF4 光源歧义） |
+| R1-E 批处理/续跑/恢复 | ✅ `PASS_VERIFIED` |
+| R2-R7 | ⛔ 按约束停在 R1 |
 
 ```powershell
 # 任何时候查看真实状态（不会猜测，未执行即 NOT_RUN）
 scripts\doctor.ps1
 ```
+
+### R1 结论摘要
+
+- 16:9（768×432）可直接生成，无需改工作流；约 70-102 秒/张，峰值 2.84 GiB。
+- `ReferenceLatent` 参考图编辑在本机 Q4 + XPU 上可用；它保留河湾/远山/色板，提示词控制时间与内容。
+- 四张关键帧：江畔初月、花林月照、孤舟远行、落月晨曦；见 [assets/keyframes/](assets/keyframes/)。
+- 一致性对比：参考图辅助在空间锚点上更稳，纯文字色板接近但地貌会漂移。
+- 明确未做：1080p、视频、人物一致性。下一步 R2 必须先解决 Wan 的 /32 分辨率约束（1024×576）。
 
 ### R0 结论摘要
 
@@ -151,4 +164,8 @@ drama resume <project>       # 断点续跑                      [R7]
 | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) | 已核实硬件、双 venv、模型仓库、端口与显存预算 |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | 关键设计决策（ADR） |
 | [docs/R0_TEST_PLAN.md](docs/R0_TEST_PLAN.md) | R0-A ~ R0-E 测试步骤与验收标准 |
-| [docs/R0_TEST_REPORT.md](docs/R0_TEST_REPORT.md) | 实际执行结果与证据 |
+| [docs/R0_TEST_REPORT.md](docs/R0_TEST_REPORT.md) | R0 实际执行结果与证据 |
+| [docs/R1_AUDIT.md](docs/R1_AUDIT.md) | R1 现有工作流/编辑能力审查 |
+| [docs/R1_VISUAL_DESIGN.md](docs/R1_VISUAL_DESIGN.md) | 《春江花月夜》视觉规范 |
+| [docs/R1_TEST_PLAN.md](docs/R1_TEST_PLAN.md) | R1 实验与关键帧计划 |
+| [docs/R1_TEST_REPORT.md](docs/R1_TEST_REPORT.md) | R1 实际结果、对比与限制 |

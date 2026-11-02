@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "Wide cinematic view of a great river at dusk in classical Tang-dynasty China, a pale new moon low on the left horizon, the last warm afterglow fading above the far mountains, thin silver mist over the water, reeds at the near bank, scattered falling petals on the current, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "seed": 1102,
+  "width": 768,
+  "height": 432,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r1/J9_first_moon"
+}

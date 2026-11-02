@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "A wide river bend in classical Tang-dynasty China at deep night, a single small wooden boat with one distant figure silhouette in the middle of the river moving toward the far mountains, a long moonlight path on the water, distant mountain silhouettes, reeds at the near bank, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no face close-up",
+  "seed": 1301,
+  "width": 768,
+  "height": 432,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r1/J7_boat_text"
+}

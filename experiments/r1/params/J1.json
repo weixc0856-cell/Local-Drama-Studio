@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "Wide cinematic view of a great river at night in classical Tang-dynasty China, a pale moon above distant low mountains, thin silver mist over the water, scattered falling petals drifting on the current, reeds at the near bank, moonlight reflecting as a long shimmering path, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "seed": 1101,
+  "width": 512,
+  "height": 512,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r1/J1_river_512"
+}

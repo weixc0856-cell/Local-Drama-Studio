@@ -1,0 +1,38 @@
+{
+  "project": "春江花月夜",
+  "palette": {
+    "ink_black": "#10161C",
+    "indigo": "#1E3247",
+    "moon_white": "#DCE6EA",
+    "jade_green": "#4F6F63",
+    "mist_grey": "#8A9499",
+    "pale_gold": "#C9A76A",
+    "rouge": "#8E5B5B"
+  },
+  "prompt_suffix": "classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark",
+  "negative_prompt": "modern architecture, power lines, neon, western fantasy, castle, oversaturated game CG, plastic look, extra moon, distorted geometry, text, watermark, modern clothing, face close-up",
+  "camera": {
+    "aspect_ratio": "16:9",
+    "framerate": 24,
+    "lenses": ["35mm", "50mm", "85mm"],
+    "movement": ["static", "slow push in", "slow lateral track"],
+    "forbidden": ["fast pan", "handheld shake", "whip zoom"]
+  },
+  "timeline": [
+    {"keyframe": "KF1", "name": "江畔初月", "time": "after sunset", "moon": "low left", "light": "cool blue + dusk gold", "mist": "thin"},
+    {"keyframe": "KF2", "name": "花林月照", "time": "early night", "moon": "upper left", "light": "cool silver-blue", "mist": "between trees"},
+    {"keyframe": "KF3", "name": "孤舟远行", "time": "deep night", "moon": "upper left of center", "light": "cool low-contrast", "mist": "flat over river"},
+    {"keyframe": "KF4", "name": "落月晨曦", "time": "before sunrise", "moon": "low right", "light": "pale gold + blue shadow", "mist": "thick"}
+  ],
+  "spatial_anchors": [
+    "near bank at bottom of frame",
+    "far mountains upper right",
+    "flower forest on near-left bank",
+    "boat travels from center-left toward the far mountains"
+  ],
+  "forbidden": [
+    "modern architecture", "power lines", "neon", "western fantasy", "castle",
+    "oversaturated game CG", "plastic look", "extra moon", "text", "watermark",
+    "modern clothing", "face close-up"
+  ]
+}

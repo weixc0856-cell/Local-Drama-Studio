@@ -1,0 +1,77 @@
+{
+  "flower": {
+    "reference_assisted": "experiments\\r1\\runs\\J3\\J3_flower_ref_00001_.png",
+    "text_only": "experiments\\r1\\runs\\J6\\J6_flower_text_00001_.png",
+    "mean_rgb": {
+      "reference": [
+        54.36,
+        93.87,
+        99.73
+      ],
+      "ref_assisted": [
+        96.64,
+        127.73,
+        140.28
+      ],
+      "text_only": [
+        108.52,
+        135.64,
+        145.32
+      ]
+    },
+    "hist_intersection": {
+      "ref_vs_ref_assisted": 0.7031,
+      "ref_vs_text_only": 0.6688
+    }
+  },
+  "boat": {
+    "reference_assisted": "experiments\\r1\\runs\\J4\\J4_boat_ref_00001_.png",
+    "text_only": "experiments\\r1\\runs\\J7\\J7_boat_text_00001_.png",
+    "mean_rgb": {
+      "reference": [
+        54.36,
+        93.87,
+        99.73
+      ],
+      "ref_assisted": [
+        56.0,
+        91.91,
+        100.91
+      ],
+      "text_only": [
+        55.71,
+        83.36,
+        89.33
+      ]
+    },
+    "hist_intersection": {
+      "ref_vs_ref_assisted": 0.9473,
+      "ref_vs_text_only": 0.8483
+    }
+  },
+  "dawn": {
+    "reference_assisted": "experiments\\r1\\runs\\J5\\J5_dawn_ref_00001_.png",
+    "text_only": "experiments\\r1\\runs\\J8\\J8_dawn_text_00001_.png",
+    "mean_rgb": {
+      "reference": [
+        54.36,
+        93.87,
+        99.73
+      ],
+      "ref_assisted": [
+        110.33,
+        142.11,
+        143.11
+      ],
+      "text_only": [
+        119.52,
+        145.71,
+        145.48
+      ]
+    },
+    "hist_intersection": {
+      "ref_vs_ref_assisted": 0.6253,
+      "ref_vs_text_only": 0.5919
+    }
+  }
+}

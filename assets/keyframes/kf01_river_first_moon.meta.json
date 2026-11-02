@@ -1,0 +1,33 @@
+{
+  "keyframe_id": "KF1",
+  "name": "江畔初月",
+  "time": "after sunset",
+  "source_job": "J11",
+  "source_file": "experiments\\r1\\runs\\J11\\J11_first_moon_ref_00001_.png",
+  "output": {
+    "path": "assets\\keyframes\\kf01_river_first_moon.png",
+    "sha256": "4f40d33c031357ee234e8175e423383789f38cb5c560ac27015835090864a723",
+    "bytes": 725928
+  },
+  "width": 768,
+  "height": 432,
+  "seed": 1102,
+  "steps": 4,
+  "cfg": 1.0,
+  "prompt": "The same river bend and the same distant mountain silhouettes as the reference image, now at dusk just after sunset, a pale new moon low on the left horizon, warm afterglow fading above the mountains, thin silver mist over the water, reeds at the near bank, scattered falling petals on the current, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r1_flux_edit_api.json",
+  "workflow_sha256": "c38f5514252659ca6d878ac47cbda0ab129f41a0a4a1d4c1f33ebae4478c19a9",
+  "reference": {
+    "source": "experiments\\r1\\runs\\r1a_river_16x9\\river_16x9_00001_.png",
+    "input_name": "r1_ref_river.png",
+    "sha256": "679fbf720e22b905b9c79e3eabad8b0f0a043c01d3b9f14b567b4485e9dc7a36"
+  },
+  "elapsed_seconds": 72.5,
+  "peak_vram_used_bytes": 3025845248,
+  "review": {
+    "moon_position": "low left of center",
+    "spatial_anchors": "river bend and distant mountains match the J2 reference",
+    "modern_objects": "none",
+    "notes": "Warm afterglow; moon sits just above the far ridge. Reference-anchored edit of J2."
+  }
+}

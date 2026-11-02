@@ -1,0 +1,10 @@
+{
+  "positive_prompt": "The same river bend and the same distant mountain silhouettes as the reference image, now at dusk just after sunset, a pale new moon low on the left horizon, warm afterglow fading above the mountains, thin silver mist over the water, reeds at the near bank, scattered falling petals on the current, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "seed": 1102,
+  "width": 768,
+  "height": 432,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r1/J11_first_moon_ref",
+  "input_image": "r1_ref_river.png"
+}

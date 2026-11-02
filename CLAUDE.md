@@ -8,7 +8,7 @@ Local AI short-drama production lab: script → storyboard → character/scene a
 
 ComfyUI is **only** the generation engine. Python (`src/drama_studio`) owns business state, scheduling, retries and quality gates. FFmpeg owns composition. The local LLM (`D:\AI`) and CosyVoice (`D:\AI\CosyVoice-Runtime`) are external HTTP services.
 
-**Current state: R0 complete and verified. R1-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
+**Current state: R0 and R1 complete and verified. R2-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
 
 ## Hard environment invariants
 
@@ -45,6 +45,11 @@ scripts\stop.ps1           # kills the ComfyUI process tree (venv launcher -> re
 .venv\Scripts\python.exe scripts\r0_comfy_probe.py `
   --workflow workflows\r0_flux_t2i_api.json `
   --params workflows\r0_flux_t2i_params.json --out logs\r0\run
+
+# R1 batch: resume-friendly; each run writes run/job.json with provenance
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r1\jobs.json
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r1\jobs.json --only J1 --force
+.venv\Scripts\python.exe scripts\r1_compare.py
 ```
 
 PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will garble Chinese text.
@@ -55,7 +60,8 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `src/drama_studio/models.py` — **the data contract boundary**. Strict Pydantic (`extra="forbid"`). IDs are `char_001` / `loc_001` / `prop_001` / `shot_001`; a shot's ID must equal `shot_{index:03d}`, indexes are contiguous, and all references must resolve. Local LLM output must validate against `Storyboard` or the stage fails (max 2 repair attempts by design, not implemented yet).
 - `src/drama_studio/doctor.py` — emits `PASS_VERIFIED / PASS_LIMITED / FAIL / NOT_RUN` with evidence. It never guesses: unimplemented services are `NOT_RUN`.
 - `docs/ARCHITECTURE.md` — the full target design: SQLite state machine, ComfyUI protocol, prompt locking, GPU rules, FFmpeg pipeline. Implemented modules are only those listed above; everything else there is planned.
-- `docs/R0_TEST_REPORT.md` — measured facts and limits. Read §6 before proposing R1/R2 work.
+- `docs/R0_TEST_REPORT.md` — R0 measured facts and limits. Read §6 before proposing R1/R2 work.
+- `docs/R1_TEST_REPORT.md` — R1 assets, reference-edit results, consistency limits, and the /32 constraint for Wan.
 
 Planned modules (not implemented; do not assume they exist): `state.py`, `comfy_client.py`, `generation/`, `script_engine/`, `storyboard/`, `character_manager/`, `audio/`, `subtitles/`, `editing/`, `quality/`, `storage/`, `orchestrator.py`.
 
@@ -68,6 +74,8 @@ Project state model when implemented: per-project `state.db` is authoritative; `
 - Verified R0 graphs:
   - FLUX.2 klein: `UnetLoaderGGUF` → `CLIPLoader(type=flux2, device=cpu)` → `Flux2Scheduler` + `CFGGuider(1.0)` + `SamplerCustomAdvanced`; no `FluxGuidance`.
   - Wan2.2 TI2V 5B: `Wan22ImageToVideoLatent` (48-ch), `ModelSamplingSD3(shift=8)`, `uni_pc`/`simple`, CFG 5, 20 steps.
+  - FLUX.2 reference/edit: `LoadImage → VAEEncode → ReferenceLatent(conditioning, latent)` with `EmptyFlux2LatentImage`, `Flux2Scheduler`, `CFGGuider(1.0)`; verified at 768×432 on Q4/XPU.
+- R1 asset layout: `assets/visual_style/` (style bible, master reference, scenes, comparison sheet), `assets/keyframes/` (four 16:9 keyframes + `*.meta.json` + `relationships.json`), raw runs in `experiments/r1/runs/<job>/job.json`.
 - Model switching does not need a restart; `/free` is usually a no-op because models auto-unload. Restart only to clear the execution cache or recover.
 
 ## Working rules
@@ -78,3 +86,5 @@ Project state model when implemented: per-project `state.db` is authoritative; `
 - Do not upgrade ComfyUI/nodes or replace model files without re-running the relevant R0 checks; record versions in `logs/r0/engine-versions.txt`.
 - Keep seed, prompt, model hash and workflow hash with every asset.
 - Pin the goal to a 30-45 s, 3-5 shot episode; measured budget is ~7-10 h of generation per episode.
+- Keyframe consistency: use the J2 reference (`assets/visual_style/reference/style_ref_river_16x9.png`) and `ReferenceLatent`; repeated prompts alone are not consistency evidence.
+- **Wan video resolution must be divisible by 32.** Keyframes are 768×432 (432/32=13.5), so R2 must resize/pad to 1024×576 (16:9) or use 832×480 before I2V.

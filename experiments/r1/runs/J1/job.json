@@ -1,0 +1,29 @@
+{
+  "job_id": "J1",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Wide cinematic view of a great river at night in classical Tang-dynasty China, a pale moon above distant low mountains, thin silver mist over the water, scattered falling petals drifting on the current, reeds at the near bank, moonlight reflecting as a long shimmering path, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 1101,
+    "width": 512,
+    "height": 512,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r1/J1_river_512"
+  },
+  "reference": null,
+  "prompt_id": "e8a4532a-b0dc-4082-a751-c7643e459bb8",
+  "submitted_at": "2026-11-02T21:16:26",
+  "elapsed_seconds": 64.53,
+  "peak_vram_used_bytes": 2906150912,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r1\\runs\\J1\\J1_river_512_00002_.png",
+      "sha256": "e09301bb8c2e38955e170c23aa5c3f2a53631fdcda3f241a13df1169af202691",
+      "bytes": 508755
+    }
+  ],
+  "created_at": "2026-11-02T21:17:31"
+}

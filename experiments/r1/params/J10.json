@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "Layered distant mountains beyond a wide calm river at night in classical Tang-dynasty China, ink-wash silhouettes fading into mist, moonlight rim on the peaks, a low band of silver fog, sparse reeds at the very bottom edge, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "seed": 1601,
+  "width": 768,
+  "height": 432,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r1/J10_distant_mountains"
+}

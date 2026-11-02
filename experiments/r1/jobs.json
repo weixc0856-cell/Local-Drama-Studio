@@ -1,0 +1,62 @@
+[
+  {
+    "id": "J1",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r1/params/J1.json",
+    "out": "experiments/r1/runs/J1"
+  },
+  {
+    "id": "J2",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r1/params/J2.json",
+    "out": "experiments/r1/runs/r1a_river_16x9"
+  },
+  {
+    "id": "J3",
+    "workflow": "workflows/r1_flux_edit_api.json",
+    "params": "experiments/r1/params/J3.json",
+    "out": "experiments/r1/runs/J3",
+    "reference": {
+      "source": "experiments/r1/runs/r1a_river_16x9/river_16x9_00001_.png",
+      "input_name": "r1_ref_river.png"
+    }
+  },
+  {
+    "id": "J4",
+    "workflow": "workflows/r1_flux_edit_api.json",
+    "params": "experiments/r1/params/J4.json",
+    "out": "experiments/r1/runs/J4",
+    "reference": {
+      "source": "experiments/r1/runs/r1a_river_16x9/river_16x9_00001_.png",
+      "input_name": "r1_ref_river.png"
+    }
+  },
+  {
+    "id": "J5",
+    "workflow": "workflows/r1_flux_edit_api.json",
+    "params": "experiments/r1/params/J5.json",
+    "out": "experiments/r1/runs/J5",
+    "reference": {
+      "source": "experiments/r1/runs/r1a_river_16x9/river_16x9_00001_.png",
+      "input_name": "r1_ref_river.png"
+    }
+  },
+  {
+    "id": "J6",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r1/params/J6.json",
+    "out": "experiments/r1/runs/J6"
+  },
+  {
+    "id": "J7",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r1/params/J7.json",
+    "out": "experiments/r1/runs/J7"
+  },
+  {
+    "id": "J8",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r1/params/J8.json",
+    "out": "experiments/r1/runs/J8"
+  }
+]

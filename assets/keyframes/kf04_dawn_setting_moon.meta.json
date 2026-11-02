@@ -1,0 +1,33 @@
+{
+  "keyframe_id": "KF4",
+  "name": "落月晨曦",
+  "time": "before sunrise",
+  "source_job": "J5",
+  "source_file": "experiments\\r1\\runs\\J5\\J5_dawn_ref_00001_.png",
+  "output": {
+    "path": "assets\\keyframes\\kf04_dawn_setting_moon.png",
+    "sha256": "c4735760ea0ba3b74ba9ca9cd984d852f815a937fe227aa139c041c96ea703a8",
+    "bytes": 696115
+  },
+  "width": 768,
+  "height": 432,
+  "seed": 1401,
+  "steps": 4,
+  "cfg": 1.0,
+  "prompt": "A river bend in classical Tang-dynasty China just before sunrise, the moon low on the right horizon, pale gold light on the horizon, thick morning mist over the water, cool blue shadows, distant mountains across the river, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r1_flux_edit_api.json",
+  "workflow_sha256": "c38f5514252659ca6d878ac47cbda0ab129f41a0a4a1d4c1f33ebae4478c19a9",
+  "reference": {
+    "source": "experiments\\r1\\runs\\r1a_river_16x9\\river_16x9_00001_.png",
+    "input_name": "r1_ref_river.png",
+    "sha256": "679fbf720e22b905b9c79e3eabad8b0f0a043c01d3b9f14b567b4485e9dc7a36"
+  },
+  "elapsed_seconds": 74.48,
+  "peak_vram_used_bytes": 2997206528,
+  "review": {
+    "moon_position": "right of center, above the ridge",
+    "spatial_anchors": "same river bend and mountain silhouette as the reference",
+    "modern_objects": "none",
+    "notes": "Warm orb could read as either setting moon or rising sun; acceptable for R1, needs prompt refinement in R2."
+  }
+}

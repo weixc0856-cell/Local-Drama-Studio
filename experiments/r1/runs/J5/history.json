@@ -1,0 +1,253 @@
+{
+  "prompt": [
+    4,
+    "6dde04f1-4bc6-491e-8f34-77cb798ee8fc",
+    {
+      "1": {
+        "class_type": "UnetLoaderGGUF",
+        "inputs": {
+          "unet_name": "flux-2-klein-4b-Q4_K_M.gguf"
+        }
+      },
+      "2": {
+        "class_type": "CLIPLoader",
+        "inputs": {
+          "clip_name": "qwen_3_4b.safetensors",
+          "type": "flux2",
+          "device": "cpu"
+        }
+      },
+      "3": {
+        "class_type": "VAELoader",
+        "inputs": {
+          "vae_name": "flux2-vae.safetensors"
+        }
+      },
+      "4": {
+        "class_type": "LoadImage",
+        "inputs": {
+          "image": "r1_ref_river.png"
+        }
+      },
+      "5": {
+        "class_type": "VAEEncode",
+        "inputs": {
+          "pixels": [
+            "4",
+            0
+          ],
+          "vae": [
+            "3",
+            0
+          ]
+        }
+      },
+      "6": {
+        "class_type": "ReferenceLatent",
+        "inputs": {
+          "conditioning": [
+            "8",
+            0
+          ],
+          "latent": [
+            "5",
+            0
+          ]
+        }
+      },
+      "7": {
+        "class_type": "CLIPTextEncode",
+        "inputs": {
+          "text": "",
+          "clip": [
+            "2",
+            0
+          ]
+        }
+      },
+      "8": {
+        "class_type": "CLIPTextEncode",
+        "inputs": {
+          "text": "A river bend in classical Tang-dynasty China just before sunrise, the moon low on the right horizon, pale gold light on the horizon, thick morning mist over the water, cool blue shadows, distant mountains across the river, classical Tang-dynasty China, spring river landscape, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic 16:9 composition, no modern buildings, no text, no watermark, no people",
+          "clip": [
+            "2",
+            0
+          ]
+        }
+      },
+      "9": {
+        "class_type": "ConditioningZeroOut",
+        "inputs": {
+          "conditioning": [
+            "7",
+            0
+          ]
+        }
+      },
+      "10": {
+        "class_type": "EmptyFlux2LatentImage",
+        "inputs": {
+          "width": 768,
+          "height": 432,
+          "batch_size": 1
+        }
+      },
+      "11": {
+        "class_type": "Flux2Scheduler",
+        "inputs": {
+          "steps": 4,
+          "width": 768,
+          "height": 432
+        }
+      },
+      "12": {
+        "class_type": "KSamplerSelect",
+        "inputs": {
+          "sampler_name": "euler"
+        }
+      },
+      "13": {
+        "class_type": "CFGGuider",
+        "inputs": {
+          "model": [
+            "1",
+            0
+          ],
+          "positive": [
+            "6",
+            0
+          ],
+          "negative": [
+            "9",
+            0
+          ],
+          "cfg": 1.0
+        }
+      },
+      "14": {
+        "class_type": "RandomNoise",
+        "inputs": {
+          "noise_seed": 1401
+        }
+      },
+      "15": {
+        "class_type": "SamplerCustomAdvanced",
+        "inputs": {
+          "noise": [
+            "14",
+            0
+          ],
+          "guider": [
+            "13",
+            0
+          ],
+          "sampler": [
+            "12",
+            0
+          ],
+          "sigmas": [
+            "11",
+            0
+          ],
+          "latent_image": [
+            "10",
+            0
+          ]
+        }
+      },
+      "16": {
+        "class_type": "VAEDecode",
+        "inputs": {
+          "samples": [
+            "15",
+            0
+          ],
+          "vae": [
+            "3",
+            0
+          ]
+        }
+      },
+      "17": {
+        "class_type": "SaveImage",
+        "inputs": {
+          "images": [
+            "16",
+            0
+          ],
+          "filename_prefix": "r1/J5_dawn_ref"
+        }
+      }
+    },
+    {
+      "client_id": "783cd15b-d2af-4050-bc53-4515c8770b25",
+      "create_time": 1793624797407
+    },
+    [
+      "17"
+    ]
+  ],
+  "outputs": {
+    "17": {
+      "images": [
+        {
+          "filename": "J5_dawn_ref_00001_.png",
+          "subfolder": "r1",
+          "type": "output",
+          "metadata": {
+            "kind": "image",
+            "width": 768,
+            "height": 432
+          }
+        }
+      ]
+    }
+  },
+  "status": {
+    "status_str": "success",
+    "completed": true,
+    "messages": [
+      [
+        "execution_start",
+        {
+          "prompt_id": "6dde04f1-4bc6-491e-8f34-77cb798ee8fc",
+          "timestamp": 1793624797409
+        }
+      ],
+      [
+        "execution_cached",
+        {
+          "nodes": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "7",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "prompt_id": "6dde04f1-4bc6-491e-8f34-77cb798ee8fc",
+          "timestamp": 1793624797419
+        }
+      ],
+      [
+        "execution_success",
+        {
+          "prompt_id": "6dde04f1-4bc6-491e-8f34-77cb798ee8fc",
+          "timestamp": 1793624870650
+        }
+      ]
+    ]
+  },
+  "meta": {
+    "17": {
+      "node_id": "17",
+      "display_node": "17",
+      "parent_node": null,
+      "real_node_id": "17"
+    }
+  }
+}

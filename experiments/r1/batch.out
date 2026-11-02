@@ -1,0 +1,17 @@
+[job] J1 -> experiments/r1/runs/J1
+[job] J1 success attempts=1
+[job] J2 -> experiments/r1/runs/r1a_river_16x9
+[job] J2 skipped attempts=1
+[job] J3 -> experiments/r1/runs/J3
+[job] J3 skipped attempts=1
+[job] J4 -> experiments/r1/runs/J4
+[job] J4 success attempts=1
+[job] J5 -> experiments/r1/runs/J5
+[job] J5 success attempts=1
+[job] J6 -> experiments/r1/runs/J6
+[job] J6 success attempts=1
+[job] J7 -> experiments/r1/runs/J7
+[job] J7 success attempts=1
+[job] J8 -> experiments/r1/runs/J8
+[job] J8 success attempts=1
+{"success": 6, "skipped": 2, "failed": 0}
