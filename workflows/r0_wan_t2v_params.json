@@ -1,0 +1,12 @@
+{
+  "positive_prompt": "A man sits on a sofa in a dark apartment at night, lit by a phone screen. He slowly raises the phone to his ear, subtle handheld camera movement, cinematic, realistic.",
+  "negative_prompt": "blurry, low quality, distorted face, extra limbs, text, watermark",
+  "seed": 42,
+  "width": 512,
+  "height": 512,
+  "frames": 33,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r0/wan_t2v"
+}

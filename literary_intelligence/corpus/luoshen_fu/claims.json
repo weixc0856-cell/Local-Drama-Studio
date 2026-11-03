@@ -1,0 +1,72 @@
+[
+  {
+    "claim_id": "luoshen_original_001",
+    "work": "洛神賦",
+    "author": "曹植",
+    "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+    "source_refs": [
+      "src_luoshen_wikisource_7908816"
+    ],
+    "locator": "洛神賦/其形也/第2句",
+    "quote": "翩若惊鸿　婉若游龙",
+    "source_quote": "翩若驚鴻　婉若游龍",
+    "display_quote": "翩若惊鸿，婉若游龙。",
+    "claim_type": "original_text",
+    "statement": "原文目标句；标点与简化字属于展示层，原文保存繁体转写。",
+    "confidence": "high",
+    "review_status": "unreviewed",
+    "notes": "Quote must match the registered raw source; display punctuation is not source text."
+  },
+  {
+    "claim_id": "luoshen_obs_001",
+    "work": "洛神賦",
+    "author": "曹植",
+    "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+    "source_refs": [
+      "src_luoshen_wikisource_7908816"
+    ],
+    "locator": "洛神賦/其形也/第2句",
+    "quote": "翩若惊鸿　婉若游龙",
+    "source_quote": "翩若驚鴻　婉若游龍",
+    "display_quote": "翩若惊鸿，婉若游龙。",
+    "claim_type": "interpretation",
+    "statement": "两个结构相近的分句，以“若”构成明喻，并以“惊鸿”“游龙”两个动态意象并列描写。",
+    "confidence": "medium",
+    "review_status": "unreviewed",
+    "notes": "Text observation; not a historical fact."
+  },
+  {
+    "claim_id": "luoshen_interp_001",
+    "work": "洛神賦",
+    "author": "曹植",
+    "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+    "source_refs": [
+      "src_luoshen_wikisource_7908816"
+    ],
+    "locator": "洛神賦/其形也/第2句",
+    "quote": "翩若惊鸿　婉若游龙",
+    "source_quote": "翩若驚鴻　婉若游龍",
+    "display_quote": "翩若惊鸿，婉若游龙。",
+    "claim_type": "interpretation",
+    "statement": "“惊鸿”突出轻盈、迅捷和灵动，“游龙”突出柔韧、连续和流动；两者结合形成复合动态美。",
+    "confidence": "low",
+    "review_status": "unreviewed",
+    "notes": "Literary interpretation; requires human review and should not be presented as historical fact."
+  },
+  {
+    "claim_id": "luoshen_creative_001",
+    "work": "洛神賦",
+    "author": "曹植",
+    "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+    "source_refs": [],
+    "locator": "洛神賦/其形也/第2句",
+    "quote": "",
+    "source_quote": "",
+    "display_quote": "",
+    "claim_type": "creative",
+    "statement": "视觉转译候选：鸿雁掠过水面的轻盈，游龙般连续的水袖与身体曲线；用于后续分镜和提示词，不进入原典事实层。",
+    "confidence": "low",
+    "review_status": "unreviewed",
+    "notes": "Creative adaptation; no source required, but must remain labelled creative."
+  }
+]

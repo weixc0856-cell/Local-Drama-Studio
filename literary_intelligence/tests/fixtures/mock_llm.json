@@ -1,0 +1,74 @@
+{
+  "fixture_note": "MOCK ONLY. This is not a real literary analysis and is not evidence of model quality. It exercises the LI-1 contracts; do not treat it as a classical source.",
+  "passes": {
+    "text_analyst": {
+      "pass_name": "text_analyst",
+      "claims": [],
+      "notes": "MOCK: observed two parallel clauses and the character 若; no interpretation approved.",
+      "draft_text": "",
+      "is_mock": true,
+      "coverage": "not_analyzable",
+      "coverage_reason": "MOCK: target analysis unavailable; no claims emitted."
+    },
+    "literary_analyst": {
+      "pass_name": "literary_analyst",
+      "claims": [
+        {
+          "claim_id": "mock_literary_001",
+          "work": "测试短文本",
+          "author": "测试作者",
+          "edition": "测试版本",
+          "source_refs": [
+            "src_test_short"
+          ],
+          "locator": "测试文本/首句/第1句",
+          "quote": "白日依山尽",
+          "source_quote": "白日依山盡",
+          "display_quote": "白日依山尽",
+          "claim_type": "interpretation",
+          "statement": "MOCK: 测试夹具，仅验证合同。",
+          "confidence": "low",
+          "review_status": "unreviewed",
+          "notes": "Mock candidate; requires human review."
+        }
+      ],
+      "notes": "MOCK output; not approved.",
+      "draft_text": "",
+      "is_mock": true
+    },
+    "researcher": {
+      "pass_name": "researcher",
+      "claims": [],
+      "notes": "MOCK: no external research performed; only the registered source is available.",
+      "draft_text": "",
+      "is_mock": true,
+      "research_status": "no_source_found"
+    },
+    "skeptic": {
+      "pass_name": "skeptic",
+      "claims": [],
+      "notes": "MOCK: no historical claims approved; source-free claims must be rejected.",
+      "draft_text": "",
+      "is_mock": true,
+      "skeptic_verdict": "no_material_risk",
+      "reviewed_dimensions": [
+        "原文准确性",
+        "词义分析",
+        "修辞分析",
+        "意象分析",
+        "解释边界",
+        "内容价值"
+      ],
+      "reviewed_claim_ids": [
+        "mock_literary_001"
+      ]
+    },
+    "editor": {
+      "pass_name": "editor",
+      "claims": [],
+      "notes": "MOCK: no approved claim exists, so the export is empty.",
+      "draft_text": "",
+      "is_mock": true
+    }
+  }
+}

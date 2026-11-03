@@ -1,0 +1,210 @@
+{
+  "generated_at": "2026-11-03",
+  "download_date": "2026-11-03",
+  "policy": "Official Adobe GitHub Releases only; CN subset OTF; selected weights only; no system installation; no font modification.",
+  "git": {
+    "tracked": false,
+    "tracked_scope": "font_manifest.json, README.md, LICENSE.txt; OTF binaries are fetched",
+    "otf_in_git": false,
+    "lfs": false,
+    "decision": "OTF binaries (~58 MiB) ignored; metadata/licenses tracked; run scripts/fetch_fonts.py to reconstruct and verify"
+  },
+  "fonts": [
+    {
+      "asset_id": "FONT-SERIF",
+      "family": "Source Han Serif CN",
+      "localized_family": "思源宋体 CN",
+      "repo": "https://github.com/adobe-fonts/source-han-serif",
+      "release": "2.003R",
+      "archive": {
+        "file": "14_SourceHanSerifCN.zip",
+        "size_bytes": 68961106,
+        "sha256": "aa3f9134809de83bb2add0bd965e61421772ce2fd8628fe98516b77c93e1d819",
+        "stored_in": "logs/s3b_download/ (ignored, not committed)",
+        "url": "https://github.com/adobe-fonts/source-han-serif/releases/download/2.003R/14_SourceHanSerifCN.zip"
+      },
+      "selected_weights": [
+        {
+          "weight": "Regular",
+          "file": "assets/fonts/source-han-serif-cn/SourceHanSerifCN-Regular.otf",
+          "size_bytes": 11626108,
+          "sha256": "3754ea669c530e2473354f8f6d9f79680a44d7e26ec7d00eeabee4a7e0753c5d",
+          "postscript_name": "SourceHanSerifCN-Regular",
+          "full_name": "Source Han Serif CN",
+          "weight_class": 400,
+          "num_glyphs": 31058,
+          "cmap_codepoints": 30930,
+          "version": "Version 2.003;hotconv 1.1.1;makeotfexe 2.6.0",
+          "family": "Source Han Serif CN",
+          "subfamily": "Regular"
+        },
+        {
+          "weight": "Medium",
+          "file": "assets/fonts/source-han-serif-cn/SourceHanSerifCN-Medium.otf",
+          "size_bytes": 11734704,
+          "sha256": "f7906890686d17e122980efd2d6097d1caefed76312994baeaf220819e818f3a",
+          "postscript_name": "SourceHanSerifCN-Medium",
+          "full_name": "Source Han Serif CN Medium",
+          "weight_class": 500,
+          "num_glyphs": 31058,
+          "cmap_codepoints": 30930,
+          "version": "Version 2.003;hotconv 1.1.1;makeotfexe 2.6.0",
+          "family": "Source Han Serif CN Medium",
+          "subfamily": "Regular"
+        },
+        {
+          "weight": "Bold",
+          "file": "assets/fonts/source-han-serif-cn/SourceHanSerifCN-Bold.otf",
+          "size_bytes": 12094680,
+          "sha256": "4ee555ae58b3d22f6a95c2c494f2c36b7cccfc1d2224635f6461a03756f0e3c1",
+          "postscript_name": "SourceHanSerifCN-Bold",
+          "full_name": "Source Han Serif CN Bold",
+          "weight_class": 700,
+          "num_glyphs": 31058,
+          "cmap_codepoints": 30930,
+          "version": "Version 2.003;hotconv 1.1.1;makeotfexe 2.6.0",
+          "family": "Source Han Serif CN",
+          "subfamily": "Bold"
+        }
+      ],
+      "license": {
+        "file": "assets/fonts/source-han-serif-cn/LICENSE.txt",
+        "sha256": "9ff5bb567e1b92c801fc1069e5fbf992ff8efccacb9db94e5959a5b3ba9bb903",
+        "name": "SIL Open Font License 1.1",
+        "copyright": "Copyright 2017-2022 Adobe",
+        "terms": {
+          "commercial_use": "permits use, copy, merge, embed, modify, redistribute and sell copies, subject to OFL terms",
+          "video_embedding": "fonts may be embedded/bundled; documents created with the fonts are not restricted by the OFL",
+          "redistribution": "allowed with copyright/license retention; font software may not be sold by itself",
+          "reserved_font_name": "Source",
+          "modification": "not modified; modified versions must not use the Reserved Font Name",
+          "license_retention": "required"
+        }
+      },
+      "coverage": {
+        "corpus_chars": 120,
+        "missing_count": 0,
+        "missing": ""
+      },
+      "status": {
+        "source": "PASS_VERIFIED",
+        "license": "PASS_VERIFIED",
+        "coverage": "PASS_VERIFIED",
+        "typography": "DECISION",
+        "commercial_terms": "PASS_STATIC",
+        "human_review": "PENDING"
+      },
+      "roles": [
+        "古典标题",
+        "诗词正文",
+        "篇章标题"
+      ],
+      "preview_manifest": "experiments/r3d/fonts/preview_manifest.json",
+      "rendering_evidence": "logs/s3b_render/fontselect_serif.log / fontselect_sans.log",
+      "release_url": "https://github.com/adobe-fonts/source-han-serif/releases/tag/2.003R"
+    },
+    {
+      "asset_id": "FONT-SANS",
+      "family": "Source Han Sans CN",
+      "localized_family": "思源黑体 CN",
+      "repo": "https://github.com/adobe-fonts/source-han-sans",
+      "release": "2.005R",
+      "archive": {
+        "file": "19_SourceHanSansCN.zip",
+        "size_bytes": 50700226,
+        "sha256": "3a769d1b082ebd813cdb4c06ea57d29b340bce548edcc8e61976b78ca28e6236",
+        "stored_in": "logs/s3b_download/ (ignored, not committed)",
+        "url": "https://github.com/adobe-fonts/source-han-sans/releases/download/2.005R/19_SourceHanSansCN.zip"
+      },
+      "selected_weights": [
+        {
+          "weight": "Regular",
+          "file": "assets/fonts/source-han-sans-cn/SourceHanSansCN-Regular.otf",
+          "size_bytes": 8429224,
+          "sha256": "e2bc8a2e7f37474b774fff8db758681ece40bb6947a90d571bce9dd60671a8e4",
+          "postscript_name": "SourceHanSansCN-Regular",
+          "full_name": "Source Han Sans CN",
+          "weight_class": 400,
+          "num_glyphs": 31072,
+          "cmap_codepoints": 30926,
+          "version": "Version 2.005;addfeatures 5.0.0b21",
+          "family": "Source Han Sans CN",
+          "subfamily": "Regular"
+        },
+        {
+          "weight": "Medium",
+          "file": "assets/fonts/source-han-sans-cn/SourceHanSansCN-Medium.otf",
+          "size_bytes": 8406556,
+          "sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
+          "postscript_name": "SourceHanSansCN-Medium",
+          "full_name": "Source Han Sans CN Medium",
+          "weight_class": 500,
+          "num_glyphs": 31072,
+          "cmap_codepoints": 30926,
+          "version": "Version 2.005;addfeatures 5.0.0b21",
+          "family": "Source Han Sans CN Medium",
+          "subfamily": "Regular"
+        },
+        {
+          "weight": "Bold",
+          "file": "assets/fonts/source-han-sans-cn/SourceHanSansCN-Bold.otf",
+          "size_bytes": 8569308,
+          "sha256": "62383707c086a32f3afd5e293f34c7eff64c7fea31f579fdc6cbe34d920519a6",
+          "postscript_name": "SourceHanSansCN-Bold",
+          "full_name": "Source Han Sans CN Bold",
+          "weight_class": 700,
+          "num_glyphs": 31072,
+          "cmap_codepoints": 30926,
+          "version": "Version 2.005;addfeatures 5.0.0b21",
+          "family": "Source Han Sans CN",
+          "subfamily": "Bold"
+        }
+      ],
+      "license": {
+        "file": "assets/fonts/source-han-sans-cn/LICENSE.txt",
+        "sha256": "fcac737e761ec63dbfbdce11030a1780161920d80315edba9c8beff1c2bac5a2",
+        "name": "SIL Open Font License 1.1",
+        "copyright": "Copyright 2014-2025 Adobe",
+        "terms": {
+          "commercial_use": "permits use, copy, merge, embed, modify, redistribute and sell copies, subject to OFL terms",
+          "video_embedding": "fonts may be embedded/bundled; documents created with the fonts are not restricted by the OFL",
+          "redistribution": "allowed with copyright/license retention; font software may not be sold by itself",
+          "reserved_font_name": "Source",
+          "modification": "not modified; modified versions must not use the Reserved Font Name",
+          "license_retention": "required"
+        }
+      },
+      "coverage": {
+        "corpus_chars": 120,
+        "missing_count": 0,
+        "missing": ""
+      },
+      "status": {
+        "source": "PASS_VERIFIED",
+        "license": "PASS_VERIFIED",
+        "coverage": "PASS_VERIFIED",
+        "typography": "DECISION",
+        "commercial_terms": "PASS_STATIC",
+        "human_review": "PENDING"
+      },
+      "roles": [
+        "现代解说",
+        "字幕",
+        "信息文字"
+      ],
+      "preview_manifest": "experiments/r3d/fonts/preview_manifest.json",
+      "rendering_evidence": "logs/s3b_render/fontselect_serif.log / fontselect_sans.log",
+      "release_url": "https://github.com/adobe-fonts/source-han-sans/releases/tag/2.005R"
+    }
+  ],
+  "distribution": {
+    "selected_otf_bytes": 60860580,
+    "selected_otf_mib": 58.04,
+    "recommended": "ordinary Git; include selected OTF + LICENSE.txt + font_manifest.json + README.md",
+    "git_lfs": false,
+    "exclude_from_git": [
+      "CN source archives under logs/s3b_download/"
+    ],
+    "note": "Revisit LFS only if font assets grow beyond roughly 200-300 MiB or the remote imposes binary limits."
+  }
+}

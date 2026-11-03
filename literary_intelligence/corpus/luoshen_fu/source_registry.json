@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "source_id": "src_luoshen_wikisource_7908816",
+      "work": "洛神賦",
+      "author": "曹植",
+      "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+      "source_name": "Wikisource 洛神賦 (revision 7908816)",
+      "url": "https://zh.wikisource.org/wiki/%E6%B4%9B%E7%A5%9E%E8%B3%A6?oldid=7908816",
+      "retrieved_at": "2026-11-03T00:00:00Z",
+      "revision_id": 7908816,
+      "revision_timestamp": "2026-07-19T06:57:00Z",
+      "revision_sha1": "26cc101877ebf3cee588f99e27e9e2b285b64797",
+      "license": "Public domain (ancient work); Wikisource page transcription CC BY-SA 4.0/GFDL",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "commercial_use": "TEXT_PUBLIC_DOMAIN; transcription attribution/share-alike may apply",
+      "scope": "target paragraph plus adjacent context; raw and normalized text retained",
+      "locator": "洛神賦/其形也/第2句",
+      "original_text_path": "original_text.txt",
+      "normalized_text_path": "normalized_text.txt",
+      "segments_path": "segments.json",
+      "normalization_map_path": "normalization_map.json",
+      "content_sha256": "8fb619b827fdaad790fd994594ed6fe3a8daf616659369cf28df6234ade9b8d7",
+      "normalized_sha256": "cf6c093f9b2d96fa29955929e1220b9b5ebb66b334de39f6d06d8602f438da12",
+      "status": "PARTIAL",
+      "notes": "Ancient text is public domain. Wikisource transcription is CC BY-SA 4.0/GFDL; modern annotations/translations are not used. Attribution/share-alike may apply to the transcription.",
+      "content_license": "Public domain (ancient work)",
+      "transcription_license": "CC BY-SA 4.0 / GFDL (Wikisource page transcription)"
+    }
+  ]
+}

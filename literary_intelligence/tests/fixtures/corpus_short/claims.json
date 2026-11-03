@@ -1,0 +1,20 @@
+[
+  {
+    "claim_id": "short_original_001",
+    "work": "测试短文本",
+    "author": "测试作者",
+    "edition": "测试版本",
+    "source_refs": [
+      "src_test_short"
+    ],
+    "locator": "测试文本/首句/第1句",
+    "quote": "白日依山尽",
+    "source_quote": "白日依山盡",
+    "display_quote": "白日依山尽",
+    "claim_type": "original_text",
+    "statement": "测试夹具：目标句原文。",
+    "confidence": "high",
+    "review_status": "unreviewed",
+    "notes": "fixture only"
+  }
+]

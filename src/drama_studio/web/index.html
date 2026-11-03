@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Drama Studio — Production Workspace</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LD</div>
+        <div class="brand-text">
+          <strong>Local Drama Studio</strong>
+          <span>Production Workspace</span>
+        </div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="sidebar-foot">
+        <div class="env-mini" id="env-mini"><span class="dot dot-unknown"></span><span>环境检测中…</span></div>
+        <div class="muted small">本地单用户 · 只读派生</div>
+      </div>
+    </aside>
+
+    <div class="shell">
+      <header class="topbar">
+        <div class="crumbs" id="crumbs"></div>
+        <div class="topbar-actions">
+          <div class="env-pills" id="env-pills"></div>
+          <button class="btn btn-ghost" id="refresh-btn" title="刷新当前页面">刷新</button>
+        </div>
+      </header>
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root" aria-live="polite"></div>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[
+  {
+    "segment_id": "luoshen_ctx_001",
+    "locator": "洛神賦/其形也/第1句",
+    "raw_text": "其形也",
+    "normalized_text": "其形也"
+  },
+  {
+    "segment_id": "luoshen_ctx_002",
+    "locator": "洛神賦/其形也/第2句",
+    "raw_text": "翩若驚鴻　婉若游龍",
+    "normalized_text": "翩若惊鸿　婉若游龙"
+  },
+  {
+    "segment_id": "luoshen_ctx_003",
+    "locator": "洛神賦/其形也/第3句",
+    "raw_text": "榮曜秋菊　華茂春松",
+    "normalized_text": "荣曜秋菊　华茂春松"
+  },
+  {
+    "segment_id": "luoshen_ctx_004",
+    "locator": "洛神賦/其形也/第4句",
+    "raw_text": "髣髴兮若輕雲之蔽月　飄颻兮若流風之迴雪",
+    "normalized_text": "仿佛兮若轻云之蔽月　飘飖兮若流风之回雪"
+  },
+  {
+    "segment_id": "luoshen_ctx_005",
+    "locator": "洛神賦/其形也/第5句",
+    "raw_text": "遠而望之　皎若太陽升朝霞",
+    "normalized_text": "远而望之　皎若太阳升朝霞"
+  },
+  {
+    "segment_id": "luoshen_ctx_006",
+    "locator": "洛神賦/其形也/第6句",
+    "raw_text": "迫而察之　灼若芙蕖出淥波",
+    "normalized_text": "迫而察之　灼若芙蕖出渌波"
+  }
+]

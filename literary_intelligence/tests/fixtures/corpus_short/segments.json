@@ -1,0 +1,14 @@
+[
+  {
+    "segment_id": "short_001",
+    "locator": "测试文本/首句/第1句",
+    "raw_text": "白日依山盡",
+    "normalized_text": "白日依山尽"
+  },
+  {
+    "segment_id": "short_002",
+    "locator": "测试文本/首句/第2句",
+    "raw_text": "長風過野原",
+    "normalized_text": "长风过野原"
+  }
+]

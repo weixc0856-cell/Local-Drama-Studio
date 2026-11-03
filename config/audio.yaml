@@ -1,0 +1,20 @@
+tts:
+  mode: sft                 # must match CosyVoice startup script
+  sample_rate: 48000        # resample all tracks to 48 kHz for FFmpeg
+  speakers:                 # voice_id -> CosyVoice SFT preset speaker
+    male_01: "中文男"
+    male_02: "中文男"
+    female_01: "中文女"
+    narrator: "中文男"
+  reference_voices_dir: "projects/{project}/assets/voices"
+
+subtitles:
+  format: "srt"
+  max_chars_per_line: 18
+  max_lines: 2
+  burn_in: false            # R6 default: soft subtitles; burn-in is an option
+
+loudness:
+  dialogue_lufs: -16.0
+  bgm_lufs: -26.0
+  true_peak_db: -1.5

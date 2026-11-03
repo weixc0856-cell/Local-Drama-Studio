@@ -1,0 +1,47 @@
+# Font roles and local font resources.
+# Paths are resolved against the project root. Font files are never installed
+# into the Windows font store; they are loaded explicitly by FFmpeg/libass.
+manifest: assets/fonts/font_manifest.json
+
+fonts:
+  serif:
+    asset_id: FONT-SERIF
+  sans:
+    asset_id: FONT-SANS
+
+roles:
+  classical_title:
+    font: serif
+    weights: [bold, medium]
+    default_weight: bold
+    size_px: 150
+    size_range_px: [120, 170]
+    integration: preview_only
+
+  poetry_body:
+    font: serif
+    weights: [regular, medium]
+    default_weight: medium
+    size_px: 64
+    size_range_px: [64, 76]
+    line_gap_px: 130
+    integration: preview_only
+
+  modern_narration:
+    font: sans
+    weights: [regular, medium]
+    default_weight: medium
+    size_px: 56
+    size_range_px: [50, 56]
+    integration: preview_only
+
+  subtitle:
+    font: sans
+    weights: [regular, medium]
+    default_weight: regular
+    size_px: 56
+    size_range_px: [52, 56]
+    margin_bottom_px: 180
+    outline_px: 3
+    backplate_allowed: true
+    integration: formal_build

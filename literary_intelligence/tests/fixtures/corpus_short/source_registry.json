@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {
+      "source_id": "src_test_short",
+      "work": "测试短文本",
+      "author": "测试作者",
+      "edition": "测试版本",
+      "source_name": "test fixture (not a real edition)",
+      "url": "https://example.invalid/test-fixture",
+      "retrieved_at": "2026-11-03T00:00:00Z",
+      "license": "test fixture only",
+      "commercial_use": "not applicable",
+      "scope": "two-line replaceable test fixture",
+      "locator": "测试文本/首句/第1句",
+      "original_text_path": "original_text.txt",
+      "normalized_text_path": "normalized_text.txt",
+      "segments_path": "segments.json",
+      "normalization_map_path": "normalization_map.json",
+      "content_sha256": "c70ec03b923b51b721fbc2cb9141fc518bce3c585bfa15829e58c56a114d9c51",
+      "normalized_sha256": "77579669ff4541e04c6f8cd5e9601980bfec896a3d4b0e09edf9ed3a0f030d08",
+      "status": "PASS_STATIC",
+      "notes": "Replaceable short-text fixture; not production content."
+    }
+  ]
+}

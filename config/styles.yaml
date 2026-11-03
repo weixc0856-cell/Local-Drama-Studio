@@ -1,0 +1,140 @@
+# config/styles.yaml — 双核心东方美学风格预设（S1）
+#
+# 本文件是产品两种核心视觉风格的唯一配置来源。作品通过 style id 选择风格，
+# 通用代码里不得出现 `if style == ...` 的分支。本文件不写任何作品名、诗词
+# 句子或示例画面内容。
+#
+# 字段边界：
+#   - 现有生成链路只消费 visual_language 与 positive_prompt
+#     （src/drama_studio/script_engine.py:compose_visual_prompt）。因此这两个
+#     字段必须自包含材质、线条与细节描述，保证不改代码即可进入生成。
+#   - material / line / detail 是结构化审计字段，供规范核对与后续参数化；
+#     它们不会单独拼接进提示词。
+#   - motion / compositing 供 S2 动画与合成验证使用；当前生产链路尚未消费。
+#   - 与 workspace `styles` 实体共有的字段见 style_presets.STYLE_ENTITY_FIELDS；
+#     配置层独有字段不写入 SQLite，也不自动导入工作台。
+#
+# 验证状态使用 PRD §0.2 词典：两种风格目前均无生成/动画样片，故为 NOT_RUN。
+
+schema_version: "1.0"
+
+styles:
+  court_green_fine_line:
+    id: court_green_fine_line
+    name: 宋代院体青绿工笔
+    name_en: Song Court Blue-Green Fine-Line
+    description: 绢本设色、结构清晰的宋代院体青绿工笔；以长卷横移与缓慢推近让静态画卷产生生命感。
+    validation_status: NOT_RUN
+
+    visual_language: 宋代院体青绿工笔；绢本设色，细密绢纹与矿物颜料层；石青石绿为主，赭石泥金点缀；游丝描与铁线描勾勒，结构清晰、层次分明、留白克制；非照片写实
+    color_palette:
+      绢底: "#E3D6BE"
+      石青: "#2E5E75"
+      石绿: "#4E7A5E"
+      赭石: "#8C5A3B"
+      泥金: "#B8933E"
+      墨线: "#1B1A17"
+      绢白: "#EFE7D6"
+    lighting: 均匀柔和的自然光；晨昏低角度暖光；阴影保留层次，不得发白光或整体过曝
+    camera_language: 固定机位、长卷横移、缓慢推近；横移速度稳定；禁止快速摇镜与手持晃动
+    composition: 院体秩序，近景—中景—远景三层分明；地平线不居中；留白克制；9:16 竖屏主体居中偏上，字幕安全区不压主体
+    character_design: 人物以远景或中景出现，比例准确，衣纹线条清晰；v1 不承诺跨镜头正脸一致
+    environment_design: 山石、树木、建筑、水面结构明确；同一空间内山形与建筑方位稳定，不换岸、不跳变
+    positive_prompt: 宋代院体青绿工笔风格，绢本设色，细密绢纹与矿物颜料层；石青石绿为主，赭石泥金点缀；游丝描与铁线描勾勒的建筑、树木、山石与花鸟结构清晰；远近层次分明，留白克制；克制而精致，不是照片写实
+    negative_prompt: 现代建筑，电线，霓虹灯，高饱和青橙调色，塑料质感，CG 发光粒子，过度磨皮，照片写实，文字，水印，字幕，低清晰度，结构崩坏，多余肢体
+
+    reference_assets: []
+    aspect_ratio: "9:16"
+    applicable_content_types: [山水, 长卷, 建筑, 花鸟, 空镜]
+    source_files: [docs/VISUAL_STYLE_SPEC.md]
+
+    material:
+      kind: silk
+      prompt: 绢本设色，细密绢纹，矿物颜料层，轻微历史沉淀感
+    line:
+      style: fine_line
+      prompt: 游丝描与铁线描，细密、克制、清晰的轮廓
+    detail:
+      level: high
+      prompt: 建筑、树木、山石、人物与花鸟结构明确，细节可辨
+
+    motion:
+      primary: [scroll_pan, slow_push_in]
+      local: [clouds, water, birds, foliage]
+      wan:
+        allowed: true
+        usage: local_supplement
+        note: 只用于云雾、水面、飞鸟等局部动态；不承担人物动作或主体位移
+      forbidden: [fast_pan, handheld_shake, subject_displacement]
+
+    compositing:
+      primitives: [paper_texture, scroll_pan, line_reveal, local_motion]
+      texture:
+        kind: silk
+        asset: null
+        opacity: 0.12
+        note: 纹理只做低强度叠加，不得压过主体线条与细节
+      parallax:
+        allowed: false
+        requires: 可靠的图层分层或深度图；单张图片平移不算 2.5D 视差
+      note: 线描显现必须与底图对齐，不得出现 PPT 式叠加，也不宣传为真实绘画过程模拟
+
+  ink_wash:
+    id: ink_wash
+    name: 东方写意水墨
+    name_en: Oriental Ink Wash Painting
+    description: 生宣纸本、墨分五色、以留白与渗染构图的东方写意水墨；运动来自墨迹、雾气、水面与局部微动。
+    validation_status: NOT_RUN
+
+    visual_language: 东方写意水墨；生宣纸本，墨分五色，浓淡干湿自然渗化；大面积留白，笔触概括，局部虚化；以墨黑灰为主，少量赭石与淡花青点缀；画面气韵流动，不是给普通图片加黑白滤镜
+    color_palette:
+      生宣: "#EDE4D3"
+      焦墨: "#141414"
+      浓墨: "#3D3A36"
+      中墨: "#7A756D"
+      淡墨: "#C2BDB2"
+      赭石: "#9A6B4F"
+      淡花青: "#6C7F86"
+    lighting: 以墨色浓淡与留白表现光线，不依赖强对比布光；雾气与水面有空气感，避免夜景式硬光
+    camera_language: 近乎静帧的缓慢横移或轻微推近；主要运动由墨迹渗染、雾气、水面与飞鸟完成
+    composition: 留白即构图，虚实相生；主体不超过画面一半；9:16 竖屏上方保留气口，字幕安全区不压主体
+    character_design: 人物概括、虚化或剪影；不追求面部细节，不承诺跨镜头一致
+    environment_design: 山、水、云、树以墨色层次区分；空间关系依靠叠墨与留白，不依靠硬透视
+    positive_prompt: 东方写意水墨风格，生宣纸本，墨分五色，浓淡干湿自然渗化；大面积留白，笔触概括，局部虚化；以墨黑灰为主，少量赭石与淡花青；画面气韵流动，不是黑白滤镜
+    negative_prompt: 黑白滤镜，硬边缘阈值，矢量插画，照片写实，高饱和，现代建筑，文字，水印，字幕，CG 发光，结构崩坏，多余肢体
+
+    reference_assets: []
+    aspect_ratio: "9:16"
+    applicable_content_types: [山水, 云雾, 水面, 花鸟, 空镜]
+    source_files: [docs/VISUAL_STYLE_SPEC.md]
+
+    material:
+      kind: raw_paper
+      prompt: 生宣纸本，纸纹可见，墨迹在纤维上自然洇开
+    line:
+      style: freehand
+      prompt: 笔触概括，虚实相生，局部边缘消失在留白中
+    detail:
+      level: moderate
+      prompt: 允许局部虚化、概括与抽象；不追求所有物体边缘清晰
+
+    motion:
+      primary: [static, slow_lateral_track, ink_diffusion]
+      local: [ink_diffusion, mist, water, birds, clouds]
+      wan:
+        allowed: true
+        usage: limited
+        note: 只在云雾、水面、飞鸟确实改善画面时使用；不用于主体位移或连续人物动作
+      forbidden: [fast_pan, handheld_shake, subject_displacement]
+
+    compositing:
+      primitives: [ink_matte, ink_diffusion, paper_texture, local_motion]
+      texture:
+        kind: raw_paper
+        asset: null
+        opacity: 0.14
+        note: 纹理强度克制，不得影响墨色层次与主体可读性
+      parallax:
+        allowed: false
+        requires: 可靠的图层分层或深度图；单张图片平移不算 2.5D 视差
+      note: 遮罩必须边缘柔化、渐进变化；禁止简单阈值造成硬边缘

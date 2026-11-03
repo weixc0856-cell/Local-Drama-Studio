@@ -1,0 +1,128 @@
+from __future__ import annotations
+
+import io
+import json
+import wave
+from pathlib import Path
+
+import httpx
+import pytest
+
+from drama_studio.voice.tts import TTSError, synthesize_narration
+
+
+def _wav_bytes(seconds: float = 0.2, rate: int = 22050) -> bytes:
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as fh:
+        fh.setnchannels(1)
+        fh.setsampwidth(2)
+        fh.setframerate(rate)
+        fh.writeframes(b"\x00\x00" * int(rate * seconds))
+    return buffer.getvalue()
+
+
+def _root(tmp_path: Path) -> Path:
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "settings.yaml").write_text(
+        'paths: {}\ntts:\n  base_url: "http://tts.test"\n  sample_rate: 48000\n',
+        encoding="utf-8",
+    )
+    (tmp_path / "config" / "audio.yaml").write_text(
+        'tts:\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+    )
+    return tmp_path
+
+
+def _transport(calls: dict[str, int]) -> httpx.MockTransport:
+    wav = _wav_bytes()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/health":
+            calls["health"] = calls.get("health", 0) + 1
+            return httpx.Response(200, json={"status": "ready"})
+        if request.url.path == "/tts":
+            calls["tts"] = calls.get("tts", 0) + 1
+            return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
+        return httpx.Response(404)
+
+    return httpx.MockTransport(handler)
+
+
+def _narration(root: Path, lines: list[str]) -> Path:
+    path = root / "episode" / "narration.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({"speaker": "测试音色", "speed": 1.0, "lines": lines}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_synthesize_writes_48k_manifest_and_reuses(tmp_path: Path) -> None:
+    root = _root(tmp_path)
+    narration = _narration(root, ["白日依山尽", "长风过野原"])
+    calls: dict[str, int] = {}
+    client = httpx.Client(transport=_transport(calls), base_url="http://tts.test")
+
+    result = synthesize_narration(
+        narration,
+        root / "episode" / "audio",
+        root / "episode" / "audio_manifest.json",
+        root=root,
+        http_client=client,
+    )
+    assert result.line_count == 2
+    assert result.reused is False
+    assert calls["tts"] == 2
+    manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
+    assert manifest["speaker"] == "测试音色"
+    assert manifest["narration_sha256"]
+    for line in manifest["lines"]:
+        assert line["file"].startswith("episode/audio/")
+        with wave.open(str(root / line["file"]), "rb") as fh:
+            assert fh.getframerate() == 48000
+            assert fh.getnchannels() == 1
+
+    again = synthesize_narration(
+        narration,
+        root / "episode" / "audio",
+        root / "episode" / "audio_manifest.json",
+        root=root,
+        http_client=client,
+    )
+    assert again.reused is True
+    assert calls["tts"] == 2
+
+    forced = synthesize_narration(
+        narration,
+        root / "episode" / "audio",
+        root / "episode" / "audio_manifest.json",
+        root=root,
+        http_client=client,
+        force=True,
+    )
+    assert forced.reused is False
+    assert calls["tts"] == 4
+
+
+def test_changed_narration_resynthesizes(tmp_path: Path) -> None:
+    root = _root(tmp_path)
+    narration = _narration(root, ["白日依山尽"])
+    calls: dict[str, int] = {}
+    client = httpx.Client(transport=_transport(calls), base_url="http://tts.test")
+    synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+    _narration(root, ["长风过野原"])
+    result = synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+    assert result.reused is False
+    assert calls["tts"] == 2
+
+
+def test_unready_service_fails(tmp_path: Path) -> None:
+    root = _root(tmp_path)
+    narration = _narration(root, ["白日依山尽"])
+    client = httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"status": "loading"})),
+        base_url="http://tts.test",
+    )
+    with pytest.raises(TTSError, match="未就绪"):
+        synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)

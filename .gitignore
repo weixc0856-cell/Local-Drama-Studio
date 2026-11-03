@@ -1,0 +1,61 @@
+# ============================================================
+# Repository boundary
+# Tracked: development workflow (code, config, docs, tests,
+# scripts, workflows, font manifest/licenses).
+# Local only: generated evidence, real project cases, media,
+# models, runtime engines, logs, font binaries.
+# ============================================================
+
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Runtime engines and generated runtime files
+runtime/ComfyUI/
+runtime/*.7z
+runtime/*.zip
+
+# Models never enter this repo (canonical store: D:\AI\models)
+models/
+*.gguf
+*.safetensors
+*.ckpt
+*.pth
+
+# Generated evidence / experiments stay local
+experiments/
+
+# Real project cases stay local; keep only the placeholder
+projects/*
+!projects/.gitkeep
+
+# Generated visual assets and reference material stay local
+assets/keyframes/
+assets/vertical/
+assets/visual_style/
+
+# Large generated media anywhere in the workflow
+*.mp4
+*.mov
+*.wav
+
+# Font binaries are fetched by scripts/fetch_fonts.py; manifest/README/LICENSE are tracked
+assets/fonts/**/*.otf
+assets/fonts/**/*.zip
+
+# Logs and local reports
+logs/
+docs/local/
+*.log
+*.pid
+
+# Local literary-intelligence run artifacts
+literary_intelligence/runs/
+
+# OS
+Thumbs.db
+desktop.ini
