@@ -1,0 +1,37 @@
+{
+  "run_dir": "D:\\Local-Drama-Studio\\experiments\\r2b\\runs\\H2",
+  "frame_count": 73,
+  "frame_numbers_contiguous": true,
+  "frame_first": 1,
+  "fps": 24.0,
+  "duration_seconds": 3.042,
+  "clip": "D:\\Local-Drama-Studio\\experiments\\r2b\\runs\\H2\\clip.mp4",
+  "clip_sha256": "4c720c7fd2b41bf9de85c4e9672d3e76e4edc450b83412a5bf9fcc822d557d42",
+  "encode_returncode": 0,
+  "encode_stderr": "",
+  "decode_returncode": 0,
+  "decode_stderr": "",
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1024,
+        "height": 576,
+        "r_frame_rate": "24/1",
+        "duration": "3.041667",
+        "nb_frames": "73"
+      }
+    ]
+  },
+  "mean_consecutive_diff": 0.84,
+  "std_consecutive_diff": 0.292,
+  "max_consecutive_diff": 1.857,
+  "flicker_spike_threshold": 1.717,
+  "flicker_spikes": 1,
+  "brightness_mean": 120.22,
+  "brightness_min": 118.73333333333333,
+  "brightness_max": 121.08999999999999,
+  "black_frames_below_5": 0,
+  "first_last_diff": 16.615
+}

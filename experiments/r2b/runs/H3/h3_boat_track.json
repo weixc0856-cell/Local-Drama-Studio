@@ -1,0 +1,101 @@
+{
+  "run_dir": "D:\\Local-Drama-Studio\\experiments\\r2b\\runs\\H3",
+  "frame_count": 73,
+  "roi_fraction": [
+    0.32,
+    0.45,
+    0.68,
+    0.72
+  ],
+  "threshold": 45,
+  "samples": [
+    {
+      "found": true,
+      "threshold": 45,
+      "area_sample_px": 398,
+      "bbox_sample": [
+        103,
+        28,
+        141,
+        57
+      ],
+      "centroid_frame_px": [
+        500.9,
+        323.6
+      ],
+      "roi_frame_px": [
+        327,
+        259,
+        696,
+        414
+      ],
+      "frame_size": [
+        1024,
+        576
+      ],
+      "frame_index": 1,
+      "file": "H3_KF3_00001_.png"
+    },
+    {
+      "found": true,
+      "threshold": 45,
+      "area_sample_px": 561,
+      "bbox_sample": [
+        108,
+        29,
+        151,
+        64
+      ],
+      "centroid_frame_px": [
+        513.7,
+        327.8
+      ],
+      "roi_frame_px": [
+        327,
+        259,
+        696,
+        414
+      ],
+      "frame_size": [
+        1024,
+        576
+      ],
+      "frame_index": 37,
+      "file": "H3_KF3_00037_.png"
+    },
+    {
+      "found": true,
+      "threshold": 45,
+      "area_sample_px": 859,
+      "bbox_sample": [
+        110,
+        33,
+        159,
+        67
+      ],
+      "centroid_frame_px": [
+        524.0,
+        332.2
+      ],
+      "roi_frame_px": [
+        327,
+        259,
+        696,
+        414
+      ],
+      "frame_size": [
+        1024,
+        576
+      ],
+      "frame_index": 73,
+      "file": "H3_KF3_00073_.png"
+    }
+  ],
+  "boat_displacement_first_to_last": {
+    "dx_px": 23.1,
+    "dy_px": 8.6,
+    "magnitude_px": 24.6
+  },
+  "background_patch_mean_abs_diff_first_vs_last": 2.717,
+  "note": "Heuristic dark-blob tracking. Confirm with human review; background diff is descriptive."
+}

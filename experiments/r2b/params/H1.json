@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Camera makes a very slow push-in. The river surface ripples and the silver moonlight path shimmers; thin mist drifts slowly from left to right; the reeds at the near bank stay fixed; the distant mountains and the moon hold their position. Calm natural motion, stable geometry, no flicker, no morphing, no color shift.",
+  "negative_prompt": "flicker, strobing, morphing, warping, distorted geometry, extra moon, text, watermark, modern objects, camera shake",
+  "input_image": "r2b_h1.png",
+  "seed": 3101,
+  "width": 1024,
+  "height": 576,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2b/H1_KF1"
+}

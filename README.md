@@ -37,8 +37,8 @@
 | R1-D 关键帧 | ✅ `PASS_VERIFIED`（保留 KF4 光源歧义） |
 | R1-E 批处理/续跑/恢复 | ✅ `PASS_VERIFIED` |
 | R2-A 1024×576 边界测试 | ✅ 73 帧 `PASS_VERIFIED`；121 帧 `PASS_LIMITED`（A4 漂色） |
-| R2-B 实际镜头 | ⛔ 未执行 |
-| R3-R7 | ⛔ 未执行 |
+| R2-B 英雄镜头 | ✅ 4/4 技术成功；H2 `PASS_VERIFIED`，H1/H3/H4 `PASS_LIMITED` |
+| R3-R7 | ⛔ 按约束停在 R2-B |
 
 ```powershell
 # 任何时候查看真实状态（不会猜测，未执行即 NOT_RUN）
@@ -59,7 +59,15 @@ scripts\doctor.ps1
 - **默认 73 帧**；121 帧的 A4 花林出现肉眼可见的绿色漂移。
 - 动作幅度普遍偏小；“孤舟漂移”几乎没有位移。
 - 全 Wan 的 90 秒片约 20 小时；4-6 个 Wan 镜头 + 静帧推拉的混合方案约 4-5 小时。
-- 停在 R2-A，未进入 R2-B。
+- R2-B 随后执行（见下一节）；R2-B 后停在 R3 之前。
+
+### R2-B 结论摘要
+
+- 4 个英雄镜头全部生成，总耗时 2.62 小时，峰值 ≤5.66 GiB。
+- H2 花林推近可直接使用。
+- H3 孤舟有 24.6 px 主体位移，但方向向右下（靠近镜头），不是向远山；不能用于“远去”叙事。
+- H1/H4 可作为近静态空镜，但推近/暖光变化未实现。
+- 结论：Wan 适合“缓慢推近”类英雄镜头；精确主体位移需后期或改镜头设计。
 
 ### R0 结论摘要
 
@@ -181,4 +189,6 @@ drama resume <project>       # 断点续跑                      [R7]
 | [docs/R1_TEST_REPORT.md](docs/R1_TEST_REPORT.md) | R1 实际结果、对比与限制 |
 | [docs/R2_TEST_PLAN.md](docs/R2_TEST_PLAN.md) | R2-A/R2-B 计划 |
 | [docs/R2_TEST_REPORT.md](docs/R2_TEST_REPORT.md) | R2-A 实测结果与生产预算 |
+| [docs/R2B_TEST_PLAN.md](docs/R2B_TEST_PLAN.md) | 4 个英雄镜头设计与验收口径 |
+| [docs/R2B_TEST_REPORT.md](docs/R2B_TEST_REPORT.md) | R2-B 逐镜头结果与 H3 位移分析 |
 | [docs/CONTENT_PACKS.md](docs/CONTENT_PACKS.md) | 通用主题包与共享层边界 |

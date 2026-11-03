@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Camera is almost static. Morning mist drifts slowly across the river; the water surface ripples gently; the warm dawn light gradually brightens; the low moon, the bank, the reeds and the distant mountains remain fixed. Slow natural change, stable geometry, no flicker, no morphing, no color shift.",
+  "negative_prompt": "flicker, strobing, morphing, warping, distorted geometry, extra moon, text, watermark, modern objects, camera movement, zoom, pan, dolly, moving background",
+  "input_image": "r2b_h4.png",
+  "seed": 3401,
+  "width": 1024,
+  "height": 576,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2b/H4_KF4"
+}

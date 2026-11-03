@@ -8,7 +8,7 @@ Local AI short-drama production lab: script → storyboard → character/scene a
 
 ComfyUI is **only** the generation engine. Python (`src/drama_studio`) owns business state, scheduling, retries and quality gates. FFmpeg owns composition. The local LLM (`D:\AI`) and CosyVoice (`D:\AI\CosyVoice-Runtime`) are external HTTP services.
 
-**Current state: R0, R1, and R2-A complete and verified. R2-B and R3-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
+**Current state: R0, R1, R2-A, and R2-B complete and verified. R3-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
 
 ## Hard environment invariants
 
@@ -50,6 +50,10 @@ scripts\stop.ps1           # kills the ComfyUI process tree (venv launcher -> re
 .venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r1\jobs.json
 .venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r1\jobs.json --only J1 --force
 .venv\Scripts\python.exe scripts\r1_compare.py
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r2\jobs_r2a.json --timeout 7200
+.venv\Scripts\python.exe scripts\r2_analyze_frames.py --run-dir experiments\r2\runs\A1
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs experiments\r2b\jobs_r2b.json --timeout 7200
+.venv\Scripts\python.exe scripts\r2b_track_boat.py --run-dir experiments\r2b\runs\H3
 ```
 
 PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will garble Chinese text.
@@ -64,6 +68,7 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `docs/R1_TEST_REPORT.md` — R1 assets, reference-edit results, consistency limits, and the /32 constraint for Wan.
 - `docs/R2_TEST_REPORT.md` — R2-A measured cost/quality; 73 frames is the default, 121 has color drift.
 - `docs/CONTENT_PACKS.md` — shared layer vs per-theme content pack; do not hardcode one poem in code.
+- `docs/R2B_TEST_REPORT.md` — four hero shots; H2 is usable, H3 subject motion direction was wrong.
 
 Planned modules (not implemented; do not assume they exist): `state.py`, `comfy_client.py`, `generation/`, `script_engine/`, `storyboard/`, `character_manager/`, `audio/`, `subtitles/`, `editing/`, `quality/`, `storage/`, `orchestrator.py`.
 
@@ -92,3 +97,4 @@ Project state model when implemented: per-project `state.db` is authoritative; `
 - **Wan video resolution must be divisible by 32.** Keyframes are 768×432 (432/32=13.5), so R2 uses 1024×576 (16:9) before I2V.
 - **R2-A measured:** 1024×576 / 73 frames ≈ 40-43 min per 3 s shot; 121 frames ≈ 66-69 min per 5 s shot; peak VRAM ≤6.12 GiB. Default to 73 frames. A4 (flower, 121 frames) showed a visible green color drift; always check first/last frames.
 - **Production shape:** don't run Wan on every shot. Budget 4-6 Wan hero shots per 90 s, with stills + slow pan/zoom for the rest (~4-5 h vs ~20 h all-Wan).
+- **R2-B measured:** 4 hero shots 32.6-46.4 min each, peak 5.50-5.66 GiB. Slow push-in (H2) works. Precise subject displacement (H3 boat) is unreliable: 24.6 px but toward the camera, not away. Do not rely on Wan for scripted subject movement; use compositing or change the shot.

@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Camera is completely static on a tripod, no zoom, no pan. The small wooden boat rows away from the camera toward the distant mountains, moving steadily from the center of the river toward the upper-right, becoming slightly smaller and leaving a subtle wake. The moon, mountains, reeds and waterline remain fixed. No camera movement, stable geometry, no flicker, no morphing, no color shift.",
+  "negative_prompt": "flicker, strobing, morphing, warping, distorted geometry, extra moon, text, watermark, modern objects, camera movement, zoom, pan, dolly, moving background, extra boats",
+  "input_image": "r2b_h3.png",
+  "seed": 3301,
+  "width": 1024,
+  "height": 576,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r2b/H3_KF3"
+}

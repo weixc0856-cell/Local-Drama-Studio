@@ -1,0 +1,46 @@
+[
+  {
+    "id": "H1",
+    "keyframe": "KF1",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2b/params/H1.json",
+    "out": "experiments/r2b/runs/H1",
+    "reference": {
+      "source": "assets/keyframes/kf01_river_first_moon.png",
+      "input_name": "r2b_h1.png"
+    }
+  },
+  {
+    "id": "H2",
+    "keyframe": "KF2",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2b/params/H2.json",
+    "out": "experiments/r2b/runs/H2",
+    "reference": {
+      "source": "assets/keyframes/kf02_flower_forest_moon.png",
+      "input_name": "r2b_h2.png"
+    }
+  },
+  {
+    "id": "H3",
+    "keyframe": "KF3",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2b/params/H3.json",
+    "out": "experiments/r2b/runs/H3",
+    "reference": {
+      "source": "assets/keyframes/kf03_lone_boat_night.png",
+      "input_name": "r2b_h3.png"
+    }
+  },
+  {
+    "id": "H4",
+    "keyframe": "KF4",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r2b/params/H4.json",
+    "out": "experiments/r2b/runs/H4",
+    "reference": {
+      "source": "assets/keyframes/kf04_dawn_setting_moon.png",
+      "input_name": "r2b_h4.png"
+    }
+  }
+]

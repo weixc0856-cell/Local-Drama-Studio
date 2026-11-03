@@ -1,0 +1,9 @@
+[job] H1 -> experiments/r2b/runs/H1
+[job] H1 success attempts=1
+[job] H2 -> experiments/r2b/runs/H2
+[job] H2 success attempts=1
+[job] H3 -> experiments/r2b/runs/H3
+[job] H3 success attempts=1
+[job] H4 -> experiments/r2b/runs/H4
+[job] H4 success attempts=1
+{"success": 4, "skipped": 0, "failed": 0}
