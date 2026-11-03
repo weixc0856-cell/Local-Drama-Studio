@@ -1,0 +1,20 @@
+[
+  {
+    "id": "V5",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r3a/params/V5.json",
+    "out": "experiments/r3a/runs/V5"
+  },
+  {
+    "id": "V6",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r3a/params/V6.json",
+    "out": "experiments/r3a/runs/V6"
+  },
+  {
+    "id": "V7",
+    "workflow": "workflows/r0_flux_t2i_api.json",
+    "params": "experiments/r3a/params/V7.json",
+    "out": "experiments/r3a/runs/V7"
+  }
+]

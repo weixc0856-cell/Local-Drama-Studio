@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-11-03T09:28:41",
+  "counts": {
+    "success": 3,
+    "skipped": 0,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "V5",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 22.11,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V5\\V5_vertical_00001_.png"
+      ]
+    },
+    {
+      "id": "V6",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 22.19,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V6\\V6_vertical_00001_.png"
+      ]
+    },
+    {
+      "id": "V7",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 22.19,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V7\\V7_vertical_00001_.png"
+      ]
+    }
+  ]
+}

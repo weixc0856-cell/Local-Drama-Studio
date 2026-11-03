@@ -1,0 +1,29 @@
+{
+  "job_id": "V7",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Vertical 9:16 cinematic composition of a river bend just before sunrise in classical Tang-dynasty China, the moon low on the right horizon, pale gold light on the horizon, thick morning mist over the water, cool blue shadows, distant mountains, reeds in the foreground, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 4701,
+    "width": 576,
+    "height": 1024,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r3a/V7_vertical"
+  },
+  "reference": null,
+  "prompt_id": "7db46b57-8332-4f8f-a7a9-6671403b0dec",
+  "submitted_at": "2026-11-03T09:28:19",
+  "elapsed_seconds": 22.19,
+  "peak_vram_used_bytes": 2992764928,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V7\\V7_vertical_00001_.png",
+      "sha256": "8ca0ae44d8d838c89a3279a7d0f28bbc2a18881845b87d418fd9682e1809f310",
+      "bytes": 1080379
+    }
+  ],
+  "created_at": "2026-11-03T09:28:41"
+}

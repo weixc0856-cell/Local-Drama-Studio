@@ -1,0 +1,57 @@
+[
+  {
+    "id": "V1",
+    "file": "assets/vertical/01_river_dusk.png",
+    "source_job": "V1",
+    "seed": 4101,
+    "width": 576,
+    "height": 1024,
+    "sha256": "32526906d59fb4ea5a3f24a3442c70882e615d467b6a025019dca00c48f47c39"
+  },
+  {
+    "id": "V2",
+    "file": "assets/vertical/02_flower_forest.png",
+    "source_job": "V2",
+    "seed": 4201,
+    "width": 576,
+    "height": 1024,
+    "sha256": "8bea49c91f4c5457a5f28f1b2260419df277119854af0dd06c8c3f6dc7485315"
+  },
+  {
+    "id": "V5",
+    "file": "assets/vertical/03_distant_mountains.png",
+    "source_job": "V5",
+    "seed": 4501,
+    "width": 576,
+    "height": 1024,
+    "sha256": "38ba6750cd7558257e246f9d9539f619650526c4abb5e9bbe055e31d58ecce8a"
+  },
+  {
+    "id": "V6",
+    "file": "assets/vertical/04_lone_boat.png",
+    "source_job": "V6",
+    "seed": 4601,
+    "width": 576,
+    "height": 1024,
+    "sha256": "230b63c408742b5db49ec8839d216e41fea75aa51d9d8fd08639780fec810738"
+  },
+  {
+    "id": "V7",
+    "file": "assets/vertical/05_dawn.png",
+    "source_job": "V7",
+    "seed": 4701,
+    "width": 576,
+    "height": 1024,
+    "sha256": "8ca0ae44d8d838c89a3279a7d0f28bbc2a18881845b87d418fd9682e1809f310"
+  },
+  {
+    "id": "V3",
+    "file": "assets/vertical/06_flower_pushin_wan.mp4",
+    "source_job": "V3",
+    "seed": 4301,
+    "width": 576,
+    "height": 1024,
+    "frames": 73,
+    "sha256": "e5cc9a261ce450dc4a0bdb2707eff01b62a15c62ed3fae51b1c988dc8215b76d"
+  }
+]

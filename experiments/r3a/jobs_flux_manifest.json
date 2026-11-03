@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-11-03T09:26:21",
+  "counts": {
+    "success": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "V1",
+      "status": "success",
+      "attempts": 3,
+      "elapsed_seconds": 52.92,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V1\\V1_vertical_00001_.png"
+      ]
+    },
+    {
+      "id": "V2",
+      "status": "success",
+      "attempts": 1,
+      "elapsed_seconds": 24.14,
+      "outputs": [
+        "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V2\\V2_vertical_00001_.png"
+      ]
+    }
+  ]
+}

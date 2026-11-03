@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "Vertical 9:16 cinematic composition of a wide river bend at deep night in classical Tang-dynasty China, a single small wooden boat with one distant figure silhouette in the middle of the river, a long moonlight path on the water, distant mountain silhouettes, reeds at the near bank, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no face close-up",
+  "seed": 4601,
+  "width": 576,
+  "height": 1024,
+  "steps": 4,
+  "cfg": 1.0,
+  "filename_prefix": "r3a/V6_vertical"
+}

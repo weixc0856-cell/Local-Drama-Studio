@@ -40,3 +40,13 @@ desktop.ini
 # R2 frame sequences are reproducible and large; keep JSON + clips + contact sheets
 experiments/r2/runs/*/*.png
 experiments/r2b/runs/*/*.png
+
+# R3 frame sequences and intermediate renders are reproducible/large
+experiments/r3a/runs/*/*.png
+experiments/r3b/renders/segments/
+experiments/r3b/renders/video_raw.mp4
+experiments/r3b/renders/video_faded.mp4
+experiments/r3b/renders/mixed.wav
+experiments/r3b/renders/frame_*.png
+experiments/r3b/renders/concat.txt
+experiments/r3b/renders/final_check_*.png

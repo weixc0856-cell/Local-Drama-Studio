@@ -1,0 +1,61 @@
+{
+  "speaker": "中文男",
+  "lines": [
+    {
+      "index": 1,
+      "text": "春江潮水连海平，海上明月共潮生。",
+      "file": "experiments\\r3b\\audio\\line_01.wav",
+      "sha256": "113f28bb131e049a284d60309d9edd80c10f774f19a28991ea118286b8cc6e8e",
+      "duration_seconds": 5.271,
+      "synth_seconds": "28.416"
+    },
+    {
+      "index": 2,
+      "text": "滟滟随波千万里，何处春江无月明。",
+      "file": "experiments\\r3b\\audio\\line_02.wav",
+      "sha256": "1e8f70f684792354855e6703f446003817134664e47ad5a5684801b3be842ee5",
+      "duration_seconds": 3.75,
+      "synth_seconds": "20.761"
+    },
+    {
+      "index": 3,
+      "text": "江流宛转绕芳甸，月照花林皆似霰。",
+      "file": "experiments\\r3b\\audio\\line_03.wav",
+      "sha256": "981d11198c9c7d7a1921db85abf441360b4808eab5d0c5cb0a1f2e219abe6376",
+      "duration_seconds": 4.249,
+      "synth_seconds": "24.100"
+    },
+    {
+      "index": 4,
+      "text": "空里流霜不觉飞，汀上白沙看不见。",
+      "file": "experiments\\r3b\\audio\\line_04.wav",
+      "sha256": "21c4b3dbf0bb078e5ea335883af9919c00eff0b31ed0e13f1523911c73e1b8d8",
+      "duration_seconds": 3.309,
+      "synth_seconds": "18.119"
+    },
+    {
+      "index": 5,
+      "text": "江天一色无纤尘，皎皎空中孤月轮。",
+      "file": "experiments\\r3b\\audio\\line_05.wav",
+      "sha256": "b1f2f249df5b2a901b89a7f3437c381e9c5344d8f40aeb605fa71ec1425ffc29",
+      "duration_seconds": 4.516,
+      "synth_seconds": "24.654"
+    },
+    {
+      "index": 6,
+      "text": "江畔何人初见月？江月何年初照人？",
+      "file": "experiments\\r3b\\audio\\line_06.wav",
+      "sha256": "54582706885e448d09fd82d45374a6b8ca8ec160b10d9b1528f1de785a8748b5",
+      "duration_seconds": 5.039,
+      "synth_seconds": "26.392"
+    },
+    {
+      "index": 7,
+      "text": "人生代代无穷已，江月年年望相似。",
+      "file": "experiments\\r3b\\audio\\line_07.wav",
+      "sha256": "29e67bf052e6bf108e3abe9fa1c1c6c9a9b407ccb8d7d8d8752e5e65e36b24a7",
+      "duration_seconds": 3.855,
+      "synth_seconds": "19.695"
+    }
+  ]
+}

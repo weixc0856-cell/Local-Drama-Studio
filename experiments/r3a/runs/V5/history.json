@@ -1,0 +1,219 @@
+{
+  "prompt": [
+    2,
+    "01928d08-f73f-4a40-81f1-203edd096e61",
+    {
+      "1": {
+        "class_type": "UnetLoaderGGUF",
+        "inputs": {
+          "unet_name": "flux-2-klein-4b-Q4_K_M.gguf"
+        }
+      },
+      "2": {
+        "class_type": "CLIPLoader",
+        "inputs": {
+          "clip_name": "qwen_3_4b.safetensors",
+          "type": "flux2",
+          "device": "cpu"
+        }
+      },
+      "3": {
+        "class_type": "VAELoader",
+        "inputs": {
+          "vae_name": "flux2-vae.safetensors"
+        }
+      },
+      "4": {
+        "class_type": "CLIPTextEncode",
+        "inputs": {
+          "text": "Vertical 9:16 cinematic composition of layered distant mountains beyond a wide calm river at night in classical Tang-dynasty China, ink-wash silhouettes fading into mist, moonlight rim on the peaks, a low band of silver fog, sparse reeds at the bottom edge, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no people",
+          "clip": [
+            "2",
+            0
+          ]
+        }
+      },
+      "5": {
+        "class_type": "CLIPTextEncode",
+        "inputs": {
+          "text": "",
+          "clip": [
+            "2",
+            0
+          ]
+        }
+      },
+      "6": {
+        "class_type": "ConditioningZeroOut",
+        "inputs": {
+          "conditioning": [
+            "5",
+            0
+          ]
+        }
+      },
+      "7": {
+        "class_type": "EmptyFlux2LatentImage",
+        "inputs": {
+          "width": 576,
+          "height": 1024,
+          "batch_size": 1
+        }
+      },
+      "8": {
+        "class_type": "Flux2Scheduler",
+        "inputs": {
+          "steps": 4,
+          "width": 576,
+          "height": 1024
+        }
+      },
+      "9": {
+        "class_type": "KSamplerSelect",
+        "inputs": {
+          "sampler_name": "euler"
+        }
+      },
+      "10": {
+        "class_type": "CFGGuider",
+        "inputs": {
+          "model": [
+            "1",
+            0
+          ],
+          "positive": [
+            "4",
+            0
+          ],
+          "negative": [
+            "6",
+            0
+          ],
+          "cfg": 1.0
+        }
+      },
+      "11": {
+        "class_type": "RandomNoise",
+        "inputs": {
+          "noise_seed": 4501
+        }
+      },
+      "12": {
+        "class_type": "SamplerCustomAdvanced",
+        "inputs": {
+          "noise": [
+            "11",
+            0
+          ],
+          "guider": [
+            "10",
+            0
+          ],
+          "sampler": [
+            "9",
+            0
+          ],
+          "sigmas": [
+            "8",
+            0
+          ],
+          "latent_image": [
+            "7",
+            0
+          ]
+        }
+      },
+      "13": {
+        "class_type": "VAEDecode",
+        "inputs": {
+          "samples": [
+            "12",
+            0
+          ],
+          "vae": [
+            "3",
+            0
+          ]
+        }
+      },
+      "14": {
+        "class_type": "SaveImage",
+        "inputs": {
+          "images": [
+            "13",
+            0
+          ],
+          "filename_prefix": "r3a/V5_vertical"
+        }
+      }
+    },
+    {
+      "client_id": "1054867a-6212-4566-b9f5-0e70ef11e314",
+      "create_time": 1793669254566
+    },
+    [
+      "14"
+    ]
+  ],
+  "outputs": {
+    "14": {
+      "images": [
+        {
+          "filename": "V5_vertical_00001_.png",
+          "subfolder": "r3a",
+          "type": "output",
+          "metadata": {
+            "kind": "image",
+            "width": 576,
+            "height": 1024
+          }
+        }
+      ]
+    }
+  },
+  "status": {
+    "status_str": "success",
+    "completed": true,
+    "messages": [
+      [
+        "execution_start",
+        {
+          "prompt_id": "01928d08-f73f-4a40-81f1-203edd096e61",
+          "timestamp": 1793669254567
+        }
+      ],
+      [
+        "execution_cached",
+        {
+          "nodes": [
+            "1",
+            "2",
+            "3",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "prompt_id": "01928d08-f73f-4a40-81f1-203edd096e61",
+          "timestamp": 1793669254568
+        }
+      ],
+      [
+        "execution_success",
+        {
+          "prompt_id": "01928d08-f73f-4a40-81f1-203edd096e61",
+          "timestamp": 1793669274756
+        }
+      ]
+    ]
+  },
+  "meta": {
+    "14": {
+      "node_id": "14",
+      "display_node": "14",
+      "parent_node": null,
+      "real_node_id": "14"
+    }
+  }
+}

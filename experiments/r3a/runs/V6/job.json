@@ -1,0 +1,29 @@
+{
+  "job_id": "V6",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Vertical 9:16 cinematic composition of a wide river bend at deep night in classical Tang-dynasty China, a single small wooden boat with one distant figure silhouette in the middle of the river, a long moonlight path on the water, distant mountain silhouettes, reeds at the near bank, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no face close-up",
+    "seed": 4601,
+    "width": 576,
+    "height": 1024,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r3a/V6_vertical"
+  },
+  "reference": null,
+  "prompt_id": "c1742a9d-cced-47d3-9fe9-f890d94e0867",
+  "submitted_at": "2026-11-03T09:27:56",
+  "elapsed_seconds": 22.19,
+  "peak_vram_used_bytes": 3789171712,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V6\\V6_vertical_00001_.png",
+      "sha256": "230b63c408742b5db49ec8839d216e41fea75aa51d9d8fd08639780fec810738",
+      "bytes": 1150701
+    }
+  ],
+  "created_at": "2026-11-03T09:28:19"
+}

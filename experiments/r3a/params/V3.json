@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Camera slowly pushes in toward the flowering trees in a vertical 9:16 frame. A gentle breeze sways the branches and falling petals drift down; mist moves between the trees; the river bank line, distant mountains and moon remain fixed. Stable geometry, natural motion, no flicker, no morphing, no color shift.",
+  "negative_prompt": "camera shake, flicker, strobing, morphing, warping, distorted geometry, extra moon, text, watermark, modern objects",
+  "input_image": "r3a_v2.png",
+  "seed": 4301,
+  "width": 576,
+  "height": 1024,
+  "frames": 73,
+  "steps": 20,
+  "cfg": 5.0,
+  "shift": 8.0,
+  "filename_prefix": "r3a/V3_vertical_wan"
+}

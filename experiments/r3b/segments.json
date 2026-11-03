@@ -1,0 +1,44 @@
+[
+  {
+    "id": "S1",
+    "type": "image",
+    "source": "assets/vertical/01_river_dusk.png",
+    "duration": 8.0,
+    "motion": "push-in"
+  },
+  {
+    "id": "S2",
+    "type": "image",
+    "source": "assets/vertical/02_flower_forest.png",
+    "duration": 5.0,
+    "motion": "push-in"
+  },
+  {
+    "id": "S3",
+    "type": "video",
+    "source": "assets/vertical/06_flower_pushin_wan.mp4",
+    "duration": 3.042,
+    "motion": "wan"
+  },
+  {
+    "id": "S4",
+    "type": "image",
+    "source": "assets/vertical/03_distant_mountains.png",
+    "duration": 7.0,
+    "motion": "push-in"
+  },
+  {
+    "id": "S5",
+    "type": "image",
+    "source": "assets/vertical/04_lone_boat.png",
+    "duration": 7.0,
+    "motion": "push-in"
+  },
+  {
+    "id": "S6",
+    "type": "image",
+    "source": "assets/vertical/05_dawn.png",
+    "duration": 8.0,
+    "motion": "push-in"
+  }
+]

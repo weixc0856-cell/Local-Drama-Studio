@@ -1,0 +1,29 @@
+{
+  "job_id": "V5",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Vertical 9:16 cinematic composition of layered distant mountains beyond a wide calm river at night in classical Tang-dynasty China, ink-wash silhouettes fading into mist, moonlight rim on the peaks, a low band of silver fog, sparse reeds at the bottom edge, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 4501,
+    "width": 576,
+    "height": 1024,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r3a/V5_vertical"
+  },
+  "reference": null,
+  "prompt_id": "01928d08-f73f-4a40-81f1-203edd096e61",
+  "submitted_at": "2026-11-03T09:27:34",
+  "elapsed_seconds": 22.11,
+  "peak_vram_used_bytes": 2992764928,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V5\\V5_vertical_00001_.png",
+      "sha256": "38ba6750cd7558257e246f9d9539f619650526c4abb5e9bbe055e31d58ecce8a",
+      "bytes": 1077630
+    }
+  ],
+  "created_at": "2026-11-03T09:27:56"
+}

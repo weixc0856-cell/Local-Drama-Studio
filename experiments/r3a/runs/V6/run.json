@@ -1,0 +1,132 @@
+{
+  "prompt_id": "c1742a9d-cced-47d3-9fe9-f890d94e0867",
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "submitted_at": "2026-11-03T09:27:56",
+  "elapsed_seconds": 22.19,
+  "peak_vram_used_bytes": 3789171712,
+  "outputs": [
+    "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V6\\V6_vertical_00001_.png"
+  ],
+  "system_stats_before": {
+    "system": {
+      "os": "win32",
+      "ram_total": 68393086976,
+      "ram_free": 14555140096,
+      "comfyui_version": "0.43.0",
+      "required_frontend_version": "1.57.6",
+      "installed_templates_version": "0.11.100",
+      "required_templates_version": "0.11.100",
+      "comfy_package_versions": [
+        {
+          "name": "comfyui-frontend-package",
+          "installed": "1.57.6",
+          "required": "1.57.6"
+        },
+        {
+          "name": "comfyui-workflow-templates",
+          "installed": "0.11.100",
+          "required": "0.11.100"
+        },
+        {
+          "name": "comfyui-embedded-docs",
+          "installed": "0.5.15",
+          "required": "0.5.15"
+        },
+        {
+          "name": "comfy-aimdo",
+          "installed": "0.6.0",
+          "required": "0.6.0"
+        },
+        {
+          "name": "comfy-kitchen",
+          "installed": "0.2.40",
+          "required": "0.2.40"
+        }
+      ],
+      "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+      "pytorch_version": "2.15.0+xpu",
+      "embedded_python": false,
+      "deploy_environment": "local-git",
+      "argv": [
+        "main.py",
+        "--listen",
+        "127.0.0.1",
+        "--port",
+        "8188",
+        "--disable-auto-launch"
+      ]
+    },
+    "devices": [
+      {
+        "name": "xpu:0 Intel(R) Arc(TM) A750 Graphics",
+        "type": "xpu",
+        "index": 0,
+        "vram_total": 8321540096,
+        "vram_free": 5527139840,
+        "torch_vram_total": 2908749824,
+        "torch_vram_free": 114349568
+      }
+    ]
+  },
+  "system_stats_after": {
+    "system": {
+      "os": "win32",
+      "ram_total": 68393086976,
+      "ram_free": 14626500608,
+      "comfyui_version": "0.43.0",
+      "required_frontend_version": "1.57.6",
+      "installed_templates_version": "0.11.100",
+      "required_templates_version": "0.11.100",
+      "comfy_package_versions": [
+        {
+          "name": "comfyui-frontend-package",
+          "installed": "1.57.6",
+          "required": "1.57.6"
+        },
+        {
+          "name": "comfyui-workflow-templates",
+          "installed": "0.11.100",
+          "required": "0.11.100"
+        },
+        {
+          "name": "comfyui-embedded-docs",
+          "installed": "0.5.15",
+          "required": "0.5.15"
+        },
+        {
+          "name": "comfy-aimdo",
+          "installed": "0.6.0",
+          "required": "0.6.0"
+        },
+        {
+          "name": "comfy-kitchen",
+          "installed": "0.2.40",
+          "required": "0.2.40"
+        }
+      ],
+      "python_version": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+      "pytorch_version": "2.15.0+xpu",
+      "embedded_python": false,
+      "deploy_environment": "local-git",
+      "argv": [
+        "main.py",
+        "--listen",
+        "127.0.0.1",
+        "--port",
+        "8188",
+        "--disable-auto-launch"
+      ]
+    },
+    "devices": [
+      {
+        "name": "xpu:0 Intel(R) Arc(TM) A750 Graphics",
+        "type": "xpu",
+        "index": 0,
+        "vram_total": 8321540096,
+        "vram_free": 5527139840,
+        "torch_vram_total": 2908749824,
+        "torch_vram_free": 114349568
+      }
+    ]
+  }
+}

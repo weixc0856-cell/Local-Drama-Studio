@@ -1,0 +1,29 @@
+{
+  "job_id": "V2",
+  "status": "success",
+  "attempts": 1,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Vertical 9:16 cinematic composition of a river bend at night in classical Tang-dynasty China, a grove of flowering plum trees on the left bank under bright moonlight, petals falling, the moon in the upper-left, silver-blue light, mist between the trees, distant mountains across the river, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 4201,
+    "width": 576,
+    "height": 1024,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r3a/V2_vertical"
+  },
+  "reference": null,
+  "prompt_id": "49fffaba-8079-4c15-b93e-4cd013d3e15b",
+  "submitted_at": "2026-11-03T09:25:57",
+  "elapsed_seconds": 24.14,
+  "peak_vram_used_bytes": 2992764928,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V2\\V2_vertical_00001_.png",
+      "sha256": "8bea49c91f4c5457a5f28f1b2260419df277119854af0dd06c8c3f6dc7485315",
+      "bytes": 1159863
+    }
+  ],
+  "created_at": "2026-11-03T09:26:21"
+}

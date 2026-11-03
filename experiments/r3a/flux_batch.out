@@ -1,0 +1,5 @@
+[job] V1 -> experiments/r3a/runs/V1
+[job] V1 success attempts=3
+[job] V2 -> experiments/r3a/runs/V2
+[job] V2 success attempts=1
+{"success": 2, "skipped": 0, "failed": 0}

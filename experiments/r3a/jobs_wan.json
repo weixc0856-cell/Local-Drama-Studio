@@ -1,0 +1,12 @@
+[
+  {
+    "id": "V3",
+    "workflow": "workflows/r0_wan_i2v_api.json",
+    "params": "experiments/r3a/params/V3.json",
+    "out": "experiments/r3a/runs/V3",
+    "reference": {
+      "source": "experiments/r3a/runs/V2/V2_vertical_00001_.png",
+      "input_name": "r3a_v2.png"
+    }
+  }
+]

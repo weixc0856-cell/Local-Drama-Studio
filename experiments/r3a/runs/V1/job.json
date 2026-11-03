@@ -1,0 +1,29 @@
+{
+  "job_id": "V1",
+  "status": "success",
+  "attempts": 3,
+  "workflow": "D:\\Local-Drama-Studio\\workflows\\r0_flux_t2i_api.json",
+  "workflow_sha256": "9d024305329ee35ca3f580a4b803665a71088a1a4808d9b0c350db32d27e9ae1",
+  "params": {
+    "positive_prompt": "Vertical 9:16 cinematic composition of a great river at dusk in classical Tang-dynasty China, a pale new moon low in the upper-left sky, warm afterglow above the distant mountains, thin mist over the water, reeds and falling petals in the foreground, a long moonlight reflection on the river, ink-wash atmosphere blended with photoreal natural texture, muted indigo-jade and moon-white palette, soft volumetric light, fine 35mm grain, cinematic vertical 9:16 composition, no modern buildings, no text, no watermark, no people",
+    "seed": 4101,
+    "width": 576,
+    "height": 1024,
+    "steps": 4,
+    "cfg": 1.0,
+    "filename_prefix": "r3a/V1_vertical"
+  },
+  "reference": null,
+  "prompt_id": "45d172ee-f878-401b-8a9b-07c8f776188e",
+  "submitted_at": "2026-11-03T09:25:04",
+  "elapsed_seconds": 52.92,
+  "peak_vram_used_bytes": 2820400128,
+  "outputs": [
+    {
+      "path": "D:\\Local-Drama-Studio\\experiments\\r3a\\runs\\V1\\V1_vertical_00001_.png",
+      "sha256": "32526906d59fb4ea5a3f24a3442c70882e615d467b6a025019dca00c48f47c39",
+      "bytes": 1153663
+    }
+  ],
+  "created_at": "2026-11-03T09:25:57"
+}

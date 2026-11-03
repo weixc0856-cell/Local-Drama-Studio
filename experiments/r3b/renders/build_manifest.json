@@ -1,0 +1,111 @@
+{
+  "segments": [
+    {
+      "id": "S1",
+      "type": "image",
+      "source": "assets/vertical/01_river_dusk.png",
+      "duration": 8.0,
+      "motion": "push-in",
+      "file": "experiments\\r3b\\renders\\segments\\S1.mp4",
+      "sha256": "80ca57d12488bf9d338cca3c7611272f7e0327b621cc2160e2a851d0ce6100c8"
+    },
+    {
+      "id": "S2",
+      "type": "image",
+      "source": "assets/vertical/02_flower_forest.png",
+      "duration": 5.0,
+      "motion": "push-in",
+      "file": "experiments\\r3b\\renders\\segments\\S2.mp4",
+      "sha256": "fb4e818629b21ec67c91d8e2802ecf486b1ec852b7f211e81f1efae6adbeebad"
+    },
+    {
+      "id": "S3",
+      "type": "video",
+      "source": "assets/vertical/06_flower_pushin_wan.mp4",
+      "duration": 3.042,
+      "motion": "wan",
+      "file": "experiments\\r3b\\renders\\segments\\S3.mp4",
+      "sha256": "0d80a4d64dacc759bb5ec91de5fe9df0d748a0c202a4bd2a687c1cb55ddc6df2"
+    },
+    {
+      "id": "S4",
+      "type": "image",
+      "source": "assets/vertical/03_distant_mountains.png",
+      "duration": 7.0,
+      "motion": "push-in",
+      "file": "experiments\\r3b\\renders\\segments\\S4.mp4",
+      "sha256": "caafdfd29acd05030908cee54a2e1bcda921aeadf8805831490f4185091ce366"
+    },
+    {
+      "id": "S5",
+      "type": "image",
+      "source": "assets/vertical/04_lone_boat.png",
+      "duration": 7.0,
+      "motion": "push-in",
+      "file": "experiments\\r3b\\renders\\segments\\S5.mp4",
+      "sha256": "d3dbf73fe37d88f5877c9383cac596e2e433c5c1e7757645612b888df418529e"
+    },
+    {
+      "id": "S6",
+      "type": "image",
+      "source": "assets/vertical/05_dawn.png",
+      "duration": 8.0,
+      "motion": "push-in",
+      "file": "experiments\\r3b\\renders\\segments\\S6.mp4",
+      "sha256": "3840d2d5074b1ac139d94eca12f0fdbc8afb5a18168e0074e1424f2d1d6d1d36"
+    }
+  ],
+  "total_seconds": 38.042,
+  "audio_end_seconds": 36.589,
+  "line_starts": [
+    1.0,
+    7.071,
+    11.621,
+    16.67,
+    20.779,
+    26.095,
+    31.934
+  ],
+  "outputs": {
+    "final": "experiments\\r3b\\renders\\final_9x16.mp4",
+    "final_sha256": "fbf2b9430465ae99db7e3ca91d64dfcbfec7e68dc6b1b8a4954aacefb64385aa",
+    "burned": "experiments\\r3b\\renders\\final_9x16_burned.mp4",
+    "srt": "experiments\\r3b\\renders\\drama.srt",
+    "ass": "experiments\\r3b\\renders\\drama.ass",
+    "mixed": "experiments\\r3b\\renders\\mixed.wav"
+  },
+  "ffprobe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1080,
+        "height": 1920,
+        "r_frame_rate": "24/1",
+        "duration": "38.041667"
+      },
+      {
+        "index": 1,
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "r_frame_rate": "0/0",
+        "duration": "38.042000"
+      },
+      {
+        "index": 2,
+        "codec_name": "mov_text",
+        "codec_type": "subtitle",
+        "r_frame_rate": "0/0",
+        "duration": "35.789000"
+      }
+    ],
+    "format": {
+      "duration": "38.042000"
+    }
+  },
+  "decode_returncode": 0,
+  "decode_stderr": ""
+}
