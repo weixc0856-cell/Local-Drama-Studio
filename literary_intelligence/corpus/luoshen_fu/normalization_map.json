@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "mapping": {
+    "驚": "惊",
+    "鴻": "鸿",
+    "榮": "荣",
+    "華": "华",
+    "髣": "仿",
+    "髴": "佛",
+    "輕": "轻",
+    "雲": "云",
+    "飄": "飘",
+    "颻": "飖",
+    "風": "风",
+    "迴": "回",
+    "遠": "远",
+    "陽": "阳",
+    "淥": "渌",
+    "龍": "龙"
+  },
+  "notes": "Manual traditional-to-simplified mapping for the fixed excerpt; punctuation/ideographic spaces are preserved. Raw text remains authoritative for quote checks."
+}

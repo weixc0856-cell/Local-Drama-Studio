@@ -50,3 +50,11 @@ experiments/r3b/renders/mixed.wav
 experiments/r3b/renders/frame_*.png
 experiments/r3b/renders/concat.txt
 experiments/r3b/renders/final_check_*.png
+
+
+# Large local font assets (source licenses/manifests remain in local workspace)
+assets/fonts/
+
+# R3-D / LI local experiment artifacts (large or run-specific)
+experiments/r3d/
+literary_intelligence/runs/

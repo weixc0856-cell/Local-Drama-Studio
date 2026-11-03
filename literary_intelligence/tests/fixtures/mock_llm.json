@@ -1,0 +1,70 @@
+{
+  "fixture_note": "MOCK ONLY. This is not a real literary analysis and is not evidence of model quality. It exercises the LI-1 contracts; do not treat it as a classical source.",
+  "passes": {
+    "text_analyst": {
+      "pass_name": "text_analyst",
+      "claims": [],
+      "notes": "MOCK: observed two parallel clauses and the character 若; no interpretation approved.",
+      "draft_text": "",
+      "is_mock": true,
+      "coverage": "not_analyzable",
+      "coverage_reason": "MOCK: target analysis unavailable; no claims emitted."
+    },
+    "literary_analyst": {
+      "pass_name": "literary_analyst",
+      "claims": [
+        {
+          "claim_id": "mock_literary_001",
+          "work": "洛神賦",
+          "author": "曹植",
+          "edition": "昭明文選（四部叢刊本）卷19 / 曹子建集（四部叢刊本）卷3",
+          "source_refs": [
+            "src_luoshen_wikisource_7908816"
+          ],
+          "locator": "洛神賦/其形也/第2句",
+          "quote": "翩若惊鸿　婉若游龙",
+          "source_quote": "翩若驚鴻　婉若游龍",
+          "display_quote": "翩若惊鸿，婉若游龙。",
+          "claim_type": "interpretation",
+          "statement": "MOCK: 两个动态意象并列，形成轻盈与流动的复合描写。",
+          "confidence": "low",
+          "review_status": "unreviewed",
+          "notes": "Mock candidate; requires human review."
+        }
+      ],
+      "notes": "MOCK output; not approved.",
+      "draft_text": "",
+      "is_mock": true
+    },
+    "researcher": {
+      "pass_name": "researcher",
+      "claims": [],
+      "notes": "MOCK: no external research performed; only the registered source is available.",
+      "draft_text": "",
+      "is_mock": true
+    },
+    "skeptic": {
+      "pass_name": "skeptic",
+      "claims": [],
+      "notes": "MOCK: no historical claims approved; source-free claims must be rejected.",
+      "draft_text": "",
+      "is_mock": true,
+      "skeptic_verdict": "no_material_risk",
+      "reviewed_dimensions": [
+        "原文准确性",
+        "词义分析",
+        "修辞分析",
+        "意象分析",
+        "解释边界",
+        "内容价值"
+      ]
+    },
+    "editor": {
+      "pass_name": "editor",
+      "claims": [],
+      "notes": "MOCK: no approved claim exists, so the export is empty.",
+      "draft_text": "",
+      "is_mock": true
+    }
+  }
+}

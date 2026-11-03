@@ -14,13 +14,17 @@ comfyui:
   workflow_timeout_seconds: 1800
   poll_interval_seconds: 2
 
-# The 8080 instance on this machine belongs to another scheduled task that
-# requires an API key (observed 2026-11-02: HTTP 401). The drama pipeline
-# therefore targets a project-owned llama.cpp instance on 8081.
+# Single local LLM port: 8080. The project owns it while its llama-server is
+# running; the daily OpportunityRadar task must detect this and defer until the
+# port is free (decision 2026-11-03). Do not introduce a second LLM port.
+# Verified 2026-11-03: serves Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf
+# CPU-only (-ngl 0) with a 65536-token context (--fa on); use the served alias.
 llm:
-  base_url: "http://127.0.0.1:8081/v1"
+  base_url: "http://127.0.0.1:8080/v1"
   api_key: "sk-local"
-  model: "Qwen3.5-4B"
+  model: "Qwen3-30B-A3B-Instruct-2507"
+  model_path: "D:/AI/models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
+  context_size: 65536
   temperature: 0.2
   max_repair_attempts: 2
 

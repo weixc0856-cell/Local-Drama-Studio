@@ -45,9 +45,11 @@ class ComfyUISettings(BaseModel):
 class LLMSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    base_url: str = "http://127.0.0.1:8081/v1"
+    base_url: str = "http://127.0.0.1:8080/v1"
     api_key: str = "sk-local"
-    model: str = "Qwen3.5-4B"
+    model: str = "Qwen3-30B-A3B-Instruct-2507"
+    model_path: str | None = None
+    context_size: int = 65536
     temperature: float = 0.2
     max_repair_attempts: int = 2
 
