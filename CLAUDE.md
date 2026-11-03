@@ -8,7 +8,7 @@ Local AI short-drama production lab: script → storyboard → character/scene a
 
 ComfyUI is **only** the generation engine. Python (`src/drama_studio`) owns business state, scheduling, retries and quality gates. FFmpeg owns composition. The local LLM (`D:\AI`) and CosyVoice (`D:\AI\CosyVoice-Runtime`) are external HTTP services.
 
-**Current state: R0, R1, R2-A, and R2-B complete and verified. R3-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
+**Current state: R0-R3 technical validation is complete and committed (R3 = `0204979`); v1.0 docs are frozen but pending commit; R3-D material selection is the next gate and is NOT_RUN. R4-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
 
 ## Hard environment invariants
 
@@ -64,11 +64,22 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `src/drama_studio/models.py` — **the data contract boundary**. Strict Pydantic (`extra="forbid"`). IDs are `char_001` / `loc_001` / `prop_001` / `shot_001`; a shot's ID must equal `shot_{index:03d}`, indexes are contiguous, and all references must resolve. Local LLM output must validate against `Storyboard` or the stage fails (max 2 repair attempts by design, not implemented yet).
 - `src/drama_studio/doctor.py` — emits `PASS_VERIFIED / PASS_LIMITED / FAIL / NOT_RUN` with evidence. It never guesses: unimplemented services are `NOT_RUN`.
 - `docs/ARCHITECTURE.md` — the full target design: SQLite state machine, ComfyUI protocol, prompt locking, GPU rules, FFmpeg pipeline. Implemented modules are only those listed above; everything else there is planned.
+- `docs/README.md` — product docs vs technical evidence index; status vocabulary.
+- `docs/PRD.md` — v1.0 positioning, scope, non-goals, risks; read before proposing features.
+- `docs/TECH_STACK.md` — frozen stack, versions, licenses, performance baseline.
+- `docs/CONTENT_SPEC.md` — visual/audio/video/subtitle specs.
+- `docs/PRODUCTION_WORKFLOW.md` — 14-step flow and what is actually implemented.
+- `docs/PLATFORM_PUBLISHING_SPEC.md` — Douyin/Xiaohongshu packaging and compliance.
+- `docs/ASSET_AND_LICENSE_REGISTRY.md` — model/asset/font/music licenses.
+- `docs/QUALITY_AND_METRICS.md` — quality gates, cost, platform metrics, status vocabulary.
+- `docs/ROADMAP.md` — M3 洛神赋, M4 platform test, v1.1.
 - `docs/R0_TEST_REPORT.md` — R0 measured facts and limits. Read §6 before proposing R1/R2 work.
 - `docs/R1_TEST_REPORT.md` — R1 assets, reference-edit results, consistency limits, and the /32 constraint for Wan.
 - `docs/R2_TEST_REPORT.md` — R2-A measured cost/quality; 73 frames is the default, 121 has color drift.
 - `docs/CONTENT_PACKS.md` — shared layer vs per-theme content pack; do not hardcode one poem in code.
 - `docs/R2B_TEST_REPORT.md` — four hero shots; H2 is usable, H3 subject motion direction was wrong.
+- `docs/R3_TEST_REPORT.md` — vertical 576×1024 capability and a 38 s 1080×1920 finished piece; 43.8 min end-to-end; committed as `0204979`.
+- `docs/ROADMAP.md` — R3-D (female voice/font/BGM/SFX selection) is the gate before 《洛神赋》; currently `DECISION` / `NOT_RUN`.
 
 Planned modules (not implemented; do not assume they exist): `state.py`, `comfy_client.py`, `generation/`, `script_engine/`, `storyboard/`, `character_manager/`, `audio/`, `subtitles/`, `editing/`, `quality/`, `storage/`, `orchestrator.py`.
 
@@ -97,4 +108,7 @@ Project state model when implemented: per-project `state.db` is authoritative; `
 - **Wan video resolution must be divisible by 32.** Keyframes are 768×432 (432/32=13.5), so R2 uses 1024×576 (16:9) before I2V.
 - **R2-A measured:** 1024×576 / 73 frames ≈ 40-43 min per 3 s shot; 121 frames ≈ 66-69 min per 5 s shot; peak VRAM ≤6.12 GiB. Default to 73 frames. A4 (flower, 121 frames) showed a visible green color drift; always check first/last frames.
 - **Production shape:** don't run Wan on every shot. Budget 4-6 Wan hero shots per 90 s, with stills + slow pan/zoom for the rest (~4-5 h vs ~20 h all-Wan).
+- **R3 measured:** vertical FLUX 576×1024 is 22-53 s/image; vertical Wan 576×1024 / 73 frames is 36.4 min at 5.48 GiB. A 38 s 1080×1920 piece with 5 stills + 1 Wan + 7 TTS lines took 43.8 min end-to-end. 1080×1920 is FFmpeg Lanczos upscale, not native.
 - **R2-B measured:** 4 hero shots 32.6-46.4 min each, peak 5.50-5.66 GiB. Slow push-in (H2) works. Precise subject displacement (H3 boat) is unreliable: 24.6 px but toward the camera, not away. Do not rely on Wan for scripted subject movement; use compositing or change the shot.
+- **CosyVoice scope:** only the 「中文男」 SFT preset was verified in R3-B. 「中文女」 is `NOT_RUN`/待试听; do not describe all presets as verified. Model/voice/commercial terms are separate checks.
+- **R3-D:** female voice, fonts, BGM and SFX selection/licensing is `DECISION` / `NOT_RUN`; complete it before 《洛神赋》 production.

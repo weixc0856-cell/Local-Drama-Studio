@@ -1,14 +1,16 @@
-# Local-Drama-Studio
+# Local-Drama-Studio · Product v1.0
 
-本地 AI 短剧自动化生产实验室。目标链路：
+面向抖音和小红书的**东方视觉内容生产工具**：用本地 AI 把诗词、古典人物与神话意象，制作成有画面、有声音、有字幕、有节奏的竖屏短视频。
+
+早期作为本地 AI 短剧实验室，目标链路：
 
 ```
 剧本 → 分镜 → 人物/场景资产 → 首帧 → 视频片段 → 配音 → 字幕 → 剪辑 → MP4
 ```
 
-这不是"装一个 ComfyUI 然后生成几段视频"，而是一套**有数据契约、有状态、可断点续跑**的生产流水线：
+目标不是"装一个 ComfyUI 然后生成几段视频"，而是一套**有数据契约、有状态、可断点续跑**的生产流水线。当前已实现单篇竖屏流程；SQLite 状态机、项目化与平台发布仍待开发（见 PRD / ROADMAP）。
 
-| 层 | 职责 | 技术 |
+| 层（目标架构） | 职责 | 技术 |
 |---|---|---|
 | 调度层 | 剧本解析、任务状态、资产复用、质量门、断点续跑 | Python 3.12 + Pydantic + SQLite + Typer |
 | 生成层 | 静态图、图生视频/文生视频 | ComfyUI + FLUX.2 klein 4B + Wan2.2 TI2V 5B |
@@ -20,7 +22,25 @@
 
 ---
 
-## 当前状态（2026-11-02）
+## v1.0 产品基线（2026-11-03 冻结）
+
+> 冻结产品方向、内容范围、技术栈、流程边界与文档体系；**不表示所有能力已验证，也不表示市场已验证**。
+
+| 文档 | 内容 |
+|---|---|
+| [docs/PRD.md](docs/PRD.md) | 产品定位、内容范围、成功标准、风险 |
+| [docs/TECH_STACK.md](docs/TECH_STACK.md) | 冻结技术栈、版本、许可证、性能基线 |
+| [docs/CONTENT_SPEC.md](docs/CONTENT_SPEC.md) | 视觉/人物/声音/字幕/视频规范 |
+| [docs/PRODUCTION_WORKFLOW.md](docs/PRODUCTION_WORKFLOW.md) | 14 步流程、现状、失败降级、成本 |
+| [docs/PLATFORM_PUBLISHING_SPEC.md](docs/PLATFORM_PUBLISHING_SPEC.md) | 抖音/小红书包装与合规 |
+| [docs/ASSET_AND_LICENSE_REGISTRY.md](docs/ASSET_AND_LICENSE_REGISTRY.md) | 模型/素材/字体/音乐授权 |
+| [docs/QUALITY_AND_METRICS.md](docs/QUALITY_AND_METRICS.md) | 质量门、成本、平台数据 |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | M3《洛神赋》、M4 平台测试、v1.1 |
+| [docs/README.md](docs/README.md) | 文档索引与状态规则 |
+
+技术证据仍保留在 `docs/R0_*` ~ `docs/R3_*`，不合并、不删除。
+
+## 当前状态（2026-11-03）
 
 | 项目 | 状态 |
 |---|---|
@@ -38,7 +58,12 @@
 | R1-E 批处理/续跑/恢复 | ✅ `PASS_VERIFIED` |
 | R2-A 1024×576 边界测试 | ✅ 73 帧 `PASS_VERIFIED`；121 帧 `PASS_LIMITED`（A4 漂色） |
 | R2-B 英雄镜头 | ✅ 4/4 技术成功；H2 `PASS_VERIFIED`，H1/H3/H4 `PASS_LIMITED` |
-| R3-R7 | ⛔ 按约束停在 R2-B |
+| R3-A 竖屏能力 | ✅ `PASS_VERIFIED`：FLUX/Wan 576×1024，Wan 36.4 min / 5.48 GiB |
+| R3-B 单篇成片 | ✅ `PASS_VERIFIED`：38.04 s / 1080×1920 / 5 静帧 + 1 Wan / 配音 / 字幕 |
+| R3-C 单篇成本 | ✅ `PASS_VERIFIED`：端到端 43.8 min；多篇批处理 `NOT_RUN` |
+| R3 基线提交 | ✅ `0204979`（父 `026509b`） |
+| R3-D 声音/字体/BGM/音效选型 | ⛔ `DECISION` / `NOT_RUN`（《洛神赋》/R4 前置） |
+| R4-R7（早期编号） | ⛔ 未执行；后续以 ROADMAP 的 M3/M4 为准 |
 
 ```powershell
 # 任何时候查看真实状态（不会猜测，未执行即 NOT_RUN）
@@ -51,7 +76,7 @@ scripts\doctor.ps1
 - `ReferenceLatent` 参考图编辑在本机 Q4 + XPU 上可用；它保留河湾/远山/色板，提示词控制时间与内容。
 - 四张关键帧：江畔初月、花林月照、孤舟远行、落月晨曦；见 [assets/keyframes/](assets/keyframes/)。
 - 一致性对比：参考图辅助在空间锚点上更稳，纯文字色板接近但地貌会漂移。
-- 明确未做：1080p、视频、人物一致性。下一步 R2 必须先解决 Wan 的 /32 分辨率约束（1024×576）。
+- （R1 时点）明确未做：1080p、视频、人物一致性。当时下一步是 R2 的 /32 分辨率约束（1024×576）。
 
 ### R2-A 结论摘要
 
@@ -68,6 +93,14 @@ scripts\doctor.ps1
 - H3 孤舟有 24.6 px 主体位移，但方向向右下（靠近镜头），不是向远山；不能用于“远去”叙事。
 - H1/H4 可作为近静态空镜，但推近/暖光变化未实现。
 - 结论：Wan 适合“缓慢推近”类英雄镜头；精确主体位移需后期或改镜头设计。
+
+### R3 结论摘要
+
+- 竖屏 576×1024 可用：FLUX 22-53 秒/张，Wan 73 帧 36.4 分钟，峰值 5.48 GiB。
+- 单篇 38.04 秒竖屏成片：5 张静帧 + 1 段 Wan + 7 句 CosyVoice + 字幕，1080×1920。
+- 端到端 43.8 分钟/篇；8 小时理论约 10 篇，保守 6-8 篇/夜（多篇未实测）。
+- 成片路径：`experiments/r3b/renders/final_9x16.mp4`（软字幕）与 `final_9x16_burned.mp4`。
+- R3 已提交 `0204979`；下一步是 R3-D（女声/字体/BGM/音效选型），不是直接进入《洛神赋》。
 
 ### R0 结论摘要
 
@@ -128,7 +161,7 @@ scripts\stop.ps1
 
 ## CLI 规划
 
-R0 只实现 `doctor`，其余命令随阶段验收逐个加入：
+> 下面是早期 CLI 规划，v1.0 **尚未实现**；当前实际使用 `scripts/*.py` 与 `drama doctor`。
 
 ```text
 drama doctor                 # 环境/服务/模型真实状态        [已实现]
@@ -143,24 +176,21 @@ drama run <project>          # 完整流水线                    [R7]
 drama resume <project>       # 断点续跑                      [R7]
 ```
 
-第一个可验收目标不是"一分钟大片"，而是：**30-45 秒、3-5 个镜头、有人物对白、有配音、有字幕、可稳定重复产出的完整 MP4。**
-
 ---
 
-## 阶段路线
+## 已执行阶段（历史证据）
 
-| 阶段 | 内容 | 验收标准 |
+| 阶段 | 实际内容 | 状态 |
 |---|---|---|
-| R0 | 硬件 / XPU / ComfyUI / 两个 GGUF 模型 | A750 上实际推理成功，有日志与产物 |
-| R1 | FLUX.2 klein 静态图 | 角色参考图 + 场景图可复现 |
-| R2 | Wan2.2 TI2V 视频 | 2-3 秒短片段可生成、可播放 |
-| R3 | ComfyUI API 调度 | Python 提交 → 等待 → 取回，含失败重试 |
-| R4 | 剧本 / 分镜引擎 | 本地 LLM 输出通过 Pydantic 校验的 JSON |
-| R5 | 人物资产管理 | 多镜头复用同一角色参考图 |
-| R6 | 配音 / 字幕 / 剪辑 | 自动输出完整 MP4 |
-| R7 | 端到端 | 一条命令，断点续跑，10 镜头重开只补未完成部分 |
+| R0 环境 | XPU / ComfyUI / FLUX / Wan | `PASS_VERIFIED` |
+| R1 视觉资产 | 16:9 关键帧、参考图编辑、批处理 | `PASS_VERIFIED` |
+| R2-A 性能边界 | 1024×576 / 73 / 121 帧 | `PASS_VERIFIED` / `PASS_LIMITED` |
+| R2-B 英雄镜头 | 4 镜头、主体位移审计 | `PASS_VERIFIED` / `PASS_LIMITED` |
+| R3 竖屏成片 | 576×1024、38.04 秒 1080×1920 | `PASS_VERIFIED` |
 
-每个阶段必须实际运行、保留退出码与日志，通过后才进入下一阶段。
+后续产品路线见 [docs/ROADMAP.md](docs/ROADMAP.md)（M3《洛神赋》/ M4 平台测试）。早期 R4-R7 只是设计编号，未执行。
+
+第一个完整样片：38.04 秒 / 1080×1920 / 5 静帧 + 1 Wan / 7 句朗诵 / 字幕；端到端 43.8 分钟。后续路线：R3-D 素材选型与授权核验 → R4/M3《洛神赋》完整样片 → R5/M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
 
 ---
 
@@ -169,8 +199,10 @@ drama resume <project>       # 断点续跑                      [R7]
 - 不做网页管理后台（先 CLI）
 - 不引入 LangChain / 向量数据库 / 多 Agent 框架
 - 不自己训练或微调生成模型
-- 不承诺首阶段的电影级人物一致性与口型同步
+- 不承诺电影级人物一致性、口型同步、跨镜头同一张脸
 - 不在 8GB 显存上同时加载 LLM、FLUX、Wan
+- 不做自动发布、数字人、SeedVR2、新视频模型（v1.0）
+- 不为未验证的市场假设扩大技术栈
 
 ---
 
@@ -191,4 +223,6 @@ drama resume <project>       # 断点续跑                      [R7]
 | [docs/R2_TEST_REPORT.md](docs/R2_TEST_REPORT.md) | R2-A 实测结果与生产预算 |
 | [docs/R2B_TEST_PLAN.md](docs/R2B_TEST_PLAN.md) | 4 个英雄镜头设计与验收口径 |
 | [docs/R2B_TEST_REPORT.md](docs/R2B_TEST_REPORT.md) | R2-B 逐镜头结果与 H3 位移分析 |
+| [docs/R3_TEST_PLAN.md](docs/R3_TEST_PLAN.md) | 竖屏/单篇/成本计划 |
+| [docs/R3_TEST_REPORT.md](docs/R3_TEST_REPORT.md) | R3 竖屏成片与成本实测 |
 | [docs/CONTENT_PACKS.md](docs/CONTENT_PACKS.md) | 通用主题包与共享层边界 |
