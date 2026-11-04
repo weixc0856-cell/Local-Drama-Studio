@@ -14,7 +14,7 @@
 | `PRD-GOV-001` | §0.1 | PRD 是唯一 SSOT；冲突按优先级处理 | 其他文档不得创造/覆盖需求；冲突有记录与修正 | `IMPLEMENTED_NOT_VERIFIED` | PRD §0.1；本文件；PRD_CHANGELOG | 待项目所有者评审确认；确认后再改代码 |
 | `PRD-GOV-002` | §0.2 | 需求状态必须由真实证据决定 | 无证据不得 `PASS_VERIFIED`；Mock/单测不等于端到端 | `PARTIAL` | 审计发现文档/状态多处过期；本文件已按证据标注 | 继续清理旧文档中的过期状态 |
 | `PRD-GOV-003` | §0.2/§21 | 历史证据路径缺失必须如实标注 | 不伪造路径；报告保留；替代证据可查 | `PARTIAL` | `docs/audit/REPOSITORY_STRUCTURE.md` §8 已标注 R1–R3/S2 目录缺失 | 旧报告中的失效路径需逐条加注或索引 |
-| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；377 tests | 保持；SFT 继续显式 |
+| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；378 tests | 保持；SFT 继续显式 |
 | `PRD-TTS-002` | §11.1 | 300M SFT 仅显式可选，不能作为默认 | 必须显式 `tts_mode=sft` + `-Model sft`；任务/manifest 可追溯 | `PASS_VERIFIED` | 2026-11-04 真实 SFT 1 行；P1/81.373 历史 SFT 成片 | 保留为可选模式；UI/任务需明确默认不是它 |
 | `PRD-TTS-003` | §11.1 | 模型/服务/参数不满足时明确报错，禁止静默回退 | 0.5B 缺失/加载失败/参考音缺失 → 失败；不得回退 300M | `PASS_VERIFIED` | SFT↔zero-shot 双向错配均真实报错；`_validate_runtime` 校验 `/health` | 保持；新增模式必须同样校验 |
 | `PRD-TTS-004` | §11.1 | UI/任务/配置/日志/manifest/报告记录实际模型与模式 | `tts_mode/model_class/model_dir/speaker_id/prompt` 可查 | `PARTIAL` | CLI 输出与 `audio_manifest.json` 真实 2 行；任务参数/UI 已加 `tts_mode`、`voice_profile`、`voices`；任务结果回传 `voice_cast` | UI/任务/生产报告仍未做真实端到端；报告模板需引用这些字段 |
