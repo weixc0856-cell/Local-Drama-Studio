@@ -8,6 +8,7 @@ of the production renderer: the caller still chooses the shot and duration.
 from __future__ import annotations
 
 import argparse
+import re
 import subprocess
 from pathlib import Path
 
@@ -24,12 +25,28 @@ def main() -> int:
         raise SystemExit(f"no PNG frames in {frames}")
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
-        "ffmpeg", "-y", "-v", "error", "-framerate", str(args.fps),
-        "-pattern_type", "glob", "-i", str(frames / "*.png"),
-        "-c:v", "libx264", "-crf", "18", "-preset", "medium",
-        "-pix_fmt", "yuv420p", str(out),
-    ]
+    # This ffmpeg build lacks the glob demuxer; use a numbered pattern when
+    # possible, otherwise fall back to a concat list.
+    match = re.match(r"^(.*?)(\d+)(\D*)$", images[0].name)
+    if match:
+        prefix, digits, suffix = match.groups()
+        pattern = frames / f"{prefix}%0{len(digits)}d{suffix}"
+        cmd = [
+            "ffmpeg", "-y", "-v", "error", "-framerate", str(args.fps),
+            "-start_number", str(int(digits)), "-i", str(pattern),
+            "-c:v", "libx264", "-crf", "18", "-preset", "medium",
+            "-pix_fmt", "yuv420p", str(out),
+        ]
+    else:
+        listing = frames / "frames.concat.txt"
+        listing.write_text("".join(
+            f"file '{p.as_posix()}'" + chr(10) + f"duration {1 / args.fps:.9f}" + chr(10)
+            for p in images), encoding="utf-8")
+        cmd = [
+            "ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0",
+            "-i", str(listing), "-vsync", "vfr", "-c:v", "libx264",
+            "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p", str(out),
+        ]
     proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
         raise SystemExit(f"ffmpeg failed: {proc.stderr[-2000:]}")
