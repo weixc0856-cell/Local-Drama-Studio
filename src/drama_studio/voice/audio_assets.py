@@ -20,8 +20,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 AssetStatus = Literal["DISCOVERED", "TECHNICALLY_VALIDATED", "LICENSE_VERIFIED",
-                      "VERIFIED", "APPROVED", "PENDING", "REJECTED", "BLOCKED",
-                      "REVOKED", "UNKNOWN"]
+                      "VERIFIED", "APPROVED", "PENDING", "PENDING_REVIEW",
+                      "REJECTED", "BLOCKED", "REVOKED", "UNKNOWN"]
 
 READY_STATUSES = {"VERIFIED", "APPROVED"}
 

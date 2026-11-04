@@ -23,6 +23,9 @@ from typing import Any, Awaitable, Callable, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from ..config import find_project_root, load_settings
+from ..style_lock import (
+    StyleLockError, assert_style_request, locked_preset_id, locked_style_id,
+)
 from .store import WorkspaceStore, now_iso
 
 ROOT = find_project_root()
@@ -74,6 +77,7 @@ class ComfyParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     jobs: str = Field(min_length=1, max_length=400)
+    episode_id: str | None = Field(default=None, max_length=120)
     only: str | None = Field(default=None, max_length=200)
     force: bool = False
     timeout: int = Field(default=1800, ge=60, le=21600)
@@ -194,6 +198,15 @@ class StaticCheckParams(BaseModel):
     out: str | None = Field(default=None, max_length=400)
 
 
+class StyleConsistencyParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    style: str | None = Field(default=None, max_length=80)
+    review: str | None = Field(default=None, max_length=400)
+    out: str | None = Field(default=None, max_length=400)
+
+
 class StoryCheckParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -301,6 +314,13 @@ class TaskKind:
             "blocked_reason": self.blocked_reason,
             "params_schema": self.params_model.model_json_schema(),
         }
+
+
+def _locked_style(episode: dict[str, Any] | None, requested: str | None = None) -> str | None:
+    try:
+        return assert_style_request(episode, requested)
+    except StyleLockError as exc:
+        raise TaskError("style_locked", str(exc)) from exc
 
 
 def _resolve_under(raw: str, allowed: tuple[str, ...], *, must_exist: bool = True) -> Path:
@@ -458,6 +478,25 @@ def _comfy_prereqs(params: ComfyParams, store: WorkspaceStore) -> list[str]:
         _resolve_under(params.jobs, ("experiments", "projects"))
     except TaskError as exc:
         return [exc.message]
+    if params.episode_id:
+        episode = store.get_episode(params.episode_id)
+        if not episode:
+            return [f"期数不存在：{params.episode_id}"]
+        try:
+            base = _episode_root(params.episode_id, store)
+        except TaskError as exc:
+            return [exc.message]
+        locked = locked_style_id(episode)
+        script = next((p for p in (base / "work" / "production_script.json",
+                                   base / "production_script.json") if p.is_file()), None)
+        if script is not None and locked:
+            try:
+                script_style = json.loads(script.read_text(encoding="utf-8")).get("style_id")
+            except (OSError, json.JSONDecodeError):
+                script_style = None
+            if script_style and script_style != locked:
+                missing.append(
+                    f"production_script style_id={script_style!r} 与期数锁 {locked!r} 不一致")
     if not _port_open("127.0.0.1", 8188):
         missing.append("ComfyUI 8188 未监听；先用 service.comfy.start 启动")
     return missing
@@ -687,6 +726,68 @@ def _tts_after(params: TTSParams, task_id: str, store: WorkspaceStore) -> dict[s
     }
 
 
+def _style_consistency_paths(
+    params: StyleConsistencyParams, store: WorkspaceStore
+) -> tuple[str, list[tuple[str, Path]], Path | None, Path]:
+    base = _episode_root(params.episode_id, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
+    if not style:
+        raise TaskError("no_style", "该期未绑定风格或未映射 preset_id")
+    images_root = base / "assets" / "images"
+    shots: list[tuple[str, Path]] = []
+    if images_root.is_dir():
+        for directory in sorted(images_root.iterdir()):
+            if not directory.is_dir():
+                continue
+            files = sorted(p for p in directory.glob("*")
+                           if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp"))
+            if files:
+                shots.append((directory.name, files[0]))
+    review = (store.root / params.review).resolve() if params.review else None
+    out = (store.root / params.out).resolve() if params.out else base / "style_consistency_report.json"
+    return style, shots, review, out
+
+
+def _style_consistency_prereqs(params: StyleConsistencyParams, store: WorkspaceStore) -> list[str]:
+    try:
+        _, shots, review, _ = _style_consistency_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = []
+    if len(shots) < 2:
+        missing.append("至少需要 2 个镜头的静态图（assets/images/<shot_id>/）")
+    if review is not None and not review.is_file():
+        missing.append(f"缺少人工审片 JSON：{_rel(review)}")
+    return missing
+
+
+def _style_consistency_argv(params: StyleConsistencyParams, task_id: str) -> list[str]:
+    style, shots, review, out = _style_consistency_paths(params, _STORE_REF[0])
+    argv = [sys.executable, "-m", "drama_studio.style_consistency", "--style", style, "--out", _rel(out)]
+    for shot_id, path in shots:
+        argv += ["--shot", f"{shot_id}={_rel(path)}"]
+    if review is not None:
+        argv += ["--review", _rel(review)]
+    return argv
+
+
+def _style_consistency_after(
+    params: StyleConsistencyParams, task_id: str, store: WorkspaceStore
+) -> dict[str, Any]:
+    _, _, _, out = _style_consistency_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {
+        "report": _rel(out),
+        "style_id": data.get("style_id"),
+        "technical_status": data.get("technical_status"),
+        "aesthetic_status": data.get("aesthetic_status"),
+        "overall_status": data.get("overall_status"),
+        "shots": data.get("shot_count"),
+        "flags": data.get("flags") or [],
+    }
+
+
 def _static_paths(
     params: StaticCheckParams, store: WorkspaceStore
 ) -> tuple[Path, str, Path, Path | None, Path | None]:
@@ -699,7 +800,7 @@ def _static_paths(
             raise TaskError("not_found", f"缺少 {_rel(directory)} 下的静态图")
         image = candidates[0]
     episode = store.get_episode(params.episode_id) or {}
-    style = params.style or (episode.get("style_snapshot") or {}).get("id")
+    style = _locked_style(episode, params.style) or (episode.get("style_snapshot") or {}).get("id")
     if not style:
         raise TaskError("no_style", "该期未绑定风格；static.check 需要 style")
     out = (store.root / params.out).resolve() if params.out else base / "work" / "static" / params.shot_id / "static_quality.json"
@@ -1072,14 +1173,17 @@ def _motion_plan_prereqs(params: MotionPlanParams, store: WorkspaceStore) -> lis
 
 
 def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
-    script, images, audio, out, regions = _motion_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, images, audio, out, regions = _motion_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "-m", "drama_studio.production", "--motion-plan",
         "--script", _rel(script), "--images", _rel(images), "--audio", _rel(audio),
         "--out", _rel(out),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if regions is not None:
         argv += ["--regions", _rel(regions)]
     argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
@@ -1097,6 +1201,10 @@ def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
 def _motion_plan_after(params: MotionPlanParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
     _, _, _, out, _ = _motion_plan_paths(params, store)
     data = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and data.get("style_id") != locked:
+        raise TaskError("style_locked", f"motion plan style {data.get('style_id')!r} != locked {locked!r}")
     shots = data.get("shots") or []
     return {
         "plan": _rel(out),
@@ -1271,7 +1379,10 @@ def _aesthetic_plan_prereqs(params: AestheticPlanParams, store: WorkspaceStore) 
 
 
 def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]:
-    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "scripts/aesthetic_plan.py",
         "--script", _rel(script), "--out", _rel(out),
@@ -1280,8 +1391,8 @@ def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]
         "--width", str(params.width), "--height", str(params.height),
         "--steps", str(params.steps), "--cfg", str(params.cfg),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if designs is not None:
         argv += ["--designs", _rel(designs)]
     if axes is not None:
@@ -1293,6 +1404,11 @@ def _aesthetic_plan_after(params: AestheticPlanParams, task_id: str, store: Work
     _, _, _, out, _ = _aesthetic_plan_paths(params, store)
     manifest_path = out.parent / "aesthetic_plan_manifest.json"
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    plan = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and plan.get("style_id") != locked:
+        raise TaskError("style_locked", f"aesthetic plan style {plan.get('style_id')!r} != locked {locked!r}")
     return {
         "plan": _rel(out),
         "manifest": _rel(manifest_path),
@@ -1600,6 +1716,18 @@ TASK_KINDS: dict[str, TaskKind] = {
         build_argv=_quality_argv,
         prerequisites=_quality_prereqs,
         after_success=_quality_after,
+    ),
+    "style.consistency": TaskKind(
+        key="style.consistency",
+        label="跨镜头风格一致性",
+        description="对本期所有镜头静态图做调色板贴合、跨镜头 LAB 距离、亮度/饱和度/边缘密度检查；人工审片单独记录。",
+        cost="秒级",
+        safety="只读静态图，写本期 style_consistency_report.json；技术 OK 仍为 PARTIAL，需人工 APPROVED",
+        params_model=StyleConsistencyParams,
+        lock_key=lambda params: f"style:{params.episode_id}",
+        build_argv=_style_consistency_argv,
+        prerequisites=_style_consistency_prereqs,
+        after_success=_style_consistency_after,
     ),
     "static.check": TaskKind(
         key="static.check",

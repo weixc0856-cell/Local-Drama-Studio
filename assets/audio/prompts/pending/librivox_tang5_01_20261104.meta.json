@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "asset_id": "prompt_librivox_tang5_01_20261104",
   "asset_type": "tts_prompt",
-  "status": "TECHNICALLY_VALIDATED",
+  "status": "PENDING_REVIEW",
   "approved_for_production": false,
   "source": {
     "provider": "librivox",
@@ -66,5 +66,12 @@
       "sample_rate": 24000,
       "note": "Prompt accepted by local CosyVoice2-0.5B; this proves technical usability, not aesthetic quality or production approval."
     }
+  },
+  "review_status": "PENDING_REVIEW",
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "PENDING_REVIEW",
+    "reason": "需进一步核查录制者法域、表演者邻接权与中国辖区商用；未完成前不进入生产。"
   }
 }

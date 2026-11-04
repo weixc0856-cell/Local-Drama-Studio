@@ -1,6 +1,6 @@
 # PRD 变更提案：音频、多音色、运动、故事圣经与视听 QA
 
-> 状态：**待项目所有者批准**。本文件不是正式 PRD，不改变 `docs/PRD.md` 的现行需求。
+> 状态：**APPROVED / MERGED（2026-11-04 项目所有者批准）**。需求已并入 `docs/PRD.md` §24；本文件保留为决策历史。
 > 目的：把 `docs/proposals/` 中分散的 AUDIO / VOICE-ASSET / TTS-007 / MOTION / STORY / QA 需求合并成**一个**可批准、可追踪、无重复建设的变更包。
 > 原则：正式 PRD 是唯一 SSOT；批准前，实现只能标 `IMPLEMENTED_NOT_VERIFIED` 或 `PARTIAL`，不得标 `PASS_VERIFIED`。
 
@@ -144,12 +144,12 @@
 
 ## 6. 批准检查表
 
-- [ ] 同意 `PRD-TTS-007` 编号（不复用 TTS-002）。
-- [ ] 同意音频资产只保留 `assets/audio/manifest.json` 一套台账。
-- [ ] 同意 Voice Profile 只引用 `asset_id`，不复制音频。
-- [ ] 同意同一次 TTS 运行只能加载一种后端（SFT 或 zero-shot）。
-- [ ] 同意外部声音只有 `APPROVED` 可进生产。
-- [ ] 同意“同脸”不是自动验收项，必须人工复核。
-- [ ] 同意提案实现不得在批准前标 `PASS_VERIFIED`。
+- [x] 同意 `PRD-TTS-007` 编号（不复用 TTS-002）。
+- [x] 同意音频资产只保留 `assets/audio/manifest.json` 一套台账。
+- [x] 同意 Voice Profile 只引用 `asset_id`，不复制音频。
+- [x] 同意同一次 TTS 运行只能加载一种后端（SFT 或 zero-shot）。
+- [x] 同意外部声音只有 `APPROVED` 可进生产。
+- [x] 同意“同脸”不是自动验收项，必须人工复核。
+- [x] 同意提案实现不得在批准前标 `PASS_VERIFIED`。
 
-未勾选前：本文件保持提案状态，不修改正式 PRD 的需求正文。
+已全部勾选并合并；正式需求见 `docs/PRD.md` §24。

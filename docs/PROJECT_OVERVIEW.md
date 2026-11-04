@@ -66,11 +66,11 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | FFmpeg 合成 | `PASS_VERIFIED` | 1080×1920 / 24 fps / H.264 + AAC + mov_text |
 | 技术质量门 | `PASS_VERIFIED` | 图片空黑、视频解码/尺寸、音频峰值/静音、成片哈希 |
 | 运动质量门 | `PARTIAL` | 刚体保护/时序连续性有代码与测试；人工审美 PENDING |
-| 静态质量门 | `PARTIAL` | CLI 存在；**未注册为工作台任务，motion.plan 可绕过** |
+| 静态质量门 | `IMPLEMENTED_NOT_VERIFIED` | `static.check` 任务；`motion.plan` 默认要求报告，显式 `--skip-static-gate` 才跳过 |
 | 双视觉风格规范/配置 | `PASS_STATIC` | 青绿工笔 / 写意水墨，两套独立配置 |
 | 每种风格技术样片 | `PASS_VERIFIED`（各 2 镜头） | M7 两片；不代表完整作品一致性 |
-| 作品级风格锁定 | `PARTIAL` | 期数 snapshot + ProductionScript style_id/hash；任务可覆盖，DB/YAML 脱节 |
-| 跨镜头风格一致性验证 | `NOT_RUN` | 只有相邻镜头 LAB/亮度连续性，无风格分类/正式一致性门 |
+| 作品级风格锁定 | `IMPLEMENTED_NOT_VERIFIED` | 期数 `_style_lock` revision/hash/history；任务拒绝不同 style；DB `preset_id` 映射 YAML；真实改版生产待跑 |
+| 跨镜头风格一致性验证 | `PASS_VERIFIED` | P1 4 镜头修正后技术 OK（ΔE 9.22、luma 7.13）；人工通过；最终 build 接入待做 |
 | 镜头美学 A/B | `PARTIAL` + `PENDING_HUMAN_REVIEW` | 8 张实图、联系表、风险指标 |
 | 2.5D 分层 | `PASS_STATIC`（opt-in） | `PlateSpec` + 渲染路径 + 真实渲染 PASS；未成为默认 |
 | 工作台（项目/期数/风格/任务/媒体） | `PASS_VERIFIED` | 39 个真实任务；API/媒体测试通过 |
@@ -116,7 +116,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | 镜头/资产继承 | 镜头只有 `visual_prompt`，没有 `style_id` 字段 | 不完整 |
 | 生成任务不得覆盖 | `motion.plan` / `aesthetic.plan` 可 `--style` 覆盖；`comfy.batch` 不校验 | **未强制** |
 | 改风格留版本 | UI 直接替换期数 snapshot；无版本表 | **未实现** |
-| 跨镜头风格一致性门 | 只有相邻镜头 LAB/亮度连续性 | **未实现** |
+| 跨镜头风格一致性门 | P1 修正后技术 OK + 人工通过 | **PASS_VERIFIED** |
 | DB 风格与 YAML preset 一致 | `workspace.styles` 不含 motion/aesthetic profile | **脱节** |
 
 > 这是 Phase C 的重点修复方向，不在 Phase B 修改代码。详细差异见 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。

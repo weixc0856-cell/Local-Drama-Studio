@@ -132,7 +132,7 @@
 | 本地微动 | 水波/倒影/云/叶/芦苇/墨扩散（部分） | 水波/倒影/云/叶/芦苇/墨扩散 |
 | 2.5D parallax | 允许，depth_alpha 0.50–0.75，max 3 plates | 允许，0.45–0.85，max 3 plates |
 | 适用内容 | 山水/长卷/建筑/花鸟/空镜 | 山水/云雾/水面/花鸟/空镜 |
-| `validation_status`（配置字段） | `NOT_RUN`（**落后于报告**） | `NOT_RUN`（**落后于报告**） |
+| `validation_status`（配置字段） | `PARTIAL` | `PARTIAL`（技术样片 + A/B 选型已做，完整作品未做） |
 
 ### 5.2 风格配置的边界
 
@@ -143,17 +143,34 @@
 - 通用代码不得按 `style_id` 写分支。
 - `workspace.styles` 只存 `STYLE_ENTITY_FIELDS`，**不含** motion/compositing/aesthetic_profile；不要以为 UI 改风格会影响运动策略。
 
+### 5.2.1 已选 A/B 生产基线（2026-11-04）
+
+`config/styles.yaml` 新增 `production_baselines`，记录项目所有者选定的 A/B 组合：
+
+- `court_green_fine_line`：`shot_001=A`、`shot_002=A`
+- `ink_wash`：`shot_001=B`、`shot_002=A`
+
+每项包含 `variant`、完整 `prompt`、`prompt_sha256`、`sections` 与人工 `rationale`；
+`source_snapshot` 指向原始 A/B 快照。下一部正式样片以此为 prompt 模板，但不得在代码里
+按 style id 写分支。配置由 `style_presets.ProductionBaseline` 严格校验。
+
 ### 5.3 作品级风格约束（产品目标）
 
 | 规则 | 目标 | 当前 |
 |---|---|---|
-| 每作品一个主风格 | `style_id` 作品级 | 期数有，项目有默认但非强制 |
-| 全片一致 | 不混用 | 无强制门 |
-| 生成任务不覆盖 | 任务继承 | `motion.plan`/`aesthetic.plan` 可 `--style` |
-| 改风格留版本 | 新版本/新生产 | UI 直接替换 snapshot |
-| 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性 |
+| 每作品一个主风格 | `style_id` 作品级 | 期数 `style_snapshot._style_lock`；项目默认风格仍非强制 |
+| 全片一致 | 不混用 | 期数锁 hash；`comfy.batch` 绑定 `episode_id` 时校验 production_script |
+| 生成任务不覆盖 | 任务继承 | `motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；其他任务待补 |
+| 改风格留版本 | 新版本/新生产 | `_style_lock.revision` + `history` 保留旧 sha；旧 build 目录不覆盖 |
+| 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性（`PRD-STYLE-007` 仍 `NOT_IMPLEMENTED`） |
 
 > 详见 [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) §4 与 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。
+
+工作台 `styles` 新增可选 `preset_id`，用于把 DB 风格映射到 `config/styles.yaml` 的
+`ink_wash` / `court_green_fine_line`。期数创建/改风格时把它写入
+`style_snapshot._style_lock.preset_id`；`motion.plan` / `aesthetic.plan` 使用该
+preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` 中做一次
+只增迁移，仅对名称含“水墨/写意”或“工笔/青绿”的风格自动映射，其他保持未映射。
 
 ---
 
@@ -414,7 +431,7 @@ TTS 模式字段已接线：`audio.yaml tts.mode` 是有效默认，`settings.tt
 | `audio.yaml subtitles.*` | 无消费者 | 接线或删除 |
 | `audio.yaml narration_modes.*.leading_ms` | 未被 `r3_build` 消费 | 接线或删除 |
 | `generation.yaml profiles.*` | 无生产消费者 | 让 jobs 读取，或标注“仅记录” |
-| `styles.yaml validation_status` | 两风格仍 `NOT_RUN` | 按报告更新 |
+| `styles.yaml validation_status` | 两风格 `PARTIAL`（2026-11-04 更新） | 完整作品后再升级 |
 | `workflows/README.md` 的部分文件名 | 文件不存在 | 标注目标命名 |
 | `docs/ENVIRONMENT.md` “待下载” | 文件已存在 | 更新 |
 

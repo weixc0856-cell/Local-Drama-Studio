@@ -85,6 +85,7 @@ class EpisodeUpdate(Strict):
 
 class StylePayload(Strict):
     name: str = Field(min_length=1, max_length=120)
+    preset_id: str | None = Field(default=None, max_length=80)
     description: str = ""
     visual_language: str = ""
     color_palette: dict[str, str] = Field(default_factory=dict)
@@ -103,6 +104,7 @@ class StylePayload(Strict):
 
 class StyleUpdate(Strict):
     name: str | None = Field(default=None, min_length=1, max_length=120)
+    preset_id: str | None = Field(default=None, max_length=80)
     description: str | None = None
     visual_language: str | None = None
     color_palette: dict[str, str] | None = None

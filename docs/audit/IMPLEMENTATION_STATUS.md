@@ -29,7 +29,7 @@
 | 11 | 字幕生成 | SRT + ASS、整数毫秒时间轴、本地字体、fontselect 校验 | `scripts\r3_build.py`、`build.rebuild` | `voice/timeline.py`、`fonts.py`、`r3_build.py` | P1/M7/gongbi `drama.srt`/`drama.ass`/`timeline.json`/`fontselect.log`；`test_fonts` | **PASS_VERIFIED** | `config/audio.yaml` 的 `subtitles.max_chars_per_line/max_lines/format/burn_in` **未被消费**；每行一条字幕，不自动换行；`burn_in` 总是尝试生成烧录版 |
 | 12 | FFmpeg 合成 | 1080×1920 / 24 fps / H.264 + AAC + mov_text；Ken Burns；混音；淡入淡出 | `scripts\r3_build.py`、`build.rebuild` | `r3_build.py`、`voice/soundscape.py` | P1 14.0 s、R3 38.042 s、gongbi 81.373 s、M7 两片；`quality_report` PASS | **PASS_VERIFIED** | 1080×1920 是 Lanczos 放大，不是原生；每次构建写新目录，拒绝覆盖；当前 `soundscape.enabled=true` 会让新构建与历史构建音频不同 |
 | 13 | 质量检查 | 图片空/黑、视频解码/分辨率、音频峰值/静音、成片哈希；运动/美学风险 | `python -m drama_studio.quality`、`quality.check`、`motion.render` 后置 | `quality.py` | `test_quality` 3、`test_motion_quality_gates` 11、`test_quality_plates` 9 | **PASS_VERIFIED**（技术） / **PARTIAL**（运动/美学） | 技术门是独立的；运动门 `motion.render` 会跑，但 `quality.check` UI 只暴露 `manifest`，无法从 UI 选 `motion_manifest`；发音正确性只到 `PARTIAL` |
-| 14 | 任务注册表 | 21 种任务；参数 Pydantic；单飞锁；前置/后置；日志；取消 | `drama serve` → `/api/tasks` | `workspace/tasks.py` | `test_workspace_*` 37、`test_workspace_motion_tasks` 1；DB 39 个任务 | **PASS_VERIFIED** | 注册表不是唯一执行路径：`scripts/*.py` 可直接跑；CLI 只对 GPU 有跨进程锁，TTS/LLM 无 |
+| 14 | 任务注册表 | 22 种任务；参数 Pydantic；单飞锁；前置/后置；日志；取消 | `drama serve` → `/api/tasks` | `workspace/tasks.py` | `test_workspace_*` 37、`test_workspace_motion_tasks` 1；DB 39 个任务 | **PASS_VERIFIED** | 注册表不是唯一执行路径：`scripts/*.py` 可直接跑；CLI 只对 GPU 有跨进程锁，TTS/LLM 无 |
 | 15 | GPU 单飞锁 | `logs/locks/gpu-comfy.lock` + SQLite `lock_key` 唯一索引 | `r1_batch.py`、`comfy.batch` | `locks.py`、`store.py` SCHEMA | `test_locks` 3、`test_workspace_store` 6 | **PASS_VERIFIED** | 只覆盖 ComfyUI/GPU；TTS、LLM、FFmpeg 不共享此锁；`service.comfy.start` 的前置 lambda 实际总是空 |
 | 16 | 任务恢复 | 服务重启把遗留 `RUNNING` 标成 `FAILED`；取消条件迁移 | `drama serve` lifespan | `store.recover_stale_tasks`、`tasks.TaskRunner._execute` | `test_workspace_store`、`test_workspace_review` | **PASS_VERIFIED**（代码/测试） | 没有真实崩溃恢复演练；中断后不会自动重跑，只标记失败 |
 | 17 | SQLite 工作台 | projects/episodes/styles/tasks/meta；只存用户事实 | `drama serve` | `workspace/store.py` | `test_workspace_store` 6；真实 DB 4/4/4/39 | **PASS_VERIFIED** | 生产状态不落库；`styles` 与 `config/styles.yaml` 不自动同步 |
@@ -57,7 +57,7 @@
   - `config/audio.yaml` `subtitles.format/max_chars_per_line/max_lines/burn_in`：`r3_build.py` 未读取。
   - `config/audio.yaml` `narration_modes.*.leading_ms`：`ModeSpec.leading_ms` 只被序列化，`r3_build` 用 `content_type` 默认或显式 `--leading-ms`。
 - `config/generation.yaml` 的 `profiles` 没有被生产构建消费；`production.build_jobs` 自带默认 576×1024 / 4 步 / CFG 1.0。
-- `config/styles.yaml` 的 `validation_status: NOT_RUN` 与 S2/M7 的实际状态不一致（两风格仍是 `NOT_RUN`）。
+- `config/styles.yaml` 的 `validation_status` 已于 2026-11-04 从 `NOT_RUN` 更新为 `PARTIAL`（技术样片 + A/B 选型；完整作品未做）。
 
 ### 2.3 数据契约（3）
 
@@ -136,7 +136,7 @@
 
 ### 2.14 任务注册表（14）
 
-21 种任务：
+22 种任务：
 
 ```text
 doctor.run, build.rebuild, comfy.batch, li.run,
@@ -144,7 +144,7 @@ service.comfy.start, service.comfy.stop,
 package.build, script.generate, segments.build,
 motion.plan, motion.render, audio.qa,
 aesthetic.plan, aesthetic.compare, aesthetic.review,
-static.check, story.check, quality.check, tts.synthesize,
+static.check, style.consistency, story.check, quality.check, tts.synthesize,
 review.accept, review.reject
 ```
 
@@ -234,12 +234,12 @@ start_cosyvoice.bat      COSY_MODEL_CLASS=CosyVoice2
 
 | 规则 | 目标 | 当前实现 |
 |---|---|---|
-| 每个作品一个主风格 | 作品级 `style_id` | 期数有 `style_id` + `style_snapshot`；项目有 `default_style_id`，但不会自动强制 |
-| 全片风格一致 | 第一帧到最后一帧不切换 | `ProductionScript.style_id` / `style_sha256` 有记录；但 `motion.plan` / `aesthetic.plan` 允许 `--style` 覆盖，`comfy.batch` 不校验 |
+| 每个作品一个主风格 | 作品级 `style_id` | 期数 `style_snapshot._style_lock`（revision/hash）；项目 `default_style_id` 仍非强制 |
+| 全片风格一致 | 第一帧到最后一帧不切换 | `style_lock` 锁定期数 snapshot；`motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；`comfy.batch` 仍未按 episode 校验 |
 | 两种风格独立规范 | 视觉规范/提示词/参数/质量评价独立 | `config/styles.yaml` 有独立 `visual_language/positive_prompt/motion/aesthetic_profile`；`static_quality.py` 有独立 checklist |
-| 生成任务不得覆盖 | 任务只继承作品风格 | `motion.plan` / `aesthetic.plan` 的 `style` 参数可覆盖；`build_jobs` 不再检查 style |
-| 改风格要新版本 | 新风格版本或新生产版本，并记录 | UI “应用为快照”直接替换期数 snapshot；没有版本表/历史链 |
-| 质量检查风格一致性 | 能检查风格一致性 | `static_quality` 按风格检查单图；`check_color_continuity` 只检查相邻镜头 LAB/亮度；无风格分类/跨镜头风格门 |
+| 生成任务不得覆盖 | 任务只继承作品风格 | `style_lock.assert_style_request` 已接入 `motion.plan` / `aesthetic.plan` / `static.check`；其他任务待补 |
+| 改风格要新版本 | 新风格版本或新生产版本，并记录 | `attach_lock` revision+1，`history` 保留旧 sha/revision；旧 build 不覆盖；UI 新风格入口待做 |
+| 质量检查风格一致性 | 能检查风格一致性 | `static_quality` 按风格检查单图；`style_consistency.py` 检查调色板/跨镜头 LAB/亮度/饱和度/边缘密度；人工审片仍 PENDING |
 | 两种风格共享基础设施 | FLUX/Wan/FFmpeg 共用 | 是；代码只按 preset 配置分支，不按 style id 写死 |
 
 #### 两套风格系统的实际断层
@@ -255,7 +255,7 @@ start_cosyvoice.bat      COSY_MODEL_CLASS=CosyVoice2
 |---|---|---|
 | 两种视觉风格是否已建立独立规范和配置 | **PASS_STATIC** | `config/styles.yaml` + `style_presets.py` + `docs/VISUAL_STYLE_SPEC.md` + 8 项测试 |
 | 两种风格是否分别完成技术生产验证 | **PASS_VERIFIED**（各 2 镜头技术样片 + M7 人工审片记录） | `experiments/m7_final/ink` 10.087 s、`court` 9.583 s；质量/音频 QA PASS；M7 报告记录人工审片通过 |
-| 单篇作品是否具备作品级风格锁定 + 跨镜头一致性验证 | **PARTIAL**（锁定机制）/ **NOT_RUN**（正式跨镜头一致性验证） | 期数 snapshot + ProductionScript style_id/hash 存在；但任务可覆盖、DB/YAML 脱节、无风格一致性门；81.373 s 工笔是 scroll_shot 路径，不是 motion.plan |
+| 单篇作品是否具备作品级风格锁定 + 跨镜头一致性验证 | **IMPLEMENTED_NOT_VERIFIED**（锁定）/ **PASS_VERIFIED**（P1 跨镜头一致性） | 期数 `_style_lock` + `preset_id`；`style.consistency`；P1 修正后 ΔE 9.22 / luma 7.13 + 人工通过；最终 build 接入待做 |
 
 > M7 的两支短片只能作为“对应风格的技术证据”，不能直接证明完整作品的跨镜头一致性已经验证。81.373 s 工笔是更长案例，但它使用预渲染 clips，同样不是 `motion.plan` 自动运动管线的证据。
 
@@ -282,7 +282,7 @@ start_cosyvoice.bat      COSY_MODEL_CLASS=CosyVoice2
 | S2 工笔/水墨样片 | `docs/S2_TEST_REPORT.md` | `PARTIAL`（技术过，人工 PENDING） | 是 | CLI | 历史 |
 | 管线 A 水墨分层 | `docs/PIPELINE_AB_VALIDATION.md`、`experiments/pipeline_a` | `PARTIAL` | 实验脚本 | CLI | 历史 |
 | 管线 B 工笔长卷 | `docs/PIPELINE_AB_VALIDATION.md`、`experiments/pipeline_b` | `PARTIAL` | 实验脚本 | CLI | 历史 |
-| S3 双风格链路 | 见 §2.23；不再用单一 PARTIAL/NOT_RUN 概括 | **PASS_STATIC**（规范/配置） / **PASS_VERIFIED**（各风格 2 镜头技术样片，M7） / **PARTIAL**（作品级风格锁定） / **NOT_RUN**（跨镜头风格一致性正式验证） | 是（motion/aesthetic 任务） | 是 | M7 两片；81.373 s 工笔为 scroll_shot 路径，不是 motion.plan |
+| S3 双风格链路 | 见 §2.23；不再用单一 PARTIAL/NOT_RUN 概括 | **PASS_STATIC**（规范/配置） / **PASS_VERIFIED**（各风格 2 镜头技术样片，M7） / **IMPLEMENTED_NOT_VERIFIED**（作品级锁定 + 跨镜头技术门） / **PENDING_HUMAN_REVIEW**（人工审片） | 是（motion/aesthetic 任务） | 是 | M7 两片；81.373 s 工笔为 scroll_shot 路径，不是 motion.plan |
 | Aesthetic A/B | `docs/AESTHETIC_DESIGN_REPORT.md`、`experiments/aesthetic` | `PARTIAL` + `PENDING_HUMAN_REVIEW` | 是 | 是（任务注册） | 8 张实图 + 联系表 |
 | M1–M4 运动 | `docs/M1..M4` | PASS/人工记录 | 是 | 是 | `experiments/m1..m4` |
 | M5 Wan mask | `docs/M5_WAN_MOTION_MASK_REPORT.md` | `NOT_RUN (UNSUPPORTED_WORKFLOW)` | 否 | 否 | 否 |

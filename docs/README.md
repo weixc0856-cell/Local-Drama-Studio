@@ -30,7 +30,7 @@
 | [proposals/AUDIOVISUAL_GAP_AUDIT.md](proposals/AUDIOVISUAL_GAP_AUDIT.md) | 音频/运动/TTS/叙事/QA 仓库差距审计 |
 | [proposals/PRD_AUDIOVISUAL_UPGRADE_PROPOSAL.md](proposals/PRD_AUDIOVISUAL_UPGRADE_PROPOSAL.md) | 视听能力升级需求、schema、FFmpeg 方案、批次与验收提案 |
 | [proposals/VOICE_ASSET_SOURCE_REVIEW.md](proposals/VOICE_ASSET_SOURCE_REVIEW.md) | 声音来源核验、已拉取候选、授权阻断项与首批种子库状态 |
-| [proposals/PRD_AMENDMENT_2026-11-04.md](proposals/PRD_AMENDMENT_2026-11-04.md) | 已合并的 PRD 变更提案：AUDIO / TTS-007 / VOICE-ASSET / MOTION / STORY / QA，待批准 |
+| [proposals/PRD_AMENDMENT_2026-11-04.md](proposals/PRD_AMENDMENT_2026-11-04.md) | 2026-11-04 已批准的变更提案：AUDIO / TTS-007 / VOICE-ASSET / MOTION / STORY / QA，已并入 PRD §24 |
 
 > 提案不是已批准需求；批准前不写入 `docs/PRD.md`，不据此开工。
 

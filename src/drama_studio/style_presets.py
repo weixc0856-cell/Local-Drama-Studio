@@ -56,6 +56,7 @@ STYLE_ENTITY_FIELDS = (
     "aspect_ratio",
     "applicable_content_types",
     "source_files",
+    "preset_id",
 )
 
 AbilityStatus = Literal[
@@ -432,7 +433,31 @@ class StylePreset(BaseModel):
     def as_style_entity(self) -> dict[str, object]:
         """Return exactly the fields accepted by ``WorkspaceStore.create_style``."""
 
-        return {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS}
+        entity = {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS if field != "preset_id"}
+        entity["preset_id"] = self.id
+        return entity
+
+
+class BaselineShot(BaseModel):
+    """One human-selected A/B variant recorded as a production baseline."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    variant: Literal["A", "B"]
+    prompt: str = Field(min_length=1, max_length=8000)
+    prompt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    sections: dict[str, str] = Field(default_factory=dict)
+    rationale: str = Field(min_length=1, max_length=500)
+
+
+class ProductionBaseline(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    decided_at: str = Field(min_length=1, max_length=40)
+    decided_by: str = Field(min_length=1, max_length=80)
+    source_snapshot: str = Field(min_length=1, max_length=500)
+    shots: dict[str, BaselineShot] = Field(min_length=1)
+    note: str = Field(default="", max_length=1000)
 
 
 class StylePresetRegistry(BaseModel):
@@ -440,12 +465,16 @@ class StylePresetRegistry(BaseModel):
 
     schema_version: str = Field(min_length=1)
     styles: dict[str, StylePreset] = Field(min_length=1)
+    production_baselines: dict[str, ProductionBaseline] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def _keys_match_ids(self) -> "StylePresetRegistry":
         for key, preset in self.styles.items():
             if key != preset.id:
                 raise ValueError(f"styles key {key!r} does not match preset id {preset.id!r}")
+        for key in self.production_baselines:
+            if key not in self.styles:
+                raise ValueError(f"production_baselines key {key!r} is not a style id")
         return self
 
     def get(self, style_id: str) -> StylePreset:

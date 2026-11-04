@@ -26,7 +26,7 @@
 
 全部有 `quality_report.json` PASS；工笔 81 s 还有 `verification_report.json` PASS 与 SHA-256 `84628a06…` 一致。
 
-测试：审计时 **323 passed**；Phase C P0-1 后 **325 passed**；后续多音色/故事圣经批次 **354 passed**。`doctor`：**15 PASS_VERIFIED / 3 NOT_RUN / 0 FAIL**（三个服务未启动）。
+测试：审计时 **323 passed**；Phase C P0-1 后 **325 passed**；后续多音色/故事圣经批次 **372 passed**。`doctor`：**15 PASS_VERIFIED / 3 NOT_RUN / 0 FAIL**（三个服务未启动）。
 
 ---
 
@@ -111,7 +111,7 @@ flowchart TD
 | D-04 | CLAUDE.md / ARCHITECTURE 把 `Storyboard` 写成数据契约边界 | `models.Storyboard` 只被测试使用；生产用 `ProductionScript` | 新开发者容易接错模型 |
 | D-05 | 工作流页写“写入路径未实现”“分镜生成器未实现”“r3_tts.py 尚未参数化” | `package.build` / `script.generate` / `tts.synthesize` 已真实执行 | UI 自相矛盾，用户会以为功能不存在 |
 | D-06 | `docs/ENVIRONMENT.md` 把文本编码器/VAE 标为“待下载” | `doctor` 显示 3+3 个文件、10.23/10.78 GiB，大小校验通过 | 环境文档过期 |
-| D-07 | `docs/WORKSPACE_REPORT.md` 记 44 + 61 测试；`docs/M8_0_STATE_AUDIT.md` 记 246；`docs/PRD.md` §21 记 136 | 审计时 **323**；Phase C P0-1 后 **325**；后续批次 **354** | 测试基线不可信 |
+| D-07 | `docs/WORKSPACE_REPORT.md` 记 44 + 61 测试；`docs/M8_0_STATE_AUDIT.md` 记 246；`docs/PRD.md` §21 记 136 | 审计时 **323**；Phase C P0-1 后 **325**；后续批次 **372** | 测试基线不可信 |
 | D-08 | `workflows/README.md` 列出 5 个不存在的 `flux_*` / `wan_*` 文件 | 实际是 `r0_*` / `r1_*` | 命名表是目标，不是现状 |
 | D-09 | 根 README/CLAUDE 只列 P1 14 s、R3 38 s | 本机还有 81.373 s 工笔完整成片 | 低估了现有生产能力 |
 | D-10 | `docs/README.md` 未索引 M8/声景/zero-shot | 工作区已有对应代码/文档 | 新接手者看不到最新工作 |

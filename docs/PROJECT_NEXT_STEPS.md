@@ -40,8 +40,9 @@
 
 | 项 | 内容 |
 |---|---|
+| **状态** | `IMPLEMENTED_NOT_VERIFIED`：`style_lock.py` 写 `_style_lock{revision,sha256,history}`；`motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；输出回查 lock |
 | **目标** | 作品/期数 `style_id` 单一来源；期数/ProductionScript/Shot/资产继承；生成任务不得覆盖；改风格走新版本 |
-| **当前问题** | `motion.plan`/`aesthetic.plan` 可 `--style` 覆盖；`comfy.batch` 不校验；DB 风格与 YAML preset 脱节；改风格直接替换 snapshot；无版本链 |
+| **当前问题** | DB 风格与 YAML preset 仍脱节；`comfy.batch` 不校验；新风格 UI 入口与真实改版生产未做 |
 | **涉及模块** | `style_presets.py`、`production.py`、`workspace/tasks.py`、`workspace/store.py`、`workspace/discovery.py`、`aesthetic_plan.py`、`motion_build.py`、`config/styles.yaml`、DB schema |
 | **前置** | P0-1 不依赖；可并行 |
 | **交付** | 建立 DB 风格 ↔ YAML preset 映射；`ProductionScript` 已有 `style_id/style_sha256`，补 Shot/资产继承；任务参数移除或限制 `style` 覆盖；改风格创建新 snapshot/新 production 版本并记录；质量门校验同一 style_id |
@@ -251,8 +252,9 @@
 
 | 项 | 内容 |
 |---|---|
+| **状态** | `PASS_VERIFIED`：P1 4 镜头修正后技术 `OK`（ΔE 9.22 / luma 7.13）；项目所有者 2026-11-04 明确通过；最终 build 接入待做 |
 | **目标** | 跨镜头风格一致性门（色板/材质/线条/风格分类） |
-| **当前问题** | 只有相邻 LAB/亮度 |
+| **当前问题** | 已做调色板/跨镜头 LAB/亮度/饱和度/边缘密度；材质/线条分类仍无自动模型 |
 | **涉及模块** | `quality.py`、`static_quality.py`、`aesthetics.py` |
 | **前置** | P0-2 |
 | **交付** | 风格指标 + 报告 + 阈值 |
@@ -316,7 +318,7 @@
 
 - S1 规范/配置 `PASS_STATIC`。
 - 每种风格 2 镜头技术样片 `PASS_VERIFIED`（M7）。
-- 作品级锁定 `PARTIAL`；跨镜头一致性 `NOT_RUN`。
+- 作品级锁定 `IMPLEMENTED_NOT_VERIFIED`；跨镜头一致性 `PASS_VERIFIED`（P1 修正后 + 人工通过；最终 build 接入待做）。
 - 结论：**P0-2 + P2-5** 是生产化关键；不是再生成更多样片。
 
 ### 6.4 镜头级状态管理

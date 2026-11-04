@@ -168,14 +168,14 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 - 在期数“视觉”Tab 可以看到当前快照、色板、参考资产、正/负提示词。
 - “应用新风格快照”会**替换**当前期数快照；已有成片/manifest 不变。
-- 当前没有“风格版本历史”；更换前请自己记录旧 `style_id`/`style_sha256`。
+- 期数详情“风格版本”可创建新 revision；旧 `style_id`/`style_sha256` 写入 `_style_lock.history`，历史构建目录不覆盖。
 - 当前 UI 的风格是 DB 风格，**不会自动同步到 `config/styles.yaml` 的运动/美学 preset**。要做 `motion.plan`/`aesthetic.plan`，风格 id 必须是 `court_green_fine_line` 或 `ink_wash`（或显式 `--style`）。
 
 ### 3.5 创建任务
 
 进入 `#/tasks`（任务中心）→ 选择任务类型 → 填参数 → 勾选确认（危险任务）→ “启动任务”。
 
-可用的任务类型（21 种）：
+可用的任务类型（22 种）：
 
 ```text
 doctor.run                 环境诊断
@@ -194,6 +194,7 @@ aesthetic.plan             镜头美学计划
 aesthetic.compare          美学 A/B 对照
 aesthetic.review           美学人工结论
 static.check               静态质量门（单镜头）
+style.consistency          跨镜头风格一致性
 story.check                故事圣经连续性检查
 quality.check              技术质量检查
 tts.synthesize             配音合成
@@ -226,7 +227,7 @@ review.reject              人工验收·拒绝
 | 触发静态质量门 | 任务中心 `static.check`（单镜头）；`motion.plan` 默认要求报告，缺失即失败 |
 | 从 UI 跑运动质量门 | 没有 `motion_manifest` 字段；只能 API/CLI |
 | 美学 A/B 结果专门视图 | 没有；任务结果/文件在 `experiments/aesthetic/...` |
-| 风格版本历史 | 没有 |
+| 风格版本历史 | 期数详情可切换并自动记录 revision/history；旧构建保留 |
 | 批处理/断点续跑 | 没有 |
 | 自动发布 | 没有 |
 

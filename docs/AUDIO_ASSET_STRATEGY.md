@@ -1,9 +1,11 @@
 # 音频素材与授权 · 落地方案
 
 > 起草日期：2026-11-04
-> 状态：`DESIGN`（方案，未实施；本文件不改变任何代码）
+> 状态：`ACTIVE`（2026-11-04 部分实施；以代码与资产清单为准）
 > 前置：[AUDIO_SOUNDSCAPE_PLAN.md](AUDIO_SOUNDSCAPE_PLAN.md)（S1 已落地）、[ASSET_AND_LICENSE_REGISTRY.md](ASSET_AND_LICENSE_REGISTRY.md) §5
 > 本机实测数据均在文中标注来源；凡是与建议不一致的地方，以实测与条款原文为准。
+
+> **2026-11-04 决策**：`narrator_self` 是唯一 `APPROVED` 生产音色；`sft_male_01`/`sft_female_01` 正式生产停用；AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` = 0。正式发布前必须在 `assets/audio/manifest.json` 登记至少 1 首 CC0/公有领域 BGM（含完整 SHA-256 与来源），未登记音频不得混入成片。
 
 ## 0. 结论与排序
 
