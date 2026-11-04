@@ -62,7 +62,7 @@ class ScriptShot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     shot_id: str = Field(pattern=r"^shot_\d{3}$")
-    index: int = Field(ge=1, le=6)
+    index: int = Field(ge=1, le=24)
     type: Literal["image", "video"] = "image"
     duration_seconds: float = Field(ge=1.0, le=15.0)
     motion: str = Field(min_length=1, max_length=80)
@@ -85,8 +85,10 @@ class ProductionScript(BaseModel):
     schema_version: str = "1.0"
     title: str = Field(min_length=1, max_length=80)
     logline: str = Field(min_length=4, max_length=300)
-    lines: list[ScriptLine] = Field(min_length=1, max_length=10)
-    shots: list[ScriptShot] = Field(min_length=1, max_length=6)
+    # A full-length poetry work needs one line per registered stanza and one
+    # shot per narrative beat; the caps here match the ContentPackage limits.
+    lines: list[ScriptLine] = Field(min_length=1, max_length=60)
+    shots: list[ScriptShot] = Field(min_length=1, max_length=24)
     style_id: str | None = None
     style_sha256: str
     package_sha256: str

@@ -24,15 +24,15 @@ import argparse
 import hashlib
 import json
 import math
-import random
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageFilter
 
 from drama_studio.config import find_project_root
+from drama_studio.motion.texture import make_texture as _make_texture
 from drama_studio.quality import check_image, check_video
 from drama_studio.style_presets import load_style_presets
 
@@ -75,41 +75,10 @@ def smoothstep(t: float) -> float:
 
 
 def make_texture(kind: str, path: Path, seed: int = 7) -> dict:
-    """Neutral 128-grey texture; overlaid at low opacity so it never dominates."""
+    """Delegate to the production motion package; keep this script's rel() shape."""
 
-    rng = random.Random(seed)
-    base = Image.new("L", (W, H), 128)
-    if kind == "silk":
-        low = Image.effect_noise((W // 8, H // 8), 24).resize((W, H), Image.BICUBIC)
-        base = Image.blend(base, low, 0.35)
-        draw = ImageDraw.Draw(base)
-        for y in range(0, H, 3):
-            draw.line([(0, y), (W, y)], fill=128 + rng.choice((-8, -6, -4, 4, 6, 8)), width=1)
-        for x in range(0, W, 3):
-            draw.line([(x, 0), (x, H)], fill=128 + rng.choice((-8, -6, -4, 4, 6, 8)), width=1)
-        base = base.filter(ImageFilter.GaussianBlur(0.6))
-        base = Image.blend(base, Image.effect_noise((W, H), 28), 0.30)
-    elif kind == "raw_paper":
-        blotch = Image.effect_noise((W // 16, H // 16), 40).resize((W, H), Image.BICUBIC)
-        blotch = blotch.filter(ImageFilter.GaussianBlur(6))
-        base = Image.blend(base, blotch, 0.40)
-        draw = ImageDraw.Draw(base)
-        for _ in range(900):
-            x0, y0 = rng.randrange(W), rng.randrange(H)
-            length = rng.randint(4, 18)
-            angle = rng.uniform(-0.5, 0.5)
-            x1 = x0 + length * math.cos(angle)
-            y1 = y0 + length * math.sin(angle)
-            draw.line([(x0, y0), (x1, y1)], fill=128 + rng.choice((-10, -8, -6, 6, 8, 10)), width=1)
-        base = base.filter(ImageFilter.GaussianBlur(0.4))
-        base = Image.blend(base, Image.effect_noise((W, H), 26), 0.30)
-    else:
-        raise ValueError(f"unknown texture kind: {kind}")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    # RGB (not L): blending a grey texture into an RGB frame makes FFmpeg
-    # negotiate a grey intermediate and silently drop all colour.
-    base.convert("RGB").save(path)
-    return {"path": rel(path), "sha256": sha256(path), "kind": kind, "size": list(base.size)}
+    info = _make_texture(kind, path, seed=seed, size=(W, H))
+    return {"path": rel(path), **{key: value for key, value in info.items() if key != "path"}}
 
 
 # ---------------------------------------------------------------- ink masks
@@ -181,10 +150,19 @@ def build_scroll(
     out: Path,
     duration: float,
     texture_opacity: float,
+    pan_start: float = 0.0,
+    pan_end: float = 1.0,
 ) -> list[str]:
+    """Crop-window scroll. ``pan_start``/``pan_end`` are fractions of the pan range.
+
+    Defaults (0 -> 1) reproduce the original full-width left-to-right scroll.
+    A smaller range yields the same constant speed over a shorter shot.
+    """
+    if not (0.0 <= pan_start <= 1.0 and 0.0 <= pan_end <= 1.0):
+        raise ValueError("pan_start/pan_end must be within 0..1")
     graph = (
         f"[0:v]scale=-2:{H}:flags=lanczos,format=rgb24,"
-        f"crop={W}:{H}:x='(in_w-out_w)*(t/{duration:.3f})':y=0,fps={FPS}[base];"
+        f"crop={W}:{H}:x='(in_w-out_w)*({pan_start:.6f}+{pan_end - pan_start:.6f}*(t/{duration:.3f}))':y=0,fps={FPS}[base];"
         f"[1:v]format=rgb24[tex];"
         f"[base][tex]blend=all_mode=overlay:all_opacity={texture_opacity:.2f},"
         f"format=yuv420p[outv]"
@@ -296,7 +274,7 @@ def main(argv: list[str] | None = None) -> int:
     texture_info = make_texture(texture_kind, texture, seed=args.texture_seed)
 
     mask_info = None
-    if preset.id == "ink_wash":
+    if "ink_matte" in preset.compositing.primitives:
         mask_info = make_ink_masks(out_dir / "masks", duration=args.duration, seed=args.mask_seed)
         output = out_dir / "final_9x16.mp4"
         argv_used = build_ink(

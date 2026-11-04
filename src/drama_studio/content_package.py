@@ -130,7 +130,10 @@ def build_content_package(
     subtitle_segments = []
     scene_plan = []
     visual_prompts = []
-    for index, text in enumerate(lines[:5], start=1):
+    # Every registered segment becomes a subtitle/scene slot. The ContentPackage
+    # schema caps these lists (120 subtitles / 60 scenes); silently truncating
+    # here would drop real source lines from a full-length work.
+    for index, text in enumerate(lines, start=1):
         segment_id = f"sub_{index:03d}"
         duration = _scene_duration(text)
         subtitle_segments.append(

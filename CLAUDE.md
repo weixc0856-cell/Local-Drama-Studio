@@ -8,7 +8,7 @@ Local AI short-drama production lab: script → storyboard → character/scene a
 
 ComfyUI is **only** the generation engine. Python (`src/drama_studio`) owns business state, scheduling, retries and quality gates. FFmpeg owns composition. The local LLM (`D:\AI`) and CosyVoice (`D:\AI\CosyVoice-Runtime`) are external HTTP services.
 
-**Current state: R0-R3 technical validation is complete (`0204979`), v1.0 docs are committed (`ad921ed`), LI-1.6 is committed (`e21dc0d`), and the local workspace is implemented in the working tree. P0 baseline repair is applied. P1 production closure is implemented and executed on a short fixture: ContentPackage → LLM script/storyboard → parameterized TTS → FLUX jobs → segments → build → quality; final 14.0 s / 1080×1920 with 4 shots and female voice, quality PASS. Visual direction has converged to two independent pipelines (A = ink wash, B = court green fine-line) sharing one technical stack; S1 config is `PASS_STATIC`, and S2 plus first-batch pipeline A/B samples have technical checks passing while the static gate and human aesthetic review remain `PARTIAL`/PENDING. R3-D remaining: BGM/SFX and commercial licensing; R4-R7 are intentionally not implemented.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
+**Current state: R0-R3 technical validation is complete (`0204979`), v1.0 docs are committed (`ad921ed`), LI-1.6 is committed (`e21dc0d`), and the local workspace is implemented in the working tree. P0 baseline repair is applied. P1 production closure is implemented and executed on a short fixture: ContentPackage → LLM script/storyboard → parameterized TTS → FLUX jobs → segments → build → quality; final 14.0 s / 1080×1920 with 4 shots and female voice, quality PASS. Visual direction has converged to two independent pipelines (A = ink wash, B = court green fine-line) sharing one technical stack; S1 config is `PASS_STATIC`, and S2 plus first-batch pipeline A/B samples have technical checks passing while the static gate and human aesthetic review remain `PARTIAL`/PENDING. R3-D remaining: BGM/SFX and commercial licensing; R4-R7 are intentionally not implemented. 2026-11-04 adds deterministic motion (camera easing, local micro-motion, crossfade/ink transitions) in `src/drama_studio/motion/`, driven only by `config/styles.yaml` motion policy and wired through `production.build_motion_plan` → `scripts/motion_build.py` → `segments --sequence` → `r3_build`; workspace tasks `motion.plan` / `motion.render`. Voice adds `narration` / `recitation` / `classical_recitation`, a phrase-level pronunciation layer, and per-line audio QA; real `chant` is unsupported and refused. The M1–M7 baseline (semantic protection, damped motion, temporal gates, transitions, smooth recitation, dual-style films) passed human review on 2026-11-04; keep `PARTIAL` for unverified extensions (Wan motion mask, chant, BGM/SFX, commercial licensing). 2026-11-04 also adds the shot aesthetic layer: six-dimension designs, A/B variants that differ on exactly one axis, config-driven style profiles, ordered prompt compilation, frozen snapshots, A/B contact sheets and risk metrics. `aesthetic.plan → comfy.batch → aesthetic.compare → aesthetic.review` is wired through the production chain and the workspace; the 4 test shots are `PARTIAL` and the aesthetic decision is `PENDING_HUMAN_REVIEW`.** Do not build ahead of the current stage; each stage must be executed on this machine and evidenced before the next starts.
 
 ## Hard environment invariants
 
@@ -52,6 +52,21 @@ scripts\doctor.ps1
 # Local production workspace: read-only derivation + restricted task registry (port 8765)
 .venv\Scripts\drama.exe serve --port 8765
 
+# Aesthetic plan + A/B (plan is CPU; generation uses comfy.batch, one GPU job at a time)
+.venv\Scripts\python.exe scripts\aesthetic_plan.py --script <production_script.json> --style ink_wash --designs <designs.json> --out <aesthetic_plan.json>
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs <snapshot>/A/jobs_A.json --timeout 7200
+.venv\Scripts\python.exe scripts\r1_batch.py --jobs <snapshot>/B/jobs_B.json --timeout 7200
+.venv\Scripts\python.exe scripts\aesthetic_compare.py --plan <aesthetic_plan.json> --images <snapshot>/images --out <compare_dir>
+.venv\Scripts\python.exe scripts\static_quality.py --image <png> --style <style> --aesthetic <shot_aesthetic.json> --out <static_quality.json>
+.venv\Scripts\python.exe -m drama_studio.quality --aesthetic-motion <motion_manifest.json>
+
+# Deterministic motion (CPU only; no FLUX/Wan)
+.venv\Scripts\python.exe -m drama_studio.production --motion-plan --script <script> --images <images> --audio <audio_manifest> --out <motion_shots.json> --style ink_wash --regions <motion_regions.json> --align-audio --leading-ms 450 --tail-seconds 1.0
+.venv\Scripts\python.exe scripts\motion_build.py --plan <motion_shots.json> --out <motion_dir>
+.venv\Scripts\python.exe scripts\transition_probe.py --out experiments/mv/transition
+.venv\Scripts\python.exe -m drama_studio.quality --audio-manifest <audio_manifest.json> --timeline <timeline.json>
+D:\AI\CosyVoice-Runtime\venv\Scripts\python.exe -X utf8 scripts\tts_qa.py --manifest <audio_manifest.json>
+
 # Generation engine (heavy first run: PyTorch XPU + ComfyUI deps)
 scripts\setup.ps1 -WithComfyUI
 scripts\start.ps1          # port 8188, waits for /system_stats
@@ -85,7 +100,11 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `scripts/pipeline_ink.py` — pipeline A per-sample layers (cloud/water/boat/texture) with deterministic FFmpeg motion; `scripts/s2_build.py` covers the gongbi scroll and the earlier reveal build.
 - `src/drama_studio/production.py` — `ProductionScript` → ComfyUI jobs and R3 `segments.json`; refuses missing images/audio.
 - `src/drama_studio/quality.py` — independent blank/black image, decode, duration, audio-peak and final-hash checks.
-- `src/drama_studio/voice/tts.py` — parameterized CosyVoice narration; shared by CLI and workspace task.
+- `src/drama_studio/voice/tts.py` — parameterized CosyVoice narration; shared by CLI and workspace task. Keeps source/display/TTS text layers apart and writes `pronunciation_report.json`.
+- `src/drama_studio/voice/pronunciation.py` / `recitation.py` — phrase-level reading lexicon (`config/pronunciation.yaml`) and recitation modes; no pitch/phoneme control exists.
+- `src/drama_studio/motion/` — camera easing, authored-region local micro-motion, and mask-based transitions. `spec.py` resolves style policy; `render.py` builds one FFmpeg graph per shot and assembles a duration-preserving sequence; `transition.py` builds procedural masks.
+- `src/drama_studio/aesthetics.py` — six-dimension shot design, A/B variant invariant, style profiles, ordered prompt compiler. `config/styles.yaml` `aesthetic_profile` is the only style-specific source; no style-id branch in code.
+- `scripts/aesthetic_plan.py` / `scripts/aesthetic_compare.py` — freeze A/B snapshots + jobs, then build contact sheets and risk metrics. FLUX.2 negative conditioning is zeroed with CFG 1.0: negatives are recorded but not control; use positive constraints.
 - `src/drama_studio/workspace/` — local workspace backend: SQLite state (`projects/workspace.db`), derived production state (`discovery.py`), safe media/Range/thumbnails (`media.py`), restricted task registry + single-flight runner (`tasks.py`), FastAPI app (`api.py`). `src/drama_studio/web/` is a build-free ES-module UI served at `/static`.
 - `src/drama_studio/doctor.py` — emits `PASS_VERIFIED / PASS_LIMITED / FAIL / NOT_RUN` with evidence. It never guesses: unimplemented services are `NOT_RUN`.
 - `docs/ARCHITECTURE.md` — the full target design: SQLite state machine, ComfyUI protocol, prompt locking, GPU rules, FFmpeg pipeline. Implemented modules are only those listed above; everything else there is planned.

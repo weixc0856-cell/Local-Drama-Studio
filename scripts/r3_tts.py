@@ -11,6 +11,7 @@ import argparse
 import json
 from pathlib import Path
 
+from drama_studio.voice.recitation import RecitationError
 from drama_studio.voice.tts import TTSError, synthesize_narration
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +24,7 @@ def main() -> int:
     parser.add_argument("--manifest", default=None, help="audio_manifest.json path (default: <out>/../audio_manifest.json)")
     parser.add_argument("--speaker", default=None, help="override CosyVoice preset speaker")
     parser.add_argument("--speed", type=float, default=None, help="override narration speed")
+    parser.add_argument("--mode", default=None, help="narration / recitation / classical_recitation")
     parser.add_argument("--base-url", default=None, help="CosyVoice base URL (default: config/settings.yaml)")
     parser.add_argument("--timeout", type=float, default=300.0)
     parser.add_argument("--force", action="store_true", help="re-synthesize even when the manifest is valid")
@@ -39,10 +41,15 @@ def main() -> int:
             root=ROOT,
             speaker=args.speaker,
             speed=args.speed,
+            mode=args.mode,
             base_url=args.base_url,
             force=args.force,
             timeout=args.timeout,
         )
+    except RecitationError as exc:
+        print(json.dumps({"ok": False, "capability": "unsupported_chant", "error": str(exc)},
+                         ensure_ascii=False))
+        return 3
     except TTSError as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False))
         return 1
@@ -53,6 +60,8 @@ def main() -> int:
                 "manifest": str(result.manifest),
                 "speaker": result.speaker,
                 "speed": result.speed,
+                "mode": result.mode,
+                "pronunciation_report": str(result.pronunciation_report) if result.pronunciation_report else None,
                 "lines": result.line_count,
                 "total_seconds": result.total_seconds,
                 "reused": result.reused,

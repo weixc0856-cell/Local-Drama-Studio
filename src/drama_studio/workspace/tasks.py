@@ -18,9 +18,9 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from ..config import find_project_root, load_settings
 from .store import WorkspaceStore, now_iso
@@ -107,6 +107,8 @@ class ScriptParams(BaseModel):
     speed: float = Field(default=1.0, ge=0.5, le=2.0)
     max_tokens: int = Field(default=2000, ge=256, le=8000)
     timeout: float = Field(default=900.0, ge=30, le=3600)
+    image_width: int = Field(default=576, ge=256, le=2048)
+    image_height: int = Field(default=1024, ge=256, le=2048)
     reuse: bool = False
     confirm: bool = False
 
@@ -119,6 +121,12 @@ class SegmentsParams(BaseModel):
     images: str | None = Field(default=None, max_length=300)
     audio: str | None = Field(default=None, max_length=300)
     out: str | None = Field(default=None, max_length=300)
+    clips_dir: str | None = Field(default=None, max_length=300)
+    sequence: str | None = Field(default=None, max_length=300)
+    align_audio: bool = False
+    leading_ms: int = Field(default=0, ge=0, le=5000)
+    gap_ms: int = Field(default=800, ge=0, le=5000)
+    tail_seconds: float = Field(default=0.0, ge=0.0, le=10.0)
 
 
 class QualityParams(BaseModel):
@@ -126,6 +134,13 @@ class QualityParams(BaseModel):
 
     episode_id: str = Field(min_length=1, max_length=120)
     manifest: str | None = Field(default=None, max_length=400)
+    motion_manifest: str | None = Field(default=None, max_length=400)
+
+    @model_validator(mode="after")
+    def _one_manifest(self) -> "QualityParams":
+        if self.manifest and self.motion_manifest:
+            raise ValueError("manifest 与 motion_manifest 只能二选一")
+        return self
 
 
 class TTSParams(BaseModel):
@@ -134,9 +149,83 @@ class TTSParams(BaseModel):
     episode_id: str = Field(min_length=1, max_length=120)
     speaker: str | None = Field(default=None, max_length=80)
     speed: float | None = Field(default=None, ge=0.5, le=2.0)
+    mode: str | None = Field(default=None, max_length=40)
     base_url: str | None = Field(default=None, max_length=300)
     force: bool = False
     timeout: float = Field(default=300.0, ge=30, le=3600)
+    confirm: bool = False
+
+
+class MotionPlanParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    script: str | None = Field(default=None, max_length=300)
+    images: str | None = Field(default=None, max_length=300)
+    audio: str | None = Field(default=None, max_length=300)
+    out: str | None = Field(default=None, max_length=300)
+    style: str | None = Field(default=None, max_length=80, description="style preset id")
+    regions: str | None = Field(default=None, max_length=300)
+    align_audio: bool = True
+    leading_ms: int = Field(default=0, ge=0, le=5000)
+    gap_ms: int = Field(default=800, ge=0, le=5000)
+    tail_seconds: float = Field(default=0.0, ge=0.0, le=10.0)
+    transitions: bool = True
+
+
+class AudioQAParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    manifest: str | None = Field(default=None, max_length=400)
+    timeline: str | None = Field(default=None, max_length=400)
+
+
+class AestheticPlanParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    script: str | None = Field(default=None, max_length=300)
+    style: str | None = Field(default=None, max_length=80)
+    designs: str | None = Field(default=None, max_length=300)
+    axes: str | None = Field(default=None, max_length=300)
+    out: str | None = Field(default=None, max_length=300)
+    snapshot_root: str | None = Field(default=None, max_length=300)
+    seed_base: int = Field(default=8100, ge=0, le=999999)
+    width: int = Field(default=576, ge=256, le=2048)
+    height: int = Field(default=1024, ge=256, le=2048)
+    steps: int = Field(default=4, ge=1, le=50)
+    cfg: float = Field(default=1.0, ge=0.0, le=20.0)
+
+
+class AestheticCompareParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    plan: str | None = Field(default=None, max_length=300)
+    images: str | None = Field(default=None, max_length=300)
+    out: str | None = Field(default=None, max_length=300)
+
+
+class AestheticReviewParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    report: str | None = Field(default=None, max_length=300)
+    decision: Literal["PASS", "REVISE", "REJECT"]
+    note: str = Field(default="", max_length=1000)
+    shot_id: str | None = Field(default=None, max_length=40)
+    variant: Literal["A", "B"] | None = None
+
+
+class MotionRenderParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    plan: str | None = Field(default=None, max_length=300)
+    out: str | None = Field(default=None, max_length=300)
+    sequence: bool = True
+    quality: bool = True
     confirm: bool = False
 
 
@@ -512,6 +601,8 @@ def _tts_argv(params: TTSParams, task_id: str) -> list[str]:
         argv += ["--speaker", params.speaker]
     if params.speed is not None:
         argv += ["--speed", str(params.speed)]
+    if params.mode:
+        argv += ["--mode", params.mode]
     if params.base_url:
         argv += ["--base-url", params.base_url]
     if params.force:
@@ -651,6 +742,8 @@ def _script_after(params: ScriptParams, task_id: str, store: WorkspaceStore) -> 
         root=store.root,
         episode_root=base,
         jobs_path=base / "comfy" / "jobs.json",
+        width=params.image_width,
+        height=params.image_height,
     )
     result.update({"script": _rel(out), "style": _rel(style_path), "shots": len(script.get("shots") or [])})
     return result
@@ -677,18 +770,36 @@ def _segments_prereqs(params: SegmentsParams, store: WorkspaceStore) -> list[str
         missing.append(f"缺少图片目录 {_rel(images)}")
     if not audio.is_file():
         missing.append(f"缺少 {_rel(audio)}")
+    if params.clips_dir:
+        clips = (store.root / params.clips_dir).resolve()
+        if not clips.is_dir():
+            missing.append(f"缺少动态片段目录 {_rel(clips)}")
+    if params.sequence:
+        sequence = (store.root / params.sequence).resolve()
+        if not sequence.is_file():
+            missing.append(f"缺少动态序列 {_rel(sequence)}")
     return missing
 
 
 def _segments_argv(params: SegmentsParams, task_id: str) -> list[str]:
     script, images, audio, out = _segments_paths(params, _STORE_REF[0])
-    return [
+    argv = [
         sys.executable, "-m", "drama_studio.production",
         "--script", _rel(script),
         "--images", _rel(images),
         "--audio", _rel(audio),
         "--out", _rel(out),
     ]
+    if params.clips_dir:
+        argv += ["--clips", _rel((_STORE_REF[0].root / params.clips_dir).resolve())]
+    if params.sequence:
+        argv += ["--sequence", _rel((_STORE_REF[0].root / params.sequence).resolve())]
+    argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
+    if params.align_audio:
+        argv += ["--align-audio"]
+        if params.tail_seconds:
+            argv += ["--tail-seconds", str(params.tail_seconds)]
+    return argv
 
 
 def _segments_after(params: SegmentsParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
@@ -698,6 +809,8 @@ def _segments_after(params: SegmentsParams, task_id: str, store: WorkspaceStore)
 
 
 def _quality_paths(params: QualityParams, store: WorkspaceStore) -> Path:
+    if params.motion_manifest:
+        return (store.root / params.motion_manifest).resolve()
     if params.manifest:
         return (store.root / params.manifest).resolve()
     _episode_root(params.episode_id, store)
@@ -719,14 +832,348 @@ def _quality_prereqs(params: QualityParams, store: WorkspaceStore) -> list[str]:
 
 def _quality_argv(params: QualityParams, task_id: str) -> list[str]:
     path = _quality_paths(params, _STORE_REF[0])
-    return [sys.executable, "-m", "drama_studio.quality", "--manifest", _rel(path), "--root", "."]
+    flag = "--motion-manifest" if params.motion_manifest else "--manifest"
+    return [sys.executable, "-m", "drama_studio.quality", flag, _rel(path), "--root", "."]
 
 
 def _quality_after(params: QualityParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
     path = _quality_paths(params, store)
-    report = path.parent / "quality_report.json"
+    name = "motion_quality_report.json" if params.motion_manifest else "quality_report.json"
+    report = path.parent / name
     data = json.loads(report.read_text(encoding="utf-8"))
-    return {"report": _rel(report), "status": data.get("status"), "final": (data.get("final") or {}).get("status")}
+    return {
+        "report": _rel(report),
+        "status": data.get("status"),
+        "code": data.get("code"),
+        "final": (data.get("final") or {}).get("status"),
+        "temporal": (data.get("temporal") or {}).get("status"),
+    }
+
+
+def _motion_plan_paths(params: MotionPlanParams, store: WorkspaceStore) -> tuple[Path, Path, Path, Path, Path | None]:
+    base = _episode_root(params.episode_id, store)
+
+    def pick(value: str | None, default: Path) -> Path:
+        return (store.root / value).resolve() if value else default
+
+    script = pick(params.script, base / "production_script.json")
+    images = pick(params.images, base / "assets" / "images")
+    audio = pick(params.audio, base / "audio_manifest.json")
+    out = pick(params.out, base / "motion_shots.json")
+    if params.regions:
+        regions: Path | None = (store.root / params.regions).resolve()
+    else:
+        candidate = base / "motion_regions.json"
+        regions = candidate if candidate.is_file() else None
+    return script, images, audio, out, regions
+
+
+def _motion_plan_prereqs(params: MotionPlanParams, store: WorkspaceStore) -> list[str]:
+    try:
+        script, images, audio, _, regions = _motion_plan_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = []
+    if not script.is_file():
+        missing.append(f"缺少 {_rel(script)}")
+    if not images.is_dir():
+        missing.append(f"缺少图片目录 {_rel(images)}")
+    if not audio.is_file():
+        missing.append(f"缺少 {_rel(audio)}")
+    if regions is not None and not regions.is_file():
+        missing.append(f"缺少 {_rel(regions)}")
+    return missing
+
+
+def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
+    script, images, audio, out, regions = _motion_plan_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "-m", "drama_studio.production", "--motion-plan",
+        "--script", _rel(script), "--images", _rel(images), "--audio", _rel(audio),
+        "--out", _rel(out),
+    ]
+    if params.style:
+        argv += ["--style", params.style]
+    if regions is not None:
+        argv += ["--regions", _rel(regions)]
+    argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
+    if params.align_audio:
+        argv += ["--align-audio"]
+        if params.tail_seconds:
+            argv += ["--tail-seconds", str(params.tail_seconds)]
+    if not params.transitions:
+        argv += ["--no-transition"]
+    return argv
+
+
+def _motion_plan_after(params: MotionPlanParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, _, out, _ = _motion_plan_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    shots = data.get("shots") or []
+    return {
+        "plan": _rel(out),
+        "style_id": data.get("style_id"),
+        "shots": len(shots),
+        "transitions": sum(1 for shot in shots if shot.get("transition_in")),
+        "total_seconds": round(sum(float(shot.get("duration_seconds") or 0) for shot in shots), 3),
+    }
+
+
+def _motion_render_paths(params: MotionRenderParams, store: WorkspaceStore) -> tuple[Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    plan = (store.root / params.plan).resolve() if params.plan else base / "motion_shots.json"
+    out = (store.root / params.out).resolve() if params.out else base / "motion"
+    return plan, out
+
+
+def _motion_render_prereqs(params: MotionRenderParams, store: WorkspaceStore) -> list[str]:
+    try:
+        plan, _ = _motion_render_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    return [] if plan.is_file() else [f"缺少 {_rel(plan)}"]
+
+
+def _motion_render_argv(params: MotionRenderParams, task_id: str) -> list[str]:
+    plan, out = _motion_render_paths(params, _STORE_REF[0])
+    argv = [sys.executable, "scripts/motion_build.py", "--plan", _rel(plan), "--out", _rel(out)]
+    if not params.sequence:
+        argv += ["--no-sequence"]
+    return argv
+
+
+def _motion_render_after(params: MotionRenderParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, out = _motion_render_paths(params, store)
+    builds = sorted(out.glob("build-*"), key=lambda path: path.stat().st_mtime)
+    if not builds:
+        raise TaskError("not_found", "没有生成 motion build 目录")
+    build = builds[-1]
+    manifest = build / "motion_manifest.json"
+    data = json.loads(manifest.read_text(encoding="utf-8"))
+    sequence = data.get("sequence") or None
+    result = {
+        "build": _rel(build),
+        "manifest": _rel(manifest),
+        "shots": len(data.get("shots") or []),
+        "sequence": sequence.get("relative") if sequence else None,
+        "sequence_seconds": sequence.get("measured_seconds") if sequence else None,
+        "sequence_status": (sequence.get("video_check") or {}).get("status") if sequence else None,
+    }
+    if not params.quality:
+        result["quality_status"] = "SKIPPED"
+        return result
+    from ..quality import check_motion_quality
+
+    quality = check_motion_quality(manifest, root=store.root)
+    result["quality_report"] = _rel(Path(quality["report"]))
+    result["quality_status"] = quality["status"]
+    result["quality_code"] = quality["code"]
+    if quality["status"] != "PASS":
+        raise TaskError(
+            "quality_failed",
+            f"motion quality {quality['code']}: {_rel(Path(quality['report']))}",
+        )
+    return result
+
+
+def _audio_qa_paths(params: AudioQAParams, store: WorkspaceStore) -> tuple[Path, Path | None]:
+    base = _episode_root(params.episode_id, store)
+    manifest = (store.root / params.manifest).resolve() if params.manifest else base / "audio_manifest.json"
+    if params.timeline:
+        timeline: Path | None = (store.root / params.timeline).resolve()
+    else:
+        renders = base.parent / "renders"
+        candidates = sorted(renders.glob("*/timeline.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        timeline = candidates[0] if candidates else None
+    return manifest, timeline
+
+
+def _audio_qa_prereqs(params: AudioQAParams, store: WorkspaceStore) -> list[str]:
+    try:
+        manifest, timeline = _audio_qa_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if manifest.is_file() else [f"缺少 {_rel(manifest)}"]
+    if timeline is not None and not timeline.is_file():
+        missing.append(f"缺少 {_rel(timeline)}")
+    return missing
+
+
+def _audio_qa_argv(params: AudioQAParams, task_id: str) -> list[str]:
+    manifest, timeline = _audio_qa_paths(params, _STORE_REF[0])
+    argv = [sys.executable, "-m", "drama_studio.quality", "--audio-manifest", _rel(manifest)]
+    if timeline is not None:
+        argv += ["--timeline", _rel(timeline)]
+    return argv
+
+
+def _audio_qa_after(params: AudioQAParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    manifest, _ = _audio_qa_paths(params, store)
+    report = manifest.parent / "audio_qa_report.json"
+    data = json.loads(report.read_text(encoding="utf-8"))
+    return {
+        "report": _rel(report),
+        "status": data.get("status"),
+        "lines": data.get("summary", {}).get("lines"),
+        "failed_lines": data.get("summary", {}).get("failed_lines"),
+        "pronunciation_review": (data.get("pronunciation") or {}).get("review_status"),
+    }
+
+
+def _aesthetic_plan_paths(
+    params: AestheticPlanParams, store: WorkspaceStore
+) -> tuple[Path, Path | None, Path | None, Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
+    if params.designs:
+        designs: Path | None = (store.root / params.designs).resolve()
+    else:
+        candidate = base / "designs.json"
+        designs = candidate if candidate.is_file() else None
+    if params.axes:
+        axes: Path | None = (store.root / params.axes).resolve()
+    else:
+        candidate = base / "axes.json"
+        axes = candidate if candidate.is_file() else None
+    out = (store.root / params.out).resolve() if params.out else base / "aesthetic" / "aesthetic_plan.json"
+    snapshot_root = (
+        (store.root / params.snapshot_root).resolve()
+        if params.snapshot_root else base / "aesthetic" / "snapshots"
+    )
+    return script, designs, axes, out, snapshot_root
+
+
+def _aesthetic_plan_prereqs(params: AestheticPlanParams, store: WorkspaceStore) -> list[str]:
+    try:
+        script, designs, axes, _, _ = _aesthetic_plan_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if script.is_file() else [f"缺少 {_rel(script)}"]
+    if designs is not None and not designs.is_file():
+        missing.append(f"缺少 {_rel(designs)}")
+    if axes is not None and not axes.is_file():
+        missing.append(f"缺少 {_rel(axes)}")
+    return missing
+
+
+def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]:
+    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "scripts/aesthetic_plan.py",
+        "--script", _rel(script), "--out", _rel(out),
+        "--snapshot-root", _rel(snapshot_root),
+        "--seed-base", str(params.seed_base),
+        "--width", str(params.width), "--height", str(params.height),
+        "--steps", str(params.steps), "--cfg", str(params.cfg),
+    ]
+    if params.style:
+        argv += ["--style", params.style]
+    if designs is not None:
+        argv += ["--designs", _rel(designs)]
+    if axes is not None:
+        argv += ["--axes", _rel(axes)]
+    return argv
+
+
+def _aesthetic_plan_after(params: AestheticPlanParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, _, out, _ = _aesthetic_plan_paths(params, store)
+    manifest_path = out.parent / "aesthetic_plan_manifest.json"
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return {
+        "plan": _rel(out),
+        "manifest": _rel(manifest_path),
+        "shots": len(data.get("axes") or {}),
+        "snapshot_run": data.get("snapshot_run"),
+        "jobs": [item.get("jobs") for item in data.get("variants") or []],
+    }
+
+
+def _aesthetic_compare_paths(
+    params: AestheticCompareParams, store: WorkspaceStore
+) -> tuple[Path, Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    plan = (store.root / params.plan).resolve() if params.plan else base / "aesthetic" / "aesthetic_plan.json"
+    if params.images:
+        images = (store.root / params.images).resolve()
+    else:
+        runs = sorted(
+            (base / "aesthetic" / "snapshots").glob("snapshot-*"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        images = (runs[0] / "images") if runs else base / "aesthetic" / "snapshots" / "images"
+    out = (store.root / params.out).resolve() if params.out else base / "aesthetic" / "compare"
+    return plan, images, out
+
+
+def _aesthetic_compare_prereqs(params: AestheticCompareParams, store: WorkspaceStore) -> list[str]:
+    try:
+        plan, images, _ = _aesthetic_compare_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if plan.is_file() else [f"缺少 {_rel(plan)}"]
+    if not images.is_dir():
+        missing.append(f"缺少 A/B 图片根目录 {_rel(images)}")
+    return missing
+
+
+def _aesthetic_compare_argv(params: AestheticCompareParams, task_id: str) -> list[str]:
+    plan, images, out = _aesthetic_compare_paths(params, _STORE_REF[0])
+    return [
+        sys.executable, "scripts/aesthetic_compare.py",
+        "--plan", _rel(plan), "--images", _rel(images), "--out", _rel(out),
+    ]
+
+
+def _aesthetic_compare_after(params: AestheticCompareParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, out = _aesthetic_compare_paths(params, store)
+    data = json.loads((out / "comparison.json").read_text(encoding="utf-8"))
+    return {
+        "report": _rel(out / "comparison.json"),
+        "contact_sheet": data.get("contact_sheet"),
+        "status": data.get("status"),
+        "shots": len(data.get("shots") or []),
+        "missing": data.get("missing") or [],
+    }
+
+
+def _aesthetic_review_paths(
+    params: AestheticReviewParams, store: WorkspaceStore
+) -> tuple[Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    report = (
+        (store.root / params.report).resolve() if params.report
+        else base / "aesthetic" / "compare" / "comparison.json"
+    )
+    return report, report.parent
+
+
+def _aesthetic_review_prereqs(params: AestheticReviewParams, store: WorkspaceStore) -> list[str]:
+    try:
+        report, _ = _aesthetic_review_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    return [] if report.is_file() else [f"缺少 {_rel(report)}"]
+
+
+def _aesthetic_review_handler(params: AestheticReviewParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    report, out_dir = _aesthetic_review_paths(params, store)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    path = out_dir / f"aesthetic_review_{stamp}.json"
+    if path.exists():
+        path = out_dir / f"aesthetic_review_{stamp}_{secrets.token_hex(3)}.json"
+    record = {
+        "episode_id": params.episode_id,
+        "report": _rel(report),
+        "decision": params.decision,
+        "note": params.note,
+        "shot_id": params.shot_id,
+        "variant": params.variant,
+        "task_id": task_id,
+        "created_at": now_iso(),
+    }
+    path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {"review": _rel(path), "decision": params.decision}
 
 
 TASK_KINDS: dict[str, TaskKind] = {
@@ -855,6 +1302,78 @@ TASK_KINDS: dict[str, TaskKind] = {
         build_argv=_segments_argv,
         prerequisites=_segments_prereqs,
         after_success=_segments_after,
+    ),
+    "motion.plan": TaskKind(
+        key="motion.plan",
+        label="动态分镜计划",
+        description="按 production_script、音频真时长和风格运动策略生成 motion_shots.json；只写计划，不渲染。",
+        cost="秒级",
+        safety="只写本期 motion_shots.json 与 motion_plan.meta.json；缺图片/音频直接失败",
+        params_model=MotionPlanParams,
+        lock_key=lambda params: f"motion:{params.episode_id}",
+        build_argv=_motion_plan_argv,
+        prerequisites=_motion_plan_prereqs,
+        after_success=_motion_plan_after,
+    ),
+    "motion.render": TaskKind(
+        key="motion.render",
+        label="动态片段渲染",
+        description="用 FFmpeg 确定性合成镜头缓动、局部微动与水墨转场，写入新的 motion/build-<时间>/ 目录。",
+        cost="纯 CPU；每镜头约 10-40 秒（含图层生成）",
+        safety="只写本期 motion/build-<时间>/；不调用 GPU、不覆盖历史产物",
+        params_model=MotionRenderParams,
+        lock_key=lambda params: f"motion:{params.episode_id}",
+        build_argv=_motion_render_argv,
+        prerequisites=_motion_render_prereqs,
+        after_success=_motion_render_after,
+    ),
+    "audio.qa": TaskKind(
+        key="audio.qa",
+        label="音频质量检查",
+        description="逐行检查响度、削波、静音、时长，并在有 timeline.json 时核对字幕与音频时序。",
+        cost="秒级到 1 分钟",
+        safety="只读音频，写 audio_qa_report.json；发音正确性仍需人工/ASR",
+        params_model=AudioQAParams,
+        lock_key=lambda params: f"audio:{params.episode_id}",
+        build_argv=_audio_qa_argv,
+        prerequisites=_audio_qa_prereqs,
+        after_success=_audio_qa_after,
+    ),
+    "aesthetic.plan": TaskKind(
+        key="aesthetic.plan",
+        label="镜头美学计划",
+        description="为每个镜头生成六维美学规格与 A/B 候选，冻结 snapshot 并写出两套 ComfyUI jobs；不生成图片。",
+        cost="秒级",
+        safety="只写本期 aesthetic/ 与带时间戳 snapshot；不覆盖旧版本；不占用 GPU",
+        params_model=AestheticPlanParams,
+        lock_key=lambda params: f"aesthetic:{params.episode_id}",
+        build_argv=_aesthetic_plan_argv,
+        prerequisites=_aesthetic_plan_prereqs,
+        after_success=_aesthetic_plan_after,
+    ),
+    "aesthetic.compare": TaskKind(
+        key="aesthetic.compare",
+        label="美学 A/B 对照",
+        description="比较 A/B 生成图，计算构图/光影/色彩风险指标，生成联系表与人工审核包。",
+        cost="秒级到 1 分钟（纯 CPU）",
+        safety="只读图片，写 comparison.json / comparison.md / contact_sheet.png",
+        params_model=AestheticCompareParams,
+        lock_key=lambda params: f"aesthetic:{params.episode_id}",
+        build_argv=_aesthetic_compare_argv,
+        prerequisites=_aesthetic_compare_prereqs,
+        after_success=_aesthetic_compare_after,
+    ),
+    "aesthetic.review": TaskKind(
+        key="aesthetic.review",
+        label="美学人工结论",
+        description="把人工对 A/B 对照的结论写入新的 aesthetic_review_<时间>.json；不修改图片或旧结论。",
+        cost="秒级",
+        safety="只新增结论文件，不覆盖历史",
+        params_model=AestheticReviewParams,
+        lock_key=lambda params: f"aesthetic:{params.episode_id}",
+        build_argv=lambda params, task_id: [],
+        prerequisites=_aesthetic_review_prereqs,
+        handler=_aesthetic_review_handler,
     ),
     "quality.check": TaskKind(
         key="quality.check",

@@ -30,6 +30,16 @@
 | S2 双核心风格技术验证 | [S2_TEST_REPORT.md](S2_TEST_REPORT.md) |
 | 双视觉管线首批验证 | [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md) |
 | 双管线专项修复（水墨 Motion Mask / 工笔风格） | [PIPELINE_FIX_REPORT.md](PIPELINE_FIX_REPORT.md) |
+| 双管线动态与古诗词声音升级（2026-11-04） | [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md) |
+| 镜头美学设计系统集成（2026-11-04） | [AESTHETIC_DESIGN_REPORT.md](AESTHETIC_DESIGN_REPORT.md) |
+| 视觉事故审计 M0（2026-11-04） | [M0_VISUAL_FAILURE_AUDIT.md](M0_VISUAL_FAILURE_AUDIT.md) |
+| 主体保护机制 M1（2026-11-04） | [M1_REGION_PROTECTION_REPORT.md](M1_REGION_PROTECTION_REPORT.md) |
+| 局部运动算法 M2（2026-11-04） | [M2_MOTION_ALGORITHMS_REPORT.md](M2_MOTION_ALGORITHMS_REPORT.md) |
+| 时间连续性与质量门禁 M3（2026-11-04） | [M3_QUALITY_GATES_REPORT.md](M3_QUALITY_GATES_REPORT.md) |
+| 转场与时序时间轴 M4（2026-11-04） | [M4_TRANSITIONS_REPORT.md](M4_TRANSITIONS_REPORT.md) |
+| Wan 运动遮罩核验 M5（2026-11-04） | [M5_WAN_MOTION_MASK_REPORT.md](M5_WAN_MOTION_MASK_REPORT.md) |
+| 发音校正与音频管线 M6（2026-11-04） | [M6_PRONUNCIATION_REPORT.md](M6_PRONUNCIATION_REPORT.md) |
+| 双风格最终交付 M7（2026-11-04） | [M7_FINAL_DELIVERY_REPORT.md](M7_FINAL_DELIVERY_REPORT.md) |
 
 ## 生产工作台（2026-11-03）
 
@@ -55,7 +65,8 @@
 
 ## 当前下一步
 
-- 视觉方向已收敛为双核心风格（[VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)）：S1 规范与配置已落地（`PASS_STATIC`）；S2-工笔/S2-水墨 各产出一段 20 秒片段；管线 A（水墨）完成云气/水面/孤舟/纸纹分层样片，管线 B（工笔）完成 28 秒长卷样片；技术检查通过，静态门 `PARTIAL`（山石纹理重复），人工审美 PENDING。见 [S2_TEST_REPORT.md](S2_TEST_REPORT.md) 与 [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md)。S3 完整链路接入为 `NOT_RUN`。
+- 视觉方向已收敛为双核心风格（[VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)）：S1 规范与配置已落地（`PASS_STATIC`）；S2-工笔/S2-水墨 各产出一段 20 秒片段；管线 A（水墨）完成云气/水面/孤舟/纸纹分层样片，管线 B（工笔）完成 28 秒长卷样片；技术检查通过，静态门 `PARTIAL`（山石纹理重复），人工审美 PENDING。见 [S2_TEST_REPORT.md](S2_TEST_REPORT.md) 与 [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md)。S3 完整链路接入为 `PARTIAL`：2026-11-04 两种风格各用 2 镜头走通 `motion.plan → motion.render → segments(sequence) → r3_build → quality`，画质 PASS；人工审美仍 PENDING。见 [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md)。
+- 镜头美学设计已接入：`aesthetic.plan → comfy.batch → aesthetic.compare → aesthetic.review`；4 组镜头共 8 张 A/B 实图，自动指标与联系表已生成，人工审美 `PENDING_HUMAN_REVIEW`。见 [AESTHETIC_DESIGN_REPORT.md](AESTHETIC_DESIGN_REPORT.md)。
 - P1 生产闭环已完成：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 成片 → quality。下一阶段为 P2（资产台账、BGM/音效、平台包装），S2/S3 不改变 P2 的既定项。
 - R3-D 剩余项是 BGM、音效与商用授权；内容路线仍以真实样片与平台数据为准。
 - R3-D：字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，排版选型仍为 `DECISION`；女声已试听并固化方案但未进入正式成片；BGM、音效与商用授权待完成。见 [ROADMAP.md](ROADMAP.md) 与 [R3D_FONT_SELECTION_REPORT.md](R3D_FONT_SELECTION_REPORT.md)。

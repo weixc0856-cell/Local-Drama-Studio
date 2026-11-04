@@ -1,0 +1,189 @@
+# 古诗词普通话读音与声学替换词典（词组级，最长匹配，不做单字全局替换）。
+#
+# 四层文本严格分离：
+#   source_text   原始文本（多为繁体）
+#   display_text  字幕，永不改写
+#   tts_text      送入引擎前的简体文本
+#   acoustic_text tts_text 经过 tts_alias 同音替换后的实际发声文本
+#
+# tts_alias 只改变 acoustic_text；display_text / source_text 必须逐字不变。
+# 只有经过音频验证的 G2P 缺陷才配置 tts_alias。未配置别名的词条继续保留
+# 预期读音与命中记录，用于 ASR/人工复核，不做替换。
+# 所有新映射的 status 初始为 candidate；只有音频测试通过且人工复核 APPROVED
+# 才能改为 verified（schema 会拒绝无证据的 verified）。
+schema_version: "2.0"
+
+capabilities:
+  api_phoneme_control: false
+  api_pinyin_control: false
+  pitch_control: false
+  duration_control: false
+  acoustic_substitution: true
+  display_text_protected: true
+  substitution_method: "curated homophone alias, acoustic layer only"
+  note: CosyVoice-300M-SFT /tts 只接收 text / speaker / speed / text_frontend；谐音替换在调用前完成
+
+entries:
+  - id: bianzhou
+    phrase: 扁舟
+    pinyin: "piān zhōu"
+    category: polyphone
+    tts_alias: 偏舟
+    status: verified
+    context: 古诗文常见意象（行舟）
+    audio_test: PASS
+    human_review: APPROVED
+    note: 扁 在“扁舟”中读 piān；偏 同音
+
+  - id: sixian
+    phrase: 似霰
+    pinyin: "sì xiàn"
+    category: polyphone
+    tts_alias: 似线
+    status: verified
+    context: 写景诗句中的比喻
+    audio_test: PASS
+    human_review: APPROVED
+    note: 霰 读 xiàn；线 同音
+
+  - id: qingfengpu
+    phrase: 青枫浦
+    pinyin: "qīng fēng pǔ"
+    category: proper_noun
+    tts_alias: 青枫普
+    status: verified
+    context: 古诗文地名
+    audio_test: PASS
+    human_review: APPROVED
+    variants: [青楓浦]
+    note: 浦 读 pǔ；普 同音
+
+  - id: jieshi
+    phrase: 碣石
+    pinyin: "jié shí"
+    category: proper_noun
+    tts_alias: 节石
+    status: verified
+    context: 古诗文地名
+    audio_test: PASS
+    human_review: APPROVED
+    note: 碣 读 jié；节 同音
+
+  - id: xiaoxiang
+    phrase: 潇湘
+    pinyin: "xiāo xiāng"
+    category: proper_noun
+    tts_alias: 消湘
+    status: verified
+    context: 古诗文地名
+    audio_test: PASS
+    human_review: APPROVED
+    variants: [瀟湘]
+    note: 潇 读 xiāo；消 同音
+
+  - id: wanzhuan
+    phrase: 宛转
+    pinyin: "wǎn zhuǎn"
+    category: polyphone
+    status: candidate
+    context: 古诗文常见词
+    audio_test: PASS
+    human_review: PENDING
+    variants: [宛轉]
+    note: 转 读 zhuǎn；原音已验证，暂不替换
+
+  - id: tingshang
+    phrase: 汀上
+    pinyin: "tīng shàng"
+    category: polyphone
+    status: candidate
+    context: 写景诗句
+    audio_test: PASS
+    human_review: PENDING
+    note: 汀 读 tīng；原音已验证，暂不替换
+
+  - id: jiangpan
+    phrase: 江畔
+    pinyin: "jiāng pàn"
+    category: polyphone
+    status: candidate
+    context: 写景诗句
+    audio_test: PASS
+    human_review: PENDING
+    note: 畔 读 pàn；原音已验证，暂不替换
+
+  - id: bushengchou
+    phrase: 不胜愁
+    pinyin: "bù shèng chóu"
+    category: polyphone
+    status: candidate
+    context: 古诗文常见表达
+    audio_test: PASS
+    human_review: PENDING
+    variants: [不勝愁]
+    note: 胜 读 shèng（不是 shēng）；原音已验证，不使用替换
+
+  - id: paihuai
+    phrase: 徘徊
+    pinyin: "pái huái"
+    category: common
+    status: candidate
+    context: 古诗文常见词
+    audio_test: PASS
+    human_review: PENDING
+    note: 徊 读 huái；原音已验证，暂不替换
+
+  - id: daoyizhen
+    phrase: 捣衣砧
+    pinyin: "dǎo yī zhēn"
+    category: proper_noun
+    status: candidate
+    context: 古诗文器物
+    audio_test: PASS
+    human_review: PENDING
+    variants: [擣衣砧]
+    note: 砧 读 zhēn；原音已验证，暂不替换
+
+  - id: hongyan
+    phrase: 鸿雁
+    pinyin: "hóng yàn"
+    category: common
+    status: candidate
+    context: 古诗文常见意象
+    audio_test: PASS
+    human_review: PENDING
+    variants: [鴻雁]
+    note: 鸿 读 hóng；原音已验证，暂不替换
+
+  - id: yulongqianyue
+    phrase: 鱼龙潜跃
+    pinyin: "yú lóng qián yuè"
+    category: polyphone
+    status: candidate
+    context: 写景诗句
+    audio_test: PASS
+    human_review: PENDING
+    variants: [魚龍潛躍]
+    note: 潜 读 qián，跃 读 yuè；原音已验证，暂不替换
+
+  - id: xiantan
+    phrase: 闲潭
+    pinyin: "xián tán"
+    category: polyphone
+    status: candidate
+    context: 写景诗句
+    audio_test: PASS
+    human_review: PENDING
+    variants: [閒潭]
+    note: 潭 读 tán；原音已验证，暂不替换
+
+  - id: yanyan
+    phrase: 艳艳
+    pinyin: "yàn yàn"
+    category: polyphone
+    status: candidate
+    context: 写景诗句
+    audio_test: PASS
+    human_review: PENDING
+    variants: [灩灩, 滟滟]
+    note: 灩灩 的简体；本身读音正确，不需要替换，仅用于报告命中

@@ -84,6 +84,58 @@ PrimaryMotion = Literal[
 ]
 LocalMotion = Literal["clouds", "mist", "water", "birds", "petals", "foliage", "ink_diffusion"]
 
+# Mechanical vocabulary consumed by drama_studio.motion. These are deliberately
+# separate from the narrative ``local`` list above: that list says *what* moves,
+# these models say *how* it is rendered.
+CameraMove = Literal[
+    "static",
+    "slow_push_in",
+    "slow_pull_out",
+    "scroll_pan",
+    "push_in_with_pan",
+    "slow_lateral_track",
+    "layered_parallax",
+]
+Easing = Literal["linear", "ease_in", "ease_out", "ease_in_out"]
+LocalMotionType = Literal[
+    "water_ripple",
+    "leaf_sway",
+    "reed_sway",
+    "cloud_drift",
+    "petal_drift",
+    "bird_motion",
+    "reflection_distortion",
+    "ink_diffusion",
+]
+
+CompositionStrategy = Literal[
+    "rule_of_thirds",
+    "center",
+    "symmetry",
+    "frame_in_frame",
+    "diagonal",
+    "negative_space",
+    "vertical_depth",
+    "monumental_scale",
+    "corner_placement",
+    "high_distance",
+    "deep_distance",
+    "level_distance",
+    "scattered_perspective",
+    "void_solid",
+]
+SubjectPosition = Literal[
+    "center", "left_third", "right_third", "lower_left", "lower_right", "upper_center"
+]
+ShotSize = Literal["extreme_wide", "wide", "medium", "close", "detail"]
+LightingKey = Literal["moon", "sun_low", "sun_high", "overcast", "candle", "none"]
+LightingScenario = Literal[
+    "moon_diffuse", "morning_side", "sunset_warm", "cloud_gap",
+    "backlight", "soft_ambient", "overcast", "mist_scatter",
+]
+ColorTemperature = Literal["warm", "cool", "neutral", "split"]
+ValueRange = Literal["high_key", "middle", "low_key", "full"]
+
 _HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
 
@@ -116,6 +168,76 @@ class WanSpec(BaseModel):
     note: str = ""
 
 
+class CameraPolicy(BaseModel):
+    """How the camera may move for one style; consumed by ``motion.camera``."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    default: CameraMove
+    allowed: list[CameraMove] = Field(min_length=1)
+    scroll_speed_px_s: float = Field(ge=4.0, le=80.0)
+    slow_track_speed_factor: float = Field(default=0.6, ge=0.1, le=1.0)
+    push_rate_per_s: float = Field(default=0.008, gt=0.0, le=0.03)
+    push_pan_fraction: float = Field(default=0.02, ge=0.0, le=0.1)
+    push_scale_min: float = Field(default=1.03, ge=1.01, le=1.2)
+    push_scale_max: float = Field(default=1.06, ge=1.01, le=1.2)
+    easing: Easing = "ease_in_out"
+    focus: tuple[float, float] = (0.5, 0.5)
+
+    @model_validator(mode="after")
+    def _consistent(self) -> "CameraPolicy":
+        if self.push_scale_max < self.push_scale_min:
+            raise ValueError("push_scale_max must be >= push_scale_min")
+        if self.default not in self.allowed:
+            raise ValueError(f"default camera {self.default!r} is not in allowed")
+        for name, value in zip(("focus_x", "focus_y"), self.focus):
+            if not 0.0 <= value <= 1.0:
+                raise ValueError(f"{name} must be within 0..1")
+        return self
+
+
+class LocalPolicy(BaseModel):
+    """Per-style amplitude/period/opacity for one local motion type."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    amplitude_px: float = Field(default=0.0, ge=0.0, le=120.0)
+    period_s: float = Field(default=8.0, ge=0.5, le=120.0)
+    opacity: float = Field(default=0.0, ge=0.0, le=1.0)
+    opacity_min: float = Field(default=0.8, ge=0.0, le=1.0)
+    opacity_max: float = Field(default=1.0, ge=0.0, le=1.0)
+    feather_px: float = Field(default=30.0, ge=0.0, le=200.0)
+    drift: Literal["sine", "one_way"] = "sine"
+    # M2 motion model. Defaults are deliberately quiet: long wavelength, low
+    # vertical ratio, strong perspective falloff.
+    wavelength_px: float = Field(default=280.0, ge=20.0, le=2000.0)
+    vertical_ratio: float = Field(default=0.28, ge=0.0, le=1.0)
+    perspective_far_scale: float = Field(default=0.14, ge=0.0, le=1.0)
+    reflection_ratio: float = Field(default=0.55, ge=0.0, le=1.0)
+    reflection_lag_s: float = Field(default=0.18, ge=0.0, le=2.0)
+    smear_px: float = Field(default=3.0, ge=0.0, le=20.0)
+    sway_exponent: float = Field(default=1.4, ge=0.5, le=4.0)
+    top_decay: float = Field(default=0.2, ge=0.0, le=0.8)
+
+    @model_validator(mode="after")
+    def _opacity_order(self) -> "LocalPolicy":
+        if self.opacity_max < self.opacity_min:
+            raise ValueError("opacity_max must be >= opacity_min")
+        return self
+
+
+class TransitionPolicy(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    type: Literal["crossfade", "ink_dissolve", "ink_reveal", "ink_spread"]
+    duration_s: float = Field(ge=0.3, le=3.0)
+    max_fraction: float = Field(default=0.35, ge=0.1, le=0.5)
+    feather: float = Field(ge=0.02, le=0.6)
+    direction: Literal["ltr", "rtl", "up", "down", "radial"] = "ltr"
+    seed: int = Field(default=13, ge=0, le=99999)
+
+
 class MotionSpec(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -123,6 +245,9 @@ class MotionSpec(BaseModel):
     local: list[LocalMotion] = Field(default_factory=list)
     wan: WanSpec
     forbidden: list[str] = Field(default_factory=list)
+    camera: CameraPolicy
+    local_policy: dict[LocalMotionType, LocalPolicy] = Field(default_factory=dict)
+    transition: TransitionPolicy
 
 
 class TextureSpec(BaseModel):
@@ -148,6 +273,86 @@ class CompositingSpec(BaseModel):
     texture: TextureSpec
     parallax: ParallaxSpec = Field(default_factory=ParallaxSpec)
     note: str = ""
+
+
+class AestheticCompositionProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    preferred_strategies: list[CompositionStrategy] = Field(min_length=1)
+    default_subject_position: SubjectPosition
+    whitespace_range: tuple[float, float]
+    shot_sizes: list[ShotSize] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _range(self) -> "AestheticCompositionProfile":
+        lo, hi = self.whitespace_range
+        if not (0.0 <= lo < hi <= 0.9):
+            raise ValueError("whitespace_range must satisfy 0 <= lo < hi <= 0.9")
+        return self
+
+
+class AestheticLightingProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    preferred: list[LightingScenario] = Field(min_length=1)
+    default_key: LightingKey
+    default_quality: Literal["soft", "hard", "mixed"] = "soft"
+    default_direction: Literal["front", "side_left", "side_right", "back", "top", "diffuse"] = "diffuse"
+    default_contrast: Literal["low", "medium", "high"] = "low"
+    rim_light: Literal["rare", "allowed", "avoid"] = "rare"
+
+
+class AestheticColorProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    continuity_group: str = Field(min_length=1, max_length=40)
+    dominant_keys: list[str] = Field(min_length=1)
+    secondary_keys: list[str] = Field(default_factory=list)
+    accent_keys: list[str] = Field(default_factory=list)
+    default_temperature: ColorTemperature
+    saturation_range: tuple[float, float]
+    value_range: ValueRange
+
+    @model_validator(mode="after")
+    def _range(self) -> "AestheticColorProfile":
+        lo, hi = self.saturation_range
+        if not (0.0 <= lo < hi <= 1.0):
+            raise ValueError("saturation_range must satisfy 0 <= lo < hi <= 1")
+        return self
+
+
+class AestheticDepthProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    default_layers: int = Field(ge=1, le=3)
+    aerial_perspective: bool
+    sharpness_falloff: Literal["shallow", "medium", "deep"]
+
+
+class AestheticMiseProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    period: str = Field(min_length=1, max_length=40)
+    architecture_positive: str = Field(min_length=2, max_length=200)
+    positive_constraints: list[str] = Field(default_factory=list, max_length=8)
+
+
+class AestheticStorytellingProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    default_rhythm: str = Field(min_length=1, max_length=40)
+    emotion_vocabulary: list[str] = Field(min_length=1, max_length=12)
+
+
+class AestheticProfile(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    composition: AestheticCompositionProfile
+    lighting: AestheticLightingProfile
+    color: AestheticColorProfile
+    depth: AestheticDepthProfile
+    mise_en_scene: AestheticMiseProfile
+    storytelling: AestheticStorytellingProfile
 
 
 class StylePreset(BaseModel):
@@ -180,6 +385,7 @@ class StylePreset(BaseModel):
     detail: DetailSpec
     motion: MotionSpec
     compositing: CompositingSpec
+    aesthetic_profile: AestheticProfile
 
     @field_validator("color_palette")
     @classmethod
@@ -190,6 +396,16 @@ class StylePreset(BaseModel):
             if not _HEX.match(color):
                 raise ValueError(f"color_palette[{name!r}] is not a #RRGGBB value: {color!r}")
         return value
+
+    @model_validator(mode="after")
+    def _aesthetic_palette(self) -> "StylePreset":
+        palette = set(self.color_palette)
+        color = self.aesthetic_profile.color
+        keys = color.dominant_keys + color.secondary_keys + color.accent_keys
+        missing = sorted(set(keys) - palette)
+        if missing:
+            raise ValueError(f"{self.id}: aesthetic_profile color keys missing from palette: {missing}")
+        return self
 
     def as_style_entity(self) -> dict[str, object]:
         """Return exactly the fields accepted by ``WorkspaceStore.create_style``."""

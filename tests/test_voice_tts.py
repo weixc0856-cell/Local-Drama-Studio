@@ -126,3 +126,29 @@ def test_unready_service_fails(tmp_path: Path) -> None:
     )
     with pytest.raises(TTSError, match="未就绪"):
         synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+
+
+def test_tts_text_and_subtitle_text_are_separate(tmp_path: Path) -> None:
+    """The spoken layer may differ from the displayed subtitle (simplified vs traditional)."""
+    root = _root(tmp_path)
+    narration = _narration(
+        root, [{"text": "艳艳随波千万里", "subtitle_text": "灩灩隨波千萬里"}]
+    )
+    bodies: list[dict] = []
+    wav = _wav_bytes()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/health":
+            return httpx.Response(200, json={"status": "ready"})
+        bodies.append(json.loads(request.content))
+        return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
+    result = synthesize_narration(
+        narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client
+    )
+    assert bodies[0]["text"] == "艳艳随波——千万里"
+    manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
+    assert manifest["lines"][0]["text"] == "艳艳随波千万里"
+    assert manifest["lines"][0]["breath_text"] == "艳艳随波——千万里"
+    assert manifest["lines"][0]["subtitle_text"] == "灩灩隨波千萬里"
