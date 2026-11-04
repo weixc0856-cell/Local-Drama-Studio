@@ -176,7 +176,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | Common Voice 27.0 筛选 | `TECHNICALLY_VALIDATED`（2 primary）/ `PENDING_REVIEW`（2 alternate） | 本机档案筛选 4 条；原始 16 kHz mono；2 条 zero-shot 技术 PASS；未镜像、未反推身份、未批准生产 |
 | 视频镜头契约（`PRD-MOTION-004`） | `IMPLEMENTED_NOT_VERIFIED` | `ScriptShot.type=video` + `video_prompt`；`build_video_jobs` 生成 Wan I2V jobs；`build_segments --clips --allow-partial-clips` 混合片段/静帧；2 项生产测试 + 1 项脚本测试 |
 | 自生成 SFX 资产 | `IMPLEMENTED_NOT_VERIFIED` | `sfx_wind/water/chime/whoosh` 已登记 manifest；参考研究 timelines 已接入；人工听感 PENDING |
-| 参考研究 Wan hybrid | `PASS_VERIFIED`（技术） | `palace_wide` 33.2 min / 5.90 GB；`ink_dream_03` 38.6 min / 5.82 GB；两条 21.3 s hybrid quality PASS；其余镜头仍静帧 |
+| 参考研究 Wan hybrid | `PASS_VERIFIED`（技术） | 每条片 2 个 Wan 镜头：`palace_gate` 24.0 min + `palace_wide` 33.2 min；`ink_dream_04` 29.1 min + `ink_dream_03` 38.6 min；两条 21.3 s hybrid2 quality PASS；其余 2 镜头/片仍静帧 |
 | 全量测试 | 378 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
