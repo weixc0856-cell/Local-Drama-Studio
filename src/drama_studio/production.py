@@ -271,7 +271,10 @@ def _load_regions(path: Path | None) -> dict[str, dict[str, Any]]:
     Two formats share one file and one parser:
 
     * legacy: ``"shot_001": [layer, ...]`` — masks only, no semantic regions;
-    * current: ``"shot_001": {"regions": [...], "layers": [...]}``.
+    * current: ``"shot_001": {"regions": [...], "layers": [...], "plates": [...]}``.
+
+    ``plates`` is what turns the shot into a layered 2.5D render; a shot without
+    it keeps the single-plane path byte for byte.
 
     The legacy form is kept so existing experiment files still load, but it is
     recorded as ``legacy`` in the plan metadata. New production fixtures should
@@ -291,14 +294,15 @@ def _load_regions(path: Path | None) -> dict[str, dict[str, Any]]:
     for key, value in raw.items():
         shot_id = str(key)
         if value is None:
-            out[shot_id] = {"regions": [], "layers": [], "model": "legacy"}
+            out[shot_id] = {"regions": [], "layers": [], "plates": [], "model": "legacy"}
             continue
         if isinstance(value, list):
-            out[shot_id] = {"regions": [], "layers": list(value), "model": "legacy"}
+            out[shot_id] = {"regions": [], "layers": list(value), "plates": [],
+                            "model": "legacy"}
             continue
         if not isinstance(value, dict):
             raise ProductionError(f"{shot_id}: 区域条目必须是列表或对象")
-        unknown = set(value) - {"regions", "layers", "local_motion", "note"}
+        unknown = set(value) - {"regions", "layers", "local_motion", "plates", "note"}
         if unknown:
             raise ProductionError(f"{shot_id}: 未知字段 {sorted(unknown)}")
         if "layers" in value and "local_motion" in value:
@@ -307,6 +311,7 @@ def _load_regions(path: Path | None) -> dict[str, dict[str, Any]]:
         out[shot_id] = {
             "regions": list(value.get("regions") or []),
             "layers": list(layers),
+            "plates": list(value.get("plates") or []),
             "model": "semantic",
         }
     return out
@@ -327,6 +332,7 @@ def build_motion_plan(
     gap_ms: int = 800,
     tail_seconds: float = 0.0,
     transitions: bool = True,
+    require_static_gate: bool = True,
 ) -> dict[str, Any]:
     """Turn the ProductionScript into a deterministic motion plan.
 
@@ -334,7 +340,9 @@ def build_motion_plan(
     motion is only added where an authored region exists — there is no
     segmentation model, and no region is invented here.
     """
-    from .motion.spec import LocalMotionSpec, MotionPlan, RegionSpec, ShotSpec, TransitionSpec
+    from .motion.spec import (
+        LocalMotionSpec, MotionPlan, PlateSpec, RegionSpec, ShotSpec, TransitionSpec,
+    )
 
     if not audio_manifest.is_file():
         raise ProductionError(f"缺少 audio_manifest.json: {audio_manifest}")
@@ -342,6 +350,11 @@ def build_motion_plan(
     if not audio.get("lines"):
         raise ProductionError("audio_manifest.json 没有 lines")
     timing = _audio_line_timing(audio_manifest, gap_ms) if align_audio else {}
+    if align_audio:
+        # The spoken title runs before the first line: the first shot covers it,
+        # because the clock belongs to the audio, not to a preset shot length.
+        from .voice.tts import header_offset_seconds
+        leading_ms += int(round(header_offset_seconds(audio_manifest) * 1000))
     regions = _load_regions(regions_path)
 
     shots = []
@@ -367,20 +380,41 @@ def build_motion_plan(
                 direction=policy.direction,
                 seed=policy.seed,
             )
-        entry = regions.get(shot_id, {"regions": [], "layers": [], "model": "none"})
+        entry = regions.get(shot_id, {"regions": [], "layers": [], "plates": [],
+                                      "model": "none"})
         from pydantic import ValidationError
 
         try:
             region_specs = [RegionSpec.model_validate(item) for item in entry["regions"]]
             local_motion = [LocalMotionSpec.model_validate(item) for item in entry["layers"]]
+            plate_specs = [PlateSpec.model_validate(item) for item in entry.get("plates", [])]
         except ValidationError as exc:
             raise ProductionError(f"{shot_id}: 区域/图层校验失败：{exc}") from exc
+        policy = preset.compositing.parallax
+        for plate in plate_specs:
+            if plate.coverage == "full_frame":
+                continue  # background defines the reference distance
+            if not (policy.depth_alpha_min <= plate.depth_alpha <= policy.depth_alpha_max):
+                raise ProductionError(
+                    f"{shot_id}/{plate.id}: depth_alpha {plate.depth_alpha} 超出风格 "
+                    f"{preset.id} 的允许区间 "
+                    f"[{policy.depth_alpha_min}, {policy.depth_alpha_max}]")
+        if len(plate_specs) > policy.max_plates:
+            raise ProductionError(
+                f"{shot_id}: {len(plate_specs)} 层超过风格 {preset.id} 的上限 "
+                f"{policy.max_plates}")
         static_candidates = [
             episode_root / "work" / "static" / shot_id / "static_quality.json",
             episode_root / "static" / shot_id / "static_quality.json",
         ]
         static_path = next((path for path in static_candidates if path.is_file()), None)
-        if static_path is not None:
+        if static_path is None:
+            if require_static_gate:
+                raise ProductionError(
+                    f"{shot_id}: 缺少静态质量报告（{static_candidates[0]} 或 "
+                    f"{static_candidates[1]}）；先跑 scripts/static_quality.py，"
+                    "或用 --skip-static-gate 显式跳过")
+        else:
             state = json.loads(static_path.read_text(encoding="utf-8")).get("overall_status")
             if state == "FAIL":
                 raise ProductionError(f"{shot_id}: 静态质量门 FAIL，先修图再做动态")
@@ -394,6 +428,7 @@ def build_motion_plan(
                 motion=str(_field(shot, "motion") or ""),
                 local_motion=local_motion,
                 regions=region_specs,
+                plates=plate_specs,
                 transition_in=transition,
                 static_quality=_rel(static_path, root) if static_path is not None else None,
                 text={
@@ -583,6 +618,8 @@ def main() -> int:
     parser.add_argument("--style", default=None, help="style preset id for --motion-plan")
     parser.add_argument("--regions", default=None, help="authored local-motion regions JSON")
     parser.add_argument("--no-transition", action="store_true", help="do not add the style's default transitions")
+    parser.add_argument("--skip-static-gate", action="store_true",
+                        help="explicitly allow motion without a static_quality.json report")
     parser.add_argument("--align-audio", action="store_true", help="derive shot durations from audio_manifest timing")
     parser.add_argument("--leading-ms", type=int, default=0, help="leading silence absorbed by the first shot")
     parser.add_argument("--gap-ms", type=int, default=800, help="trailing pause when a line has no pause_after_ms")
@@ -628,6 +665,7 @@ def main() -> int:
                 gap_ms=args.gap_ms,
                 tail_seconds=args.tail_seconds,
                 transitions=not args.no_transition,
+                require_static_gate=not args.skip_static_gate,
             )
         else:
             result = build_segments(

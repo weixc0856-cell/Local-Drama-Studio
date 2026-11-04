@@ -1,13 +1,46 @@
 # Local-Drama-Studio 文档索引
 
-> 产品基线：v1.0（2026-11-03 冻结）。
+> **唯一需求入口：[PRD.md](PRD.md)（Single Source of Truth）。** 产品定位、范围、TTS/视觉决策、需求编号与验收标准以 PRD 为准；其他文档只能解释、执行、验证或记录现状，不得创造或覆盖需求。
+> 配套治理：[PRD_CHANGELOG.md](PRD_CHANGELOG.md)（变更/冲突修正）、[REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md)（需求矩阵 + Phase A 映射）。
+> 产品基线：v1.0（2026-11-03 冻结）；2026-11-04 PRD SSOT 修订。
 > 规则：产品文档是“方向与规范”；R0-R3 报告是“技术证据”。两者不互相替代。
+
+## Phase A/B 生产文档（2026-11-04）
+
+| 文档 | 内容 |
+|---|---|
+| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | 产品是什么、能做什么、两种风格、TTS 策略、边界 |
+| [PRODUCTION_PIPELINE_GUIDE.md](PRODUCTION_PIPELINE_GUIDE.md) | 四类生产路径、每阶段输入/输出/命令/失败恢复/续跑 |
+| [USER_GUIDE.md](USER_GUIDE.md) | 从环境准备到一篇成片、工作台操作、复用与排障 |
+| [PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md) | FLUX/Wan/TTS/字幕/FFmpeg/质量阈值；实际 vs 推荐 vs 未验证 |
+| [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) | 架构、契约、任务注册表、API、扩展方式、已知陷阱 |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | 服务/显存/生成/配音/字幕/合成/任务故障树 |
+| [PROJECT_NEXT_STEPS.md](PROJECT_NEXT_STEPS.md) | P0–P4 路线与工作量评估 |
+| [audit/REPOSITORY_STRUCTURE.md](audit/REPOSITORY_STRUCTURE.md) | Phase A 仓库结构审计 |
+| [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) | 22 项能力矩阵 + 历史验证索引 |
+| [audit/ARCHITECTURE_AUDIT.md](audit/ARCHITECTURE_AUDIT.md) | 架构边界、配置传递、风险清单 |
+| [audit/PHASE_A_SUMMARY.md](audit/PHASE_A_SUMMARY.md) | Phase A 结论与产品决策修正 |
+| [PRD_CHANGELOG.md](PRD_CHANGELOG.md) | PRD 2026-11-04 变更记录与旧文档冲突修正 |
+| [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md) | 需求编号、验收、Phase A 审计映射、当前状态 |
+
+## 待审提案（未写入 PRD）
+
+| 文档 | 内容 |
+|---|---|
+| [proposals/AUDIOVISUAL_GAP_AUDIT.md](proposals/AUDIOVISUAL_GAP_AUDIT.md) | 音频/运动/TTS/叙事/QA 仓库差距审计 |
+| [proposals/PRD_AUDIOVISUAL_UPGRADE_PROPOSAL.md](proposals/PRD_AUDIOVISUAL_UPGRADE_PROPOSAL.md) | 视听能力升级需求、schema、FFmpeg 方案、批次与验收提案 |
+| [proposals/VOICE_ASSET_SOURCE_REVIEW.md](proposals/VOICE_ASSET_SOURCE_REVIEW.md) | 声音来源核验、已拉取候选、授权阻断项与首批种子库状态 |
+| [proposals/PRD_AMENDMENT_2026-11-04.md](proposals/PRD_AMENDMENT_2026-11-04.md) | 已合并的 PRD 变更提案：AUDIO / TTS-007 / VOICE-ASSET / MOTION / STORY / QA，待批准 |
+
+> 提案不是已批准需求；批准前不写入 `docs/PRD.md`，不据此开工。
+
+> Phase A/B 文档描述的是 **当前工作区**（HEAD `06f91e4` + M8/声景/zero-shot 未提交工作），不是更早的 v1.0 冻结快照。历史报告不删除、不重写结论。
 
 ## 产品基线（v1.0）
 
 | # | 文档 | 内容 |
 |---|---|---|
-| 01 | [PRD.md](PRD.md) | 定位、内容范围、范围边界、成功标准、风险 |
+| 01 | [PRD.md](PRD.md) | **唯一 SSOT**：定位、范围、TTS/风格决策、需求编号、验收标准 |
 | 02 | [TECH_STACK.md](TECH_STACK.md) | 冻结技术栈、版本、许可证、性能基线 |
 | 03 | [CONTENT_SPEC.md](CONTENT_SPEC.md) | 视觉、人物、场景、声音、字幕、视频规范 |
 | 04 | [PRODUCTION_WORKFLOW.md](PRODUCTION_WORKFLOW.md) | 14 步生产流程、现状、失败降级、成本 |
@@ -65,15 +98,18 @@
 
 ## 当前下一步
 
-- 视觉方向已收敛为双核心风格（[VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)）：S1 规范与配置已落地（`PASS_STATIC`）；S2-工笔/S2-水墨 各产出一段 20 秒片段；管线 A（水墨）完成云气/水面/孤舟/纸纹分层样片，管线 B（工笔）完成 28 秒长卷样片；技术检查通过，静态门 `PARTIAL`（山石纹理重复），人工审美 PENDING。见 [S2_TEST_REPORT.md](S2_TEST_REPORT.md) 与 [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md)。S3 完整链路接入为 `PARTIAL`：2026-11-04 两种风格各用 2 镜头走通 `motion.plan → motion.render → segments(sequence) → r3_build → quality`，画质 PASS；人工审美仍 PENDING。见 [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md)。
+- 视觉方向为两种正式产品风格（[VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)）：S1 规范与配置已落地（`PASS_STATIC`）；S2-工笔/S2-水墨 各产出一段 20 秒片段；管线 A（水墨）/B（工笔）首批样片技术通过，静态门 `PARTIAL`，人工审美 PENDING。**S3 不再用单一状态概括**：① 两种风格独立规范/配置 = `PASS_STATIC`；② 每种风格各 2 镜头技术样片（M7）= `PASS_VERIFIED`（技术）；③ 作品级风格锁定 = `PARTIAL`、跨镜头一致性正式验证 = `NOT_RUN`。见 [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md) 与 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。
 - 镜头美学设计已接入：`aesthetic.plan → comfy.batch → aesthetic.compare → aesthetic.review`；4 组镜头共 8 张 A/B 实图，自动指标与联系表已生成，人工审美 `PENDING_HUMAN_REVIEW`。见 [AESTHETIC_DESIGN_REPORT.md](AESTHETIC_DESIGN_REPORT.md)。
-- P1 生产闭环已完成：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 成片 → quality。下一阶段为 P2（资产台账、BGM/音效、平台包装），S2/S3 不改变 P2 的既定项。
+- P1 生产闭环已完成：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 成片 → quality。
+- **完整工笔案例已纳入生产索引**：`projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/renders/build-20261103-161945/`，81.373 s / 1080×1920 / 13 段 / 18 句，`quality_report` + `verification_report` 双 PASS；实现是 `scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动管线。
+- **TTS 产品决策（2026-11-04 PRD）**：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认已真实跑通 0.5B（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现。
+- **下一步优先级见 [PROJECT_NEXT_STEPS.md](PROJECT_NEXT_STEPS.md) 与 PRD §23**：P0-1（TTS 默认 0.5B zero-shot）✅ 已完成；剩余 P0 为作品级风格锁定、静态门不可绕过、工作流页对齐、证据索引。
 - R3-D 剩余项是 BGM、音效与商用授权；内容路线仍以真实样片与平台数据为准。
-- R3-D：字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，排版选型仍为 `DECISION`；女声已试听并固化方案但未进入正式成片；BGM、音效与商用授权待完成。见 [ROADMAP.md](ROADMAP.md) 与 [R3D_FONT_SELECTION_REPORT.md](R3D_FONT_SELECTION_REPORT.md)。
+- R3-D：字体/字幕接入已完成；SFT「中文女」已进入 P1 与 81.373 s 工笔成片；按最新 PRD，默认改为 0.5B zero-shot，SFT 仅显式可选；BGM、音效与商用授权仍未完成。见 [ROADMAP.md](ROADMAP.md)、[R3D_VOICE_PROSODY_REPORT.md](R3D_VOICE_PROSODY_REPORT.md) 与 [R3D_FONT_SELECTION_REPORT.md](R3D_FONT_SELECTION_REPORT.md)。
 
 ## 状态规则
 
-状态词典以 `docs/QUALITY_AND_METRICS.md` 为唯一来源；本索引不再维护第二份。
+状态词典以 `docs/PRD.md` §0.2 为唯一来源；本索引不再维护第二份。
 
 - 产品规划不是已实现功能。
 - 单篇样片不是市场验证。

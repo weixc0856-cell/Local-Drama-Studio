@@ -92,12 +92,18 @@ ROLE_MOTION_TYPES: dict[str, tuple[str, ...]] = {
 }
 
 
-def boxes_intersect(a: Box, b: Box) -> bool:
+def boxes_intersect(a, b) -> bool:
     return not (a.x1 <= b.x0 or b.x1 <= a.x0 or a.y1 <= b.y0 or b.y1 <= a.y0)
 
 
 def box_area(box: Box) -> float:
     return round((box.x1 - box.x0) * (box.y1 - box.y0), 6)
+
+
+def box_contains(outer, inner) -> bool:
+    """True when ``inner`` lies entirely inside ``outer`` (edges included)."""
+    return (inner.x0 >= outer.x0 and inner.y0 >= outer.y0
+            and inner.x1 <= outer.x1 and inner.y1 <= outer.y1)
 
 
 def box_intersection_area(a: Box, b: Box) -> float:
@@ -131,6 +137,9 @@ class RegionSpec(BaseModel):
     max_amplitude_px: float | None = Field(default=None, gt=0.0, le=120.0)
     max_frequency_hz: float | None = Field(default=None, gt=0.0, le=2.0)
     exclude_regions: list[str] = Field(default_factory=list)
+    plate_id: str | None = Field(
+        default=None,
+        description="plate this region belongs to; None means the background plane")
 
     @model_validator(mode="after")
     def _permission_is_consistent(self) -> "RegionSpec":
@@ -168,6 +177,111 @@ class RegionSpec(BaseModel):
         if self.permission == "allowed":
             return tuple(ROLE_MOTION_TYPES[self.role])
         return tuple(self.allow_motion_types)
+
+
+PlateSource = Literal[
+    "original",              # cut from the finished still; the background behind it is gone
+    "inpainted",             # the background was repainted inside a mask (diffusion)
+    "interpolated",          # the background was repaired deterministically (row ramp)
+    "generated_asset",       # an independently generated RGBA element, no scene behind it
+    "generated_background",  # the whole plane was generated, not cut from the still
+]
+
+PlateCoverage = Literal["full_frame", "partial"]
+
+
+class PlateAnchor(BaseModel):
+    """Normalized extent of a partial plate at camera scale 1.0.
+
+    Unlike :class:`Box` (an exclusion region, strictly inside the frame) an
+    anchor may extend past the frame edge: a foreground element that is cropped
+    by the frame is normal, and the M8-B sample puts the reeds at ``y1 = 1.02``.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    x0: float = Field(ge=-0.25, le=1.0)
+    y0: float = Field(ge=-0.25, le=1.0)
+    x1: float = Field(ge=0.0, le=1.25)
+    y1: float = Field(ge=0.0, le=1.25)
+
+    @model_validator(mode="after")
+    def _ordered(self) -> "PlateAnchor":
+        if self.x1 <= self.x0 or self.y1 <= self.y0:
+            raise ValueError("anchor must satisfy x1 > x0 and y1 > y0")
+        return self
+
+# Measured on one shot (M8-B(1)): a 2% hole on uniform water was clean, a 9% hole
+# across three materials was repainted from scratch. Recorded as a datapoint, not
+# enforced here: what a viewer actually sees is governed by the reveal gate, and
+# a large repair that is never exposed cannot be seen at all.
+PAINT_REPAIR_COVERAGE_NOTE = 0.04
+
+
+class PlateProvenance(BaseModel):
+    """Where a plate came from, for plates that were not simply cut from the still."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    workflow: str | None = Field(default=None, max_length=300)
+    workflow_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    seed: int | None = Field(default=None, ge=0)
+    steps: int | None = Field(default=None, ge=1, le=200)
+    mask: str | None = Field(default=None, max_length=300)
+    mask_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    mask_coverage: float | None = Field(default=None, ge=0.0, le=1.0)
+    key_alpha: dict[str, float] | None = Field(
+        default=None, description="luminance-key parameters for generated assets")
+    seconds: float | None = Field(default=None, ge=0.0)
+    note: str | None = Field(default=None, max_length=300)
+
+
+class PlateSpec(BaseModel):
+    """One motion plane of a layered shot.
+
+    The camera is deliberately absent: every plane is driven by one ``CameraRig``
+    from ``depth_alpha`` and the shot's ``CameraSpec``, so planes cannot invent
+    their own motion.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]{1,31}$")
+    source: PlateSource
+    path: str = Field(min_length=1, max_length=400)
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    z_order: int = Field(ge=0, le=16)
+    depth_alpha: float = Field(gt=0.0, le=1.0,
+                               description="plane distance / background distance")
+    coverage: PlateCoverage
+    anchor: PlateAnchor | None = Field(
+        default=None,
+        description="partial plates: normalized extent at camera scale 1.0")
+    hole_mask: str | None = Field(
+        default=None, max_length=400,
+        description="mask of the area this plate vacated in the background")
+    hole_mask_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    provenance: PlateProvenance | None = None
+
+    @model_validator(mode="after")
+    def _plate_contract(self) -> "PlateSpec":
+        if self.coverage == "partial" and self.anchor is None:
+            raise ValueError(f"{self.id}: partial 图层必须给出 anchor")
+        if self.coverage == "full_frame" and self.anchor is not None:
+            raise ValueError(f"{self.id}: full_frame 图层不接受 anchor")
+        if self.source == "generated_asset" and self.coverage != "partial":
+            raise ValueError(
+                f"{self.id}: generated_asset 必须是 partial —— 独立资产不是整幅背景")
+        if self.source in ("inpainted", "interpolated") and self.provenance is None:
+            raise ValueError(f"{self.id}: 补底图层必须记录 provenance（工作流、掩膜与覆盖率）")
+        if self.source == "original" and self.coverage == "partial" and not self.hole_mask:
+            raise ValueError(
+                f"{self.id}: 从静帧抠出的图层必须给出 hole_mask，否则无法检查它让出的区域")
+        if (self.hole_mask is None) != (self.hole_mask_sha256 is None):
+            raise ValueError(f"{self.id}: hole_mask 与 hole_mask_sha256 必须同时给出")
+        if self.hole_mask is not None and self.coverage != "partial":
+            raise ValueError(f"{self.id}: 背景层没有 hole_mask（它不会被别人让出）")
+        return self
 
 
 class LocalMotionSpec(BaseModel):
@@ -265,6 +379,10 @@ class ShotSpec(BaseModel):
     camera: CameraOverride | None = None
     local_motion: list[LocalMotionSpec] = Field(default_factory=list)
     regions: list[RegionSpec] = Field(default_factory=list)
+    plates: list[PlateSpec] = Field(default_factory=list)
+    depth_exceptions: dict[str, str] = Field(
+        default_factory=dict,
+        description="plate id -> reason; exempts a plate from the strict depth order")
     transition_in: TransitionSpec | None = None
     handle_seconds: float = Field(default=0.0, ge=0.0, le=6.0)
     static_quality: str | None = Field(default=None, max_length=400)
@@ -330,6 +448,65 @@ class ShotSpec(BaseModel):
                 raise ValueError(
                     f"{self.id}/{layer.layer_id}: 水面层不能直接驱动倒影区域"
                 )
+        return self
+
+    @model_validator(mode="after")
+    def _plate_contract(self) -> "ShotSpec":
+        """Rules R1-R5 from the M8-B experiments.
+
+        A shot without plates stays valid: the layered path is opt-in and the
+        existing single-plane shots must keep parsing unchanged.
+        """
+        if not self.plates:
+            for region in self.regions:
+                if region.plate_id is not None:
+                    raise ValueError(
+                        f"{self.id}/{region.id}: 镜头没有图层，区域不能声明 plate_id")
+            return self
+        ids = [plate.id for plate in self.plates]
+        if len(ids) != len(set(ids)):
+            raise ValueError(f"{self.id}: duplicate plate id")
+        orders = [plate.z_order for plate in self.plates]
+        if len(orders) != len(set(orders)):
+            raise ValueError(f"{self.id}: duplicate plate z_order")
+
+        backgrounds = [plate for plate in self.plates if plate.coverage == "full_frame"]
+        if len(backgrounds) != 1:
+            raise ValueError(
+                f"{self.id}: 必须恰好有一层 full_frame 背景，实际 {len(backgrounds)} 层")
+        background = backgrounds[0]
+        if background.z_order != min(orders):
+            raise ValueError(f"{self.id}: full_frame 背景必须是最远层（z_order 最小）")
+
+        for plate in self.plates:
+            if plate is background:
+                continue
+            if plate.source in ("inpainted", "interpolated"):
+                raise ValueError(f"{self.id}/{plate.id}: 补底只允许出现在背景层")
+        if background.source == "generated_asset":
+            raise ValueError(f"{self.id}: generated_asset 不能充当背景层")
+
+        for region in self.regions:
+            if region.plate_id is not None and region.plate_id not in set(ids):
+                raise ValueError(
+                    f"{self.id}/{region.id}: plate_id 引用了未知图层 {region.plate_id}")
+
+        ordered = sorted(self.plates, key=lambda plate: plate.z_order)
+        for outer, inner in zip(ordered, ordered[1:]):
+            if inner.depth_alpha < outer.depth_alpha:
+                continue
+            if inner.id in self.depth_exceptions:
+                continue
+            raise ValueError(
+                f"{self.id}/{inner.id}: depth_alpha {inner.depth_alpha} 未小于近邻 "
+                f"{outer.id} 的 {outer.depth_alpha}；如属有意（倒影、交错枝条），"
+                "请在 depth_exceptions 中声明理由")
+        unknown = sorted(set(self.depth_exceptions) - set(ids))
+        if unknown:
+            raise ValueError(f"{self.id}: depth_exceptions 引用了未知图层 {unknown}")
+        for plate_id, reason in self.depth_exceptions.items():
+            if not reason.strip():
+                raise ValueError(f"{self.id}/{plate_id}: depth_exceptions 必须写明理由")
         return self
 
 

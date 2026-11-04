@@ -87,7 +87,15 @@ def test_style_specific_animation_routes() -> None:
     assert ink.motion.local_policy["ink_diffusion"].enabled is True
     for preset in (court, ink):
         assert preset.motion.wan.allowed is True
-        assert preset.compositing.parallax.allowed is False
+        # Layered 2.5D is now permitted, and each style names the shot types it
+        # permits instead of leaving the policy unimplemented.
+        assert preset.compositing.parallax.allowed is True
+        assert preset.compositing.parallax.camera_moves
+    assert "scroll_pan" in court.compositing.parallax.camera_moves
+    assert "scroll_pan" not in ink.compositing.parallax.camera_moves
+    # A pan walks the window across the plate; a dolly does not.
+    assert (court.compositing.parallax.background_margin
+            > ink.compositing.parallax.background_margin)
 
 
 def test_no_work_names_in_production_config() -> None:

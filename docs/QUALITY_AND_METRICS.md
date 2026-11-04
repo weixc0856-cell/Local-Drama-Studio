@@ -5,18 +5,25 @@
 
 ## 1. 状态词典
 
-能力状态以 `docs/PRD.md` §0.2 为唯一来源：`PASS_VERIFIED` / `PASS_STATIC` / `PARTIAL` / `NOT_RUN` / `BLOCKED` / `DEPRECATED`。
+需求状态以 `docs/PRD.md` §0.2 为唯一来源：`PASS_VERIFIED` / `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL` / `NOT_IMPLEMENTED` / `BLOCKED` / `OPEN_QUESTION`。
 
-补充的运行/诊断状态（不用于能力矩阵）：
+历史证据标签（只用于旧报告/阶段表，不用于需求矩阵）：
+
+| 旧标签 | 映射 |
+|---|---|
+| `PASS_STATIC` | `IMPLEMENTED_NOT_VERIFIED` |
+| `NOT_RUN` | `NOT_IMPLEMENTED` |
+| `DEPRECATED` | 历史能力 |
+| `PASS_LIMITED` | 仅 `doctor` 诊断标签 |
+
+补充的运行/诊断状态（不用于需求矩阵）：
 
 | 状态 | 用途 |
 |---|---|
-| `PASS_LIMITED` | `doctor` 的局部诊断结论（已执行但有明确限制） |
-| `DECISION` | 只做了设计决策，尚未运行验证 |
 | `FAILED` | 运行期失败（任务、步骤、校验） |
 | `UNKNOWN` | 无法探测（禁止猜成在线/正常） |
 
-禁止把 `DECISION`、`NOT_RUN` 或 `BLOCKED` 写成 `PASS_VERIFIED`。
+禁止把 `NOT_IMPLEMENTED`、`BLOCKED` 或 `OPEN_QUESTION` 写成 `PASS_VERIFIED`。
 
 ## 2. 技术质量门
 

@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from ..config import Settings, load_settings
+from ..config import Settings, load_audio, load_settings
 
 PASS_VERIFIED = "PASS_VERIFIED"
 PASS_LIMITED = "PASS_LIMITED"
@@ -170,6 +170,7 @@ def probe(force: bool = False) -> dict[str, Any]:
             _tool(settings.ffmpeg.ffprobe, ["-version"], "ffprobe"),
             _tool("uv", ["--version"], "uv"),
         ]
+        tts_cfg = load_audio(settings.root).get("tts") or {}
         value = {
             "checked_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "services": services,
@@ -186,7 +187,8 @@ def probe(force: bool = False) -> dict[str, Any]:
             },
             "llm_model": settings.llm.model,
             "comfyui_url": settings.comfyui.base_url,
-            "tts_mode": settings.tts.mode,
+            "tts_mode": str(tts_cfg.get("mode") or "sft"),
+            "tts_default_speaker": tts_cfg.get("default_speaker"),
         }
         _cache.update({"at": now, "value": value})
         return value

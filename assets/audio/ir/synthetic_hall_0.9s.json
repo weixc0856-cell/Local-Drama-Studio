@@ -1,0 +1,16 @@
+{
+  "path": "assets\\audio\\ir\\synthetic_hall_0.9s.wav",
+  "sha256": "e7f81f8a306b7380c2ffcb87bf12fd96c30e57299dfbe2735f2a1aebdf1a4861",
+  "seconds": 0.9,
+  "sample_rate": 48000,
+  "seed": 7,
+  "rt60": 1.6,
+  "early_reflections_s": [
+    0.011,
+    0.023,
+    0.037,
+    0.053
+  ],
+  "kind": "synthetic",
+  "note": "合成 IR，无版权负担；不是实测空间，不得对外称录制混响"
+}

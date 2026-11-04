@@ -2,6 +2,8 @@
 
 面向抖音和小红书的**东方视觉内容生产工具**：用本地 AI 把诗词、古典人物与神话意象，制作成有画面、有声音、有字幕、有节奏的竖屏短视频。
 
+> **唯一需求入口：[docs/PRD.md](docs/PRD.md)（SSOT）。** 最新决策：默认 TTS 为 CosyVoice2-0.5B zero-shot，300M SFT 仅显式可选。PRD 配套：[PRD_CHANGELOG](docs/PRD_CHANGELOG.md)、[REQUIREMENT_TRACEABILITY](docs/REQUIREMENT_TRACEABILITY.md)。
+
 早期作为本地 AI 短剧实验室，目标链路：
 
 ```
@@ -28,7 +30,7 @@
 
 | 文档 | 内容 |
 |---|---|
-| [docs/PRD.md](docs/PRD.md) | 产品定位、内容范围、成功标准、风险 |
+| [docs/PRD.md](docs/PRD.md) | **唯一 SSOT**：产品定位、范围、TTS/风格决策、需求编号、验收标准 |
 | [docs/TECH_STACK.md](docs/TECH_STACK.md) | 冻结技术栈、版本、许可证、性能基线 |
 | [docs/CONTENT_SPEC.md](docs/CONTENT_SPEC.md) | 视觉/人物/声音/字幕/视频规范 |
 | [docs/PRODUCTION_WORKFLOW.md](docs/PRODUCTION_WORKFLOW.md) | 14 步流程、现状、失败降级、成本 |
@@ -41,14 +43,29 @@
 | [docs/PIPELINE_AB_VALIDATION.md](docs/PIPELINE_AB_VALIDATION.md) | 双视觉管线首批验证：水墨分层 / 工笔长卷 |
 | [docs/PIPELINE_FIX_REPORT.md](docs/PIPELINE_FIX_REPORT.md) | 双管线专项修复：水墨 Motion Mask / C1-C2、工笔 G3 |
 
+## 生产文档（2026-11-04）
+
+| 文档 | 内容 |
+|---|---|
+| [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) | 产品是什么、能做什么、两种风格、TTS 策略、边界 |
+| [docs/PRODUCTION_PIPELINE_GUIDE.md](docs/PRODUCTION_PIPELINE_GUIDE.md) | 四类生产路径、阶段输入/输出/命令/失败恢复 |
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | 从环境准备到一篇成片、工作台操作 |
+| [docs/PRODUCTION_CONFIG_GUIDE.md](docs/PRODUCTION_CONFIG_GUIDE.md) | 实际配置 / 推荐值 / 未验证参数 |
+| [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | 架构、契约、任务、API、扩展 |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 故障排查 |
+| [docs/PROJECT_NEXT_STEPS.md](docs/PROJECT_NEXT_STEPS.md) | P0–P4 路线 |
+| [docs/audit/](docs/audit/) | Phase A 仓库/能力/架构审计 |
+| [docs/PRD_CHANGELOG.md](docs/PRD_CHANGELOG.md) | PRD 变更记录与旧文档冲突修正 |
+| [docs/REQUIREMENT_TRACEABILITY.md](docs/REQUIREMENT_TRACEABILITY.md) | 需求编号、验收、Phase A 映射、当前状态 |
+
 技术证据仍保留在 `docs/R0_*` ~ `docs/R3_*`、`docs/S2_TEST_REPORT.md`、`docs/PIPELINE_AB_VALIDATION.md` 与 `docs/PIPELINE_FIX_REPORT.md`，不合并、不删除。
 
-## 当前状态（2026-11-03）
+## 当前状态（2026-11-04 更新）
 
 | 项目 | 状态 |
 |---|---|
 | 根目录 `.venv`（调度环境） | ✅ 已创建（Python 3.12.10，uv 0.10.8） |
-| 配置 / 数据契约 / doctor | ✅ 已实现，11 项测试通过 |
+| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **354 项测试通过** |
 | R0-A 硬件与依赖诊断 | ✅ `PASS_VERIFIED`（见 [R0_TEST_REPORT](docs/R0_TEST_REPORT.md)） |
 | R0-B ComfyUI + PyTorch XPU | ✅ `PASS_VERIFIED`：ComfyUI 0.43.0 / torch 2.15.0+xpu / xpu:0 Arc A750 7.75 GiB |
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
@@ -65,8 +82,11 @@
 | R3-B 单篇成片 | ✅ `PASS_VERIFIED`：38.04 s / 1080×1920 / 5 静帧 + 1 Wan / 配音 / 字幕 |
 | R3-C 单篇成本 | ✅ `PASS_VERIFIED`：端到端 43.8 min；多篇批处理 `NOT_RUN` |
 | R3 基线提交 | ✅ `0204979`（父 `026509b`） |
-| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；女声已试听并固化方案、未入正式成片；BGM/音效/商用授权未完成 |
+| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM/音效/商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
+| 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
+| TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
+| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`PARTIAL`（作品级锁定）；`NOT_RUN`（跨镜头一致性正式验证） |
 | 生产工作台 | ✅ `PASS_VERIFIED`（doctor / build / TTS / ComfyUI 批处理 / quality 真实执行）；LI 任务 `NOT_RUN` |
 | R4-R7（早期编号） | ⛔ 未执行；后续以 ROADMAP 的 M3/M4 为准 |
 
@@ -219,7 +239,7 @@ drama resume <project>       # 断点续跑                      [R7]
 
 后续产品路线见 [docs/ROADMAP.md](docs/ROADMAP.md)（M3《洛神赋》/ M4 平台测试）。早期 R4-R7 只是设计编号，未执行。
 
-第一个完整样片：38.04 秒 / 1080×1920 / 5 静帧 + 1 Wan / 7 句朗诵 / 字幕；端到端 43.8 分钟。后续路线：R3-D 素材选型与授权核验 → R4/M3《洛神赋》完整样片 → R5/M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
+当前最长的已验证生产案例是 81.373 秒 / 1080×1920 / 13 段 / 18 句的工笔《春江花月夜》，使用 `scroll_shot.py` + 预渲染 clips；R3 的 38.04 秒单篇是 5 静帧 + 1 Wan 路径。两条路径不要混为一谈。后续路线：R3-D 剩余项（BGM/音效/商用授权）→ M3《洛神赋》完整样片 → M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
 
 ---
 

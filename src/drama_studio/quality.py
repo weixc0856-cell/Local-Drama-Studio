@@ -647,6 +647,11 @@ RIGID_THRESHOLDS = {
     "mean_diff_max": 6.0,
     "p95_diff_max": 22.0,
     "edge_shift_pct_max": 0.06,
+    # A moving shot changes everywhere; a rigid subject must not change more than
+    # the frame around it. The floor keeps near-static shots on the absolute rule
+    # instead of dividing by almost nothing.
+    "relative_floor": 2.0,
+    "subject_to_energy_max": 1.5,
 }
 
 TEMPORAL_THRESHOLDS = {
@@ -799,6 +804,100 @@ def _load_shot_manifest(shot_manifest: dict[str, Any] | Path | str,
     return data
 
 
+def _sample_window(frame: Image.Image, box: tuple[float, float, float, float],
+                   size: tuple[int, int] = (96, 96)) -> Image.Image | None:
+    """Sample a normalized box at fixed resolution with sub-pixel accuracy.
+
+    Integer cropping quantises the window by up to a pixel per frame, which on a
+    high-contrast subject produces frame differences larger than any real
+    deformation. Sampling through an affine keeps the window glued to the plane,
+    so what remains is the subject's own change.
+    """
+    width, height = frame.size
+    x0 = max(0.0, min(1.0, box[0]))
+    y0 = max(0.0, min(1.0, box[1]))
+    x1 = max(0.0, min(1.0, box[2]))
+    y1 = max(0.0, min(1.0, box[3]))
+    if x1 - x0 <= 1e-4 or y1 - y0 <= 1e-4:
+        return None
+    left, top = x0 * width, y0 * height
+    span_x, span_y = (x1 - x0) * width, (y1 - y0) * height
+    return frame.transform(
+        size, Image.AFFINE,
+        (span_x / size[0], 0.0, left, 0.0, span_y / size[1], top),
+        resample=Image.BILINEAR)
+
+
+def _rigid_metrics(tracked: list[Image.Image], region: dict[str, Any],
+                   *, visible_masks: list[Image.Image] | None = None,
+                   skip_edge: bool = False,
+                   motion_energy: float | None = None) -> dict[str, Any]:
+    """Frame-difference and edge-drift signals for one tracked region.
+
+    ``visible_masks`` excludes pixels hidden by a nearer plate from the frame
+    difference, so an occluder moving across the subject cannot be mistaken for
+    the subject itself deforming.
+    """
+    diffs = []
+    histograms = []
+    for position, (previous, current) in enumerate(zip(tracked, tracked[1:])):
+        a = previous.resize((64, 64), Image.BILINEAR)
+        b = current.resize((64, 64), Image.BILINEAR)
+        difference = ImageChops.difference(a, b)
+        if visible_masks is not None:
+            both = ImageChops.multiply(visible_masks[position], visible_masks[position + 1])
+            keep = both.resize((64, 64), Image.BILINEAR)
+            stat = ImageStat.Stat(difference, keep)
+            diffs.append(stat.mean[0])
+            histograms.append(ImageChops.multiply(difference, keep).histogram())
+            continue
+        stat = ImageStat.Stat(difference)
+        diffs.append(stat.mean[0])
+        histograms.append(difference.histogram())
+    centers = [_edge_center(crop) for crop in tracked]
+    centers = [center for center in centers if center is not None]
+    edge_shift = 0.0
+    if len(centers) >= 2:
+        first = centers[0]
+        edge_shift = max(math.hypot(cx - first[0], cy - first[1])
+                         for cx, cy in centers)
+    reasons = []
+    average = sum(diffs) / len(diffs) if diffs else 0.0
+    ratio = round(average / motion_energy, 3) if motion_energy else None
+    # Absolute level first: on a near-static camera anything above the threshold
+    # is a real change. The ratio is the second gate: on a moving camera the
+    # subject is expected to change a little, but not more than the frame does.
+    absolute = average > RIGID_THRESHOLDS["mean_diff_max"]
+    relative = ratio is not None and average > RIGID_THRESHOLDS["relative_floor"] \
+        and ratio > RIGID_THRESHOLDS["subject_to_energy_max"]
+    if absolute or relative:
+        reasons.append("frame_difference" if absolute else "frame_difference_relative")
+    if diffs and max(diffs) > RIGID_THRESHOLDS["mean_diff_max"] * 2 and (
+            motion_energy is None or max(diffs) > motion_energy * 4):
+        reasons.append("frame_difference_spike")
+    if histograms and _p95(histograms[-1]) > RIGID_THRESHOLDS["p95_diff_max"]:
+        reasons.append("p95_difference")
+    # The edge-bbox heuristic is meaningful for a compact rigid silhouette.
+    # Soft background regions (moon, mist) use the frame-difference signal.
+    if (not skip_edge and region.get("role") == "rigid_object"
+            and edge_shift > RIGID_THRESHOLDS["edge_shift_pct_max"]):
+        reasons.append("edge_drift")
+    return {
+        "id": region.get("id"),
+        "permission": region.get("permission"),
+        "role": region.get("role"),
+        "frames": len(tracked),
+        "mean_diff_avg": round(average, 3),
+        "mean_diff_max": round(max(diffs), 3) if diffs else 0.0,
+        "motion_energy": round(motion_energy, 3) if motion_energy else None,
+        "subject_to_energy": ratio,
+        "edge_shift_pct": round(edge_shift, 4),
+        "edge_check_applied": region.get("role") == "rigid_object",
+        "violated": bool(reasons),
+        "reasons": reasons,
+    }
+
+
 def check_rigid_protection(
     shot_manifest: dict[str, Any] | Path | str,
     video_path: Path | str,
@@ -833,6 +932,9 @@ def check_rigid_protection(
         return {"status": FAIL, "code": "RIGID_OBJECT_VIOLATION",
                 "error": "video has fewer than 2 decoded frames", "video": str(video)}
 
+    if shot.get("plates"):
+        return _check_rigid_layered(shot, video, frames, fps)
+
     results = []
     for region in regions:
         raw_box = region.get("box") or {}
@@ -849,45 +951,7 @@ def check_rigid_protection(
                             "violated": True, "reasons": ["region_outside_frame"],
                             "frames": len(tracked)})
             continue
-        diffs = []
-        histograms = []
-        for previous, current in zip(tracked, tracked[1:]):
-            a = previous.resize((64, 64), Image.BILINEAR)
-            b = current.resize((64, 64), Image.BILINEAR)
-            difference = ImageChops.difference(a, b)
-            stat = ImageStat.Stat(difference)
-            diffs.append(stat.mean[0])
-            histograms.append(difference.histogram())
-        centers = [_edge_center(crop) for crop in tracked]
-        centers = [center for center in centers if center is not None]
-        edge_shift = 0.0
-        if len(centers) >= 2:
-            first = centers[0]
-            edge_shift = max(math.hypot(cx - first[0], cy - first[1])
-                             for cx, cy in centers)
-        reasons = []
-        if sum(diffs) / len(diffs) > RIGID_THRESHOLDS["mean_diff_max"]:
-            reasons.append("frame_difference")
-        if diffs and max(diffs) > RIGID_THRESHOLDS["mean_diff_max"] * 2:
-            reasons.append("frame_difference_spike")
-        if histograms and _p95(histograms[-1]) > RIGID_THRESHOLDS["p95_diff_max"]:
-            reasons.append("p95_difference")
-        # The edge-bbox heuristic is meaningful for a compact rigid silhouette.
-        # Soft background regions (moon, mist) use the frame-difference signal.
-        if region.get("role") == "rigid_object" and edge_shift > RIGID_THRESHOLDS["edge_shift_pct_max"]:
-            reasons.append("edge_drift")
-        results.append({
-            "id": region.get("id"),
-            "permission": region.get("permission"),
-            "role": region.get("role"),
-            "frames": len(tracked),
-            "mean_diff_avg": round(sum(diffs) / len(diffs), 3) if diffs else 0.0,
-            "mean_diff_max": round(max(diffs), 3) if diffs else 0.0,
-            "edge_shift_pct": round(edge_shift, 4),
-            "edge_check_applied": region.get("role") == "rigid_object",
-            "violated": bool(reasons),
-            "reasons": reasons,
-        })
+        results.append(_rigid_metrics(tracked, region))
     violated = any(item["violated"] for item in results)
     return {
         "status": FAIL if violated else PASS,
@@ -897,6 +961,348 @@ def check_rigid_protection(
         "thresholds": RIGID_THRESHOLDS,
         "regions": results,
     }
+
+
+REVEAL_THRESHOLDS = {
+    # Product-level criteria. Coverage alone says nothing: a background that was
+    # repaired looks fine when it is uncovered, and looks broken when the repair
+    # is a flat patch. So exposure is measured (how much repaired area is ever
+    # seen) and the repair is graded by how its texture energy compares with the
+    # painting around it.
+    "exposure_of_repair_max": 0.01,   # >1% of the repair visible => the repair must hold up
+    "energy_ratio_min": 0.5,          # repaired texture energy / surrounding painting
+    "occlusion_visible_min": 0.25,
+}
+
+
+def _panel_width(image: Image.Image) -> float:
+    """Width of the background plate when scaled to the output height."""
+    return image.width * H / image.height
+
+
+def _camera_state(camera: dict[str, Any], progress: float, panel_width: float):
+    """Mirror of the renderer's per-frame camera state."""
+    from .motion.plates import CameraState, ease_value
+
+    move = str(camera.get("move") or "static")
+    ease = ease_value(str(camera.get("easing") or "ease_in_out"), progress)
+    if move in ("scroll_pan", "slow_lateral_track"):
+        start_px = float(camera.get("pan_start_px") or 0.0)
+        end_px = float(camera.get("pan_end_px") or 0.0)
+        pixels = start_px + (end_px - start_px) * ease
+        panel = max(1.0, panel_width)
+        return CameraState(mode="pan", pan=pixels / panel, pan_start=start_px / panel,
+                           span=W / panel)
+    z0 = float(camera.get("scale_start") or 1.0)
+    z1 = float(camera.get("scale_end") or 1.0)
+    return CameraState(mode="dolly", scale=z0 + (z1 - z0) * ease,
+                       focus=tuple(camera.get("focus") or [0.5, 0.48]))
+
+
+def _plate_scale_at(camera: dict[str, Any], depth_alpha: float, progress: float,
+                    panel_width: float = W) -> float:
+    """Scale of one plate at ``progress`` under a dolly camera."""
+    return _camera_state(camera, progress, panel_width).plane_window(depth_alpha)[2] ** -1
+
+
+def _sample_mask(mask: Image.Image, window) -> Image.Image:
+    from .motion.plates import sample_window
+
+    rgba = Image.merge("RGBA", (mask, mask, mask, mask))
+    return sample_window(rgba, window, (W, H)).getchannel("A")
+
+
+def _placed_alpha(image: Image.Image, anchor: dict[str, float], window) -> Image.Image:
+    """Coverage of a partial plate, placed exactly like ``motion.plates.compose``."""
+    from .motion.plates import place
+    from .motion.spec import PlateAnchor
+
+    anchor_spec = PlateAnchor(x0=anchor["x0"], y0=anchor["y0"],
+                              x1=anchor["x1"], y1=anchor["y1"])
+    return place(image, anchor_spec, window, (W, H)).getchannel("A")
+
+
+def _texture_energy(image: Image.Image, mask: Image.Image) -> float:
+    """High-frequency energy: mean |image - blur(image)| over ``mask``."""
+    high = ImageChops.difference(image, image.filter(ImageFilter.GaussianBlur(2)))
+    return round(ImageStat.Stat(high, mask).mean[0], 4)
+
+
+def check_plate_reveal(shot_manifest: dict[str, Any] | Path | str, *,
+                       root: Path | None = None, fps: int = 24) -> dict[str, Any]:
+    """Grade a repaired background plate by what a viewer would actually see.
+
+    Two measurements per repaired plate:
+
+    * **exposure** — how much of the repaired area any moving plate ever leaves
+      uncovered (computed from the geometry, not the video);
+    * **repair continuity** — the repaired area's high-frequency energy against
+      the painting immediately around it.
+
+    A flat repair that is never exposed cannot be seen and passes; the same
+    repair exposed over 2% of the frame fails. Coverage slivers that sit on
+    already-correct background are reported as information, not as violations.
+    """
+    if isinstance(shot_manifest, dict):
+        shot = shot_manifest
+    else:
+        shot = json.loads(Path(shot_manifest).read_text(encoding="utf-8"))
+        if "shots" in shot:
+            shot = (shot.get("shots") or [{}])[0]
+    root = (root or Path.cwd()).resolve()
+
+    plates = shot.get("plates") or []
+    if not plates:
+        return {"status": PASS, "code": "NO_PLATES",
+                "note": "镜头没有图层，未执行补底检查"}
+
+    camera = shot.get("camera") or {}
+    focus = tuple(camera.get("focus") or [0.5, 0.5])
+    duration = float(shot.get("render_duration_seconds")
+                     or shot.get("duration_seconds") or 1.0)
+    total = max(1, int(round(duration * fps)))
+    step = max(1, total // 12)
+
+    # Which plates sit above the background, and how much they cover.
+    movers = []
+    for plate in plates:
+        if plate.get("coverage") != "partial":
+            continue
+        plate_path = Path(str(plate.get("path") or ""))
+        plate_path = plate_path if plate_path.is_absolute() else root / plate_path
+        if plate_path.is_file():
+            movers.append((plate, Image.open(plate_path).convert("RGBA")))
+
+    reports = []
+    background = next((plate for plate in plates
+                       if plate.get("coverage") == "full_frame"), None)
+    if background is None:
+        return {"status": FAIL, "code": "NO_BACKGROUND_PLATE"}
+
+    provenance = background.get("provenance") or {}
+    mask_rel = provenance.get("mask")
+    if not mask_rel:
+        return {"status": PASS, "code": "NO_REPAIR",
+                "note": "背景没有补底（整幅原始画），无需检查",
+                "plates": []}
+
+    plate_path = Path(str(background.get("path") or ""))
+    plate_path = plate_path if plate_path.is_absolute() else root / plate_path
+    if not plate_path.is_file():
+        return {"status": FAIL, "code": "BACKGROUND_MISSING", "path": str(plate_path)}
+
+    mask_path = Path(str(mask_rel))
+    mask_path = mask_path if mask_path.is_absolute() else root / mask_path
+    if not mask_path.is_file():
+        return {"status": FAIL, "code": "REPAIR_MASK_MISSING", "path": str(mask_path)}
+
+    hole = Image.open(mask_path).convert("L")
+    plate_image = Image.open(plate_path).convert("L")
+    if hole.size != (W, H):
+        hole = hole.resize((W, H), Image.BILINEAR)
+    if plate_image.size != (W, H):
+        plate_image = plate_image.resize((W, H), Image.LANCZOS)
+    panel_width = _panel_width(Image.open(plate_path))
+
+    # Exposure: worst frame where any moving plate fails to cover the repair.
+    worst_exposure = 0.0
+    worst_frame = 0
+    for index in range(0, total, step):
+        progress = index / max(1, total - 1)
+        state = _camera_state(camera, progress, panel_width)
+        background_window = state.plane_window(1.0)
+        exposed = _sample_mask(hole, background_window)
+        for plate, image in movers:
+            anchor = plate.get("anchor") or {}
+            if not anchor:
+                continue
+            cover = _placed_alpha(image, anchor,
+                                  state.plane_window(float(plate.get("depth_alpha") or 1.0)))
+            exposed = ImageChops.multiply(exposed, ImageChops.invert(cover))
+        # Weighted: a half-transparent edge is not a hole.
+        leaked = sum(value * count for value, count in enumerate(
+            _sample_mask(hole, background_window).histogram()))
+        exposed_weight = sum(value * count for value, count in enumerate(exposed.histogram()))
+        fraction = exposed_weight / max(1.0, leaked)
+        if fraction > worst_exposure:
+            worst_exposure = fraction
+            worst_frame = index
+
+    # Repair continuity: does the repaired area look like the painting around it?
+    ring = ImageChops.subtract(hole.filter(ImageFilter.MaxFilter(41)), hole)
+    ring = ring.point(lambda v: 255 if v > 127 else 0)
+    inside_energy = _texture_energy(plate_image, hole)
+    outside_energy = _texture_energy(plate_image, ring)
+    ratio = round(inside_energy / outside_energy, 3) if outside_energy else None
+
+    exposed_enough = worst_exposure > REVEAL_THRESHOLDS["exposure_of_repair_max"]
+    flat = ratio is not None and ratio < REVEAL_THRESHOLDS["energy_ratio_min"]
+    violated = exposed_enough and flat
+    reports.append({
+        "id": background.get("id"),
+        "source": background.get("source"),
+        "status": FAIL if violated else PASS,
+        "exposure_of_repair": round(worst_exposure, 4),
+        "worst_exposure_frame": worst_frame,
+        "repair_energy_inside": inside_energy,
+        "surround_energy": outside_energy,
+        "energy_ratio": ratio,
+        "note": ("补底偏平且被大量露出" if violated else
+                 "补底未被显著露出" if not exposed_enough else
+                 "补底纹理与周围相当"),
+    })
+
+    return {
+        "status": FAIL if violated else PASS,
+        "code": "PLATE_REPAIR_VIOLATION" if violated else "PLATE_REPAIR_OK",
+        "thresholds": REVEAL_THRESHOLDS,
+        "plates": reports,
+        "note": "露洞按图层几何精确计算；判据是补底是否被看见、看见时是否像画",
+    }
+
+
+def _frame_energy(frames: list[Image.Image]) -> float:
+    """Mean frame-to-frame change over the whole shot: how much this shot moves."""
+    if len(frames) < 2:
+        return 0.0
+    values = []
+    for previous, current in zip(frames, frames[1:]):
+        values.append(ImageStat.Stat(ImageChops.difference(previous, current)).mean[0])
+    return round(sum(values) / len(values), 4)
+
+
+def _check_rigid_layered(shot: dict[str, Any], video: Path,
+                         frames: list[Image.Image], fps: int) -> dict[str, Any]:
+    """Rigid protection for layered shots, occlusion-aware.
+
+    A protected subject may sit under a nearer plate (reeds in front of a boat).
+    Refusing that would push the shot design around the checker, so instead the
+    gate measures only the pixels that are actually visible: occluded pixels are
+    excluded from the frame-difference signal, and the edge-drift signal is
+    dropped when the subject is partly hidden. If too little of the subject is
+    visible the shot is reported as not assessable rather than silently passing.
+    """
+    from .motion.plates import map_point
+
+    regions = [region for region in (shot.get("regions") or [])
+               if region.get("permission") in ("locked", "hard_excluded")]
+    if not regions:
+        return {"status": PASS, "code": "NO_LOCKED_REGIONS", "video": str(video),
+                "render_mode": "plates", "note": "镜头没有声明 locked/hard_excluded 区域"}
+
+    plates = {plate.get("id"): plate for plate in (shot.get("plates") or [])}
+    plate_images: dict[str, Image.Image] = {}
+
+    def plate_image(plate_id: str) -> Image.Image:
+        if plate_id not in plate_images:
+            rel_path = Path(str(plates[plate_id].get("path") or ""))
+            path = rel_path if rel_path.is_absolute() else Path.cwd() / rel_path
+            plate_images[plate_id] = Image.open(path).convert("RGBA")
+        return plate_images[plate_id]
+
+    camera = shot.get("camera") or {}
+    total = max(2, len(frames))
+    background = next((item for item in plates.values()
+                       if item.get("coverage") == "full_frame"), None)
+    panel_width = (W if background is None else
+                   _panel_width(plate_image(str(background.get("id")))))
+
+    results = []
+    for region in regions:
+        plate = plates.get(region.get("plate_id")) if region.get("plate_id") else None
+        depth_alpha = float(plate.get("depth_alpha") or 1.0) if plate else 1.0
+        plate_z = int(plate.get("z_order") or 0) if plate else 0
+        occluders = [item for item in plates.values()
+                     if int(item.get("z_order") or 0) > plate_z
+                     and item.get("coverage") == "partial"]
+
+        box = region.get("box") or {}
+        if isinstance(box, dict):
+            raw = [float(box["x0"]), float(box["y0"]), float(box["x1"]), float(box["y1"])]
+        else:
+            raw = [float(value) for value in box]
+
+        tracked: list[Image.Image] = []
+        visible: list[Image.Image] = []
+        visible_fraction = 1.0
+        for index, frame in enumerate(frames):
+            progress = index / (total - 1)
+            window = _camera_state(camera, progress, panel_width).plane_window(depth_alpha)
+            left, top = map_point((raw[0], raw[1]), window)
+            right, bottom = map_point((raw[2], raw[3]), window)
+            crop = _sample_window(frame, (left, top, right, bottom))
+            if crop is None:
+                continue
+            hidden = Image.new("L", crop.size, 0) if occluders else None
+            for occluder in occluders:
+                anchor = occluder.get("anchor") or {}
+                if not anchor:
+                    continue
+                occluder_window = _camera_state(
+                    camera, progress, panel_width).plane_window(
+                    float(occluder.get("depth_alpha") or 1.0))
+                coverage = _placed_alpha(plate_image(str(occluder.get("id"))),
+                                         anchor, occluder_window)
+                hidden = ImageChops.lighter(
+                    hidden, _clamped_mask(coverage, (left, top, right, bottom), crop.size))
+            tracked.append(crop)
+            if hidden is None:
+                visible.append(Image.new("L", crop.size, 255))
+            else:
+                keep = ImageChops.invert(hidden.point(lambda v: 255 if v > 127 else 0))
+                visible.append(keep)
+                visible_fraction = min(visible_fraction, ImageStat.Stat(keep).mean[0] / 255.0)
+
+        if len(tracked) < 2:
+            results.append({"id": region.get("id"), "plate_id": region.get("plate_id"),
+                            "violated": True, "reasons": ["region_outside_frame"],
+                            "frames": len(tracked)})
+            continue
+
+        occluded = visible_fraction < 0.999
+        # On a plane-locked window the subject does not move inside the crop
+        # (measured: best alignment shift 0,0), so the edge-bbox centre drifts
+        # only when faint edges cross the threshold. It is not a deformation
+        # signal here; the frame-difference ratio is.
+        entry = _rigid_metrics(tracked, region, visible_masks=visible if occluded else None,
+                               skip_edge=True, motion_energy=_frame_energy(frames))
+        entry["plate_id"] = region.get("plate_id") or "bg"
+        entry["depth_alpha"] = depth_alpha
+        entry["visible_fraction"] = round(visible_fraction, 3)
+        entry["occluded"] = occluded
+        entry["edge_check_applied"] = False
+        entry["note"] = (
+            "主体被更近图层部分遮挡，已排除这些像素；边缘漂移判据在平面锁定窗口上不适用，"
+            "改用主体变化与全帧变化的比值"
+            if occluded else
+            "平面锁定窗口：边缘漂移判据不适用，改用主体变化与全帧变化的比值")
+        if visible_fraction < REVEAL_THRESHOLDS["occlusion_visible_min"]:
+            entry["violated"] = True
+            entry["reasons"] = list(entry["reasons"]) + ["subject_not_assessable"]
+        results.append(entry)
+
+    violated = any(item["violated"] for item in results)
+    return {
+        "status": FAIL if violated else PASS,
+        "code": "RIGID_OBJECT_VIOLATION" if violated else "RIGID_PROTECTION_OK",
+        "video": str(video),
+        "render_mode": "plates",
+        "camera_move": camera.get("move"),
+        "thresholds": RIGID_THRESHOLDS,
+        "regions": results,
+    }
+
+
+def _clamped_mask(mask: Image.Image, box: tuple[float, float, float, float],
+                  size: tuple[int, int]) -> Image.Image:
+    """Crop a full-frame normalized mask to the same normalized box as a crop."""
+    left = max(0, int(box[0] * mask.width))
+    top = max(0, int(box[1] * mask.height))
+    right = min(mask.width, int(box[2] * mask.width))
+    bottom = min(mask.height, int(box[3] * mask.height))
+    if right <= left or bottom <= top:
+        return Image.new("L", size, 0)
+    return mask.crop((left, top, right, bottom)).resize(size, Image.BILINEAR)
 
 
 def _flicker_metrics(values: list[float], fps: float) -> dict[str, float]:
@@ -1078,6 +1484,60 @@ def check_temporal_continuity(
     }
 
 
+def check_plate_bounds(shot_manifest: dict[str, Any] | Path | str, *,
+                       root: Path | None = None, fps: int = 24) -> dict[str, Any]:
+    """The background window must stay inside its plate on every frame.
+
+    A window that leaves the plate renders as a black bar. This is checked from
+    the plan geometry alone, independently of the renderer, so a manifest
+    produced by any path is still graded.
+    """
+    if isinstance(shot_manifest, dict):
+        shot = shot_manifest
+    else:
+        shot = json.loads(Path(shot_manifest).read_text(encoding="utf-8"))
+        if "shots" in shot:
+            shot = (shot.get("shots") or [{}])[0]
+    root = (root or Path.cwd()).resolve()
+
+    plates = shot.get("plates") or []
+    background = next((plate for plate in plates
+                       if plate.get("coverage") == "full_frame"), None)
+    if background is None:
+        return {"status": PASS, "code": "NO_PLATES",
+                "note": "镜头没有图层，未执行画板边界检查"}
+
+    path = Path(str(background.get("path") or ""))
+    path = path if path.is_absolute() else root / path
+    if not path.is_file():
+        return {"status": FAIL, "code": "BACKGROUND_MISSING", "path": str(path)}
+
+    camera = shot.get("camera") or {}
+    duration = float(shot.get("render_duration_seconds")
+                     or shot.get("duration_seconds") or 1.0)
+    total = max(1, int(round(duration * fps)))
+    panel_width = _panel_width(Image.open(path))
+
+    worst = {"frame": 0, "x0": 0.0, "x1": 1.0}
+    for index in range(total):
+        state = _camera_state(camera, index / max(1, total - 1), panel_width)
+        x0, _, span_x, _ = state.plane_window(1.0)
+        x1 = x0 + span_x
+        if x0 < worst["x0"] or x1 > worst["x1"] or index == 0:
+            worst = {"frame": index, "x0": round(x0, 6), "x1": round(x1, 6)}
+            worst["x0"] = min(worst["x0"], round(x0, 6))
+            worst["x1"] = max(worst["x1"], round(x1, 6))
+
+    violated = worst["x0"] < -1e-6 or worst["x1"] > 1 + 1e-6
+    return {
+        "status": FAIL if violated else PASS,
+        "code": "PLATE_OUT_OF_BOUNDS" if violated else "PLATE_BOUNDS_OK",
+        "background": background.get("id"),
+        "worst_window": worst,
+        "note": "背景窗口越出画板会渲染成黑边" if violated else "背景窗口始终在画板内",
+    }
+
+
 def check_motion_quality(
     manifest_path: Path | str,
     *,
@@ -1091,7 +1551,11 @@ def check_motion_quality(
     for shot in manifest.get("shots") or []:
         output = Path(shot.get("output") or "")
         video = output if output.is_absolute() else root / output
-        shots.append(check_rigid_protection(shot, video))
+        entry = check_rigid_protection(shot, video)
+        if shot.get("plates"):
+            entry["plate_reveal"] = check_plate_reveal(shot, root=root, fps=24)
+            entry["plate_bounds"] = check_plate_bounds(shot, root=root, fps=24)
+        shots.append(entry)
     sequence = manifest.get("sequence") or None
     temporal = None
     temporal_video: Path | None = None
@@ -1106,6 +1570,10 @@ def check_motion_quality(
     if temporal_video is not None:
         temporal = check_temporal_continuity(temporal_video, transition_manifest=manifest)
     failed = any(item["status"] == FAIL for item in shots)
+    failed = failed or any(
+        (item.get("plate_reveal") or {}).get("status") == FAIL for item in shots)
+    failed = failed or any(
+        (item.get("plate_bounds") or {}).get("status") == FAIL for item in shots)
     failed = failed or (temporal is not None and temporal["status"] == FAIL)
     report = {
         "status": FAIL if failed else PASS,
@@ -1126,6 +1594,84 @@ def _infer_root(manifest_path: Path) -> Path:
         if (parent / "pyproject.toml").is_file() and (parent / "config").is_dir():
             return parent
     return Path.cwd()
+
+
+def check_audio_timeline(
+    timeline_path: Path,
+    *,
+    root: Path | None = None,
+    assets_path: Path | None = None,
+) -> dict[str, Any]:
+    """Validate a multi-track timeline and the readiness of BGM/SFX assets."""
+    from .voice.audio_assets import AudioAssetError, load_registry
+    from .voice.audio_timeline import TimelineError, load_timeline
+
+    timeline_path = Path(timeline_path).resolve()
+    root = (root or _infer_root(timeline_path)).resolve()
+    checks: dict[str, Any] = {"timeline": str(timeline_path), "root": str(root)}
+    try:
+        timeline = load_timeline(timeline_path)
+    except (TimelineError, ValueError) as exc:
+        checks["status"] = FAIL
+        checks["error"] = f"timeline invalid: {exc}"
+        return checks
+    registry = None
+    if assets_path is not None:
+        try:
+            registry = load_registry(Path(assets_path))
+        except (AudioAssetError, ValueError) as exc:
+            checks["status"] = FAIL
+            checks["error"] = f"asset registry invalid: {exc}"
+            return checks
+    tracks = []
+    ok = True
+    for track in timeline.tracks:
+        events = []
+        for event in track.events:
+            path = None
+            error = None
+            if event.path:
+                path = Path(event.path)
+                path = path if path.is_absolute() else (root / path)
+                if not path.is_file():
+                    error = f"missing {path}"
+            elif event.asset_id and registry is not None:
+                try:
+                    path = registry.resolve(event.asset_id, root, require_ready=True)
+                except AudioAssetError as exc:
+                    error = str(exc)
+            elif event.asset_id and registry is None:
+                error = "asset_id requires --audio-assets registry"
+            if error:
+                ok = False
+            events.append({"event_id": event.event_id, "status": PASS if not error else FAIL,
+                           "error": error, "path": str(path) if path else None})
+        if track.type == "bgm":
+            if not track.asset_id:
+                ok = False
+            elif registry is not None:
+                try:
+                    registry.resolve(track.asset_id, root, require_ready=True)
+                except AudioAssetError as exc:
+                    ok = False
+                    events.append({"event_id": track.track_id, "status": FAIL, "error": str(exc)})
+        tracks.append({
+            "track_id": track.track_id,
+            "type": track.type,
+            "status": PASS if all(e["status"] == PASS for e in events) else FAIL,
+            "events": events,
+        })
+    checks.update({
+        "tracks": tracks,
+        "duration_ms": timeline.duration_ms,
+        "sample_rate": timeline.sample_rate,
+        "status": PASS if ok else FAIL,
+        "checked_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    })
+    report_path = timeline_path.parent / "audio_timeline_report.json"
+    report_path.write_text(json.dumps(checks, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
+    checks["report"] = str(report_path)
+    return checks
 
 
 def check_build(manifest_path: Path, *, root: Path | None = None) -> dict[str, Any]:
@@ -1175,8 +1721,7 @@ def check_build(manifest_path: Path, *, root: Path | None = None) -> dict[str, A
     checks["status"] = PASS if ok else FAIL
     checks["checked_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     report_path = manifest_path.parent / "quality_report.json"
-    report_path.write_text(json.dumps(checks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    checks["report"] = str(report_path)
+    report_path.write_text(json.dumps(checks, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
     return checks
 
 
@@ -1184,6 +1729,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", help="build_manifest.json of one render")
     parser.add_argument("--audio-manifest", help="audio_manifest.json for per-line audio QA")
+    parser.add_argument("--audio-timeline", default=None, help="audio_timeline.json for multi-track QA")
+    parser.add_argument("--audio-assets", default=None, help="audio asset registry for timeline QA")
     parser.add_argument("--timeline", default=None, help="timeline.json for subtitle/audio alignment")
     parser.add_argument("--aesthetic-motion", default=None,
                         help="motion_manifest.json for static stability + colour/light continuity")
@@ -1194,8 +1741,8 @@ def main() -> int:
     parser.add_argument("--root", default=None, help="project root (default: infer)")
     args = parser.parse_args()
     selected = [
-        bool(args.manifest), bool(args.audio_manifest), bool(args.aesthetic_motion),
-        bool(args.motion_manifest),
+        bool(args.manifest), bool(args.audio_manifest), bool(args.audio_timeline),
+        bool(args.aesthetic_motion), bool(args.motion_manifest),
     ]
     if sum(selected) != 1:
         print(json.dumps({
@@ -1205,7 +1752,13 @@ def main() -> int:
         }, ensure_ascii=False))
         return 2
     try:
-        if args.audio_manifest:
+        if args.audio_timeline:
+            result = check_audio_timeline(
+                Path(args.audio_timeline),
+                root=Path(args.root) if args.root else None,
+                assets_path=Path(args.audio_assets) if args.audio_assets else None,
+            )
+        elif args.audio_manifest:
             result = check_audio_manifest(
                 Path(args.audio_manifest),
                 root=Path(args.root) if args.root else None,

@@ -31,8 +31,8 @@ llm:
 # CosyVoice runtime already exists at D:\AI\CosyVoice-Runtime (CPU, port 50000).
 tts:
   base_url: "http://127.0.0.1:50000"
-  mode: "sft"          # sft = preset speakers; zero_shot = reference wav per character
   sample_rate: 48000   # final mix sample rate; CosyVoice outputs 24k/22.05k
+  # Default TTS mode/voice live in config/audio.yaml (single source).
 
 ffmpeg:
   binary: "ffmpeg"

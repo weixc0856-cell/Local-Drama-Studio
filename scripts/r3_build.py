@@ -94,6 +94,10 @@ def main() -> int:
     parser.add_argument("--content-type", choices=("poetry", "narration", "mixed"), default=None)
     parser.add_argument("--leading-ms", type=int, default=None,
                         help="override the content-type leading silence (default: 400/300/350)")
+    parser.add_argument("--audio-timeline", default=None,
+                        help="optional multi-track audio_timeline.json; keeps legacy line mix when absent")
+    parser.add_argument("--audio-assets", default=None,
+                        help="audio asset registry for BGM/SFX (default: assets/audio/manifest.json if present)")
     parser.add_argument("--allow-overwrite", action="store_true",
                         help="allow replacing an existing final_9x16.mp4 in --out")
     args = parser.parse_args()
@@ -120,6 +124,16 @@ def main() -> int:
     leading_ms = args.leading_ms if args.leading_ms is not None else leading_silence_for(content_type)
     if leading_ms < 0:
         raise SystemExit("--leading-ms must be >= 0")
+
+    # The spoken title is part of the leading silence: it plays first, then the
+    # body starts. Audio owns the clock, so the header extends the lead rather
+    # than being squeezed into a fixed title slot.
+    header = audio.get("header") or None
+    header_offset_ms = 0
+    if header:
+        header_offset_ms = (int(round(float(header["duration_seconds"]) * 1000))
+                            + int(header.get("pause_ms", 0)))
+        leading_ms += header_offset_ms
 
     timeline_segments = []
     for i, line in enumerate(lines, start=1):
@@ -171,22 +185,68 @@ def main() -> int:
          "-vf", f"fade=t=in:st=0:d=0.6,fade=t=out:st={fade_out:.3f}:d=0.9,format=yuv420p",
          "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-r", str(FPS), str(video_faded)])
 
-    # Audio: delay each line to its start, mix, pad to video duration.
-    inputs: list[str] = []
-    filters: list[str] = []
-    labels: list[str] = []
-    for i, line in enumerate(lines, start=1):
-        inputs += ["-i", str(ROOT / line["file"])]
-        delay = starts_ms[i - 1]
-        filters.append(f"[{i - 1}:a]adelay={delay}|{delay}[a{i}]")
-        labels.append(f"[a{i}]")
-    filters.append(
-        f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0,alimiter=limit=0.95,"
-        f"loudnorm=I=-16:TP=-1.5:LRA=11,apad=whole_dur={total:.3f}[aout]"
-    )
+    # Audio: explicit multi-track timeline, or the legacy narration-only mix.
+    from drama_studio.voice.soundscape import load_settings as load_soundscape
+    from drama_studio.voice.soundscape import master as master_soundscape
+
+    soundscape = load_soundscape(ROOT)
     mixed = out_dir / "mixed.wav"
-    run(["ffmpeg", "-y", "-v", "error", *inputs, "-filter_complex", ";".join(filters),
-         "-map", "[aout]", "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(mixed)])
+    mix_target = out_dir / "mixed_pre.wav" if soundscape.enabled else mixed
+    audio_timeline_report = None
+    if args.audio_timeline:
+        from drama_studio.voice.mix import MixError, mix_timeline
+
+        timeline_arg = Path(args.audio_timeline)
+        timeline_arg = timeline_arg if timeline_arg.is_absolute() else (ROOT / timeline_arg)
+        if args.audio_assets:
+            assets_arg = Path(args.audio_assets)
+            assets_arg = assets_arg if assets_arg.is_absolute() else (ROOT / assets_arg)
+        else:
+            candidate = ROOT / "assets" / "audio" / "manifest.json"
+            assets_arg = candidate if candidate.is_file() else None
+        try:
+            audio_timeline_report = mix_timeline(
+                timeline_arg, mix_target, root=ROOT,
+                asset_registry_path=assets_arg,
+                duration_ms=int(round(total * 1000)),
+            )
+        except MixError as exc:
+            raise SystemExit(f"audio timeline mix failed: {exc}") from exc
+    else:
+        inputs: list[str] = []
+        filters: list[str] = []
+        labels: list[str] = []
+        input_index = 0
+        if header:
+            base_leading = max(0, leading_ms - header_offset_ms)
+            inputs += ["-i", str(ROOT / header["file"])]
+            filters.append(f"[{input_index}:a]adelay={base_leading}|{base_leading}[ahdr]")
+            labels.append("[ahdr]")
+            input_index += 1
+        for i, line in enumerate(lines, start=1):
+            inputs += ["-i", str(ROOT / line["file"])]
+            delay = starts_ms[i - 1]
+            filters.append(f"[{input_index}:a]adelay={delay}|{delay}[a{i}]")
+            labels.append(f"[a{i}]")
+            input_index += 1
+        # Loudness is applied exactly once. When the soundscape stage is on, it
+        # owns the loudness pass (two-pass, on the assembled track); otherwise the
+        # build keeps its original single pass, byte for byte.
+        loudness = "" if soundscape.enabled else "loudnorm=I=-16:TP=-1.5:LRA=11,"
+        filters.append(
+            f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0,alimiter=limit=0.95,"
+            f"{loudness}apad=whole_dur={total:.3f}[aout]"
+        )
+        run(["ffmpeg", "-y", "-v", "error", *inputs, "-filter_complex", ";".join(filters),
+             "-map", "[aout]", "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(mix_target)])
+
+    soundscape_report = None
+    if soundscape.enabled:
+        result = master_soundscape(mix_target, mixed, root=ROOT, settings=soundscape)
+        soundscape_report = {"status": result.status, "note": result.note,
+                             "report": result.report}
+        if result.status != "PASS":
+            raise SystemExit(f"声景母带未通过：{result.status} {result.note}")
 
     # Timeline and SRT share the exact same event data as the audio mix.
     timeline_path = out_dir / "timeline.json"
@@ -275,10 +335,17 @@ def main() -> int:
     manifest = {
         "segments": [{**s, "file": relpath(seg_files[i]), "sha256": sha256(seg_files[i])}
                      for i, s in enumerate(segments)],
+        "audio_timeline": (
+            {k: v for k, v in audio_timeline_report.items() if k != "graph"}
+            if audio_timeline_report else None
+        ),
         "content_type": content_type,
         "leading_silence_ms": leading_ms,
         "total_seconds": total,
         "audio_end_seconds": round(audio_end, 3),
+        "soundscape": soundscape_report,
+        "header": header,
+        "ledger": audio.get("ledger"),
         "voice_end_seconds": round(timeline["voice_end_ms"] / 1000.0, 3),
         "trailing_silence_seconds": round(timeline["trailing_silence_ms"] / 1000.0, 3),
         "line_starts_ms": starts_ms,

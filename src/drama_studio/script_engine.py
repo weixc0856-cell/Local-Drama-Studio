@@ -185,7 +185,8 @@ def generate_script(
     timeout_s: float = 900.0,
     max_tokens: int = 2000,
     speaker: str | None = None,
-    speed: float = 1.0,
+    speed: float | None = None,
+    voice_profile: str | None = None,
     http_client: Any = None,
 ) -> ProductionScript:
     package = json.loads(package_path.read_text(encoding="utf-8"))
@@ -269,6 +270,8 @@ def generate_script(
         "lines": [line.text for line in script.lines],
         "source_script": str(out_path.name),
     }
+    if voice_profile:
+        narration["voice_profile"] = voice_profile
     (out_path.parent / "narration.json").write_text(
         json.dumps(narration, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -338,7 +341,9 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=900.0)
     parser.add_argument("--max-tokens", type=int, default=2000)
     parser.add_argument("--speaker", default=None)
-    parser.add_argument("--speed", type=float, default=1.0)
+    parser.add_argument("--speed", type=float, default=None)
+    parser.add_argument("--voice-profile", default=None,
+                        help="write this voice profile into narration.json (config/voices.yaml)")
     parser.add_argument("--reuse", action="store_true", help="validate an existing production_script.json without calling the LLM")
     args = parser.parse_args()
     if args.reuse:
@@ -365,6 +370,7 @@ def main() -> int:
             max_tokens=args.max_tokens,
             speaker=args.speaker,
             speed=args.speed,
+            voice_profile=args.voice_profile,
         )
     except (ScriptGenerationError, OSError, ValueError) as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False))
