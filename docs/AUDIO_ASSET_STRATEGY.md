@@ -27,7 +27,7 @@
 | FFmpeg 噪声/拟音滤镜 | `anoisesrc`、`highpass`、`lowpass`、`tremolo`、`vibrato` 均可用 | `ffmpeg -filters` |
 | 程序化风声可用性 | 粉噪 10 s → 120 Hz HP + 1.6 kHz LP + 0.12 Hz 颤动 → `-49.71 LUFS / TP -35.28`，非静音 | `experiments/audio_probe/wind_probe.wav` |
 | 外网可达性 | `freepd.com` 200、`freesound.org` 200、`sonniss.com` **403** | `curl.exe` 实测 |
-| 现有音频资产 | 合成 IR + 2 条自生成 BGM（`ink_serene_60s` / `court_elegant_60s`） | `ls assets/audio`；`manifest.json` |
+| 现有音频资产 | 合成 IR + 2 条自生成 BGM + 4 条自生成 SFX（wind/water/chime/whoosh） | `ls assets/audio`；`manifest.json` |
 | 已在册的候选源 | `BGM-PIXABAY`、`BGM-MIXKIT`、`SFX-FREESOUND`（均 `NOT_RUN`） | `ASSET_AND_LICENSE_REGISTRY.md` §5 |
 | 已进成片的音色 | CosyVoice-300M-SFT「中文男」（R3-B，`PASS_VERIFIED`）；正式生产当前只用 `narrator_self` | 同上 §4 |
 

@@ -27,8 +27,9 @@ class ScriptGenerationError(RuntimeError):
 class DraftShot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    type: Literal["image"] = "image"
+    type: Literal["image", "video"] = "image"
     scene_prompt: str = Field(min_length=4, max_length=1200)
+    video_prompt: str = Field(default="", max_length=1200)
     duration_seconds: float = Field(ge=1.0, le=15.0)
     motion: str = Field(default="slow push-in", max_length=80)
     line_indexes: list[int] = Field(min_length=1, max_length=6)
@@ -68,6 +69,7 @@ class ScriptShot(BaseModel):
     motion: str = Field(min_length=1, max_length=80)
     scene_prompt: str = Field(min_length=4, max_length=1200)
     visual_prompt: str = Field(min_length=4, max_length=2000)
+    video_prompt: str = Field(default="", max_length=1200)
     negative_prompt: str = Field(default="", max_length=1000)
     line_ids: list[str] = Field(min_length=1)
 
@@ -153,7 +155,9 @@ def _messages(package: dict[str, Any], style: dict[str, Any]) -> list[dict[str, 
         "line_order": [],
         "shots": [
             {
+                "type": "image 或 video；video 表示用 Wan I2V 生成连续镜头",
                 "scene_prompt": "纯视觉描述，不写文字、水印、字幕",
+                "video_prompt": "type=video 时的运动描述；保持原图构图/结构，写清云、水、雾、衣袂等如何动",
                 "duration_seconds": 3.0,
                 "motion": "slow push-in / static / slow lateral track",
                 "line_indexes": [1],
@@ -162,7 +166,9 @@ def _messages(package: dict[str, Any], style: dict[str, Any]) -> list[dict[str, 
     }
     system = (
         "你是本地短视频生产的分镜生成器。只能使用给定的 narration_lines 文本，不得新增事实、引文或作品名。"
-        "输出 3-5 个镜头，覆盖全部台词行；每个镜头至少绑定一行。只输出 JSON，不要 Markdown。"
+        "输出 3-5 个镜头，覆盖全部台词行；每个镜头至少绑定一行。"
+        "镜头 type 可以是 image（静帧+确定性运镜）或 video（Wan I2V 连续镜头）；"
+        "需要云雾/水纹/衣袂等连续运动时用 video，并写 video_prompt。只输出 JSON，不要 Markdown。"
     )
     user = (
         "输入数据：\n"
@@ -308,11 +314,12 @@ def _build_script(
             ScriptShot(
                 shot_id=f"shot_{index:03d}",
                 index=index,
-                type="image",
+                type=shot.type,
                 duration_seconds=shot.duration_seconds,
                 motion=shot.motion,
                 scene_prompt=shot.scene_prompt,
                 visual_prompt=compose_visual_prompt(style, shot.scene_prompt),
+                video_prompt=shot.video_prompt,
                 negative_prompt=str(style.get("negative_prompt") or ""),
                 line_ids=line_ids,
             )

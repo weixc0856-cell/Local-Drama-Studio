@@ -18,8 +18,8 @@
 | HEAD | `06f91e418364344058c8428c0136e3b81ba58c1e` |
 | 最近提交时间 | 2026-11-04 12:03:02 +0800 |
 | 测试命令 | `.venv\Scripts\python.exe -m pytest` |
-| 测试结果 | **372 passed**（后续多音色/故事圣经批次；审计时为 323；根测试 + `literary_intelligence/tests` 合并） |
-| 采集总数 | `pytest --collect-only` 合计 372 |
+| 测试结果 | **376 passed**（后续多音色/故事圣经批次；审计时为 323；根测试 + `literary_intelligence/tests` 合并） |
+| 采集总数 | `pytest --collect-only` 合计 376 |
 | 已知警告 | `StarletteDeprecationWarning`：`httpx` + `starlette.testclient` 弃用提示 |
 
 > 历史文档中的测试数已过期：`docs/M8_0_STATE_AUDIT.md` 记 246，`docs/PRD.md` §21 记 136，`docs/WORKSPACE_REPORT.md` 记 44 + 61。审计时真实值是 323；Phase C P0-1 新增 2 项 TTS 测试后为 325。

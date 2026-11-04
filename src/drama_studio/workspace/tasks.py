@@ -120,6 +120,19 @@ class ScriptParams(BaseModel):
     confirm: bool = False
 
 
+class VideoJobsParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    script: str | None = Field(default=None, max_length=400)
+    keyframes: str | None = Field(default=None, max_length=400)
+    out: str | None = Field(default=None, max_length=400)
+    only: str | None = Field(default=None, max_length=200)
+    frames: int = Field(default=73, ge=9, le=257)
+    width: int = Field(default=576, ge=256, le=2048)
+    height: int = Field(default=1024, ge=256, le=2048)
+
+
 class SegmentsParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -129,6 +142,7 @@ class SegmentsParams(BaseModel):
     audio: str | None = Field(default=None, max_length=300)
     out: str | None = Field(default=None, max_length=300)
     clips_dir: str | None = Field(default=None, max_length=300)
+    allow_partial_clips: bool = False
     sequence: str | None = Field(default=None, max_length=300)
     align_audio: bool = False
     leading_ms: int = Field(default=0, ge=0, le=5000)
@@ -1036,7 +1050,49 @@ def _script_after(params: ScriptParams, task_id: str, store: WorkspaceStore) -> 
     return result
 
 
-def _segments_paths(params: SegmentsParams, store: WorkspaceStore) -> tuple[Path, Path, Path, Path]:
+def _video_jobs_paths(
+    params: VideoJobsParams, store: WorkspaceStore
+) -> tuple[Path, Path, Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
+    if not script.is_file():
+        script = base / "work" / "production_script.json"
+    keyframes = (store.root / params.keyframes).resolve() if params.keyframes else base / "assets" / "images"
+    out = (store.root / params.out).resolve() if params.out else base / "comfy" / "jobs_video.json"
+    return script, keyframes, out, base
+
+
+def _video_jobs_prereqs(params: VideoJobsParams, store: WorkspaceStore) -> list[str]:
+    try:
+        script, keyframes, _, _ = _video_jobs_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if script.is_file() else [f"缺少 {_rel(script)}"]
+    if not keyframes.is_dir():
+        missing.append(f"缺少关键帧目录 {_rel(keyframes)}")
+    return missing
+
+
+def _video_jobs_argv(params: VideoJobsParams, task_id: str) -> list[str]:
+    script, keyframes, out, _ = _video_jobs_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "scripts/video_jobs.py",
+        "--script", _rel(script), "--keyframes", _rel(keyframes), "--out", _rel(out),
+        "--frames", str(params.frames), "--width", str(params.width), "--height", str(params.height),
+    ]
+    if params.only:
+        argv += ["--only", params.only]
+    return argv
+
+
+def _video_jobs_after(params: VideoJobsParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, out, _ = _video_jobs_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {"jobs": _rel(out), "count": len(data), "frames": params.frames}
+
+
+def _segments_paths(
+params: SegmentsParams, store: WorkspaceStore) -> tuple[Path, Path, Path, Path]:
     base = _episode_root(params.episode_id, store)
     script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
     images = (store.root / params.images).resolve() if params.images else base / "assets" / "images"
@@ -1079,6 +1135,8 @@ def _segments_argv(params: SegmentsParams, task_id: str) -> list[str]:
     ]
     if params.clips_dir:
         argv += ["--clips", _rel((_STORE_REF[0].root / params.clips_dir).resolve())]
+        if params.allow_partial_clips:
+            argv += ["--allow-partial-clips"]
     if params.sequence:
         argv += ["--sequence", _rel((_STORE_REF[0].root / params.sequence).resolve())]
     argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
@@ -1620,6 +1678,18 @@ TASK_KINDS: dict[str, TaskKind] = {
         prerequisites=_script_prereqs,
         after_success=_script_after,
         danger=True,
+    ),
+    "video.jobs": TaskKind(
+        key="video.jobs",
+        label="Wan I2V 任务生成",
+        description="读取 ProductionScript 的 type=video 镜头与 FLUX 关键帧，生成 r1_batch 兼容的 Wan jobs；不执行生成。",
+        cost="秒级",
+        safety="只读脚本/关键帧，写本期 comfy/jobs_video.json；缺关键帧直接失败",
+        params_model=VideoJobsParams,
+        lock_key=lambda params: f"video:{params.episode_id}",
+        build_argv=_video_jobs_argv,
+        prerequisites=_video_jobs_prereqs,
+        after_success=_video_jobs_after,
     ),
     "segments.build": TaskKind(
         key="segments.build",

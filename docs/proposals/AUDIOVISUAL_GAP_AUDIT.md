@@ -248,7 +248,7 @@ docs/REQUIREMENT_TRACEABILITY.md              # 仅在批准后加正式行
 
 ## 8. 当前测试与证据基线
 
-- 测试：`pytest` **372 passed**（2026-11-04 工作区，后续批次）。
+- 测试：`pytest` **376 passed**（2026-11-04 工作区，后续批次）。
 - 真实 TTS 证据（工作区，未提交）：`experiments/tts_mode_check/sft/audio_manifest.json`、`.../zero_shot/audio_manifest.json`。
 - 真实音频/成片：P1 14.0 s、R3 38.042 s、81.373 s 工笔、M7 两片。
 - 音频单测：`tests/test_soundscape.py` 13 项，覆盖 EQ/反射/响度/IR；**没有 ducking/BGM/SFX 测试**。

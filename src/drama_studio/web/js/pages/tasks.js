@@ -149,13 +149,33 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>备注（可选）</label>
         <textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
-  } else if (['package.build', 'segments.build', 'quality.check', 'static.check', 'style.consistency', 'motion.plan', 'motion.render', 'audio.qa',
+  } else if (['package.build', 'video.jobs', 'segments.build', 'quality.check', 'static.check', 'style.consistency', 'motion.plan', 'motion.render', 'audio.qa',
               'aesthetic.plan', 'aesthetic.compare', 'aesthetic.review'].includes(kindKey)) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
     if (kindKey === 'quality.check') {
       fields += `<div class="field"><label>manifest（可选）</label>
         <input class="input mono" name="manifest" placeholder="留空则取最新 build_manifest.json"></div>`;
+    }
+    if (kindKey === 'video.jobs') {
+      fields += `<div class="field"><label>只生成指定镜头（可选）</label>
+        <input class="input mono" name="only" placeholder="shot_002,shot_004；留空为所有 type=video"></div>
+        <div class="form-row">
+          <div class="field"><label>frames</label><input class="input" name="frames" type="number" value="73"></div>
+          <div class="field"><label>宽</label><input class="input" name="width" type="number" value="576"></div>
+          <div class="field"><label>高</label><input class="input" name="height" type="number" value="1024"></div>
+        </div>`;
+    }
+    if (kindKey === 'segments.build') {
+      fields += `<div class="field"><label>动态片段目录（可选）</label>
+        <input class="input mono" name="clips_dir" placeholder="含 <shot_id>.mp4；缺片段可回退静帧"></div>
+        <div class="field"><label>片段缺失时</label>
+          <select class="input" name="allow_partial_clips">
+            <option value="">严格：每个镜头都要 mp4</option>
+            <option value="true">允许：缺失镜头回退静帧</option>
+          </select></div>
+        <div class="field"><label>已组装序列（可选）</label>
+        <input class="input mono" name="sequence" placeholder="单个 sequence.mp4；与 clips_dir 二选一"></div>`;
     }
     if (kindKey === 'motion.plan') {
       fields += `<div class="field"><label>风格预设（可选）</label>
