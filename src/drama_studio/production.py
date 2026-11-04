@@ -650,8 +650,13 @@ def build_segments(
         for position, shot in enumerate(_shots(script), start=1):
             shot_id = _field(shot, "shot_id")
             clip = (clips_dir / f"{shot_id}.mp4") if clips_dir is not None else None
+            shot_type = _field(shot, "type", "image")
             if clip is not None and clip.is_file():
                 kind, source = "video", clip
+            elif shot_type == "video":
+                raise ProductionError(
+                    f"{shot_id}: type=video 必须提供动态片段"
+                    + (f"（{clip}）" if clip is not None else "（未提供 clips_dir）"))
             elif clip is not None and not allow_partial_clips:
                 raise ProductionError(f"{shot_id}: 没有生成动态片段（{clip}）")
             else:

@@ -536,3 +536,16 @@ def test_segments_can_mix_video_clip_and_image_when_explicit(tmp_path: Path) -> 
     segments = json.loads((episode / "segments.json").read_text(encoding="utf-8"))
     kinds = {seg["id"]: seg["type"] for seg in segments}
     assert kinds == {"shot_001": "image", "shot_002": "video"}
+
+
+def test_explicit_video_shot_cannot_fall_back_to_a_still(tmp_path: Path) -> None:
+    root, episode, script, audio = _motion_fixture(tmp_path)
+    data = script.model_dump()
+    data["shots"][1]["type"] = "video"
+    video_script = ProductionScript.model_validate(data)
+    with pytest.raises(ProductionError, match="type=video"):
+        build_segments(
+            video_script, root=root, episode_root=episode,
+            images_dir=episode / "assets" / "images", audio_manifest=audio,
+            out_path=episode / "segments.json",
+        )
