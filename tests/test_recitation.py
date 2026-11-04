@@ -19,7 +19,7 @@ def _root(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "config" / "audio.yaml").write_text(
-        'tts:\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+        'tts:\n  mode: sft\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
     )
     return tmp_path
 
@@ -82,7 +82,7 @@ def test_recitation_synthesizes_parts_and_records_layers(tmp_path: Path) -> None
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready"})
+            return httpx.Response(200, json={"status": "ready", "model_class": "CosyVoice", "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT", "speakers": ["测试音色"], "modes": ["sft", "zero_shot"]})
         bodies.append(json.loads(request.content))
         return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
 

@@ -26,3 +26,12 @@ def test_all_config_files_parse() -> None:
     assert set(flux.files) == set(flux.sizes)
     assert "profiles" in load_generation(root)
     assert "tts" in load_audio(root)
+
+
+def test_repository_tts_default_is_zero_shot() -> None:
+    """PRD-TTS-001: production default is CosyVoice2-0.5B zero-shot."""
+    root = find_project_root()
+    tts = load_audio(root)["tts"]
+    assert tts["mode"] == "zero_shot"
+    assert tts["zero_shot"]["prompt_audio"]
+    assert tts["zero_shot"]["prompt_text"]

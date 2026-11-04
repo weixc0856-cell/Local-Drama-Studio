@@ -182,8 +182,13 @@ styles:
         opacity: 0.12
         note: 纹理只做低强度叠加，不得压过主体线条与细节
       parallax:
-        allowed: false
-        requires: 可靠的图层分层或深度图；单张图片平移不算 2.5D 视差
+        allowed: true
+        requires: 长卷横移需要宽幅静帧（高 1920 时宽 > 1080）与独立前景资产；近层安全边距 = (1/alpha - 1) × 横移量
+        camera_moves: [scroll_pan, slow_lateral_track, slow_push_in]
+        max_plates: 3
+        depth_alpha_min: 0.50
+        depth_alpha_max: 0.75
+        background_margin: 0.05
       note: 线描显现必须与底图对齐，不得出现 PPT 式叠加，也不宣传为真实绘画过程模拟
 
   ink_wash:
@@ -348,6 +353,11 @@ styles:
         opacity: 0.14
         note: 纹理强度克制，不得影响墨色层次与主体可读性
       parallax:
-        allowed: false
-        requires: 可靠的图层分层或深度图；单张图片平移不算 2.5D 视差
+        allowed: true
+        requires: 需要独立前景资产或补底合格的背景板；补底只在"露出来也像画"时成立（M8 实测能量比 ≥0.5）
+        camera_moves: [slow_push_in, slow_pull_out]
+        max_plates: 3
+        depth_alpha_min: 0.45
+        depth_alpha_max: 0.85
+        background_margin: 0.0
       note: 遮罩必须边缘柔化、渐进变化；禁止简单阈值造成硬边缘

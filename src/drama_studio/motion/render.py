@@ -159,8 +159,15 @@ def _render_shot(
     if camera.move == "layered_parallax":
         raise ValueError(
             f"{shot.id}: layered_parallax needs explicit background/foreground layers; "
-            "this shot has none"
-        )
+            "this shot has none")
+
+    if shot.plates:
+        # Layered path is opt-in: a shot without plates never enters here, so the
+        # existing single-plane output is untouched.
+        return _render_layered_shot(
+            plan=plan, shot=shot, camera=camera, preset=preset, root=root,
+            out_dir=out_dir, texture=texture, render_duration=render_duration,
+            handle=handle, source=source, source_size=source_size)
 
     layers_dir = out_dir / shot.id / "layers"
     layers_dir.mkdir(parents=True, exist_ok=True)
@@ -315,6 +322,156 @@ def _render_shot(
         "black_frames": black_frames(output),
         "sample_frames": sampled,
         "region_checks": region_checks,
+    }
+
+
+def _render_layered_shot(
+    *,
+    plan: MotionPlan,
+    shot: ShotSpec,
+    camera,
+    preset: StylePreset,
+    root: Path,
+    out_dir: Path,
+    texture: Path,
+    render_duration: float,
+    handle: float,
+    source: Path,
+    source_size: tuple[int, int],
+) -> dict:
+    """Render a shot whose motion comes from plates instead of one still.
+
+    Every plate is verified against its recorded hash first: a plate that has
+    been edited since the snapshot would silently change the shot.
+    """
+    from .plates import (CameraState, background_pan, background_scale, compose,
+                         load_plate, plate_scale)
+
+    from .plates import enforce_policy
+
+    policy = preset.compositing.parallax
+    enforce_policy(policy, shot_id=shot.id, move=str(camera.move), plates=shot.plates)
+
+    if camera.move == "layered_parallax":
+        camera = camera.model_copy(update={"move": "slow_push_in"})
+
+    loaded = []
+    plates_record = []
+    for plate in sorted(shot.plates, key=lambda item: item.z_order):
+        loaded.append(load_plate(plate, root))
+        path = Path(plate.path)
+        path = path if path.is_absolute() else root / path
+        digest = sha256(path)
+        if digest != plate.sha256:
+            raise ValueError(
+                f"{shot.id}/{plate.id}: plate sha256 mismatch "
+                f"(recorded {plate.sha256[:12]}, file {digest[:12]})")
+        plates_record.append({
+            "id": plate.id, "source": plate.source, "path": plate.path,
+            "sha256": digest, "z_order": plate.z_order,
+            "depth_alpha": plate.depth_alpha, "coverage": plate.coverage,
+            "anchor": plate.anchor.model_dump() if plate.anchor else None,
+            "hole_mask": plate.hole_mask, "hole_mask_sha256": plate.hole_mask_sha256,
+            "provenance": plate.provenance.model_dump() if plate.provenance else None,
+        })
+
+    frames = max(1, int(round(render_duration * plan.fps)))
+    frame_dir = out_dir / shot.id / "plate_frames"
+    frame_dir.mkdir(parents=True, exist_ok=True)
+
+    # Pan travel is measured in output pixels of the background panel; the panel
+    # is the background plate scaled so its height matches the output.
+    background = next(item for item in loaded if item.spec.coverage == "full_frame")
+    panel_width = background.image.width * H / background.image.height
+    pan_move = camera.move in ("scroll_pan", "slow_lateral_track")
+
+    states = []
+    for index in range(frames):
+        states.append(
+            CameraState(mode="pan",
+                             pan=background_pan(camera, index, frames, panel_width),
+                         pan_start=float(camera.pan_start_px) / max(1.0, panel_width),
+                         span=W / max(1.0, panel_width))
+            if pan_move else
+            CameraState(mode="dolly", scale=background_scale(camera, index, frames),
+                        focus=camera.focus))
+
+    # The background must be covered on every frame. A window that leaves the
+    # plate renders as a black bar; a window that eats into the margin leaves no
+    # room for the next cut. Both are refused before a single frame is written.
+    margin = policy.background_margin
+    for index, state in enumerate(states):
+        x0, _, span_x, _ = state.plane_window(1.0)
+        if x0 < margin - 1e-6 or x0 + span_x > 1 - margin + 1e-6:
+            raise ValueError(
+                f"{shot.id}: 第 {index} 帧背景窗口 [{x0:.4f}, {x0 + span_x:.4f}] "
+                f"越出画板或余量不足（风格 {preset.id} 要求两侧各留 {margin:.2f}）")
+
+    samples = []
+    for index, state in enumerate(states):
+        compose(loaded, state, (W, H)).save(frame_dir / f"f_{index:04d}.png")
+        if index in (0, frames // 2, frames - 1):
+            samples.append({
+                "frame": index,
+                "mode": state.mode,
+                "background": ({"pan": round(state.pan, 6)} if pan_move else
+                               {"scale": round(state.scale, 6)}),
+                "plate_windows": {item.spec.id: [round(v, 6) for v in
+                                                 state.plane_window(item.spec.depth_alpha)]
+                                  for item in loaded},
+            })
+
+    output = out_dir / f"{shot.id}.mp4"
+    inputs = [
+        "-framerate", str(plan.fps), "-i", str(frame_dir / "f_%04d.png"),
+        "-loop", "1", "-i", str(texture),
+        "-f", "lavfi", "-i", "anullsrc=r=48000:cl=mono",
+    ]
+    graph = (
+        f"[1:v]scale={W}:{H}:flags=bicubic[tex];"
+        f"[0:v][tex]blend=all_mode=overlay:all_opacity="
+        f"{preset.compositing.texture.opacity:.2f},format=yuv420p[outv]"
+    )
+    cmd = [
+        "ffmpeg", "-y", "-v", "error", *inputs,
+        "-filter_complex", graph,
+        "-map", "[outv]", "-map", "2:a",
+        "-t", f"{render_duration:.3f}", "-r", str(plan.fps),
+        "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
+        str(output),
+    ]
+    run(cmd)
+
+    points = [("first", 0.2), ("mid", shot.duration_seconds / 2.0),
+              ("last", max(0.2, shot.duration_seconds - 0.3))]
+    return {
+        "id": shot.id,
+        "source": rel(source, root),
+        "source_sha256": sha256(source),
+        "source_size": list(source_size),
+        "motion_hint": shot.motion,
+        "camera": camera.model_dump(),
+        "render_mode": "plates",
+        "plates": plates_record,
+        "plate_camera_samples": samples,
+        "duration_seconds": shot.duration_seconds,
+        "handle_seconds": handle,
+        "render_duration_seconds": render_duration,
+        "transition_in": shot.transition_in.model_dump() if shot.transition_in else None,
+        "static_quality": shot.static_quality,
+        "layers": [],
+        "layers_skipped": [],
+        "regions": [region.model_dump() for region in shot.regions],
+        "region_model": "semantic" if shot.regions else "legacy",
+        "output": rel(output, root),
+        "output_sha256": sha256(output),
+        "bytes": output.stat().st_size,
+        "argv": cmd,
+        "video_check": check_video(output, expected_width=W, expected_height=H),
+        "black_frames": black_frames(output),
+        "sample_frames": sample_frames(output, out_dir / shot.id / "frames", points),
+        "region_checks": None,
     }
 
 

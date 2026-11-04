@@ -161,7 +161,7 @@ def _root(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "config" / "audio.yaml").write_text(
-        'tts:\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+        'tts:\n  mode: sft\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
     )
     (tmp_path / "config" / "pronunciation.yaml").write_text(
         '''schema_version: "2.0"
@@ -191,7 +191,7 @@ def test_tts_sends_acoustic_text_and_language_guard(tmp_path: Path) -> None:
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready"})
+            return httpx.Response(200, json={"status": "ready", "model_class": "CosyVoice", "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT", "speakers": ["测试音色"], "modes": ["sft", "zero_shot"]})
         if request.url.path == "/tts":
             calls.append(json.loads(request.content.decode("utf-8")))
             return httpx.Response(200, content=_wav_bytes(), headers={"X-Synth-Seconds": "0.1"})

@@ -79,6 +79,15 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert "doctor.run" in kinds
     assert kinds["tts.synthesize"]["enabled"] is True
     assert kinds["tts.synthesize"]["blocked_reason"] is None
+    assert "tts_mode" in kinds["tts.synthesize"]["params_schema"]["properties"]
+    assert "voice_cast" in kinds["tts.synthesize"]["params_schema"]["properties"]
+    assert "audio_timeline" in kinds["build.rebuild"]["params_schema"]["properties"]
+    assert "audio_timeline" in kinds["audio.qa"]["params_schema"]["properties"]
+    assert kinds["static.check"]["enabled"] is True
+    assert "shot_id" in kinds["static.check"]["params_schema"]["properties"]
+    assert kinds["story.check"]["enabled"] is True
+    assert "characters" in kinds["story.check"]["params_schema"]["properties"]
+    assert "shots" in kinds["story.check"]["params_schema"]["properties"]
     assert kinds["package.build"]["enabled"] is True
     assert kinds["script.generate"]["enabled"] is True
     assert kinds["segments.build"]["enabled"] is True

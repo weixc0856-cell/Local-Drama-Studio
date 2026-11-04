@@ -279,6 +279,7 @@ def test_build_motion_plan_aligns_audio_and_caps_transitions(tmp_path: Path) -> 
         leading_ms=300,
         tail_seconds=0.5,
         transitions=True,
+        require_static_gate=False,
     )
     assert result["transitions"] == 1
     plan = load_plan(episode / "motion_shots.json")
@@ -333,3 +334,129 @@ def test_sequence_segments_replace_the_shot_list(tmp_path: Path) -> None:
             sequence=too_short,
             leading_ms=300,
         )
+
+
+def test_motion_plan_carries_plates_from_the_regions_file(tmp_path: Path) -> None:
+    """A shot may describe its planes in the same authored file as its regions.
+
+    The plan is the only thing that changes here: a shot without ``plates``
+    keeps the single-plane render path.
+    """
+    import hashlib
+
+    from drama_studio.motion.spec import load_plan
+    from drama_studio.production import build_motion_plan
+    from drama_studio.style_presets import load_style_presets
+
+    project_root = Path(__file__).resolve().parents[1]
+    preset = load_style_presets(project_root).get("court_green_fine_line")
+    root, episode, script, audio = _motion_fixture(tmp_path)
+
+    plates_dir = episode / "plates"
+    plates_dir.mkdir(parents=True, exist_ok=True)
+    background = plates_dir / "bg.png"
+    Image.new("RGB", (576, 1024), (230, 230, 230)).save(background)
+    hole = plates_dir / "hole.png"
+    Image.new("L", (576, 1024), 0).save(hole)
+    boat = plates_dir / "boat.png"
+    Image.new("RGBA", (576, 1024), (0, 0, 0, 0)).save(boat)
+
+    def digest(path: Path) -> str:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def rel(path: Path) -> str:
+        return path.relative_to(root).as_posix()
+
+    regions = episode / "regions.json"
+    regions.write_text(json.dumps({
+        "shots": {
+            "shot_001": {
+                "regions": [
+                    {"id": "boat_lock", "role": "rigid_object", "permission": "locked",
+                     "box": {"x0": 0.3, "y0": 0.485, "x1": 0.632, "y1": 0.56},
+                     "plate_id": "boat"},
+                ],
+                "layers": [],
+                "plates": [
+                    {"id": "bg", "source": "original", "path": rel(background),
+                     "sha256": digest(background), "z_order": 0, "depth_alpha": 1.0,
+                     "coverage": "full_frame"},
+                    {"id": "boat", "source": "original", "path": rel(boat),
+                     "sha256": digest(boat), "z_order": 1, "depth_alpha": 0.7,
+                     "coverage": "partial",
+                     "anchor": {"x0": 0.0, "y0": 0.0, "x1": 1.0, "y1": 1.0},
+                     "hole_mask": rel(hole), "hole_mask_sha256": digest(hole)},
+                ],
+            }
+        }
+    }, ensure_ascii=False), encoding="utf-8")
+
+    build_motion_plan(
+        script,
+        root=root,
+        episode_root=episode,
+        images_dir=episode / "assets" / "images",
+        audio_manifest=audio,
+        out_path=episode / "motion_shots.json",
+        preset=preset,
+        regions_path=regions,
+        align_audio=True,
+        require_static_gate=False,
+    )
+    plan = load_plan(episode / "motion_shots.json")
+    assert [plate.id for plate in plan.shots[0].plates] == ["bg", "boat"]
+    assert plan.shots[0].regions[0].plate_id == "boat"
+    assert plan.shots[1].plates == []
+
+
+def test_header_extends_the_first_shot(tmp_path: Path) -> None:
+    """The title is audio, so the first shot must cover it rather than trim it."""
+    from drama_studio.motion.spec import load_plan
+    from drama_studio.production import build_motion_plan
+    from drama_studio.style_presets import load_style_presets
+
+    project_root = Path(__file__).resolve().parents[1]
+    preset = load_style_presets(project_root).get("court_green_fine_line")
+    root, episode, script, audio = _motion_fixture(tmp_path)
+
+    data = json.loads(audio.read_text(encoding="utf-8"))
+    data["header"] = {"text": "登鹳雀楼。唐，王之涣。", "file": "episode/audio/header.wav",
+                      "duration_seconds": 2.0, "pause_ms": 1100}
+    audio.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    build_motion_plan(
+        script, root=root, episode_root=episode,
+        images_dir=episode / "assets" / "images", audio_manifest=audio,
+        out_path=episode / "motion_shots.json", preset=preset,
+        align_audio=True, leading_ms=300, transitions=False,
+        require_static_gate=False,
+    )
+    plan = load_plan(episode / "motion_shots.json")
+    # 0.3 leading + 2.0 header + 1.1 pause + 1.5 speech + 0.5 pause
+    assert plan.shots[0].duration_seconds == 5.4
+
+
+def test_motion_plan_requires_a_static_report_unless_explicitly_skipped(tmp_path: Path) -> None:
+    from drama_studio.production import ProductionError, build_motion_plan
+    from drama_studio.style_presets import load_style_presets
+
+    project_root = Path(__file__).resolve().parents[1]
+    preset = load_style_presets(project_root).get("court_green_fine_line")
+    root, episode, script, audio = _motion_fixture(tmp_path)
+    kwargs = dict(
+        root=root,
+        episode_root=episode,
+        images_dir=episode / "assets" / "images",
+        audio_manifest=audio,
+        out_path=episode / "motion_shots.json",
+        preset=preset,
+        align_audio=True,
+    )
+    try:
+        build_motion_plan(script, **kwargs)
+    except ProductionError as exc:
+        assert "静态质量报告" in str(exc)
+    else:
+        raise AssertionError("missing static report must fail by default")
+    build_motion_plan(script, require_static_gate=False, **kwargs)
+    assert (episode / "motion_shots.json").is_file()

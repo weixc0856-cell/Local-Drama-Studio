@@ -1,0 +1,53 @@
+{
+  "schema": "1.0",
+  "assets": [
+    {
+      "id": "ir_synthetic_hall",
+      "path": "assets/audio/ir/synthetic_hall_0.9s.wav",
+      "kind": "ir",
+      "usage": "production",
+      "source": "programmatic:scripts/make_ir.py",
+      "source_url": null,
+      "license_type": "none (self-generated)",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "license_doc": "assets/audio/ir/synthetic_hall_0.9s.json",
+      "note": "合成 IR，无版权负担；不是实测空间",
+      "sha256": "e7f81f8a306b7380c2ffcb87bf12fd96c30e57299dfbe2735f2a1aebdf1a4861",
+      "added_on": "2026-11-04"
+    },
+    {
+      "id": "prompt_my_voice_source",
+      "path": "assets/audio/prompts/source/my_voice_5s_src.wav",
+      "kind": "prompt",
+      "usage": "production",
+      "source": "self-recording (owner)",
+      "source_url": null,
+      "license_type": "self-owned voice",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "license_doc": "assets/audio/prompts/VOICE_RIGHTS.md",
+      "voice_rights": "self",
+      "note": "项目所有者本人录音，原始文件留在 CosyVoice-Runtime/assets 未改动",
+      "sha256": "1e787eaade52e1b15369b88521bf3562de3caf9a4dc7a80e1cb4375a7ef4f185",
+      "added_on": "2026-11-04"
+    },
+    {
+      "id": "prompt_my_voice_clean_v1",
+      "path": "assets/audio/prompts/my_voice_clean_v1.wav",
+      "kind": "prompt",
+      "usage": "production",
+      "source": "derived:scripts/voice_prompt_check.py clean",
+      "source_url": null,
+      "license_type": "self-owned voice",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "license_doc": "assets/audio/prompts/VOICE_RIGHTS.md",
+      "voice_rights": "self",
+      "derived_from": "assets/audio/prompts/source/my_voice_5s_src.wav",
+      "note": "highpass 70 + anlmdn + de-ess + lowpass 8k + loudnorm -23",
+      "sha256": "745f569b4f6fa98bde6b18e0be08ad7c1303827e1f6aff128581cc2f1352d08c",
+      "added_on": "2026-11-04"
+    }
+  ]
+}

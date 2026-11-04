@@ -130,7 +130,11 @@ function launcherForm(kindKey, kinds, episodes) {
   let fields = '';
   if (kindKey === 'build.rebuild') {
     fields = `<div class="field"><label>期数</label>
-      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
+      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>多轨音频时间轴（可选）</label>
+        <input class="input mono" name="audio_timeline" placeholder="例如：work/audio_timeline.json；留空走旧旁白混音"></div>
+      <div class="field"><label>音频资产注册表（可选）</label>
+        <input class="input mono" name="audio_assets" placeholder="留空自动使用 assets/audio/manifest.json"></div>`;
   } else if (kindKey === 'comfy.batch') {
     fields = `<div class="field"><label>jobs JSON（experiments/ 之下）</label>
       <input class="input mono" name="jobs" placeholder="experiments/r3a/jobs_flux.json"></div>
@@ -141,7 +145,7 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>备注（可选）</label>
         <textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
-  } else if (['package.build', 'segments.build', 'quality.check', 'motion.plan', 'motion.render', 'audio.qa',
+  } else if (['package.build', 'segments.build', 'quality.check', 'static.check', 'motion.plan', 'motion.render', 'audio.qa',
               'aesthetic.plan', 'aesthetic.compare', 'aesthetic.review'].includes(kindKey)) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
@@ -153,14 +157,35 @@ function launcherForm(kindKey, kinds, episodes) {
       fields += `<div class="field"><label>风格预设（可选）</label>
         <input class="input mono" name="style" placeholder="ink_wash / court_green_fine_line；留空读取 production_script.style_id"></div>
         <div class="field"><label>局部运动区域（可选）</label>
-          <input class="input mono" name="regions" placeholder="留空读取 motion_regions.json"></div>`;
+          <input class="input mono" name="regions" placeholder="留空读取 motion_regions.json"></div>
+        <div class="field"><label>静态质量门</label>
+          <select class="input" name="skip_static_gate">
+            <option value="">require · 缺报告即失败（默认）</option>
+            <option value="true">skip · 显式跳过（记录原因）</option>
+          </select></div>`;
+    }
+    if (kindKey === 'static.check') {
+      fields += `<div class="form-row">
+        <div class="field"><label>镜头</label><input class="input mono" name="shot_id" placeholder="shot_001" required></div>
+        <div class="field"><label>风格（可选）</label><input class="input mono" name="style" placeholder="留空读取期数 style_snapshot"></div>
+      </div>
+      <div class="field"><label>图片（可选）</label><input class="input mono" name="image" placeholder="留空取 assets/images/&lt;shot_id&gt;/ 第一张"></div>
+      <div class="form-row">
+        <div class="field"><label>人工清单（可选）</label><input class="input mono" name="manual" placeholder="manual.json"></div>
+        <div class="field"><label>美学 JSON（可选）</label><input class="input mono" name="aesthetic" placeholder="shot_aesthetic.json"></div>
+      </div>
+      <div class="field"><label>报告输出（可选）</label><input class="input mono" name="out" placeholder="默认 work/static/&lt;shot_id&gt;/static_quality.json"></div>`;
     }
     if (kindKey === 'motion.render') {
       fields += `<div class="field"><label>plan（可选）</label>
         <input class="input mono" name="plan" placeholder="留空读取 motion_shots.json"></div>`;
     }
     if (kindKey === 'audio.qa') {
-      fields += `<div class="field"><label>audio_manifest（可选）</label>
+      fields += `<div class="field"><label>多轨时间轴（可选）</label>
+        <input class="input mono" name="audio_timeline" placeholder="填写后检查 audio_timeline.json；留空走逐行音频 QA"></div>
+        <div class="field"><label>音频资产注册表（可选）</label>
+          <input class="input mono" name="audio_assets" placeholder="留空自动使用 assets/audio/manifest.json"></div>
+        <div class="field"><label>audio_manifest（可选）</label>
         <input class="input mono" name="manifest" placeholder="留空读取本期 audio_manifest.json"></div>
         <div class="field"><label>timeline（可选）</label>
           <input class="input mono" name="timeline" placeholder="留空取最新 renders/*/timeline.json"></div>`;
@@ -198,18 +223,48 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="form-row">
         <div class="field"><label>音色（可选）</label><input class="input" name="speaker" placeholder="例如：中文女"></div>
-        <div class="field"><label>语速</label><input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" value="1.0"></div>
+        <div class="field"><label>音色档案（可选）</label><input class="input mono" name="voice_profile" placeholder="config/voices.yaml 的 profile_id"></div>
+        <div class="field"><label>语速（可选）</label><input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="留空用档案/默认"></div>
       </div>
       <div class="field"><label>max_tokens</label><input class="input" name="max_tokens" type="number" value="2000"></div>`;
+  } else if (kindKey === 'story.check') {
+    fields = `<div class="field"><label>期数</label>
+      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>ProductionScript（可选）</label>
+        <input class="input mono" name="script" placeholder="默认：本期 production_script.json"></div>
+      <div class="form-row">
+        <div class="field"><label>Character Bible（可选）</label>
+          <input class="input mono" name="characters" placeholder="默认：本期 character_bible.yaml"></div>
+        <div class="field"><label>Shot Bible（可选）</label>
+          <input class="input mono" name="shots" placeholder="默认：本期 shot_bible.yaml"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Voice Library（可选）</label>
+          <input class="input mono" name="voices" placeholder="例如：config/voices.yaml"></div>
+        <div class="field"><label>报告输出（可选）</label>
+          <input class="input mono" name="out" placeholder="默认：本期 story_bible_report.json"></div>
+      </div>`;
   } else if (kindKey === 'tts.synthesize') {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>合成模式</label>
+        <select class="input" name="tts_mode">
+          <option value="">读取 config/audio.yaml（默认 zero_shot）</option>
+          <option value="sft">sft · 预置音色（CosyVoice-300M-SFT）</option>
+          <option value="zero_shot">zero_shot · 参考音克隆（CosyVoice2-0.5B）</option>
+        </select></div>
+      <div class="field"><label>音色档案（可选）</label>
+        <input class="input mono" name="voice_profile" placeholder="profile_id；逐行 voice_profile 优先；留空走旧配置"></div>
       <div class="form-row">
-        <div class="field"><label>音色（可选）</label>
-          <input class="input" name="speaker" placeholder="例如：中文女；留空读取 narration.json"></div>
+        <div class="field"><label>音色（仅 SFT）</label>
+          <input class="input" name="speaker" placeholder="例如：中文女；留空读取 narration.json / config"></div>
         <div class="field"><label>语速（可选）</label>
           <input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="1.0"></div>
       </div>
+      <div class="field"><label>音色库路径（可选）</label>
+        <input class="input mono" name="voices" placeholder="默认 config/voices.yaml"></div>
+      <div class="field"><label>Voice Cast 文件（可选）</label>
+        <input class="input mono" name="voice_cast" placeholder="YAML：按行号/line_id 映射 profile"></div>
       <div class="field"><label>诵读模式（可选）</label>
         <select class="input" name="mode">
           <option value="">读取 narration.json</option>

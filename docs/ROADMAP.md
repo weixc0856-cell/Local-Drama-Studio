@@ -51,15 +51,53 @@
 | S2.1 | 双管线静态质量门 | `PARTIAL`（山石纹理重复） |
 | S2.2 | 管线 A 云气/水面/孤舟分层样片 | `PARTIAL`（技术通过，人工待审） |
 | S2.3 | 管线 B 更慢长卷样片 | `PARTIAL`（技术通过，人工待审） |
-| S3 | 双风格接入完整链路（「白日依山尽」夹具） | `NOT_RUN` |
+| S3 | 双风格链路（按三件事分别评价） | ① 独立规范/配置 `PASS_STATIC`；② 各风格 2 镜头技术样片 `PASS_VERIFIED`（M7）；③ 作品级锁定 `PARTIAL`；跨镜头一致性正式验证 `NOT_RUN` |
 
 执行记录见 [`S2_TEST_REPORT.md`](S2_TEST_REPORT.md) 与 [`PIPELINE_AB_VALIDATION.md`](PIPELINE_AB_VALIDATION.md)。
 
 约束：不新增模型/LoRA/依赖；复用现有 FLUX/Wan/FFmpeg 与 R3 合成；Wan 只做局部动态；S2 未通过前不扩展为新的生产子系统。本阶段与 R3-D、M3 并列推进，不取消 R3-D。
 
+### 声音 · 声景增强 S1（2026-11-04）
+
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| S1 | EQ + 早期反射 + 两遍响度 + `broadcast_light`，接入 `r3_build` | `PASS_STATIC`（**已开启**；afir 卷积在本机构建不可用，已实测记录） |
+| S2 | 环境音 + 侧链避让 | `NOT_RUN`（无授权素材） |
+| S3 | 国风垫乐 | `NOT_RUN`（授权未落实） |
+| S4 | zero-shot 克隆（`/tts/upload`，CosyVoice2-0.5B + 自录 prompt） | `PASS_STATIC`（端到端跑通；300M 已实测到韵尾与音色问题） |
+| S5 | 标题段 + 时间戳账本（audio-first） | `PASS_STATIC`（header/ledger 落地，镜头时长随音频） |
+
+见 [AUDIO_SOUNDSCAPE_PLAN.md](AUDIO_SOUNDSCAPE_PLAN.md) §14。素材与授权路径见 [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md)：S2 可走程序化拟音（零素材零风险），S3 只采用 CC0 曲库，S4 先做录音诊断再决定是否克隆。
+
+### M8 · 高质量动态表现与 2.5D 分层视差（2026-11-04 立项）
+
+定位：不新增滤镜，而是补齐"哪些东西能动、哪些不能动、应该怎么动"的空间与运动系统。生产渲染器不改造，外部工具按可插拔能力接入。
+
+| 阶段 | 内容 | 状态 |
+|---|---|---|
+| M8-0 | 只读状态审计（Git / 阶段 / 代码 / 引擎 / 素材 / 风险） | `PASS_VERIFIED`（只读） |
+| M8-A | 孤舟手工三层视差 A/B/C 对照（补 D/E 构成 2×2） | `PARTIAL`（技术通过；人工看片 2026-11-04：C 优于 A/B；2×2 归因：优势来自分层，非局部微动） |
+| M8-B(1) | 图层来源：FLUX 补底能否产出干净背景板 | `PARTIAL`（小船位成功；9% 大洞失败；结论：前景层必须用独立资产，不能抠） |
+| M8-B(2) | 独立前景资产 + 完整背景板的分层路线 | `PARTIAL`（技术通过：零露洞、合成可信、视差 10–13 px；人工待审） |
+| M8-B(3) | 目标形态：完整背景 + 独立舟层 + 独立前景（三来源共存） | `PARTIAL`（技术通过；PlateSpec 草案见报告；人工待审） |
+| M8-B(4) | PlateSpec 入契约 | `PASS_STATIC`（`PlateSpec`/`PlateAnchor` 落地，15 个单测；渲染器仍忽略该字段） |
+| M8-B(5) | 多平面渲染路径（`motion/plates.py` + `_render_layered_shot`） | `PASS_STATIC`（13 个单测 + 真实渲染 PASS；单平面路径未动） |
+| M8-E | 生产链路接入：`regions.json` 携带 `plates` → 计划 → 渲染 → 质检 | `PASS_STATIC`（端到端跑通；未新增任务类型） |
+| M8-B(6) | 逐层刚体门（遮挡感知 + 自归一化）+ 补底质量门（按成品判据） | `PASS_STATIC`（2 s / 6 s 分层镜头全门通过；契约已按成品修订） |
+| M8-C | DA3 深度辅助（权重、许可、XPU 耗时/显存） | `NOT_RUN` |
+| M8-D(1) | 分层相机支持长卷横移（平移窗口 + 逐层 1/α 视差） | `PASS_STATIC`（单测 + 合成宽幅验证；几何精确） |
+| M8-D(2) | 青绿工笔宽幅静帧 + 独立前景资产 + 整镜 | `PARTIAL`（技术通过；颜色键、窗口跨度两处缺陷已修；人工待审） |
+| M8-D(3) | 视差策略进 `config/styles.yaml`（两风格差异化参数 + 消费者 + 边界门） | `PASS_STATIC` |
+| M8-E(2) | 生产任务注册表接入（新增任务类型/工作台入口） | `NOT_RUN`（当前仍靠 CLI/实验入口） |
+
+见 [M8_0_STATE_AUDIT.md](M8_0_STATE_AUDIT.md)、[M8_A_PARALLAX_REPORT.md](M8_A_PARALLAX_REPORT.md) 与 [M8_B1_PLATE_SOURCE_REPORT.md](M8_B1_PLATE_SOURCE_REPORT.md)、[M8_B2_ASSET_LAYER_REPORT.md](M8_B2_ASSET_LAYER_REPORT.md)、[M8_B3_TARGET_SHAPE_REPORT.md](M8_B3_TARGET_SHAPE_REPORT.md)。M8 不改变 M1–M7 与 S1–S3 的任何既有状态；已有 `PENDING_HUMAN_REVIEW` 项仍是前置阻塞，不得以新样片替代。
+
+约束：不修改 `RegionSpec` / `ParallaxSpec` 正式契约与 `check_rigid_protection` 的全局逻辑；不安装 MoviePy / DiffSynth-Studio / ComfyUI-WanVideoWrapper；2.5D 不得用逐像素深度 warp 实现；M8-A 的结论只能由人工看片确定。
+
+
 ### R3-D · 声音、字体、背景音乐与音效选型
 
-状态：`PARTIAL`（字体候选与字幕接入已核验；女声已本地合成/试听并固化方案、未进入正式成片；BGM/音效与商用授权待完成）
+状态：`PARTIAL`（字体/字幕接入已核验；SFT「中文女」已进入 P1 与 81.373 s 工笔成片；最新 PRD 默认改为 CosyVoice2-0.5B zero-shot，SFT 仅显式可选；默认已切换为 0.5B zero-shot 并完成真实 2 行验证，见 PRD-TTS-001；BGM/音效与商用授权待完成）
 定位：R3 是技术生产基线；R3-D 是内容审美与素材授权基线；《洛神赋》样片（本文件 M3，项目讨论中也称 R4）才是最终产品质量验收。
 前置：R3 已提交 `0204979`；保留中文男声版本为基线；不修改生产脚本、不新增生成模型。
 
