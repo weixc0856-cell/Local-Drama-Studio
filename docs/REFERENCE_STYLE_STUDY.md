@@ -69,11 +69,19 @@
 - 参考片只提供“低频铺底 + 风声/水声/钟磬 + 极简留白”的声音策略，不复制其音乐、录音或音效。
 - 带 SFX 的版本：`experiments/reference_study/renders_sfx/palace|ink/final_9x16.mp4`（quality PASS）。
 
+### 2.2.1 Wan I2V hybrid（ink）
+
+- Wan job：`ink_dream_03`，576×1024 / 73 帧 / 20 步；耗时 2313.34 s（约 38.6 min），峰值 VRAM 5.82 GB。
+- 片段：`experiments/reference_study/clips/ink_02.mp4`
+- hybrid 成片：`experiments/reference_study/renders_hybrid/ink/final_9x16.mp4`
+- quality：`PASS`；BGM + SFX 已混入。
+- 墨色/红点/楼阁结构保持稳定，雾气与墨扩散为连续变化。
+
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。
 - 动画契约已支持 `ScriptShot.type=video`：FLUX 关键帧作为结构锚点，`scripts/video_jobs.py` 生成 Wan I2V jobs；`build_segments` 可混合 Wan 片段与静帧。
-- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；`palace_wide` 的 Wan I2V 已完成并接入 hybrid；`ink_dream_03` 仍在生成（576×1024/73 帧）。
+- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；`palace_wide` 与 `ink_dream_03` 的 Wan I2V 均已完成并接入 hybrid；其余镜头仍为静帧 + 确定性运动。
 - 混合方式：`scripts/reference_hybrid.py --segments ... --clips ... --out ...` 把已有 Wan 片段按镜头时长裁剪/循环后替换静帧来源；缺片段仍保留静帧。
 - Wan 输出是 PNG 序列时，用 `scripts/frames_to_clip.py --frames <dir> --out <mp4> --fps 24` 先合成为片段，再交给 `reference_hybrid.py`。
 - 声音：BGM + 自生成 SFX（wind/water/chime/whoosh），不复制参考片音频；无旁白、无字幕文本。

@@ -31,7 +31,7 @@
 | `PRD-MOTION-001` | §24.4 | 运镜模板复用 | CameraMove/resolve_camera | `PASS_VERIFIED`（技术） | M1–M7 真实；`motion/spec.py` | 保持 |
 | `PRD-MOTION-002` | §24.4 | 局部微动区域合同 | RegionSpec + 结构门 | `PASS_VERIFIED`（技术） | `motion/spec.py`；M1/M2/M7 | 保持 |
 | `PRD-MOTION-003` | §24.4 | 局部动态类型 | 水/云/叶/芦苇/倒影/墨扩散 | `PASS_VERIFIED`（技术） | `motion/`；M7 | 保持 |
-| `PRD-MOTION-004` | §24.4 | 结构保护 | 主体/建筑/线条可追溯；Wan 只补充 | `PARTIAL` | authored regions + 刚体门；`ScriptShot.type=video` + `build_video_jobs` 已支持 Wan I2V 关键帧锚定 | 无自动分割；Wan 主体位移不可靠；片段仍需人工审片 |
+| `PRD-MOTION-004` | §24.4 | 结构保护 | 主体/建筑/线条可追溯；Wan 只补充 | `PARTIAL` | authored regions + 刚体门；`ScriptShot.type=video` + `build_video_jobs` 已支持 Wan I2V 关键帧锚定；palace/ink 各 1 条 73 帧 Wan 片段结构稳定 | 无自动分割；Wan 主体位移不可靠；片段仍需人工审片 |
 | `PRD-STORY-001` | §24.5 | Character Bible | 视觉锚点/服装/色板/声音档案 | `PARTIAL` | `bible.CharacterBible`；严格校验 | 作者 UI/真实作品 Bible 待做 |
 | `PRD-STORY-002` | §24.5 | Shot Bible 连续性 | 覆盖/引用/风格一致 | `PARTIAL` | `bible.ShotBible` + `story.check` | 真实作品 Bible 待做 |
 | `PRD-QA-001` | §24.6 | 视频/音频技术检查 | 黑帧/时长/帧率/同步/轨道/授权 | `PARTIAL` | 现有技术门 + 时间线；缺音画同步/授权素材门 | 补同步与授权检查 |
