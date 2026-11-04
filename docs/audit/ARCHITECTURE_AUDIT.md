@@ -328,7 +328,7 @@ work/source + claims
 | A-01 | TTS 模式静默切换 | **PASS_VERIFIED（P0-1）** | 默认 0.5B zero-shot + 显式 `tts_mode` + `/health` 校验 + manifest 记录；默认任务真实 1 行 | 保持 |
 | A-02 | 静态质量门可绕过：不在任务注册表，plan 只查两个固定路径 | **中（已收口）** | `build_motion_plan` 默认要求每镜头报告，缺失即失败；`--skip-static-gate` / 任务 `skip_static_gate` 显式跳过；单测覆盖 | 补 `static.check` 任务与真实端到端；不再允许静默继续 |
 | A-03 | 工作流 UI 文案过期，且不显示 package/script/motion/aesthetic 节点 | **高** | `discovery.py:1061-1062,1082` | 重写 `_workflow` 节点/边；从真实任务注册表生成 |
-| A-04 | 两套风格系统：DB 快照 vs YAML preset | **中高** | `style_presets.py:380`；`store.py:60-80` | 建立“preset id”单一来源；或显式映射 DB 风格 → YAML preset |
+| A-04 | 两套风格系统：DB 快照 vs YAML preset | **中（部分收口）** | `style_lock.py` 锁定期数 snapshot（revision/hash/history），任务不能覆盖；DB 与 YAML preset 仍是两套定义 | 建立 preset id 单一来源或显式映射；补真实改版生产 |
 | A-05 | 两套数据契约：Storyboard vs ProductionScript | **中** | `models.py:100`；`script_engine.py:82` | 文档标注 Storyboard 为 legacy/目标；或统一到一个契约 |
 | A-06 | 配置死字段：`tts.mode`、`subtitles.*`、`narration_modes.leading_ms`、`generation.profiles` | **中** | `config/audio.yaml`、`config/generation.yaml`；grep 无消费者 | 要么接线，要么删字段并在文档标注“仅记录” |
 | A-07 | 运动质量门无法从 UI 选 | **中** | `tasks.js` quality 表单 | 加 `motion_manifest` 字段 + 自动找最新 motion manifest |

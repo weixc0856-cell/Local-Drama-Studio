@@ -98,7 +98,7 @@ async function renderOverview(host, detail, ctx) {
           <dt>产物目录</dt><dd class="mono">${esc(detail.artifact_root || '未绑定')}</dd>
           <dt>目录存在</dt><dd>${detail.artifact_root_exists ? '是' : '否'}</dd>
           <dt>类型</dt><dd>${esc(detail.track)}</dd>
-          <dt>风格</dt><dd>${esc(detail.style?.name || '未绑定')}</dd>
+          <dt>风格</dt><dd>${esc(detail.style?.name || '未绑定')}${detail.style?.revision ? ` · rev ${detail.style.revision}` : ''}${detail.style?.sha256 ? ` · <span class="mono tiny" title="${esc(detail.style.sha256)}">${esc(detail.style.sha256.slice(0, 12))}</span>` : ''}</dd>
           <dt>更新</dt><dd>${esc(fmtTime(detail.updated_at, { withYear: true }))}</dd>
         </dl>`) }
       </div>

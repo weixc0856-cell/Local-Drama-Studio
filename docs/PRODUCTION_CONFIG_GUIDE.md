@@ -147,13 +147,19 @@
 
 | 规则 | 目标 | 当前 |
 |---|---|---|
-| 每作品一个主风格 | `style_id` 作品级 | 期数有，项目有默认但非强制 |
-| 全片一致 | 不混用 | 无强制门 |
-| 生成任务不覆盖 | 任务继承 | `motion.plan`/`aesthetic.plan` 可 `--style` |
-| 改风格留版本 | 新版本/新生产 | UI 直接替换 snapshot |
-| 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性 |
+| 每作品一个主风格 | `style_id` 作品级 | 期数 `style_snapshot._style_lock`；项目默认风格仍非强制 |
+| 全片一致 | 不混用 | 期数锁 hash；`comfy.batch` 仍未按 episode 校验 |
+| 生成任务不覆盖 | 任务继承 | `motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；其他任务待补 |
+| 改风格留版本 | 新版本/新生产 | `_style_lock.revision` + `history` 保留旧 sha；旧 build 目录不覆盖 |
+| 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性（`PRD-STYLE-007` 仍 `NOT_IMPLEMENTED`） |
 
 > 详见 [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) §4 与 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。
+
+工作台 `styles` 新增可选 `preset_id`，用于把 DB 风格映射到 `config/styles.yaml` 的
+`ink_wash` / `court_green_fine_line`。期数创建/改风格时把它写入
+`style_snapshot._style_lock.preset_id`；`motion.plan` / `aesthetic.plan` 使用该
+preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` 中做一次
+只增迁移，仅对名称含“水墨/写意”或“工笔/青绿”的风格自动映射，其他保持未映射。
 
 ---
 

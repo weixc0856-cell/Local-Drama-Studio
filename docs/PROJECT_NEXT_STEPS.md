@@ -40,8 +40,9 @@
 
 | 项 | 内容 |
 |---|---|
+| **状态** | `IMPLEMENTED_NOT_VERIFIED`：`style_lock.py` 写 `_style_lock{revision,sha256,history}`；`motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；输出回查 lock |
 | **目标** | 作品/期数 `style_id` 单一来源；期数/ProductionScript/Shot/资产继承；生成任务不得覆盖；改风格走新版本 |
-| **当前问题** | `motion.plan`/`aesthetic.plan` 可 `--style` 覆盖；`comfy.batch` 不校验；DB 风格与 YAML preset 脱节；改风格直接替换 snapshot；无版本链 |
+| **当前问题** | DB 风格与 YAML preset 仍脱节；`comfy.batch` 不校验；新风格 UI 入口与真实改版生产未做 |
 | **涉及模块** | `style_presets.py`、`production.py`、`workspace/tasks.py`、`workspace/store.py`、`workspace/discovery.py`、`aesthetic_plan.py`、`motion_build.py`、`config/styles.yaml`、DB schema |
 | **前置** | P0-1 不依赖；可并行 |
 | **交付** | 建立 DB 风格 ↔ YAML preset 映射；`ProductionScript` 已有 `style_id/style_sha256`，补 Shot/资产继承；任务参数移除或限制 `style` 覆盖；改风格创建新 snapshot/新 production 版本并记录；质量门校验同一 style_id |

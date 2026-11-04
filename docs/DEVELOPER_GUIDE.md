@@ -32,7 +32,7 @@ Local-Drama-Studio/
 
 ```powershell
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest          # 354 passed（当前）
+.venv\Scripts\python.exe -m pytest          # 361 passed（当前）
 ```
 
 ---
@@ -265,7 +265,7 @@ ProductionScript
 - `config/styles.yaml`：完整 `StylePreset`，含 motion/compositing/aesthetic_profile；`motion.plan`/`aesthetic.plan` 只认它。
 - `workspace.styles`：只存 `STYLE_ENTITY_FIELDS`；不含运动/美学策略；不自动导入。
 - 期数 `style_snapshot`：冻结 DB 风格；`script.generate` 用它拼提示词。
-- `motion.plan`/`aesthetic.plan`：可 `--style` 覆盖；P1 的 `style_p1_short` 不是 preset，必须手动 `--style ink_wash`。
+- `motion.plan`/`aesthetic.plan`：从期数 `_style_lock.preset_id` 取 YAML preset；显式 `--style` 相同才允许，不同直接拒绝。P1 的 `style_p1_short` 已在 DB 映射为 `ink_wash`。
 - `comfy.batch`：不校验 style。
 - 质量：`static_quality` 按单图风格；`check_color_continuity` 只查相邻 LAB/亮度。
 
@@ -276,7 +276,7 @@ ProductionScript
 3. 所有生成任务从作品继承，禁止 `--style` 覆盖（或只有显式“新建风格版本”才能改）；
 4. 改风格创建新版本/新生产目录，记录旧/新 style sha；
 5. 质量门增加风格一致性检查（至少：同一 `style_id`、跨镜头风格指标、色板/材质/线条约束）；
-6. DB 风格与 YAML preset 建立显式映射/同步，不自动 seed。
+6. DB 风格新增可选 `preset_id` 列并显式映射 YAML preset；不自动 seed，旧库在 `WorkspaceStore.init_schema()` 中做一次性只增迁移。
 
 ### 9.3 TTS 模式（已实现，2026-11-04）
 
@@ -307,7 +307,7 @@ ProductionScript
 .venv\Scripts\python.exe -m pytest --collect-only -q
 ```
 
-当前 354 passed。测试覆盖：
+当前 361 passed。测试覆盖：
 
 | 区域 | 文件 |
 |---|---|

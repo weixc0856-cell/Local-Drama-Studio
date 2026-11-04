@@ -167,9 +167,10 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | `PRD-TTS-001` 默认 0.5B zero-shot | **`PASS_VERIFIED`** | `config/audio.yaml tts.mode: zero_shot`；`experiments/tts_mode_check/default_zero_shot/audio_manifest.json`；`experiments/voice_profile_check/audio_manifest.json` |
 | `PRD-TTS-002` SFT 显式可选 | `PASS_VERIFIED` | 显式 `tts_mode=sft` + `-Model sft` 历史真实运行 |
 | `PRD-TTS-003` 禁止静默回退 | `PASS_VERIFIED` | `_validate_runtime` 双向错配报错；单测 + 真实错配 |
-| Voice Profile 多音色（提案 `PRD-TTS-007`） | `IMPLEMENTED_NOT_VERIFIED` | `config/voices.yaml`、`voice/profiles.py`、逐行 `voice_profile`、`voice_cast`；9 个单测 + 2 行真实 zero-shot |
+| Voice Profile 多音色（提案 `PRD-TTS-007`） | `IMPLEMENTED_NOT_VERIFIED` | `config/voices.yaml`、`voice/profiles.py`、逐行 `voice_profile`、`voice_cast`；10 个单测 + 2 行真实 zero-shot |
 | 多轨音频（提案 `PRD-AUDIO-001..006`） | `PARTIAL` | `voice/audio_timeline.py`、`audio_assets.py`、`mix.py`、`quality.check_audio_timeline`；合成音频测试 PASS |
-| 全量测试 | 354 passed | 2026-11-04 `pytest` |
+| 风格锁定（`PRD-STYLE-003/004`） | `IMPLEMENTED_NOT_VERIFIED` | `style_lock.py`；episode snapshot `_style_lock{revision,sha256,history}`；任务拒绝不同 style；7 个单测 |
+| 全量测试 | 361 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
 
