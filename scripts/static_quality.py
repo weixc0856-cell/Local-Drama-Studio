@@ -30,6 +30,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter, ImageStat
 
 from drama_studio.config import find_project_root
+from drama_studio.quality import check_aesthetic_risk, image_metrics
 from drama_studio.style_presets import load_style_presets
 
 ROOT = find_project_root()
@@ -72,35 +73,9 @@ def sha256(path: Path) -> str:
 
 
 def metrics(path: Path) -> dict:
-    with Image.open(path) as raw:
-        image = raw.convert("RGB")
-    width, height = image.size
-    # Metrics are scale-independent; 512 px keeps the gate fast.
-    if width > 512:
-        small = image.resize((512, round(512 * height / width)), Image.LANCZOS)
-    else:
-        small = image
-    gray = small.convert("L")
-    hist = gray.histogram()
-    total = sum(hist) or 1
-    mean, stddev = ImageStat.Stat(gray).mean[0], ImageStat.Stat(gray).stddev[0]
-    edges = gray.filter(ImageFilter.FIND_EDGES)
-    edge_density = ImageStat.Stat(edges).mean[0] / 255.0
-    blurred = gray.filter(ImageFilter.GaussianBlur(2))
-    high_frequency = ImageStat.Stat(ImageChops.difference(gray, blurred)).mean[0] / 255.0
-    saturation = ImageStat.Stat(small.convert("HSV")).mean[1] / 255.0
-    return {
-        "width": width,
-        "height": height,
-        "aspect_ratio": round(width / height, 4),
-        "mean": round(mean, 2),
-        "stddev": round(stddev, 2),
-        "whitespace_fraction": round(sum(hist[240:]) / total, 4),
-        "black_fraction": round(sum(hist[:16]) / total, 4),
-        "edge_density": round(edge_density, 4),
-        "high_frequency_ratio": round(high_frequency, 4),
-        "saturation_mean": round(saturation, 4),
-    }
+    """Shared quality metrics (colour/edge/luma); aesthetic risk is separate."""
+
+    return image_metrics(path)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -109,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--style", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--manual", help="JSON with semantic check results")
+    parser.add_argument("--aesthetic", help="shot aesthetic JSON from an A/B snapshot")
     args = parser.parse_args(argv)
 
     path = (ROOT / args.image).resolve()
@@ -148,6 +124,19 @@ def main(argv: list[str] | None = None) -> int:
     else:
         overall = "PASS_STATIC"
 
+    aesthetic = None
+    aesthetic_meta = None
+    if args.aesthetic:
+        design_path = (ROOT / args.aesthetic).resolve()
+        if not design_path.is_file():
+            raise SystemExit(f"aesthetic spec not found: {design_path}")
+        aesthetic_meta = json.loads(design_path.read_text(encoding="utf-8"))
+        aesthetic = check_aesthetic_risk(
+            path,
+            aesthetic_meta["design"],
+            preset.color_palette,
+            meta=aesthetic_meta,
+        )
     out = (ROOT / args.out).resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -160,6 +149,8 @@ def main(argv: list[str] | None = None) -> int:
         "blank": blank,
         "black": black,
         "manual_checks": checks,
+        "aesthetic_risk": aesthetic,
+        "aesthetic_status": aesthetic["aesthetic_status"] if aesthetic else "NOT_RUN",
         "overall_status": overall,
         "note": "PASS_STATIC 只表示静态图过门；动态效果与最终审美仍需人工看片",
     }

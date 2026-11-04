@@ -328,3 +328,44 @@ scripts\stop.ps1
 ### 8.7 建议
 
 推荐以 **C2** 作为人工复审候选：水面已从“几乎不动”变为可感知的低频微动，舟体/倒影保持刚性，树区与山体没有明显退化。云雾仍是弱项：当前静帧的云雾集中在树线、空间纹理不足，继续加大位移或透明度会产生重影；若手机端仍看不出云气流动，下一轮应使用独立云雾 plate 或复用已生成的 Wan A 云雾局部素材（不是重新跑 Wan），而不是继续推当前云雾层。
+
+---
+
+## 9. 2026-11-04 续：双管线动态与声音能力升级
+
+本轮在既有水墨分层修复之上，把“实验脚本”升级为正式生产调用链，并补齐声音层。完整证据、参数、逐项状态与未完成事项见 [`MOTION_VOICE_UPGRADE_REPORT.md`](MOTION_VOICE_UPGRADE_REPORT.md)。
+
+### 9.1 实际改动
+
+- 新增 `src/drama_studio/motion/`：镜头缓动、局部微动、水墨转场、统一 manifest。
+- `config/styles.yaml` 两种风格各自新增 `motion.camera`、`motion.local_policy`、`motion.transition`；通用代码无 `if style == ...`。
+- `production.build_motion_plan` + `scripts/motion_build.py` + `production --sequence` 接入 `r3_build`；工作台新增 `motion.plan` / `motion.render`。
+- 声音：`source_text / display_text / tts_text / pronunciation_overrides` 分层；`recitation` / `classical_recitation` 模式；`pronunciation_report.json`；`quality --audio-manifest` 逐行 QA；`scripts/tts_qa.py` ASR 辅助。
+
+### 9.2 与上一轮的关系
+
+- 上一轮的 C2 水面/舟体/云雾修复仍保留在 `experiments/pipeline_a/`，未被覆盖。
+- 本轮新链路不覆盖任何历史 `experiments/` 或 `renders/` 目录；每次构建写入新的 `build-<time>/`。
+- 上一轮的 `PARTIAL`/`PENDING_HUMAN_REVIEW` 不自动升级；本轮新增能力同样保持 `PARTIAL`，等待人工看片/试听。
+
+### 9.3 关键实测
+
+| 项 | 结果 |
+|---|---|
+| 静态机位局部微动隔离 | 水面 0.524 / 芦苇 1.33–1.99；天空结构 0.0014、上部结构 0.0633（0–255） |
+| 四种转场探针 | 全部通过；1.2 s、无黑帧、起始/结束色正确 |
+| 水墨 E2E | 8.625 s / 1080×1920 / 24 fps；画质 PASS；音频 PARTIAL |
+| 工笔 E2E | 8.333 s / 1080×1920 / 24 fps；画质 PASS；音频 PARTIAL |
+| 14 词组 ASR 辅助 | 11/12 CER 0；「碣石瀟湘」CER 0.571，接口无拼音控制，记录为能力缺口 |
+| 真正吟唱 | `NOT_RUN`；CLI 明确拒绝，不伪装 |
+
+### 9.4 状态
+
+| 项 | 状态 |
+|---|---|
+| 确定性镜头运动 | `PARTIAL`（技术通过，人工看片 PENDING） |
+| 局部微动 | `PARTIAL`（技术通过，人工看片 PENDING） |
+| 转场 | `PARTIAL`（技术通过，人工看片 PENDING） |
+| 标准朗诵 / 古典吟诵 | `PARTIAL`（波形/ASR 通过，发音人工复核 PENDING） |
+| 真正吟唱 | `NOT_RUN`（不支持） |
+| 正式作品双版本 | `NOT_RUN`（未开始） |

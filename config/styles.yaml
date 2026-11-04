@@ -10,7 +10,8 @@
 #     字段必须自包含材质、线条与细节描述，保证不改代码即可进入生成。
 #   - material / line / detail 是结构化审计字段，供规范核对与后续参数化；
 #     它们不会单独拼接进提示词。
-#   - motion / compositing 供 S2 动画与合成验证使用；当前生产链路尚未消费。
+#   - motion / compositing 由 drama_studio.motion 消费（S2 验证 + 生产镜头渲染）；
+#     camera / local_policy / transition 是机械执行策略，不是提示词。
 #   - 与 workspace `styles` 实体共有的字段见 style_presets.STYLE_ENTITY_FIELDS；
 #     配置层独有字段不写入 SQLite，也不自动导入工作台。
 #
@@ -66,6 +67,112 @@ styles:
         usage: local_supplement
         note: 只用于云雾、水面、飞鸟等局部动态；不承担人物动作或主体位移
       forbidden: [fast_pan, handheld_shake, subject_displacement]
+
+      # 机械执行策略（由 drama_studio.motion 消费）。风格差异只来自这里，
+      # 通用代码不得按 style id 分支。
+      camera:
+        default: scroll_pan
+        allowed: [scroll_pan, slow_push_in, slow_pull_out, push_in_with_pan, static]
+        scroll_speed_px_s: 30
+        slow_track_speed_factor: 0.6
+        push_rate_per_s: 0.008
+        push_pan_fraction: 0.02
+        push_scale_min: 1.03
+        push_scale_max: 1.06
+        easing: linear
+        focus: [0.5, 0.5]
+      local_policy:
+        water_ripple:
+          enabled: true
+          amplitude_px: 2.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 50
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+        reflection_distortion:
+          enabled: true
+          amplitude_px: 1.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 40
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+          reflection_ratio: 0.55
+          reflection_lag_s: 0.2
+          smear_px: 3.0
+        cloud_drift:
+          enabled: true
+          amplitude_px: 11.0
+          period_s: 22.0
+          opacity: 1.0
+          feather_px: 60
+        leaf_sway:
+          enabled: true
+          amplitude_px: 1.0
+          period_s: 6.5
+          opacity: 1.0
+          feather_px: 30
+          sway_exponent: 1.4
+          top_decay: 0.2
+        reed_sway:
+          enabled: true
+          amplitude_px: 1.5
+          period_s: 7.0
+          opacity: 1.0
+          feather_px: 35
+          sway_exponent: 1.3
+          top_decay: 0.2
+        ink_diffusion:
+          enabled: false
+          amplitude_px: 0
+          period_s: 10.0
+          opacity: 0.0
+          feather_px: 60
+      transition:
+        type: crossfade
+        duration_s: 0.8
+        max_fraction: 0.35
+        feather: 0.12
+        direction: ltr
+        seed: 13
+
+    aesthetic_profile:
+      composition:
+        preferred_strategies: [rule_of_thirds, symmetry, frame_in_frame, vertical_depth, scattered_perspective, high_distance, deep_distance, level_distance]
+        default_subject_position: center
+        whitespace_range: [0.10, 0.35]
+        shot_sizes: [wide, extreme_wide, medium, detail]
+      lighting:
+        preferred: [soft_ambient, morning_side, sunset_warm, cloud_gap]
+        default_key: sun_high
+        default_quality: soft
+        default_direction: side_left
+        default_contrast: medium
+        rim_light: rare
+      color:
+        continuity_group: court_green
+        dominant_keys: [石青, 石绿]
+        secondary_keys: [绢底, 绢白]
+        accent_keys: [赭石, 泥金]
+        default_temperature: cool
+        saturation_range: [0.08, 0.35]
+        value_range: middle
+      depth:
+        default_layers: 3
+        aerial_perspective: true
+        sharpness_falloff: medium
+      mise_en_scene:
+        period: 宋代
+        architecture_positive: 宋代木构楼阁，歇山顶、斗拱、朱栏、窗棂，结构清楚
+        positive_constraints:
+          - 建筑形制为宋代院体绘画中的木构楼阁
+          - 器物与服饰为宋代以前形制
+      storytelling:
+        default_rhythm: stately
+        emotion_vocabulary: [清雅, 秩序, 静谧, 宏阔]
 
     compositing:
       primitives: [paper_texture, scroll_pan, line_reveal, local_motion]
@@ -126,6 +233,112 @@ styles:
         usage: limited
         note: 只在云雾、水面、飞鸟确实改善画面时使用；不用于主体位移或连续人物动作
       forbidden: [fast_pan, handheld_shake, subject_displacement]
+
+      camera:
+        default: slow_push_in
+        allowed: [slow_push_in, slow_pull_out, slow_lateral_track, scroll_pan, push_in_with_pan, static]
+        scroll_speed_px_s: 18
+        slow_track_speed_factor: 0.6
+        push_rate_per_s: 0.008
+        push_pan_fraction: 0.02
+        push_scale_min: 1.03
+        push_scale_max: 1.06
+        easing: ease_in_out
+        focus: [0.5, 0.48]
+      local_policy:
+        water_ripple:
+          enabled: true
+          amplitude_px: 2.2
+          period_s: 13.0
+          opacity: 1.0
+          feather_px: 55
+          wavelength_px: 320
+          vertical_ratio: 0.26
+          perspective_far_scale: 0.12
+        reflection_distortion:
+          enabled: true
+          amplitude_px: 1.2
+          period_s: 13.0
+          opacity: 1.0
+          feather_px: 45
+          wavelength_px: 320
+          vertical_ratio: 0.26
+          perspective_far_scale: 0.12
+          reflection_ratio: 0.55
+          reflection_lag_s: 0.2
+          smear_px: 3.0
+        cloud_drift:
+          enabled: true
+          amplitude_px: 14.0
+          period_s: 24.0
+          opacity: 1.0
+          feather_px: 60
+        leaf_sway:
+          enabled: true
+          amplitude_px: 1.1
+          period_s: 7.5
+          opacity: 1.0
+          feather_px: 30
+          sway_exponent: 1.5
+          top_decay: 0.25
+        reed_sway:
+          enabled: true
+          amplitude_px: 1.7
+          period_s: 8.5
+          opacity: 1.0
+          feather_px: 35
+          sway_exponent: 1.35
+          top_decay: 0.2
+        ink_diffusion:
+          enabled: true
+          amplitude_px: 0
+          period_s: 12.0
+          opacity: 0.42
+          feather_px: 70
+      transition:
+        type: ink_dissolve
+        duration_s: 1.2
+        max_fraction: 0.35
+        feather: 0.12
+        direction: ltr
+        seed: 13
+
+    # 美学设计上游：共享六维数据结构，风格差异只来自这里的配置。
+    # 由 drama_studio.aesthetics 消费；不是提示词模板目录。
+    aesthetic_profile:
+      composition:
+        preferred_strategies: [rule_of_thirds, negative_space, vertical_depth, high_distance, level_distance, void_solid]
+        default_subject_position: center
+        whitespace_range: [0.25, 0.55]
+        shot_sizes: [wide, extreme_wide, medium]
+      lighting:
+        preferred: [moon_diffuse, mist_scatter, soft_ambient, backlight]
+        default_key: moon
+        default_quality: soft
+        default_direction: diffuse
+        default_contrast: low
+        rim_light: rare
+      color:
+        continuity_group: ink_wash
+        dominant_keys: [生宣, 淡墨]
+        secondary_keys: [中墨, 浓墨]
+        accent_keys: [赭石, 淡花青]
+        default_temperature: neutral
+        saturation_range: [0.0, 0.18]
+        value_range: full
+      depth:
+        default_layers: 3
+        aerial_perspective: true
+        sharpness_falloff: deep
+      mise_en_scene:
+        period: 中国古代
+        architecture_positive: 传统木构、茅舍、石桥、渔舟，结构简练
+        positive_constraints:
+          - 建筑与器物均为古代形制
+          - 水面为自然江河，岸边为土坡与杂木
+      storytelling:
+        default_rhythm: slow
+        emotion_vocabulary: [静谧, 空灵, 苍茫, 悠远]
 
     compositing:
       primitives: [ink_matte, ink_diffusion, paper_texture, local_motion]

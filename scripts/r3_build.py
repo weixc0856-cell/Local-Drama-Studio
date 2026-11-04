@@ -127,7 +127,9 @@ def main() -> int:
             "segment_id": f"line_{i:02d}",
             "duration": float(line["duration_seconds"]),
             "pause_after_ms": int(line.get("pause_after_ms", GAP_MS)),
-            "subtitle_text": line["text"],
+            # Spoken text and on-screen text are allowed to differ (e.g. a
+            # simplified TTS script with traditional subtitles).
+            "subtitle_text": line.get("subtitle_text") or line["text"],
         })
     timeline = build_timeline(timeline_segments, leading_ms)
     starts_ms = [event["speech_start_ms"] for event in timeline["segments"]]

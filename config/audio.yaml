@@ -18,3 +18,37 @@ loudness:
   dialogue_lufs: -16.0
   bgm_lufs: -26.0
   true_peak_db: -1.5
+
+# 诵读模式：只控制速度、停顿与分句，不改变任何汉字。
+# CosyVoice-300M-SFT 的 /tts 只接收 text / speaker / speed；没有音素、拼音、
+# 音高或时长接口。因此 chant（真正吟唱）明确标记为不支持，不得用普通朗诵冒充。
+narration_modes:
+  narration:
+    supported: true
+    speed: 1.0
+    leading_ms: 300
+    line_pause_ms: 800
+    intra_line_pause_ms: 0
+    split_at_punctuation: false
+    punctuation: "，、；：？。！"
+  recitation:
+    supported: true
+    speed: 0.92
+    leading_ms: 450
+    line_pause_ms: 950
+    intra_line_pause_ms: 0
+    split_at_punctuation: false
+    punctuation: "，、；：？。！"
+  classical_recitation:
+    supported: true
+    speed: 0.82
+    leading_ms: 550
+    line_pause_ms: 1000
+    intra_line_pause_ms: 0
+    split_at_punctuation: false
+    punctuation: "，、；：？。！"
+    metrical_split: false
+    metrical_pause_ms: 0
+  chant:
+    supported: false
+    reason: CosyVoice-300M-SFT 无音高、旋律与时长控制接口；真正吟唱需要另行验证歌声模型

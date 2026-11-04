@@ -82,6 +82,12 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert kinds["package.build"]["enabled"] is True
     assert kinds["script.generate"]["enabled"] is True
     assert kinds["segments.build"]["enabled"] is True
+    assert kinds["motion.plan"]["enabled"] is True
+    assert kinds["motion.render"]["enabled"] is True
+    assert kinds["audio.qa"]["enabled"] is True
+    assert kinds["aesthetic.plan"]["enabled"] is True
+    assert kinds["aesthetic.compare"]["enabled"] is True
+    assert kinds["aesthetic.review"]["enabled"] is True
     assert kinds["quality.check"]["enabled"] is True
     assert kinds["review.accept"]["enabled"] is True
     assert kinds["review.reject"]["enabled"] is True

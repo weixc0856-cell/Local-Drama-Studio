@@ -141,12 +141,57 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>备注（可选）</label>
         <textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
-  } else if (['package.build', 'segments.build', 'quality.check'].includes(kindKey)) {
+  } else if (['package.build', 'segments.build', 'quality.check', 'motion.plan', 'motion.render', 'audio.qa',
+              'aesthetic.plan', 'aesthetic.compare', 'aesthetic.review'].includes(kindKey)) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
     if (kindKey === 'quality.check') {
       fields += `<div class="field"><label>manifest（可选）</label>
         <input class="input mono" name="manifest" placeholder="留空则取最新 build_manifest.json"></div>`;
+    }
+    if (kindKey === 'motion.plan') {
+      fields += `<div class="field"><label>风格预设（可选）</label>
+        <input class="input mono" name="style" placeholder="ink_wash / court_green_fine_line；留空读取 production_script.style_id"></div>
+        <div class="field"><label>局部运动区域（可选）</label>
+          <input class="input mono" name="regions" placeholder="留空读取 motion_regions.json"></div>`;
+    }
+    if (kindKey === 'motion.render') {
+      fields += `<div class="field"><label>plan（可选）</label>
+        <input class="input mono" name="plan" placeholder="留空读取 motion_shots.json"></div>`;
+    }
+    if (kindKey === 'audio.qa') {
+      fields += `<div class="field"><label>audio_manifest（可选）</label>
+        <input class="input mono" name="manifest" placeholder="留空读取本期 audio_manifest.json"></div>
+        <div class="field"><label>timeline（可选）</label>
+          <input class="input mono" name="timeline" placeholder="留空取最新 renders/*/timeline.json"></div>`;
+    }
+    if (kindKey === 'aesthetic.plan') {
+      fields += `<div class="field"><label>风格预设（可选）</label>
+        <input class="input mono" name="style" placeholder="ink_wash / court_green_fine_line"></div>
+        <div class="form-row">
+          <div class="field"><label>designs（可选）</label><input class="input mono" name="designs" placeholder="留空读取 designs.json"></div>
+          <div class="field"><label>axes（可选）</label><input class="input mono" name="axes" placeholder="留空读取 axes.json"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>宽</label><input class="input" name="width" type="number" value="576"></div>
+          <div class="field"><label>高</label><input class="input" name="height" type="number" value="1024"></div>
+          <div class="field"><label>seed 基数</label><input class="input" name="seed_base" type="number" value="8100"></div>
+        </div>`;
+    }
+    if (kindKey === 'aesthetic.compare') {
+      fields += `<div class="field"><label>plan（可选）</label>
+        <input class="input mono" name="plan" placeholder="留空读取 aesthetic/aesthetic_plan.json"></div>
+        <div class="field"><label>图片根目录（可选）</label>
+          <input class="input mono" name="images" placeholder="留空取最新 snapshot/images"></div>`;
+    }
+    if (kindKey === 'aesthetic.review') {
+      fields += `<div class="field"><label>结论</label>
+        <select class="input" name="decision"><option value="PASS">PASS</option><option value="REVISE">REVISE</option><option value="REJECT">REJECT</option></select></div>
+        <div class="form-row">
+          <div class="field"><label>镜头（可选）</label><input class="input mono" name="shot_id" placeholder="shot_001"></div>
+          <div class="field"><label>版本（可选）</label><select class="input" name="variant"><option value="">—</option><option value="A">A</option><option value="B">B</option></select></div>
+        </div>
+        <div class="field"><label>备注</label><textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
     }
   } else if (kindKey === 'script.generate') {
     fields = `<div class="field"><label>期数</label>
@@ -164,7 +209,14 @@ function launcherForm(kindKey, kinds, episodes) {
           <input class="input" name="speaker" placeholder="例如：中文女；留空读取 narration.json"></div>
         <div class="field"><label>语速（可选）</label>
           <input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="1.0"></div>
-      </div>`;
+      </div>
+      <div class="field"><label>诵读模式（可选）</label>
+        <select class="input" name="mode">
+          <option value="">读取 narration.json</option>
+          <option value="narration">narration · 普通旁白</option>
+          <option value="recitation">recitation · 标准朗诵</option>
+          <option value="classical_recitation">classical_recitation · 古典吟诵</option>
+        </select></div>`;
   } else if (kindKey === 'li.run') {
     fields = `<div class="field"><label>语料目录</label>
       <input class="input mono" name="corpus" required

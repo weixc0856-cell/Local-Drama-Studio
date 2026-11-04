@@ -50,6 +50,13 @@ def test_presets_carry_required_visual_contract() -> None:
         assert preset.motion.primary
         assert preset.compositing.primitives
         assert 0.0 <= preset.compositing.texture.opacity <= 0.3
+        assert preset.motion.camera.default in preset.motion.camera.allowed
+        assert 1.0 < preset.motion.camera.push_scale_max <= 1.2
+        assert preset.motion.local_policy
+        assert preset.motion.transition.type in (
+            "crossfade", "ink_dissolve", "ink_reveal", "ink_spread"
+        )
+        assert 0.0 < preset.motion.transition.max_fraction <= 0.5
 
 
 def test_style_entity_matches_workspace_schema() -> None:
@@ -70,6 +77,14 @@ def test_style_specific_animation_routes() -> None:
     assert {"ink_matte", "ink_diffusion"} <= set(ink.compositing.primitives)
     assert "scroll_pan" in court.motion.primary
     assert "ink_diffusion" in ink.motion.primary
+    # The two styles keep independent mechanical policies, selected by config
+    # rather than by a style branch in code.
+    assert court.motion.camera.default == "scroll_pan"
+    assert ink.motion.camera.default == "slow_push_in"
+    assert court.motion.transition.type == "crossfade"
+    assert ink.motion.transition.type == "ink_dissolve"
+    assert court.motion.local_policy["ink_diffusion"].enabled is False
+    assert ink.motion.local_policy["ink_diffusion"].enabled is True
     for preset in (court, ink):
         assert preset.motion.wan.allowed is True
         assert preset.compositing.parallax.allowed is False
