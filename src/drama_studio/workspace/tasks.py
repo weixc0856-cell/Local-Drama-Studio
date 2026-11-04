@@ -23,6 +23,9 @@ from typing import Any, Awaitable, Callable, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from ..config import find_project_root, load_settings
+from ..style_lock import (
+    StyleLockError, assert_style_request, locked_preset_id, locked_style_id,
+)
 from .store import WorkspaceStore, now_iso
 
 ROOT = find_project_root()
@@ -301,6 +304,13 @@ class TaskKind:
             "blocked_reason": self.blocked_reason,
             "params_schema": self.params_model.model_json_schema(),
         }
+
+
+def _locked_style(episode: dict[str, Any] | None, requested: str | None = None) -> str | None:
+    try:
+        return assert_style_request(episode, requested)
+    except StyleLockError as exc:
+        raise TaskError("style_locked", str(exc)) from exc
 
 
 def _resolve_under(raw: str, allowed: tuple[str, ...], *, must_exist: bool = True) -> Path:
@@ -699,7 +709,7 @@ def _static_paths(
             raise TaskError("not_found", f"缺少 {_rel(directory)} 下的静态图")
         image = candidates[0]
     episode = store.get_episode(params.episode_id) or {}
-    style = params.style or (episode.get("style_snapshot") or {}).get("id")
+    style = _locked_style(episode, params.style) or (episode.get("style_snapshot") or {}).get("id")
     if not style:
         raise TaskError("no_style", "该期未绑定风格；static.check 需要 style")
     out = (store.root / params.out).resolve() if params.out else base / "work" / "static" / params.shot_id / "static_quality.json"
@@ -1072,14 +1082,17 @@ def _motion_plan_prereqs(params: MotionPlanParams, store: WorkspaceStore) -> lis
 
 
 def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
-    script, images, audio, out, regions = _motion_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, images, audio, out, regions = _motion_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "-m", "drama_studio.production", "--motion-plan",
         "--script", _rel(script), "--images", _rel(images), "--audio", _rel(audio),
         "--out", _rel(out),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if regions is not None:
         argv += ["--regions", _rel(regions)]
     argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
@@ -1097,6 +1110,10 @@ def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
 def _motion_plan_after(params: MotionPlanParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
     _, _, _, out, _ = _motion_plan_paths(params, store)
     data = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and data.get("style_id") != locked:
+        raise TaskError("style_locked", f"motion plan style {data.get('style_id')!r} != locked {locked!r}")
     shots = data.get("shots") or []
     return {
         "plan": _rel(out),
@@ -1271,7 +1288,10 @@ def _aesthetic_plan_prereqs(params: AestheticPlanParams, store: WorkspaceStore) 
 
 
 def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]:
-    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "scripts/aesthetic_plan.py",
         "--script", _rel(script), "--out", _rel(out),
@@ -1280,8 +1300,8 @@ def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]
         "--width", str(params.width), "--height", str(params.height),
         "--steps", str(params.steps), "--cfg", str(params.cfg),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if designs is not None:
         argv += ["--designs", _rel(designs)]
     if axes is not None:
@@ -1293,6 +1313,11 @@ def _aesthetic_plan_after(params: AestheticPlanParams, task_id: str, store: Work
     _, _, _, out, _ = _aesthetic_plan_paths(params, store)
     manifest_path = out.parent / "aesthetic_plan_manifest.json"
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    plan = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and plan.get("style_id") != locked:
+        raise TaskError("style_locked", f"aesthetic plan style {plan.get('style_id')!r} != locked {locked!r}")
     return {
         "plan": _rel(out),
         "manifest": _rel(manifest_path),

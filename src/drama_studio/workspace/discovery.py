@@ -991,12 +991,19 @@ def _style_view(store: Any, ep: dict[str, Any]) -> dict[str, Any] | None:
     if not style_id and not snapshot:
         return None
     current = store.get_style(style_id) if style_id else None
+    lock = (snapshot or {}).get("_style_lock") or {}
     return {
         "id": style_id,
         "name": (snapshot or current or {}).get("name"),
         "snapshot": snapshot,
         "current": current,
         "drifted": bool(current and snapshot and current.get("updated_at") != snapshot.get("updated_at")),
+        "preset_id": lock.get("preset_id") or (snapshot or {}).get("preset_id"),
+        "revision": lock.get("revision"),
+        "sha256": lock.get("sha256"),
+        "locked_at": lock.get("locked_at"),
+        "history": lock.get("history") or [],
+        "override_allowed": False,
     }
 
 

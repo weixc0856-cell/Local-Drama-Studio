@@ -56,6 +56,7 @@ STYLE_ENTITY_FIELDS = (
     "aspect_ratio",
     "applicable_content_types",
     "source_files",
+    "preset_id",
 )
 
 AbilityStatus = Literal[
@@ -432,7 +433,9 @@ class StylePreset(BaseModel):
     def as_style_entity(self) -> dict[str, object]:
         """Return exactly the fields accepted by ``WorkspaceStore.create_style``."""
 
-        return {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS}
+        entity = {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS if field != "preset_id"}
+        entity["preset_id"] = self.id
+        return entity
 
 
 class StylePresetRegistry(BaseModel):

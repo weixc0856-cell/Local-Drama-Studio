@@ -234,11 +234,11 @@ start_cosyvoice.bat      COSY_MODEL_CLASS=CosyVoice2
 
 | 规则 | 目标 | 当前实现 |
 |---|---|---|
-| 每个作品一个主风格 | 作品级 `style_id` | 期数有 `style_id` + `style_snapshot`；项目有 `default_style_id`，但不会自动强制 |
-| 全片风格一致 | 第一帧到最后一帧不切换 | `ProductionScript.style_id` / `style_sha256` 有记录；但 `motion.plan` / `aesthetic.plan` 允许 `--style` 覆盖，`comfy.batch` 不校验 |
+| 每个作品一个主风格 | 作品级 `style_id` | 期数 `style_snapshot._style_lock`（revision/hash）；项目 `default_style_id` 仍非强制 |
+| 全片风格一致 | 第一帧到最后一帧不切换 | `style_lock` 锁定期数 snapshot；`motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；`comfy.batch` 仍未按 episode 校验 |
 | 两种风格独立规范 | 视觉规范/提示词/参数/质量评价独立 | `config/styles.yaml` 有独立 `visual_language/positive_prompt/motion/aesthetic_profile`；`static_quality.py` 有独立 checklist |
-| 生成任务不得覆盖 | 任务只继承作品风格 | `motion.plan` / `aesthetic.plan` 的 `style` 参数可覆盖；`build_jobs` 不再检查 style |
-| 改风格要新版本 | 新风格版本或新生产版本，并记录 | UI “应用为快照”直接替换期数 snapshot；没有版本表/历史链 |
+| 生成任务不得覆盖 | 任务只继承作品风格 | `style_lock.assert_style_request` 已接入 `motion.plan` / `aesthetic.plan` / `static.check`；其他任务待补 |
+| 改风格要新版本 | 新风格版本或新生产版本，并记录 | `attach_lock` revision+1，`history` 保留旧 sha/revision；旧 build 不覆盖；UI 新风格入口待做 |
 | 质量检查风格一致性 | 能检查风格一致性 | `static_quality` 按风格检查单图；`check_color_continuity` 只检查相邻镜头 LAB/亮度；无风格分类/跨镜头风格门 |
 | 两种风格共享基础设施 | FLUX/Wan/FFmpeg 共用 | 是；代码只按 preset 配置分支，不按 style id 写死 |
 
