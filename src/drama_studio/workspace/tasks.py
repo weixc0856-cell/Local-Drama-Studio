@@ -77,6 +77,7 @@ class ComfyParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     jobs: str = Field(min_length=1, max_length=400)
+    episode_id: str | None = Field(default=None, max_length=120)
     only: str | None = Field(default=None, max_length=200)
     force: bool = False
     timeout: int = Field(default=1800, ge=60, le=21600)
@@ -468,6 +469,25 @@ def _comfy_prereqs(params: ComfyParams, store: WorkspaceStore) -> list[str]:
         _resolve_under(params.jobs, ("experiments", "projects"))
     except TaskError as exc:
         return [exc.message]
+    if params.episode_id:
+        episode = store.get_episode(params.episode_id)
+        if not episode:
+            return [f"期数不存在：{params.episode_id}"]
+        try:
+            base = _episode_root(params.episode_id, store)
+        except TaskError as exc:
+            return [exc.message]
+        locked = locked_style_id(episode)
+        script = next((p for p in (base / "work" / "production_script.json",
+                                   base / "production_script.json") if p.is_file()), None)
+        if script is not None and locked:
+            try:
+                script_style = json.loads(script.read_text(encoding="utf-8")).get("style_id")
+            except (OSError, json.JSONDecodeError):
+                script_style = None
+            if script_style and script_style != locked:
+                missing.append(
+                    f"production_script style_id={script_style!r} 与期数锁 {locked!r} 不一致")
     if not _port_open("127.0.0.1", 8188):
         missing.append("ComfyUI 8188 未监听；先用 service.comfy.start 启动")
     return missing

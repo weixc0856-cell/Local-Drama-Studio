@@ -106,13 +106,13 @@ state.py               没有项目级 state.db；实际是 workspace.db + 文�
 | 编号 | 边界问题 | 证据 | 影响 |
 |---|---|---|---|
 | B-01 | `models.Storyboard` 是“名义契约”，实际生产用 `ProductionScript` | `models.py:100`；`grep` 只命中测试；`script_engine.py:82` 才是生产模型 | 新开发者可能把 LLM 输出校验到错误模型 |
-| B-02 | `config/styles.yaml` 与 `workspace.styles` 是两套风格 | `style_presets.py:380`；`store.py:60-80`；`scripts.aesthetic_plan` 用 YAML；`script.generate` 用 DB snapshot | 用户在 UI 改风格，不会影响运动/美学策略；P1 的 `style_p1_short` 不是 YAML preset，`motion.plan` 必须手动 `--style ink_wash` |
+| B-02 | `config/styles.yaml` 与 `workspace.styles` 是两套风格 | `style_presets.py:380`；`store.py`；`scripts.aesthetic_plan` 用 YAML；`script.generate` 用 DB snapshot | 已加 `styles.preset_id` 与 `_style_lock.preset_id` 映射；UI 创建的 style 仍需显式填 preset_id，motion/aesthetic 其它字段仍不合并 |
 | B-03 | 工作台只派生 `narration/segments/audio/build`，不读 `content_package.json` / `production_script.json` | `discovery._analyze_video` | UI “内容/分镜”看不到 LLM 生成的标题、logline、镜头提示词 |
-| B-04 | `discovery._workflow` 的节点/文案是旧版 | `discovery.py:1061-1062,1082`：仍写“写入路径未实现”“分镜生成器未实现”“r3_tts.py 尚未参数化” | 工作流页会误导用户，且不显示 `package.build/script.generate/motion.*/aesthetic.*` |
+| B-04 | `discovery._workflow` 的节点/文案是旧版 | 已改为 package/static/aesthetic/motion 节点，script/voice 指向真实任务；旧文案删除 | 浏览器截图/点击端到端待做 |
 | B-05 | 静态质量门已收口 | `static.check` 任务已注册；`motion.plan` 默认要求报告，缺失即失败 | 真实报告端到端待跑；显式跳过会留痕 |
 | B-06 | 运动计划只在特定路径查找静态门 | `production.py:406-407` 只查 `work/static/<shot>/` 与 `static/<shot>/`；aesthetic 的 `static_quality.json` 在 snapshot 下 | 即使已经跑过静态门，plan 也可能找不到而跳过 |
 | B-07 | `quality.check` UI 没有 `motion_manifest` 字段 | `tasks.js` quality 表单只有 `manifest`；`QualityParams` 支持两者 | 运动质量门只能走 API/CLI |
-| B-08 | `aesthetic.*` 结果不进入派生状态 | `discovery.py` 不读 `aesthetic_plan.json` / `comparison.json` | 工作台只能从任务日志看结果，没有专门视图 |
+| B-08 | `aesthetic.*` 结果不进入派生状态 | `_workflow` 现在读 `aesthetic_plan.json` 作为节点输出；`comparison.json`/人工结论仍无专门视图 | 工作流可见计划，但无 A/B 对比视图 |
 | B-09 | `scripts/` 同时是生产适配器与实验工具 | 见 `REPOSITORY_STRUCTURE.md` §3 | 误用实验脚本（如 `pipeline_ink.py`）当生产入口 |
 | B-10 | `r3_build.py` 不调用 `quality.py` | `r3_build.py` 内部 ffprobe/解码；`quality.check` 是独立后置 | 直接跑 `r3_build.py` 不会生成 `quality_report.json` |
 
@@ -350,7 +350,7 @@ work/source + claims
 1. **分层是真实的**：Python 调度、ComfyUI、CosyVoice、llama.cpp、FFmpeg、SQLite、本地文件各自有清晰入口，未出现“ComfyUI 吞掉业务逻辑”。
 2. **状态原则是真实的**：工作台不把生产状态写库，`discovery` 从文件派生；`doctor` 不猜测。
 3. **最大问题不是“缺模块”，而是“同一能力有多条路径”**：两套契约、两套风格、CLI 与工作台、静态门与运动门。它们各自能跑，但组合起来会产生“文档说 A、实际走 B”的偏差。
-4. **A-01 已修复；A-02 已收口（默认强制、显式跳过）**；下一步最需要修的是 A-03 工作流页与 `static.check` 任务。
+4. **A-01 已修复；A-02/A-03 已收口**；下一步是浏览器端到端、`comfy.batch` 风格校验真实任务与跨镜头一致性门。
 5. **历史证据需要重新索引**：不是重跑全部实验，而是把仍存在的产物、报告、缺失路径如实标注，避免以后把报告路径当成可复跑入口。
 
 ---

@@ -32,7 +32,7 @@ Local-Drama-Studio/
 
 ```powershell
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest          # 361 passed（当前）
+.venv\Scripts\python.exe -m pytest          # 363 passed（当前）
 ```
 
 ---
@@ -265,7 +265,7 @@ ProductionScript
 - `config/styles.yaml`：完整 `StylePreset`，含 motion/compositing/aesthetic_profile；`motion.plan`/`aesthetic.plan` 只认它。
 - `workspace.styles`：只存 `STYLE_ENTITY_FIELDS`；不含运动/美学策略；不自动导入。
 - 期数 `style_snapshot`：冻结 DB 风格；`script.generate` 用它拼提示词。
-- `motion.plan`/`aesthetic.plan`：从期数 `_style_lock.preset_id` 取 YAML preset；显式 `--style` 相同才允许，不同直接拒绝。P1 的 `style_p1_short` 已在 DB 映射为 `ink_wash`。
+- `motion.plan`/`aesthetic.plan`：从期数 `_style_lock.preset_id` 取 YAML preset；显式 `--style` 相同才允许，不同直接拒绝。P1 的 `style_p1_short` 已在 DB 映射为 `ink_wash`；`comfy.batch` 绑定 `episode_id` 时校验 `production_script.style_id`。
 - `comfy.batch`：不校验 style。
 - 质量：`static_quality` 按单图风格；`check_color_continuity` 只查相邻 LAB/亮度。
 
@@ -307,7 +307,7 @@ ProductionScript
 .venv\Scripts\python.exe -m pytest --collect-only -q
 ```
 
-当前 361 passed。测试覆盖：
+当前 363 passed。测试覆盖：
 
 | 区域 | 文件 |
 |---|---|

@@ -808,7 +808,7 @@ def _analyze_literary(ep: dict[str, Any], corpus: Path, tasks: list[dict[str, An
             "package",
             "内容包",
             PASS_VERIFIED if package_files else NOT_RUN,
-            f"{len(package_files)} 个内容包文件" if package_files else "尚未生成 ContentPackage（LI-2-C Adapter 未实现）",
+            f"{len(package_files)} 个内容包文件" if package_files else "尚未生成 ContentPackage；可运行 package.build",
             evidence=[rel(p) for p in package_files],
         )
     )
@@ -1046,52 +1046,124 @@ def _workflow(detail: dict[str, Any]) -> dict[str, Any]:
         inputs: list[str],
         task_kind: str | None = None,
         task_reason: str | None = None,
+        *,
+        status: str | None = None,
+        detail: str | None = None,
+        outputs: list[str] | None = None,
     ) -> dict[str, Any]:
         step = step_by_id.get(node_id, {})
         return {
             "id": node_id,
             "label": label,
-            "status": step.get("status", NOT_RUN),
-            "detail": step.get("detail", ""),
+            "status": status or step.get("status", NOT_RUN),
+            "detail": detail if detail is not None else step.get("detail", ""),
             "required": step.get("required", True),
             "inputs": [{"path": p, "exists": _exists(p)} for p in inputs if p],
-            "outputs": [{"path": p, "exists": _exists(p)} for p in outputs_of(node_id)],
+            "outputs": [{"path": p, "exists": _exists(p)}
+                        for p in (outputs if outputs is not None else outputs_of(node_id)) if p],
             "task_kind": task_kind,
             "task_reason": task_reason,
         }
 
     source_out = outputs_of("source")
     script_out = outputs_of("script")
+    base = resolve(detail.get("artifact_root"))
+    work = (base / "work") if base is not None else None
+    package_path = next((p for p in (
+        work / "content_package.json" if work else None,
+        base / "content_package.json" if base else None,
+    ) if p is not None and p.is_file()), None)
+    motion_path = next((p for p in (
+        work / "motion_shots.json" if work else None,
+        base / "motion_shots.json" if base else None,
+    ) if p is not None and p.is_file()), None)
+    static_dir = next((d for d in (
+        (base / "static") if base else None,
+        (work / "static") if work else None,
+    ) if d is not None and d.is_dir()), None)
+    static_paths = sorted(static_dir.glob("*/static_quality.json")) if static_dir else []
+    static_status = NOT_RUN
+    static_detail = "未找到 static/<shot_id>/static_quality.json"
+    if static_paths:
+        states = []
+        for path in static_paths:
+            try:
+                states.append(json.loads(path.read_text(encoding="utf-8")).get("overall_status"))
+            except (OSError, json.JSONDecodeError):
+                states.append("FAIL")
+        if "FAIL" in states:
+            static_status = "FAILED"
+        elif "PENDING" in states or "PARTIAL" in states:
+            static_status = PARTIAL
+        else:
+            static_status = PASS_VERIFIED
+        static_detail = f"{len(static_paths)} 个镜头报告：{', '.join(str(s) for s in sorted(set(states)))}"
+    aesthetic_dir = next((d for d in (
+        (base / "aesthetic") if base else None,
+        (work / "aesthetic") if work else None,
+    ) if d is not None and d.is_dir()), None)
+    aesthetic_paths = sorted(aesthetic_dir.glob("**/aesthetic_plan.json")) if aesthetic_dir else []
+    aesthetic_status = PARTIAL if aesthetic_paths else NOT_RUN
+    aesthetic_detail = (
+        f"{len(aesthetic_paths)} 个美学计划；人工结论仍需 aesthetic.review"
+        if aesthetic_paths else "未找到 aesthetic_plan.json"
+    )
     nodes = [
         node("source", "原文", []),
         node("analysis", "文学分析", source_out, None, "缺少与本期绑定的 LI 运行记录" if not outputs_of("analysis") else None),
-        node("script", "文案", source_out, None, "写入路径未实现（只读派生）"),
-        node("storyboard", "分镜", script_out, None, "分镜生成器未实现"),
         node(
-            "images",
-            "图片",
-            image_sources,
-            "comfy.batch",
-            "需要显式指定 experiments/ 下的 jobs.json；工作台不会自动推断生成参数",
+            "package", "内容包", source_out, "package.build",
+            None if package_path else "从 source_registry.json + claims.json 构建",
+            status=PASS_VERIFIED if package_path else NOT_RUN,
+            detail="content_package.json 已存在" if package_path else "未生成 content_package.json",
+            outputs=[rel(package_path)] if package_path else [],
         ),
         node(
-            "videos",
-            "视频",
-            video_sources,
-            "comfy.batch",
+            "script", "文案与分镜脚本", [rel(package_path)] if package_path else source_out,
+            "script.generate",
+            None if script_out else "从内容包生成 ProductionScript、narration.json 与 jobs",
+        ),
+        node(
+            "storyboard", "分镜/分段", script_out,
+            "script.generate" if not segments else None,
+            "脚本任务同时产出分镜与 jobs；segments 由 segments.build 适配" if not segments else None,
+        ),
+        node(
+            "static", "静态质量门", image_sources, "static.check",
+            "每镜头先跑 static.check；motion.plan 默认要求报告" if not static_paths else None,
+            status=static_status,
+            detail=static_detail,
+            outputs=[rel(p) for p in static_paths],
+        ),
+        node(
+            "aesthetic", "镜头美学", script_out, "aesthetic.plan",
+            "生成六维设计与 A/B 任务；人工结论用 aesthetic.review" if not aesthetic_paths else None,
+            status=aesthetic_status,
+            detail=aesthetic_detail,
+            outputs=[rel(p) for p in aesthetic_paths],
+        ),
+        node(
+            "images", "图片", image_sources, "comfy.batch",
+            "需要显式指定 jobs.json；工作台不会自动推断生成参数",
+        ),
+        node(
+            "videos", "视频", video_sources, "comfy.batch",
             "需要显式指定 jobs.json；Wan 单段实测约 36 分钟",
         ),
         node(
-            "voice",
-            "配音",
-            script_out,
-            "tts.synthesize",
-            "r3_tts.py 尚未参数化，只能处理 experiments/r3b",
+            "motion", "确定性运动", [*image_sources, audio.get("manifest")], "motion.plan",
+            "基于 static 报告与 audio_manifest 生成 motion_shots.json",
+            status=PARTIAL if motion_path else NOT_RUN,
+            detail="motion_shots.json 已存在；渲染需 motion.render" if motion_path else "未生成 motion_shots.json",
+            outputs=[rel(motion_path)] if motion_path else [],
+        ),
+        node(
+            "voice", "配音", script_out, "tts.synthesize",
+            "从 narration.json 逐句合成；支持显式 SFT / zero-shot 与 voice profile",
         ),
         node("subtitles", "字幕", voice_files),
         node(
-            "compose",
-            "合成",
+            "compose", "合成",
             [storyboard.get("segments_path"), audio.get("manifest")],
             "build.rebuild",
             None,
@@ -1100,14 +1172,20 @@ def _workflow(detail: dict[str, Any]) -> dict[str, Any]:
     ]
     edges = [
         ("source", "analysis"),
-        ("source", "script"),
+        ("source", "package"),
+        ("package", "script"),
         ("script", "storyboard"),
         ("storyboard", "images"),
         ("storyboard", "videos"),
+        ("images", "static"),
+        ("script", "aesthetic"),
+        ("images", "motion"),
+        ("voice", "motion"),
         ("script", "voice"),
         ("voice", "subtitles"),
         ("images", "compose"),
         ("videos", "compose"),
+        ("motion", "compose"),
         ("subtitles", "compose"),
         ("compose", "output"),
     ]
