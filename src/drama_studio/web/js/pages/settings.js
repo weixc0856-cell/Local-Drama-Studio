@@ -85,7 +85,7 @@ export default {
                 <dt>版本</dt><dd class="mono">${esc(health.version)}</dd>
                 <dt>LLM</dt><dd class="mono">${esc(env.llm_model || '—')}</dd>
                 <dt>ComfyUI</dt><dd class="mono">${esc(env.comfyui_url || '—')}</dd>
-                <dt>CosyVoice 模式</dt><dd class="mono">${esc(env.tts_mode || '—')}</dd>
+                <dt>CosyVoice 默认模式</dt><dd class="mono">${esc(env.tts_mode || '—')} · ${esc(env.tts_default_speaker || '—')}</dd>
                 <dt>GPU / XPU</dt><dd>${gpu.name
                   ? `${esc(gpu.name)} · ${esc(gpu.vram_free_gib)} / ${esc(gpu.vram_total_gib)} GiB`
                   : esc(gpu.detail || 'UNKNOWN')}</dd>

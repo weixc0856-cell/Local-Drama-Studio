@@ -1,0 +1,43 @@
+schema_version: "1.0"
+default_profile: narrator_self
+
+# Reference WAVs are local-only (ignored by Git): restore assets/audio/prompts/*.wav
+# or re-record before using a zero-shot profile on a fresh clone.
+# Voice profiles are opt-in: narration.json must name a profile (globally or
+# per line) for this library to be used. Without one, tts.mode /
+# tts.default_speaker / tts.zero_shot in config/audio.yaml remain authoritative.
+#
+# Only APPROVED profiles may enter a production TTS run. A candidate may be
+# used for auditions only with an explicit non-production command.
+profiles:
+  - profile_id: narrator_self
+    display_name: "旁白（本人参考音）"
+    tts_mode: zero_shot
+    prompt_audio: "assets/audio/prompts/my_voice_clean_v1.wav"
+    prompt_text: "希望你以后能够做的比我还好呦。"
+    speed: 0.90
+    status: APPROVED
+    commercial_allowed: true
+    license_evidence: "assets/audio/prompts/VOICE_RIGHTS.md"
+    asset_id: prompt_my_voice_clean_v1
+    notes: "项目所有者本人录音；正式生产默认候选。商用范围见 VOICE_RIGHTS.md。"
+
+  - profile_id: sft_male_01
+    display_name: "SFT 中文男（历史成片音色）"
+    tts_mode: sft
+    speaker: "中文男"
+    speed: 1.0
+    status: TECHNICALLY_VALIDATED
+    commercial_allowed: null
+    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    notes: "已进入 R3-B 成片；权重/音色/生成音频的商用授权仍为 UNVERIFIED，未达 APPROVED。"
+
+  - profile_id: sft_female_01
+    display_name: "SFT 中文女（试听通过）"
+    tts_mode: sft
+    speaker: "中文女"
+    speed: 1.0
+    status: TECHNICALLY_VALIDATED
+    commercial_allowed: null
+    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    notes: "已合成并试听，但尚未进入最终成片；商用授权同样未核验。"

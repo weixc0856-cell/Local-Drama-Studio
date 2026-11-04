@@ -260,7 +260,7 @@
 | H | Water Motion 水面微动 | 仅水面极弱位移，保持倒影逻辑 | 水面图层 ±4 px/8 s，排除舟体包围盒 | `PARTIAL`（管线 A） |
 | I | Boat Micro-move 孤舟微移 | 极慢、极小的关键帧位移 | 羽化舟体贴片平移 8 px/20 s + ±1.5 px 起伏 | `PARTIAL`（管线 A） |
 | J | Layering 分层 | 云/水/舟/主体独立图层 | 每样片 `layers.json` 手工定义；不是通用分割模型 | `PARTIAL`（管线 A） |
-| — | 2.5D Parallax | 分层视差 | 仅在具备可靠分层素材或深度图时使用 | `NOT_RUN` |
+| — | 2.5D Parallax | 分层视差 | 推拉用径向缩放、横移用平移窗口 + 逐层 1/α；参数见 `config/styles.yaml` `compositing.parallax` | `PARTIAL`（两风格各一镜技术通过，人工待审） |
 | — | Slow push-in | 缓慢推近 | 现有 `zoompan`，R3 已使用 | `PASS_VERIFIED`（R3；S2-水墨 复用） |
 
 ### 5.3.1 S2 动态升级（2026-11-04）
@@ -380,8 +380,10 @@
 
 前置：S2 两种风格均达到验收。
 
-- 以项目规定的短文本夹具「白日依山尽」做端到端验收：内容生成 → 分镜 → 图像 → 局部视频 → TTS → R3 合成 → 成片与质量检查。
-  - 2026-11-04 已用两套 2 镜头夹具走通 `motion.plan → motion.render → segments(sequence) → r3_build → quality`，两种风格画质 PASS；这属于技术链路 `PARTIAL`，不是正式作品验收。
+- S3 不再用单一状态概括，按三件事分别评价：
+  1. **独立规范与配置**：`PASS_STATIC`（本文件 + `config/styles.yaml` + 测试）。
+  2. **每种风格的技术生产验证**：`PASS_VERIFIED`（技术样片）——2026-11-04 两套 2 镜头夹具走通 `motion.plan → motion.render → segments(sequence) → r3_build → quality`，两种风格画质 PASS；M7 记录人工审片。M7 只证明各风格有一个 2 镜头技术样片，不等于完整作品跨镜头一致性。
+  3. **作品级风格锁定 + 跨镜头一致性**：锁定机制 `PARTIAL`；正式跨镜头一致性验证 `NOT_RUN`。当前期数有 `style_id/style_snapshot`、`ProductionScript` 有 `style_id/style_sha256`，但 `motion.plan`/`aesthetic.plan` 可 `--style` 覆盖，`comfy.batch` 不校验，DB 风格与 YAML preset 脱节，改风格直接替换 snapshot，无跨镜头风格门。
 - 两种风格都必须**通过配置选择**，不能靠改代码切换。
 - 同一期数在绑定风格后冻结快照；不同风格生成不同提示词且可追溯。
 - 成片满足 PRD §20 的产品级验收（1080×1920、字幕、manifest、不覆盖历史、授权可查）。
@@ -405,12 +407,12 @@
 | 分层（Layering） | `PARTIAL` | 每样片手工 `layers.json`；不是通用分割 |
 | 线描显现（Line Reveal） | `NOT_RUN` | 未实现/未验证 |
 | 局部微动（Wan 局部） | `PARTIAL` | Wan I2V 推近已验证；局部遮罩合成未验证 |
-| 2.5D 视差 | `NOT_RUN` | 无可靠分层/深度图 |
+| 2.5D 视差 | `PARTIAL` | 水墨推拉 + 青绿横移各一镜；补底/遮挡/边界三门已接入 |
 | 缓慢推近 | `PASS_VERIFIED` | R3（zoompan）；S2-水墨 复用 |
 | 镜头缓动（确定性） | `PARTIAL` | 三轴缓动、焦点、起止缩放已执行；人工看片 PENDING |
 | 局部微动（确定性图层） | `PARTIAL` | 水面/植物/云雾/墨迹已执行；静态结构带可量化；人工 PENDING |
 | 水墨/叠化转场 | `PARTIAL` | 四种类型探针全过；双风格 E2E 已使用；人工 PENDING |
-| 双风格进入完整链路（S3） | `PARTIAL` | 两种风格各 2 镜头技术链走通；正式作品与人工验收未开始 |
+| 双风格链路（S3 分解） | `PASS_STATIC` / `PASS_VERIFIED`（技术样片）/ `PARTIAL` / `NOT_RUN` | ① 规范/配置；② 各风格 2 镜头技术样片（M7）；③ 作品级锁定 `PARTIAL`；跨镜头一致性正式验证 `NOT_RUN` |
 | 六维美学数据结构 | `PASS_STATIC` | `aesthetics.py` + 两套 `aesthetic_profile` + 测试 |
 | Prompt 编译器 | `PARTIAL` | 8 张真实生成；因果与审美待人工 |
 | A/B 美学对照 | `PARTIAL` | 4 组镜头、8 张图、联系表、风险指标；人工 PENDING |

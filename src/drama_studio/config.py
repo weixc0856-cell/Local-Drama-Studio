@@ -54,12 +54,23 @@ class LLMSettings(BaseModel):
     max_repair_attempts: int = 2
 
 
+class ZeroShotSettings(BaseModel):
+    """Reference-audio cloning. Needs a prompt and its exact transcript."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    prompt_audio: str = "assets/audio/prompts/my_voice_clean_v1.wav"
+    prompt_text: str = ""
+    speed: float | None = None
+    runtime: str = "cosyvoice2"   # which runtime must be up on 50000
+
+
 class TTSSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     base_url: str = "http://127.0.0.1:50000"
-    mode: str = "sft"
     sample_rate: int = 48000
+    zero_shot: ZeroShotSettings = Field(default_factory=ZeroShotSettings)
 
 
 class FFmpegSettings(BaseModel):

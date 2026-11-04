@@ -84,18 +84,18 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | 音色 | 来源 | 状态 |
 |---|---|---|
 | 「中文男」SFT 预置音色 | CosyVoice-300M-SFT | `PASS_VERIFIED` 合成；商用/平台使用条款待复核 |
-| 「中文女」SFT 预置音色 | CosyVoice-300M-SFT | 已合成/试听并固化方案；未进入正式成片（`PARTIAL`）；商用待核验 |
+| 「中文女」SFT 预置音色 | CosyVoice-300M-SFT | 已进入 P1 与 81.373 s 工笔（`PASS_VERIFIED` 技术）；商用待核验 |
 | 自定义克隆音色 | 未使用 | `NOT_RUN` |
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
 
-> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。女声已试听并固化方案但未进入正式成片；BGM、音效与商用授权尚未完成。
+> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。SFT 中文女已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM、音效与商用授权尚未完成。
 > 下表是候选与待核验状态，**不是商用批准**；不能因为素材来自 Pixabay / Mixkit / 某个开源项目，就把整个来源标记为商用通过。
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | TTS-COSY-MALE | TTS 音色 | 中文男（基线） | 本地 CosyVoice | CosyVoice-300M-SFT | — | Apache-2.0（代码）；音色条款待核验 | 待核验 | 待核验 | 待核验 | 本地 | 已有音频哈希 | `PASS_VERIFIED`（合成）/ 授权 `PARTIAL` | `experiments/r3b/audio_manifest.json` |
-| TTS-COSY-FEMALE | TTS 音色 | 中文女 | 本地 CosyVoice | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PARTIAL`（试听/决策完成，未入正式成片） | `experiments/r3d/voice/` |
+| TTS-COSY-FEMALE | TTS 音色 | 中文女 | 本地 CosyVoice | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PASS_VERIFIED`（技术，P1/81.373）；商用待核验 | `experiments/r3d/voice/` |
 | TTS-ALI-WEN | TTS 音色 | 温怀清 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-ALI-YU | TTS 音色 | 余小云 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-VOLC-BV115 | TTS 音色 | 古风少御 BV115 | 火山引擎 | 火山引擎 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
@@ -108,6 +108,10 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | BGM-PIXABAY | 音乐 | 古琴/箫/古筝候选 | https://pixabay.com/music/ | 逐曲作者 | — | Pixabay Content License | 逐曲核验 | 逐曲核验 | 注意 Content ID | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
 | BGM-MIXKIT | 音乐 | 东方氛围候选 | https://mixkit.co/free-stock-music/ | 逐曲作者 | — | Mixkit License | 逐曲核验 | 逐曲核验 | 使用场景限制 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
 | SFX-FREESOUND | 音效 | 水流/风声/鸟鸣/衣袂/钟磬 | https://freesound.org/ | 逐条作者 | — | 优先 CC0；CC BY 需署名 | 逐条核验 | CC BY 需要 | 不得用 CC BY-NC | — | — | `NOT_RUN` / 待选型 | 逐条页面 |
+| SFX-PROGRAMMATIC | 音效 | 江水/夜风/室内底噪 | 本地生成 `scripts/make_ambience.py` | — | — | 自生成，无第三方权利 | 不需要 | 不需要 | 无 | 生成脚本 sha256 | 待实现 | `NOT_RUN` / 方案已定 | [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md) §2 |
+| BGM-FREEPD | 音乐 | 东方氛围/器乐 | https://freepd.com/ | 逐曲作者 | — | 全站 CC0 | 不需要 | 不需要 | 无 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
+| BGM-MUSOPEN | 音乐 | 古典器乐 | https://musopen.org/ | 逐曲演奏者 | — | PD / CC0（录音与乐谱分开核验） | 不需要 | 不需要 | 无 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
+| TTS-PROMPT-SELF | 语音参考 | 克隆 prompt | 自录 | — | — | 自持声音权 | 已附《声音权声明》 | — | 无 | 录音哈希 | 已有 3.35s 清理版 | `PARTIAL`（时长偏短；待补录 8–10 s） | [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md) §9 |
 
 登记字段（新增素材时必须填全）：
 

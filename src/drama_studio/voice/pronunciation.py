@@ -288,8 +288,8 @@ def _check_overrides(overrides: list[dict[str, Any]], lexicon: Lexicon, text: st
 def line_layers(item: Any, lexicon: Lexicon, index: int = 0) -> dict[str, Any]:
     """Split one narration item into text layers without mutating any text."""
     if isinstance(item, dict):
-        display = item.get("display_text") or item.get("subtitle_text")
         tts = item.get("tts_text") or item.get("text")
+        display = item.get("display_text") or item.get("subtitle_text") or tts
         source = item.get("source_text") or display or tts
         overrides = item.get("pronunciation_overrides") or []
         review = item.get("pronunciation_review") or {"status": "PENDING", "note": ""}

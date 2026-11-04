@@ -26,6 +26,10 @@ def test_motion_and_audio_tasks_wire_the_production_cli(workspace) -> None:
     assert plan_argv[plan_argv.index("--style") + 1] == "ink_wash"
     assert "--align-audio" in plan_argv
     assert "--leading-ms" in plan_argv and "--gap-ms" in plan_argv
+    assert "--skip-static-gate" not in plan_argv
+    skipped = workspace.tasks.MotionPlanParams(
+        episode_id=episode_id, style="ink_wash", skip_static_gate=True)
+    assert "--skip-static-gate" in workspace.tasks._motion_plan_argv(skipped, "task_test")
 
     render = workspace.tasks.MotionRenderParams(episode_id=episode_id)
     render_argv = workspace.tasks._motion_render_argv(render, "task_test")

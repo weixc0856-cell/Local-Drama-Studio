@@ -260,10 +260,32 @@ class TextureSpec(BaseModel):
 
 
 class ParallaxSpec(BaseModel):
+    """What a style permits for layered 2.5D shots.
+
+    These are policy, not description: the renderer refuses a layered shot that
+    violates them, so every field here has a consumer. Values are calibrated on
+    the M8 experiments, not invented.
+    """
+
     model_config = ConfigDict(extra="forbid")
 
     allowed: bool = False
     requires: str = ""
+    camera_moves: list[CameraMove] = Field(default_factory=list)
+    max_plates: int = Field(default=3, ge=1, le=6)
+    depth_alpha_min: float = Field(default=0.45, gt=0.0, le=1.0)
+    depth_alpha_max: float = Field(default=0.85, gt=0.0, le=1.0)
+    background_margin: float = Field(
+        default=0.0, ge=0.0, le=0.25,
+        description="fraction of the plate the background window must leave free on each side")
+
+    @model_validator(mode="after")
+    def _consistent(self) -> "ParallaxSpec":
+        if self.depth_alpha_min >= self.depth_alpha_max:
+            raise ValueError("depth_alpha_min must be < depth_alpha_max")
+        if self.allowed and not self.camera_moves:
+            raise ValueError("允许 2.5D 必须声明 camera_moves（否则没有可用的分层镜头类型）")
+        return self
 
 
 class CompositingSpec(BaseModel):

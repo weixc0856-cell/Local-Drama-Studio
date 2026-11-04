@@ -1,0 +1,74 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_aishell3_ssb0009_20261104",
+  "asset_type": "tts_prompt",
+  "status": "TECHNICALLY_VALIDATED",
+  "approved_for_production": false,
+  "source": {
+    "provider": "AISHELL-3 / OpenSLR SLR93",
+    "dataset": "AISHELL-3-Sample",
+    "dataset_version": "official sample archive retrieved 2026-11-04",
+    "source_url": "http://aishell-3.oss-cn-beijing.aliyuncs.com/AISHELL-3-Sample.rar",
+    "official_page": "https://openslr.org/93/",
+    "archive_sha256": "4879c25bc00da3477e34ae2d8fd0496112835958f63fb18a4e2f7ed8753c0343",
+    "archive_bytes": 75587143,
+    "source_file": "AISHELL-3-Sample/train/SSB0009/SSB00090015.wav",
+    "source_sha256": "13a8424d4b076213503b434f8ba501b760bd10a92e8718fe10b16cabd127cd04",
+    "license": "OpenSLR page states Apache License v2.0",
+    "license_status": "BLOCKED_PENDING_WRITTEN_CONFIRMATION",
+    "license_note": "A third-party mirror (PaddleSpeech README) states academic-only without permission, conflicting with the OpenSLR Apache-2.0 label. Commercial use needs written clarification from the data provider. This candidate is not approved.",
+    "speaker_id": "SSB0009",
+    "gender_label": "FEMALE_THIRD_PARTY_METADATA",
+    "age_label": "UNKNOWN_NOT_PRESENT_IN_SAMPLE",
+    "speaker_note": "The sample archive does not include the official spk-info file. A third-party CosyVoice voice package labels SSB0009 female; this is not an official AISHELL sample label and must be confirmed against spk-info.txt before production."
+  },
+  "audio": {
+    "path": "assets/audio/prompts/pending/aishell3_ssb0009_20261104.wav",
+    "sha256": "73425857c927241d88296e9428e7fcf8fc111a84194a609c093eed686f060a01",
+    "duration_ms": 5072,
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "wav",
+    "source_duration_ms": 5072,
+    "source_sample_rate": 44100,
+    "source_channels": 1
+  },
+  "transcript": {
+    "text": "不仅在赛事热身阶段安排型男教练带动热身",
+    "source_transcript": "AISHELL-3-Sample/train/label_train-set.txt: SSB00090015",
+    "verification_status": "DATASET_TEXT_PENDING_HUMAN",
+    "note": "Text comes from the dataset label file; a human must still confirm the clip is complete and unclipped."
+  },
+  "quality": {
+    "duration_check": "PASS",
+    "mono_16k_check": "PASS",
+    "clipping_check": "PASS",
+    "max_volume_db": -7.7,
+    "mean_volume_db": -26.6,
+    "internal_silence_ms": 0,
+    "background_noise_check": "NOT_RUN",
+    "speech_completeness": "PENDING_HUMAN",
+    "gain_normalization": "NOT_APPLIED",
+    "human_review": "PENDING",
+    "note": "No clipping; level is moderate. Listening and voice-profile audition remain required."
+  },
+  "validation": {
+    "cosyvoice_zero_shot": {
+      "status": "PASS",
+      "model_class": "CosyVoice2",
+      "model_dir": "D:\\AI\\CosyVoice-Runtime\\pretrained_models\\CosyVoice2-0.5B",
+      "text": "白日依山尽",
+      "output": "experiments/voice_asset_discovery/zeroshot_aishell_female_candidate.wav",
+      "output_sha256": "836e498ec7115b3f3c27910e1ce965e3b619822785fce92e956f9ff9c7780a5c",
+      "duration_ms": 3280,
+      "sample_rate": 24000,
+      "note": "Prompt accepted by local CosyVoice2-0.5B; technical usability only, not aesthetic or production approval."
+    }
+  },
+  "blocked_reasons": [
+    "AISHELL-3 commercial-use terms need written confirmation",
+    "official gender/age labels are absent from the sample archive; female label is third-party metadata only",
+    "human listening and exact completeness review are pending"
+  ],
+  "created_at": "2026-11-04"
+}
