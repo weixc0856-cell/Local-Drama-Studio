@@ -57,7 +57,7 @@
   - `config/audio.yaml` `subtitles.format/max_chars_per_line/max_lines/burn_in`：`r3_build.py` 未读取。
   - `config/audio.yaml` `narration_modes.*.leading_ms`：`ModeSpec.leading_ms` 只被序列化，`r3_build` 用 `content_type` 默认或显式 `--leading-ms`。
 - `config/generation.yaml` 的 `profiles` 没有被生产构建消费；`production.build_jobs` 自带默认 576×1024 / 4 步 / CFG 1.0。
-- `config/styles.yaml` 的 `validation_status: NOT_RUN` 与 S2/M7 的实际状态不一致（两风格仍是 `NOT_RUN`）。
+- `config/styles.yaml` 的 `validation_status` 已于 2026-11-04 从 `NOT_RUN` 更新为 `PARTIAL`（技术样片 + A/B 选型；完整作品未做）。
 
 ### 2.3 数据契约（3）
 
@@ -255,7 +255,7 @@ start_cosyvoice.bat      COSY_MODEL_CLASS=CosyVoice2
 |---|---|---|
 | 两种视觉风格是否已建立独立规范和配置 | **PASS_STATIC** | `config/styles.yaml` + `style_presets.py` + `docs/VISUAL_STYLE_SPEC.md` + 8 项测试 |
 | 两种风格是否分别完成技术生产验证 | **PASS_VERIFIED**（各 2 镜头技术样片 + M7 人工审片记录） | `experiments/m7_final/ink` 10.087 s、`court` 9.583 s；质量/音频 QA PASS；M7 报告记录人工审片通过 |
-| 单篇作品是否具备作品级风格锁定 + 跨镜头一致性验证 | **IMPLEMENTED_NOT_VERIFIED**（锁定 + 技术门）/ **PENDING_HUMAN_REVIEW**（人工审片） | 期数 `_style_lock` + `preset_id`；`style.consistency` 技术门；P1 4 镜头真实技术 RISK；81.373 s 工笔是 scroll_shot 路径 |
+| 单篇作品是否具备作品级风格锁定 + 跨镜头一致性验证 | **IMPLEMENTED_NOT_VERIFIED**（锁定）/ **PASS_VERIFIED**（P1 跨镜头一致性） | 期数 `_style_lock` + `preset_id`；`style.consistency`；P1 修正后 ΔE 9.22 / luma 7.13 + 人工通过；最终 build 接入待做 |
 
 > M7 的两支短片只能作为“对应风格的技术证据”，不能直接证明完整作品的跨镜头一致性已经验证。81.373 s 工笔是更长案例，但它使用预渲染 clips，同样不是 `motion.plan` 自动运动管线的证据。
 

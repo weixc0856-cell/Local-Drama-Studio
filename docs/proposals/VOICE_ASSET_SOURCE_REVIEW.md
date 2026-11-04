@@ -12,13 +12,13 @@
 | 来源 | 能否自动拉取 | 当前状态 | 结论 |
 |---|---|---|---|
 | Mozilla Common Voice | 需要 Mozilla Data Collective 账号并接受 Data Consumer Terms | `BLOCKED` | 未下载；不得镜像/转存；商用取决于具体 Data Consumer License |
-| AISHELL-3 (OpenSLR SLR93) | 官方 73 MiB Sample 可直接下载；全量 19 GB | `BLOCKED`（许可） | 已下载 Sample 并选 1 条候选；未下载全量；Apache-2.0 标签与第三方“仅学术”说法冲突，需书面澄清 |
-| LibriVox | 可直接从 Internet Archive 下载 | `TECHNICALLY_VALIDATED` | **已拉取 1 条候选**；美国公有领域，其他司法辖区需复核；未批准生产 |
+| AISHELL-3 (OpenSLR SLR93) | 官方 73 MiB Sample 可直接下载；全量 19 GB | `REJECTED` | 2026-11-04 项目所有者驳回：许可/表演者商业权利冲突未明确，不承担商业侵权风险；不做全量下载 |
+| LibriVox | 可直接从 Internet Archive 下载 | `PENDING_REVIEW` | 已拉取 1 条候选；美国公有领域，录制者法域/表演者邻接权/中国辖区商用待复核；未批准生产 |
 | Internet Archive 其他条目 | 逐条 | `DISCOVERED` | 不能把“可下载”当商用许可 |
 | Piper / Sherpa-ONNX | 本地模型 | `DISCOVERED` | 只作测试源；逐 Voice Model Card 核验 |
 | 自己录制 | 本地文件 | `LICENSE_VERIFIED` | 已有 3.37 s 自录 prompt；需人工试听后才能 `APPROVED` |
 
-**首批种子库当前 = 0 个 `APPROVED`，4 个候选（自录 + LibriVox 美国公有领域 + AISHELL-3 Sample ×2）。** 这是真实状态，不是目标数量。
+**首批种子库当前 = 0 个外部 `APPROVED`；自录 `narrator_self` 为唯一 `APPROVED` 生产音色。AISHELL-3 两条 `REJECTED`，LibriVox 一条 `PENDING_REVIEW`。** 这是真实状态，不是目标数量。
 
 ---
 
@@ -166,7 +166,7 @@
 | 角色音色 | 2–3 | 0 `APPROVED` |
 | 来源可追溯 | 100% | 4 个候选有 source/hash/transcript；2 个来源 `BLOCKED`（Common Voice / AISHELL 许可） |
 
-**不要**把 5.25 s LibriVox 候选写成“已入库音色”；它只是 `TECHNICALLY_VALIDATED` 候选。
+**不要**把 5.25 s LibriVox 候选写成“已入库音色”；它是 `PENDING_REVIEW`，AISHELL 两条已 `REJECTED`。
 
 ---
 

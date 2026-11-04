@@ -335,7 +335,7 @@ work/source + claims
 | A-08 | 美学层结果不进入派生状态 | **中** | `discovery.py` 不读 aesthetic | 加 `aesthetic` 派生视图/API |
 | A-09 | 任务注册表不是唯一执行路径；TTS/LLM 无跨进程锁 | **中** | `scripts/r3_tts.py` 可直接跑；`locks.py` 只用于 GPU | 统一入口或给 TTS/LLM 加锁 |
 | A-10 | 证据路径腐烂：R1–R3/S2 run 目录缺失 | **中** | `experiments/r0..r3b` 等不存在 | 修复文档路径；保留本地证据清单；不要伪造路径 |
-| A-11 | 文档状态矛盾：S3 PARTIAL vs NOT_RUN；M8-E 重复；`validation_status: NOT_RUN` | **中** | `docs/README.md:68`、`docs/ROADMAP.md:54,85,91`、`config/styles.yaml:28,199` | Phase B 统一状态口径 |
+| A-11 | 文档状态矛盾：S3 PARTIAL vs NOT_RUN；M8-E 重复；`validation_status` | **中（已部分收敛）** | `config/styles.yaml` 已改 `PARTIAL`；README/ROADMAP 仍可能有过期快照 | 继续按证据巡检 |
 | A-12 | doctor 不校验 styles/pronunciation/fonts | **中低** | `doctor._config_checks` 只 4 份 | 扩展 `cfg.load` 或新增检查 |
 | A-13 | 81.373 s 工笔成片未进主索引 | **中低** | `projects/.../build-20261103-161945/`、`PRODUCTION_REPORT.md` | 纳入文档与案例库 |
 | A-14 | ContentPackage/ProductionScript 不在工作台内容视图 | **中低** | `discovery._video_content` 只读 narration | 增加只读视图/链接 |

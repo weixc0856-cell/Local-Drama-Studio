@@ -25,10 +25,10 @@ def test_exactly_two_core_styles() -> None:
     assert registry.schema_version
 
 
-def test_presets_are_not_yet_validated() -> None:
+def test_presets_are_partial_until_a_full_film_exists() -> None:
     registry = load_style_presets(ROOT)
     for preset in registry.styles.values():
-        assert preset.validation_status == "NOT_RUN"
+        assert preset.validation_status == "PARTIAL"
 
 
 def test_presets_carry_required_visual_contract() -> None:
@@ -116,3 +116,19 @@ def test_unknown_preset_is_rejected() -> None:
 
 def test_find_project_root_still_locates_config() -> None:
     assert find_project_root(ROOT) == ROOT.resolve()
+
+
+def test_production_baselines_record_the_approved_ab_choice() -> None:
+    registry = load_style_presets(ROOT)
+    assert set(registry.production_baselines) == CORE_STYLES
+    court = registry.production_baselines["court_green_fine_line"]
+    ink = registry.production_baselines["ink_wash"]
+    assert {key: value.variant for key, value in court.shots.items()} == {
+        "shot_001": "A", "shot_002": "A"}
+    assert {key: value.variant for key, value in ink.shots.items()} == {
+        "shot_001": "B", "shot_002": "A"}
+    for baseline in (court, ink):
+        for shot in baseline.shots.values():
+            assert shot.prompt
+            assert shot.prompt_sha256
+            assert shot.rationale

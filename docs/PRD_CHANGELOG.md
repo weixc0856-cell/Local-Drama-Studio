@@ -171,8 +171,8 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 多轨音频（提案 `PRD-AUDIO-001..006`） | `PARTIAL` | `voice/audio_timeline.py`、`audio_assets.py`、`mix.py`、`quality.check_audio_timeline`；合成音频测试 PASS |
 | 风格锁定（`PRD-STYLE-003/004`） | `IMPLEMENTED_NOT_VERIFIED` | `style_lock.py`；episode snapshot `_style_lock{revision,sha256,history}`；`preset_id` 映射 YAML；任务拒绝不同 style；期数详情可创建新 revision；8 个单测 + API 测试 |
 | 工作流页节点（`PRD-UX-001`） | `IMPLEMENTED_NOT_VERIFIED` | `discovery._workflow` 增加 package/static/aesthetic/motion；script/voice 指向真实任务；删除过期文案；API 测试 |
-| 跨镜头风格一致性（`PRD-STYLE-007`） | `IMPLEMENTED_NOT_VERIFIED` | `style_consistency.py` + `style.consistency`；7 项单测；P1 4 镜头真实技术 `RISK`（ΔE 18.67 / luma 47.23）；人工审片 PENDING |
-| 全量测试 | 371 passed | 2026-11-04 `pytest` |
+| 跨镜头风格一致性（`PRD-STYLE-007`） | `PASS_VERIFIED` | `style_consistency.py` + `style.consistency`；P1 4 镜头修正后技术 OK（ΔE 9.22 / luma 7.13）；项目所有者 2026-11-04 明确通过；最终 build 接入待做 |
+| 全量测试 | 372 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
 
@@ -182,3 +182,17 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 ## 8. PRD 变更提案（待批准）
 
 `docs/proposals/PRD_AMENDMENT_2026-11-04.md` 把 AUDIO、`PRD-TTS-007`、VOICE-ASSET、MOTION、STORY、QA 合并为一个待批准变更包，并规定唯一资产台账、唯一多轨时间线、唯一音色档案、唯一故事圣经 sidecar，避免重复建设。该文件**不是**正式 PRD；批准前不得把其中需求标为 `PASS_VERIFIED`。
+
+---
+
+## 9. 2026-11-04 变更提案批准并合并
+
+项目所有者于 2026-11-04 批准 `docs/proposals/PRD_AMENDMENT_2026-11-04.md` 全部检查项：
+
+- `PRD-TTS-007`、`PRD-AUDIO-001..006`、`PRD-VOICE-ASSET-001..012`、`PRD-MOTION-001..004`、`PRD-STORY-001..002`、`PRD-QA-001..002` 已并入 `docs/PRD.md` §24。
+- 单一音频资产台账、单次运行后端互斥、仅 `APPROVED` 声音进生产、同脸仅人工复核、技术 PASS 不等于审美 PASS 均已成正式约束。
+- 2026-11-04 声音决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` = 0；`narrator_self` 为唯一 `APPROVED` 生产音色。
+- A/B 选型基线写入 `config/styles.yaml.production_baselines`：工笔 `shot_001=A/shot_002=A`；水墨 `shot_001=B/shot_002=A`。
+- P1 `shot_002` 以确定性 LAB 色彩迁移修正；style consistency 复跑 `PASS_VERIFIED`（ΔE 9.22、luma 7.13），最终 build 接入待做。
+- `PRD-OPS-001`：不作为 v1.0 硬门，成本/失败率仅日志级观测。
+- 状态仍按真实证据：AUDIO/MOTION/STORY/QA 等不得因“已批准”自动写成 `PASS_VERIFIED`。
