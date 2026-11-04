@@ -65,7 +65,7 @@
 | 项目 | 状态 |
 |---|---|
 | 根目录 `.venv`（调度环境） | ✅ 已创建（Python 3.12.10，uv 0.10.8） |
-| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **363 项测试通过** |
+| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **371 项测试通过** |
 | R0-A 硬件与依赖诊断 | ✅ `PASS_VERIFIED`（见 [R0_TEST_REPORT](docs/R0_TEST_REPORT.md)） |
 | R0-B ComfyUI + PyTorch XPU | ✅ `PASS_VERIFIED`：ComfyUI 0.43.0 / torch 2.15.0+xpu / xpu:0 Arc A750 7.75 GiB |
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
@@ -86,7 +86,7 @@
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
 | 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
 | TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
-| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`NOT_RUN`（跨镜头一致性正式验证） |
+| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`IMPLEMENTED_NOT_VERIFIED`（跨镜头技术门；P1 技术 RISK，人工审片 PENDING） |
 | 生产工作台 | ✅ `PASS_VERIFIED`（doctor / build / TTS / ComfyUI 批处理 / quality 真实执行）；LI 任务 `NOT_RUN` |
 | R4-R7（早期编号） | ⛔ 未执行；后续以 ROADMAP 的 M3/M4 为准 |
 

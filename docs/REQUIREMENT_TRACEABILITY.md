@@ -14,7 +14,7 @@
 | `PRD-GOV-001` | §0.1 | PRD 是唯一 SSOT；冲突按优先级处理 | 其他文档不得创造/覆盖需求；冲突有记录与修正 | `IMPLEMENTED_NOT_VERIFIED` | PRD §0.1；本文件；PRD_CHANGELOG | 待项目所有者评审确认；确认后再改代码 |
 | `PRD-GOV-002` | §0.2 | 需求状态必须由真实证据决定 | 无证据不得 `PASS_VERIFIED`；Mock/单测不等于端到端 | `PARTIAL` | 审计发现文档/状态多处过期；本文件已按证据标注 | 继续清理旧文档中的过期状态 |
 | `PRD-GOV-003` | §0.2/§21 | 历史证据路径缺失必须如实标注 | 不伪造路径；报告保留；替代证据可查 | `PARTIAL` | `docs/audit/REPOSITORY_STRUCTURE.md` §8 已标注 R1–R3/S2 目录缺失 | 旧报告中的失效路径需逐条加注或索引 |
-| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；363 tests | 保持；SFT 继续显式 |
+| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；371 tests | 保持；SFT 继续显式 |
 | `PRD-TTS-002` | §11.1 | 300M SFT 仅显式可选，不能作为默认 | 必须显式 `tts_mode=sft` + `-Model sft`；任务/manifest 可追溯 | `PASS_VERIFIED` | 2026-11-04 真实 SFT 1 行；P1/81.373 历史 SFT 成片 | 保留为可选模式；UI/任务需明确默认不是它 |
 | `PRD-TTS-003` | §11.1 | 模型/服务/参数不满足时明确报错，禁止静默回退 | 0.5B 缺失/加载失败/参考音缺失 → 失败；不得回退 300M | `PASS_VERIFIED` | SFT↔zero-shot 双向错配均真实报错；`_validate_runtime` 校验 `/health` | 保持；新增模式必须同样校验 |
 | `PRD-TTS-004` | §11.1 | UI/任务/配置/日志/manifest/报告记录实际模型与模式 | `tts_mode/model_class/model_dir/speaker_id/prompt` 可查 | `PARTIAL` | CLI 输出与 `audio_manifest.json` 真实 2 行；任务参数/UI 已加 `tts_mode`、`voice_profile`、`voices`；任务结果回传 `voice_cast` | UI/任务/生产报告仍未做真实端到端；报告模板需引用这些字段 |
@@ -26,7 +26,7 @@
 | `PRD-STYLE-004` | §9.2 | 改风格必须创建新生产/风格版本，不覆盖历史 | 旧构建/旧 manifest 不变 | `IMPLEMENTED_NOT_VERIFIED` | `style_lock.attach_lock` 写 `_style_lock{revision,sha256,history}`；改风格 revision+1 并保留旧 sha；旧 build 目录不覆盖；`test_style_lock` 覆盖 | 新风格 UI 入口与真实改版生产待做 |
 | `PRD-STYLE-005` | §9.2 | 两种风格有独立规范、提示词、参数、质量评价 | `config/styles.yaml` 两套 profile；不按 style 写代码分支 | `IMPLEMENTED_NOT_VERIFIED` | `style_presets.py` 严格校验 + 8 项测试；两套 `aesthetic_profile/motion/compositing` | 尚未用完整作品验证；`validation_status` 仍 `NOT_RUN` |
 | `PRD-STYLE-006` | §9.2 | 两种风格分别完成技术生产验证 | 每种风格有真实样片 + 质量证据 | `PASS_VERIFIED`（技术） | M7 水墨 10.087 s、工笔 9.583 s；quality/audio QA PASS；81.373 s 工笔 quality+verification PASS | 人工审美 PENDING 的项继续标 PENDING；不得升级为完整作品一致性 |
-| `PRD-STYLE-007` | §9.2 | 同一作品跨镜头风格一致性单独验证 | 有跨镜头一致性检查/人工结论；不能用两张图代替 | `NOT_IMPLEMENTED` | 只有相邻镜头 LAB/亮度连续性（`check_color_continuity`）；无风格分类/一致性门 | 设计并实现风格一致性指标/门 |
+| `PRD-STYLE-007` | §9.2 | 同一作品跨镜头风格一致性单独验证 | 有跨镜头一致性检查/人工结论；不能用两张图代替 | `IMPLEMENTED_NOT_VERIFIED` | `style_consistency.py` 调色板贴合/跨镜头 LAB/亮度/饱和度/边缘密度；`style.consistency` 任务；7 项单测；P1 4 镜头真实技术 `RISK`（ΔE 18.67、luma 47.23；`projects/proj_p1_short/.../style_consistency_report.json`） | 人工审片未记录；阈值/真实成片一致性待复验 |
 | `PRD-QUAL-001` | §17 | 静态质量门必须可执行、不可静默绕过 | 动图前有 `static_quality.json`；缺失时失败或显式跳过 | `IMPLEMENTED_NOT_VERIFIED` | `build_motion_plan` 默认要求每镜头报告，缺失即失败；`--skip-static-gate` / 任务 `skip_static_gate` 显式跳过；`test_production` 覆盖 | `static.check` 任务已注册；真实 `motion.plan` + 报告端到端待跑 |
 | `PRD-QUAL-002` | §17 | 质量门要区分技术/美学/人工 | 技术 PASS 不等于内容通过 | `PARTIAL` | 技术门 PASS；美学/人工 PENDING；工作台 `quality.check` 不暴露 motion manifest | 质量视图/参数/报告分层 |
 | `PRD-UX-001` | §13 | 工作台不得展示过期能力或暗示未实现功能 | 节点/按钮与真实任务注册表/产物一致 | `IMPLEMENTED_NOT_VERIFIED` | `_workflow` 增加 package/static/aesthetic/motion 节点，script/voice 入口改为真实任务；删除“未实现/尚未参数化”文案；API 测试覆盖 | 浏览器截图/点击端到端待做；其他页面仍需持续巡检 |
@@ -42,9 +42,9 @@
 | 状态 | 数量 | 需求 |
 |---|---|---|
 | `PASS_VERIFIED` | 5 | TTS-001/002/003；STYLE-006；CASE-001 |
-| `IMPLEMENTED_NOT_VERIFIED` | 7 | GOV-001；STYLE-003/004/005；TTS-005；QUAL-001；UX-001 |
+| `IMPLEMENTED_NOT_VERIFIED` | 8 | GOV-001；STYLE-003/004/005/007；TTS-005；QUAL-001；UX-001 |
 | `PARTIAL` | 8 | GOV-002/003；TTS-004；STYLE-001/002；QUAL-002；DATA-001；CONFIG-001 |
-| `NOT_IMPLEMENTED` | 1 | STYLE-007 |
+| `NOT_IMPLEMENTED` | 0 | — |
 | `BLOCKED` | 0 | — |
 | `OPEN_QUESTION` | 2 | TTS-006；OPS-001 |
 

@@ -32,7 +32,7 @@ Local-Drama-Studio/
 
 ```powershell
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest          # 363 passed（当前）
+.venv\Scripts\python.exe -m pytest          # 371 passed（当前）
 ```
 
 ---
@@ -53,6 +53,7 @@ uv sync --python 3.12
 | `locks.py` | 跨进程 PID 锁 |
 | `style_presets.py` | `config/styles.yaml` 严格模型与导出 |
 | `bible.py` | Character/Shot Bible 契约与连续性检查（不承诺同脸） |
+| `style_consistency.py` | 跨镜头调色板/LAB/亮度/饱和度/边缘密度技术门 |
 | `aesthetics.py` | 六维设计、A/B、提示词编译 |
 | `motion/` | 相机、spec、local、render、transition、plates、texture |
 | `voice/` | tts、pronunciation、recitation、timeline、soundscape、zeroshot、profiles、audio_assets、audio_timeline、mix |
@@ -135,7 +136,7 @@ uv sync --python 3.12
 
 ## 5. 任务注册表
 
-定义在 `src/drama_studio/workspace/tasks.py` 的 `TASK_KINDS`（21 种）。每种任务包含：
+定义在 `src/drama_studio/workspace/tasks.py` 的 `TASK_KINDS`（22 种）。每种任务包含：
 
 ```python
 TaskKind(
@@ -165,7 +166,7 @@ TaskKind(
 
 ### 5.2 当前未注册但应注册的能力
 
-- `static_quality.py` → 建议 `static.check`；
+- `static_quality.py` → 已注册 `static.check`；`style_consistency.py` → 已注册 `style.consistency`；
 - `tts_qa.py` → 建议 `audio.asr`（需 CosyVoice venv）；
 - `scroll_shot.py` → 长卷路径仍靠 CLI。
 
@@ -307,7 +308,7 @@ ProductionScript
 .venv\Scripts\python.exe -m pytest --collect-only -q
 ```
 
-当前 363 passed。测试覆盖：
+当前 371 passed。测试覆盖：
 
 | 区域 | 文件 |
 |---|---|
@@ -404,6 +405,7 @@ scripts\doctor.ps1
 # 风格
 .venv\Scripts\python.exe -m drama_studio.style_presets
 .venv\Scripts\python.exe -m drama_studio.style_presets --id ink_wash --json
+.venv\Scripts\python.exe -m drama_studio.style_consistency --style ink_wash --shot shot_001=path/a.png --shot shot_002=path/b.png --out report.json
 
 # 字体
 .venv\Scripts\python.exe scripts\fetch_fonts.py --check
