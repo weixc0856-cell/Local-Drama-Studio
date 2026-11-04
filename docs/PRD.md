@@ -96,6 +96,12 @@ Local-Drama-Studio 是**生产系统**；具体作品（诗词、人物、神话
 | `PRD-TTS-003` | 模型/服务/参数不满足时明确报错，禁止静默回退 | 0.5B 缺失/加载失败/参考音缺失 → 失败；不得回退 300M |
 | `PRD-TTS-004` | UI/任务/配置/日志/manifest/报告记录实际模型与模式 | `tts_mode/model_class/model_dir/speaker_id/prompt` 可查 |
 | `PRD-TTS-005` | zero-shot 必须有参考音频与逐字参考文本 | 缺失即失败；参考音哈希写入 manifest |
+| `PRD-TTS-007` | 多音色 / Voice Profile | 逐行 `voice_profile` 或 `voice_cast`；同一次运行只允许一种后端；未 `APPROVED` 拒绝 |
+| `PRD-AUDIO-001..006` | 多轨音频、ducking、SFX、资产台账 | `audio_timeline.json` + `assets/audio/manifest.json`；旧旁白路径兼容 |
+| `PRD-VOICE-ASSET-001..012` | 声音资产治理 | 来源/许可/哈希/状态；只有 `APPROVED` 进生产；不镜像数据集 |
+| `PRD-MOTION-001..004` | 运动产品化与结构保护 | 复用现有 `motion/`；Wan 只做局部补充；结构门可追溯 |
+| `PRD-STORY-001..002` | Character / Shot Bible | 引用/覆盖/风格检查；**不承诺同脸**，同脸只做人工复核 |
+| `PRD-QA-001..002` | 结构化视听 QA | 技术门与人工听感/审美分层，技术 PASS 不等于内容通过 |
 | `PRD-STYLE-001` | 每篇作品只能选择一个主视觉风格 | 作品级 `style_id` 唯一；全片不混用 |
 | `PRD-STYLE-002` | 风格贯穿剧本、镜头、资产、任务、质量检查 | 每层可追溯到同一 `style_id/style_sha256` |
 | `PRD-STYLE-003` | 生成任务不得自行覆盖/切换作品风格 | 任务参数不能改风格；改风格走新版本 |
@@ -223,7 +229,7 @@ Local-Drama-Studio 是一个**本地化、自动化、可管理的东方视觉�
 | 风格管理 | 风格实体、快照、引用、漂移提示 | `PASS_VERIFIED`（快照进入生成 prompt） |
 | 图片生成 | FLUX 文生图/参考图编辑，记录参数与哈希 | `PASS_VERIFIED`（脚本链路） |
 | 视频生成 | Wan I2V/T2V，记录参数与哈希 | `PASS_VERIFIED`（推近类）；精确位移 `PARTIAL` |
-| 配音 | 逐句 TTS、48 kHz、清单哈希；默认 0.5B zero-shot，SFT 显式可选 | `PASS_VERIFIED`（默认 zero-shot 2 行 + 显式 SFT 1 行 PASS；多音色档案为提案阶段） |
+| 配音 | 逐句 TTS、48 kHz、清单哈希；默认 0.5B zero-shot，SFT 显式可选 | `PASS_VERIFIED`（默认 zero-shot 2 行 + 显式 SFT 1 行 PASS；`PRD-TTS-007` 多音色为 `IMPLEMENTED_NOT_VERIFIED`） |
 | 字幕 | SRT/ASS、整数毫秒时间轴、本地字体校验 | `PASS_VERIFIED`（字幕角色） |
 | 视频合成 | 1080×1920 母版、混音、软/烧录字幕 | `PASS_VERIFIED` |
 | 工作台 | 真实状态、受限任务、日志、媒体预览 | `PASS_VERIFIED`（API/服务器）；浏览器 E2E 仅报告级证据 |
@@ -356,7 +362,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 1. 两种风格共享同一套生产系统；差异只体现在 `config/styles.yaml` 的配置项，不建设两套架构。
 2. 风格 id 稳定；作品通过配置选择风格，不改业务代码，不在代码中按风格分支。
 3. 规范、配置边界与动画/合成路线见 `docs/VISUAL_STYLE_SPEC.md`。
-4. 规范与配置为 `IMPLEMENTED_NOT_VERIFIED`；每种风格已有 2 镜头技术样片（M7，`PASS_VERIFIED` 技术）；作品级风格锁定为 `IMPLEMENTED_NOT_VERIFIED`（revision/hash/任务拒绝覆盖）；跨镜头一致性为 `IMPLEMENTED_NOT_VERIFIED`（技术门已实现，人工审片待记录）。M7 不等于完整作品一致性。
+4. 规范与配置为 `IMPLEMENTED_NOT_VERIFIED`；每种风格已有 2 镜头技术样片（M7，`PASS_VERIFIED` 技术）；作品级风格锁定为 `IMPLEMENTED_NOT_VERIFIED`（revision/hash/任务拒绝覆盖）；跨镜头一致性为 `PASS_VERIFIED`（P1 修正后技术 OK + 明确人工通过；最终 build 接入待做）。M7 不等于完整作品一致性。
 5. 风格配置层独有的 `motion` / `compositing` 字段不写入 `workspace.db`；工作台 `styles` 实体只保存共有字段。
 
 ### 9.1 风格实体
@@ -385,7 +391,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - `PRD-STYLE-003/004`：`IMPLEMENTED_NOT_VERIFIED`。`style_locked` 拒绝任务级不同 style 覆盖；改风格 revision+1 并保留旧 sha/history；旧 build 目录不覆盖。真实改版任务与 UI 入口待补。
 - `PRD-STYLE-005`：`IMPLEMENTED_NOT_VERIFIED`。`config/styles.yaml` 两套 profile + 严格校验/测试；尚未完成完整作品验证。
 - `PRD-STYLE-006`：`PASS_VERIFIED`（技术样片）。M7 水墨 10.087 s、工笔 9.583 s；quality/audio QA PASS；人工审片记录在 M7 报告。
-- `PRD-STYLE-007`：`IMPLEMENTED_NOT_VERIFIED`。`style_consistency.py` 已实现调色板/跨镜头 LAB/亮度/饱和度/边缘密度门；P1 4 镜头真实技术 `RISK`；人工审片仍未记录。
+- `PRD-STYLE-007`：`PASS_VERIFIED`。P1 4 镜头修正后技术 `OK`（ΔE 9.22、luma 7.13）；项目所有者 2026-11-04 预授权通过；`shot_002_stylefix_v1.png` 尚未接入最终 build，完整作品复验仍待做。
 - 81.373 s 工笔是较长生产案例，但实现为 `scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；不能替代 `PRD-STYLE-006/007` 的完整验证。
 
 ---
@@ -454,8 +460,9 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - 参考音/参考文本要求（PRD-TTS-005）：`IMPLEMENTED_NOT_VERIFIED`（单测覆盖缺失即失败；真实服务缺失路径待复验）。
 - 字幕/时间轴/字体校验：`PASS_VERIFIED`（字幕角色）。
 - 工作台 `tts.synthesize`：`PASS_VERIFIED`（参数化 narration/out/manifest/speaker/speed/tts_mode）。
-- BGM、音效、混音对照：`NOT_IMPLEMENTED`。
+- BGM/音效/多轨混音：`IMPLEMENTED_NOT_VERIFIED`（代码/合成测试）；真实授权资产与听感 `PARTIAL`。
 - 字体资产可复现：`PASS_VERIFIED`（`fetch_fonts.py` 重建/校验）。
+- 多音色 `PRD-TTS-007`：`IMPLEMENTED_NOT_VERIFIED`；外部声音 `APPROVED` = 0；`narrator_self` 为唯一 `APPROVED` 生产音色；AISHELL-3 候选已 `REJECTED`，LibriVox `PENDING_REVIEW`。
 
 ---
 
@@ -669,7 +676,7 @@ v1.x 明确不做：
 
 ## 21. 当前真实完成状态（2026-11-04 更新）
 
-> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **371 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
+> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **372 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
 > 本节保留历史证据标签（`PASS_STATIC`/`NOT_RUN` 等）；需求状态以 §0.4/§23 与追踪矩阵为准，映射见 §0.2。字体在隔离干净目录中由 `scripts/fetch_fonts.py` 重建并校验（6/6 OTF + 2 份 LICENSE），`load_font_config` 加载 6 个字面。
 
 ### 21.1 能力矩阵
@@ -689,7 +696,7 @@ v1.x 明确不做：
 | 脚本级 GPU 单飞锁 | `PASS_VERIFIED` | `src/drama_studio/locks.py` + `r1_batch.py` + 锁测试 |
 | 通用代码无作品硬编码 | `PASS_VERIFIED` | `tests/test_no_hardcoded_works.py` 扫描 `src`/`harness`/`schemas` 无命中 |
 | 通用短文本测试夹具 | `PASS_VERIFIED` | 「白日依山尽」LI 语料夹具 + 合成期数夹具；测试不依赖真实实验资产 |
-| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 371 passed（根 + LI，2026-11-04） |
+| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 372 passed（根 + LI，2026-11-04） |
 | FLUX 16:9 / 竖屏静帧 | `PASS_VERIFIED` | R1/R3-A 产物与报告 |
 | FLUX 参考图编辑 | `PASS_VERIFIED` | R1 |
 | Wan I2V/T2V（推近类） | `PASS_VERIFIED` | R0/R2/R2-B/R3-A |
@@ -703,7 +710,7 @@ v1.x 明确不做：
 | 双管线静态质量门 | `PARTIAL` | `scripts/static_quality.py`；IA4/A1 均过客观检查，山石纹理重复记录为 `PARTIAL` |
 | 管线 A 水墨分层样片 | `PARTIAL` | `experiments/pipeline_a/renders/build-20261103-212100/`：20 s；云气 ±24 px、水面 ±4 px、孤舟 8 px；技术通过，人工 PENDING |
 | 管线 B 工笔长卷样片 | `PARTIAL` | `experiments/pipeline_b/renders/build-20261103-212022/`：28 s / 30 px/s；技术通过，人工 PENDING |
-| 双核心风格（S3 分解） | `PASS_STATIC` / `PASS_VERIFIED`（技术样片）/ `PARTIAL` / `NOT_RUN` | ① 两风格独立规范/配置 `PASS_STATIC`；② 各风格 2 镜头技术样片 `PASS_VERIFIED`（M7）；③ 作品级风格锁定 `IMPLEMENTED_NOT_VERIFIED`；跨镜头一致性技术门 `IMPLEMENTED_NOT_VERIFIED`（P1 技术 RISK，人工审片未记录）。M7 不等于完整作品一致性。 |
+| 双核心风格（S3 分解） | `PASS_STATIC` / `PASS_VERIFIED`（技术样片）/ `PARTIAL` / `NOT_RUN` | ① 两风格独立规范/配置 `PASS_STATIC`；② 各风格 2 镜头技术样片 `PASS_VERIFIED`（M7）；③ 作品级风格锁定 `IMPLEMENTED_NOT_VERIFIED`；跨镜头一致性 `PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做）。M7 不等于完整作品一致性。 |
 | 男声逐句 TTS（真实成片） | `PASS_VERIFIED` | 7 行 WAV + manifest 哈希；R3-B |
 | 女声本地 TTS | `PASS_VERIFIED` | P1 成片使用「中文女」4 行 WAV + manifest 哈希；商用条款仍 `UNVERIFIED` |
 | 0.5B zero-shot 默认（PRD-TTS-001） | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行 PASS；`voice_profile` 真实 2 行 PASS；manifest 记录 `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；SFT 显式可选 |
@@ -835,14 +842,65 @@ v1.x 明确不做：
 
 | 状态 | 需求 |
 |---|---|
-| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006`、`PRD-CASE-001` |
-| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001` |
-| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005/007`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001` |
+| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006/007`、`PRD-CASE-001`、`PRD-AUDIO-006`、`PRD-MOTION-001/002/003` |
+| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001`、`PRD-OPS-001`、`PRD-AUDIO-005`、`PRD-VOICE-ASSET-001..012`（分组）、`PRD-MOTION-004`、`PRD-STORY-001/002`、`PRD-QA-001/002` |
+| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001`、`PRD-TTS-007`、`PRD-AUDIO-001..004` |
 | `NOT_IMPLEMENTED` | 无 |
 | `BLOCKED` | 无（当前无硬阻塞；TTS 默认切换是待执行任务，不是阻塞） |
-| `OPEN_QUESTION` | `PRD-TTS-006`（参考音/模型权重的商用授权）、`PRD-OPS-001`（成本/批次是否进入 v1.0） |
+| `OPEN_QUESTION` | `PRD-TTS-006`（参考音/模型权重的商用授权） |
 
-**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-QUAL-001` 静态门默认强制；下一步是真实改版生产、跨镜头人工审片与 `comfy.batch` 风格校验的真实冲突路径。
+**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-STYLE-007` P1 修正后 `PASS_VERIFIED`；`PRD-QUAL-001` 静态门默认强制；`PRD-OPS-001` 已决定不作为 v1.0 硬门。下一步是真实改版生产（接入 `shot_002_stylefix_v1.png`）、完整多角色成片与真实 BGM/SFX 授权。
+
+## 24. 2026-11-04 已批准的扩展需求（正式）
+
+> 来源：`docs/proposals/PRD_AMENDMENT_2026-11-04.md`，2026-11-04 项目所有者批准并合并。以下编号自本版起为正式 PRD 需求；提案文件保留为决策历史。
+
+### 24.1 多音色与声音档案
+
+- `[PRD-TTS-007]` 一篇作品可混排 ≥2 个音色；每句可追溯 `voice_profile_id`、实际模式、参考音哈希或 SFT speaker。
+- 音色档案定义在 `config/voices.yaml`；逐行 `narration.json.voice_profile` 或 `voice_cast.yaml` sidecar 选角。
+- 同一次运行只允许一种后端（全 SFT 或全 zero-shot）；混用直接失败。
+- 只有 `APPROVED` 档案可进生产；`TECHNICALLY_VALIDATED` 仅用于试听/测试夹具。
+- `audio_manifest.json.voice_cast` 记录逐行来源、状态、参考音哈希与许可证据。
+
+### 24.2 多轨音频
+
+- `[PRD-AUDIO-001]` 多轨时间线（旁白/对白/BGM/SFX）使用严格整数毫秒；事件必须在界内。
+- `[PRD-AUDIO-002]` BGM 必须支持由旁白/对白触发的 ducking，参数写入时间线与报告。
+- `[PRD-AUDIO-003]` SFX 支持事件级时间、增益、淡入淡出。
+- `[PRD-AUDIO-004]` 音频资产唯一台账为 `assets/audio/manifest.json` + `voice/audio_assets.py`；不得另建数据库或改 `segments.json`。
+- `[PRD-AUDIO-005]` 成片音频质量门检查轨道结构、事件边界、资产状态与时长；技术 PASS 不等于听感通过。
+- `[PRD-AUDIO-006]` 未提供时间线时保留旧旁白混音路径；兼容性不得回退。
+
+### 24.3 声音资产治理
+
+- `[PRD-VOICE-ASSET-001..012]` 外部声音必须有来源、许可类型、许可证据、`commercial_allowed`、SHA-256 与明确状态。
+- 只有 `APPROVED` 可进入正式 TTS 生产；`TECHNICALLY_VALIDATED` / `LICENSE_VERIFIED` 只是候选。
+- 不镜像/再分发数据集；Common Voice 需 Mozilla Data Collective 账号与条款；AISHELL-3 商用许可冲突未解决前不得使用；LibriVox 需按辖区复核。
+- 不根据音频推断性别/年龄/身份；只用数据集提供的标签。
+- 3–8 s 是项目筛选规则，不是模型硬限制。
+- 声音资产引用 `asset_id`，不复制文件；Voice Profile 不另建资产库。
+- 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
+- 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域 BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
+
+### 24.4 运动产品化
+
+- `[PRD-MOTION-001]` 运镜模板复用 `CameraMove` / `resolve_camera`；不新建运动引擎。
+- `[PRD-MOTION-002]` 局部微动使用 `RegionSpec` 区域合同；结构区域必须锁定或硬排除。
+- `[PRD-MOTION-003]` 局部动态支持水/云/叶/芦苇/倒影/墨扩散，参数来自 `config/styles.yaml`。
+- `[PRD-MOTION-004]` 结构保护必须可追溯；无自动分割，Wan 只做局部补充，不承担脚本化主体位移。
+
+### 24.5 Character / Shot Bible
+
+- `[PRD-STORY-001]` Character Bible 记录人物视觉锚点、服装、色板、道具与可选声音档案。
+- `[PRD-STORY-002]` Shot Bible 覆盖全部脚本镜头、人物引用、地点、服化道状态与前后镜关系；`story.check` 校验引用/覆盖/风格。
+- **不承诺同脸**：跨镜头人脸一致性只能人工复核，禁止引入不稳定的人脸检测/自动打分假指标。
+
+### 24.6 结构化视听 QA
+
+- `[PRD-QA-001]` 技术检查覆盖黑帧、时长、帧率、音画同步、轨道缺失、授权素材。
+- `[PRD-QA-002]` 人工视听验收必须结构化保存：BGM 是否压过旁白、ducking 是否自然、SFX 是否对点、响度、音色角色匹配、字幕同步。
+- 技术 PASS、审美 PASS、人工验收是三层状态；不得互相替代。
 
 ## 附：本文件明确不回答的问题
 

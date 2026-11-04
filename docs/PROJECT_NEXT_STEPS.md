@@ -252,7 +252,7 @@
 
 | 项 | 内容 |
 |---|---|
-| **状态** | `IMPLEMENTED_NOT_VERIFIED`：`style_consistency.py` + `style.consistency`；P1 4 镜头技术 `RISK`（ΔE 18.67 / luma 47.23）；人工审片 PENDING |
+| **状态** | `PASS_VERIFIED`：P1 4 镜头修正后技术 `OK`（ΔE 9.22 / luma 7.13）；项目所有者 2026-11-04 明确通过；最终 build 接入待做 |
 | **目标** | 跨镜头风格一致性门（色板/材质/线条/风格分类） |
 | **当前问题** | 已做调色板/跨镜头 LAB/亮度/饱和度/边缘密度；材质/线条分类仍无自动模型 |
 | **涉及模块** | `quality.py`、`static_quality.py`、`aesthetics.py` |
@@ -318,7 +318,7 @@
 
 - S1 规范/配置 `PASS_STATIC`。
 - 每种风格 2 镜头技术样片 `PASS_VERIFIED`（M7）。
-- 作品级锁定 `IMPLEMENTED_NOT_VERIFIED`；跨镜头一致性技术门 `IMPLEMENTED_NOT_VERIFIED`，人工审片 PENDING。
+- 作品级锁定 `IMPLEMENTED_NOT_VERIFIED`；跨镜头一致性 `PASS_VERIFIED`（P1 修正后 + 人工通过；最终 build 接入待做）。
 - 结论：**P0-2 + P2-5** 是生产化关键；不是再生成更多样片。
 
 ### 6.4 镜头级状态管理

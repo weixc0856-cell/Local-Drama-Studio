@@ -30,7 +30,7 @@ profiles:
     status: TECHNICALLY_VALIDATED
     commercial_allowed: null
     license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
-    notes: "已进入 R3-B 成片；权重/音色/生成音频的商用授权仍为 UNVERIFIED，未达 APPROVED。"
+    notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；权重/音色/生成音频商用授权未核验。"
 
   - profile_id: sft_female_01
     display_name: "SFT 中文女（试听通过）"
@@ -40,4 +40,4 @@ profiles:
     status: TECHNICALLY_VALIDATED
     commercial_allowed: null
     license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
-    notes: "已合成并试听，但尚未进入最终成片；商用授权同样未核验。"
+    notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；商用授权未核验。"

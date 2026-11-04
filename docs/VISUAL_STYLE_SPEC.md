@@ -268,6 +268,7 @@
 在 S2 已验证的横移/遮罩/纸纹之上，新增并接入生产链路：
 
 - **镜头运动**：`static / slow_push_in / slow_pull_out / scroll_pan / push_in_with_pan / slow_lateral_track`，支持三次缓动、焦点、起止缩放、方向；参数由 `motion.camera` 决定，结果写入 `motion_manifest.json`。
+- **2026-11-04 A/B 基线**：`config/styles.yaml` 的 `production_baselines` 记录工笔 `shot_001=A/shot_002=A`、水墨 `shot_001=B/shot_002=A`，含完整 prompt、sha256 与人工理由。
 - **局部微动**：`water_ripple / cloud_drift / leaf_sway / reed_sway / ink_diffusion / reflection_distortion`；每个图层必须有显式区域与排除框，静态结构带差值可独立检查。
 - **Wan 运动遮罩（2026-11-04，M5）**：项目 Wan2.2 TI2V 5B 工作流没有 `mask` / `motion_mask` 输入；`Wan22ImageToVideoLatent` 的内部 `noise_mask` 只作用于起始图，不是空间运动遮罩。M5 = `NOT_RUN (UNSUPPORTED_WORKFLOW)`，Wan 不得宣称主体保护或运动遮罩；主力管线保持“静态首帧 + 确定性局部微动”。详见 [`M5_WAN_MOTION_MASK_REPORT.md`](M5_WAN_MOTION_MASK_REPORT.md)。
 - **声学层谐音替换（2026-11-04，M6）**：`source_text / display_text / tts_text / acoustic_text` 四层分离；只为已确认的 G2P 缺口配置 `tts_alias`，只改 `acoustic_text`，字幕与原文逐字不变；5 条谐音（碣石/潇湘/扁舟/似霰/青枫浦）已完成音频验证与人工复核，状态为 `verified`；ASR 用拼音 TONE3 编辑距离判定，全篇 18/18、探针 12/12。2026-11-04 人工听感驳回 2/2/3 硬切与 220 ms 数字静音后，改为整句/整联推理 + 破折号气口，行间停顿 800–1000 ms；不再生成段级 WAV。详见 [`M6_PRONUNCIATION_REPORT.md`](M6_PRONUNCIATION_REPORT.md)。

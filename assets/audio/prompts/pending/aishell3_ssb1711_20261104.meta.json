@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "asset_id": "prompt_aishell3_ssb1711_20261104",
   "asset_type": "tts_prompt",
-  "status": "TECHNICALLY_VALIDATED",
+  "status": "REJECTED",
   "approved_for_production": false,
   "source": {
     "provider": "AISHELL-3 / OpenSLR SLR93",
@@ -15,7 +15,7 @@
     "source_file": "AISHELL-3-Sample/test/SSB1711/SSB17110133.wav",
     "source_sha256": "e5cf06a3462f6042eb2934ac16cd3434eeb7d1e3856e4e8032125f868fdea73d",
     "license": "OpenSLR page states Apache License v2.0",
-    "license_status": "BLOCKED_PENDING_WRITTEN_CONFIRMATION",
+    "license_status": "REJECTED_COMMERCIAL_RISK",
     "license_note": "A third-party mirror (PaddleSpeech README) states academic-only without permission, conflicting with the OpenSLR Apache-2.0 label. Commercial use needs written clarification from the data provider. This candidate is not approved.",
     "speaker_id": "SSB1711",
     "gender_label": "UNKNOWN_NOT_PRESENT_IN_SAMPLE",
@@ -70,5 +70,11 @@
     "speaker gender/age labels are not present in the sample archive",
     "human listening and exact completeness review are pending"
   ],
-  "created_at": "2026-11-04"
+  "created_at": "2026-11-04",
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "REJECTED",
+    "reason": "AISHELL-3 Apache-2.0 标签与第三方 academic-only 说法冲突，声音/表演者商业权利未明确；不承担商业侵权风险。"
+  }
 }

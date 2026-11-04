@@ -49,5 +49,14 @@
       "sha256": "745f569b4f6fa98bde6b18e0be08ad7c1303827e1f6aff128581cc2f1352d08c",
       "added_on": "2026-11-04"
     }
-  ]
+  ],
+  "release_policy": {
+    "bgm_sfx_required_before_release": true,
+    "min_registered_bgm_assets": 1,
+    "approved_statuses": [
+      "VERIFIED",
+      "APPROVED"
+    ],
+    "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。"
+  }
 }

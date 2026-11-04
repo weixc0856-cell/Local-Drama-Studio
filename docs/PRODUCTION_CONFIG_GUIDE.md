@@ -132,7 +132,7 @@
 | 本地微动 | 水波/倒影/云/叶/芦苇/墨扩散（部分） | 水波/倒影/云/叶/芦苇/墨扩散 |
 | 2.5D parallax | 允许，depth_alpha 0.50–0.75，max 3 plates | 允许，0.45–0.85，max 3 plates |
 | 适用内容 | 山水/长卷/建筑/花鸟/空镜 | 山水/云雾/水面/花鸟/空镜 |
-| `validation_status`（配置字段） | `NOT_RUN`（**落后于报告**） | `NOT_RUN`（**落后于报告**） |
+| `validation_status`（配置字段） | `PARTIAL` | `PARTIAL`（技术样片 + A/B 选型已做，完整作品未做） |
 
 ### 5.2 风格配置的边界
 
@@ -142,6 +142,17 @@
 - `aesthetic_profile` 是六维设计的上游；不是提示词模板目录。
 - 通用代码不得按 `style_id` 写分支。
 - `workspace.styles` 只存 `STYLE_ENTITY_FIELDS`，**不含** motion/compositing/aesthetic_profile；不要以为 UI 改风格会影响运动策略。
+
+### 5.2.1 已选 A/B 生产基线（2026-11-04）
+
+`config/styles.yaml` 新增 `production_baselines`，记录项目所有者选定的 A/B 组合：
+
+- `court_green_fine_line`：`shot_001=A`、`shot_002=A`
+- `ink_wash`：`shot_001=B`、`shot_002=A`
+
+每项包含 `variant`、完整 `prompt`、`prompt_sha256`、`sections` 与人工 `rationale`；
+`source_snapshot` 指向原始 A/B 快照。下一部正式样片以此为 prompt 模板，但不得在代码里
+按 style id 写分支。配置由 `style_presets.ProductionBaseline` 严格校验。
 
 ### 5.3 作品级风格约束（产品目标）
 
@@ -420,7 +431,7 @@ TTS 模式字段已接线：`audio.yaml tts.mode` 是有效默认，`settings.tt
 | `audio.yaml subtitles.*` | 无消费者 | 接线或删除 |
 | `audio.yaml narration_modes.*.leading_ms` | 未被 `r3_build` 消费 | 接线或删除 |
 | `generation.yaml profiles.*` | 无生产消费者 | 让 jobs 读取，或标注“仅记录” |
-| `styles.yaml validation_status` | 两风格仍 `NOT_RUN` | 按报告更新 |
+| `styles.yaml validation_status` | 两风格 `PARTIAL`（2026-11-04 更新） | 完整作品后再升级 |
 | `workflows/README.md` 的部分文件名 | 文件不存在 | 标注目标命名 |
 | `docs/ENVIRONMENT.md` “待下载” | 文件已存在 | 更新 |
 
