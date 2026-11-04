@@ -35,6 +35,7 @@ class AudioAsset(BaseModel):
 
     asset_id: str = Field(min_length=1, max_length=120)
     asset_type: str = Field(min_length=1, max_length=40)
+    name: str | None = Field(default=None, max_length=200)
     path: str = Field(min_length=1, max_length=500)
     sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     duration_ms: int | None = Field(default=None, ge=0)
@@ -44,6 +45,9 @@ class AudioAsset(BaseModel):
     attribution_required: bool = False
     source_url: str | None = None
     status: AssetStatus = "UNKNOWN"
+    style_tags: list[str] = Field(default_factory=list, max_length=12)
+    default_gain_db: float | None = Field(default=None, ge=-60.0, le=24.0)
+    review_status: str | None = Field(default=None, max_length=40)
 
     @model_validator(mode="after")
     def _sha_or_status(self) -> "AudioAsset":

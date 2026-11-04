@@ -233,6 +233,47 @@ def build_filter_graph(
     return inputs, ";".join(graph)
 
 
+def _loudnorm_stats(path: Path, target_lufs: float = -16.0,
+                    true_peak: float = -1.5, lra: float = 11.0) -> dict[str, Any]:
+    cmd = [
+        "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+        "-af", f"loudnorm=I={target_lufs}:TP={true_peak}:LRA={lra}:print_format=json",
+        "-f", "null", "-",
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if proc.returncode != 0:
+        raise MixError(f"loudness measurement failed: {proc.stderr[-1200:]}")
+    start, end = proc.stderr.rfind("{"), proc.stderr.rfind("}")
+    if start < 0 or end <= start:
+        raise MixError("loudness measurement did not return JSON")
+    try:
+        return json.loads(proc.stderr[start:end + 1])
+    except json.JSONDecodeError as exc:
+        raise MixError(f"cannot parse loudness measurement: {exc}") from exc
+
+
+def _normalise_loudness(path: Path, sample_rate: int, *, target_lufs: float = -16.0,
+                        true_peak: float = -1.5, lra: float = 11.0) -> dict[str, Any]:
+    """Two-pass loudnorm; one-pass dynamic mode under-shoots on short clips."""
+    stats = _loudnorm_stats(path, target_lufs, true_peak, lra)
+    if str(stats.get("input_i")) in ("-inf", "inf", "nan"):
+        return stats
+    tmp = path.with_suffix(".loudnorm.wav")
+    af = (
+        f"loudnorm=I={target_lufs}:TP={true_peak}:LRA={lra}:"
+        f"measured_I={stats.get('input_i')}:measured_TP={stats.get('input_tp')}:"
+        f"measured_LRA={stats.get('input_lra')}:measured_thresh={stats.get('input_thresh')}:"
+        f"offset={stats.get('target_offset')}:linear=true"
+    )
+    cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(path), "-af", af,
+           "-ac", "1", "-ar", str(sample_rate), "-c:a", "pcm_s16le", str(tmp)]
+    proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if proc.returncode != 0:
+        raise MixError(f"ffmpeg loudness normalization failed: {proc.stderr[-1200:]}")
+    tmp.replace(path)
+    return _loudnorm_stats(path, target_lufs, true_peak, lra)
+
+
 def _wav_duration(path: Path) -> float:
     with wave.open(str(path), "rb") as fh:
         return fh.getnframes() / float(fh.getframerate())
@@ -271,6 +312,7 @@ def mix_timeline(
     expected = (duration_ms or timeline.duration_ms) / 1000.0
     if abs(measured - expected) > 0.15:
         raise MixError(f"mix duration {measured:.3f}s does not match timeline {expected:.3f}s")
+    loudness = _normalise_loudness(out_wav, timeline.sample_rate)
     return {
         "status": "PASS",
         "timeline": str(timeline_path),
@@ -279,6 +321,7 @@ def mix_timeline(
         "output_sha256": _sha256(out_wav),
         "duration_seconds": round(measured, 3),
         "sample_rate": timeline.sample_rate,
+        "loudness": loudness,
         "tracks": [t.track_id for t in timeline.tracks],
         "graph": graph,
         "asset_registry": str(asset_registry_path) if asset_registry_path else None,

@@ -309,13 +309,13 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | `soundscape.voice_dynamics.enabled` | `false` | `soundscape.py` | 开启后可达 -16 LUFS |
 | `soundscape.voice_style` | `broadcast_light` | `soundscape.py` | 06 |
 | `soundscape.ambience.track` | `""` | `soundscape.py` | 无授权素材 |
-| `soundscape.bgm.track` | `""` | `soundscape.py` | 无授权素材 |
+| `soundscape.bgm.track` | `""` | `soundscape.py` | BGM 走 timeline 的 `asset_id`，不走该字段 |
 | `soundscape.ducking.enabled` | `true` | `soundscape.py` | 有 BGM 时生效 |
 | `loudness.dialogue_lufs` | -16.0 | `soundscape.py` | soundscape 关闭时 `r3_build` 硬编码 -16 |
 | `loudness.true_peak_db` | -1.5 | `soundscape.py` | 同上 |
-| `loudness.bgm_lufs` | -26.0 | `soundscape.py` | BGM 未接入 |
+| `loudness.bgm_lufs` | -26.0 | `soundscape.py` | 参考值；timeline BGM 默认 gain -14 dB，最终两遍 loudnorm 到 -16 LUFS |
 
-> 当前没有 BGM/环境音；`ambience.track`/`bgm.track` 为空。不要在没有授权的情况下填入曲目。
+> 当前 `assets/audio/bgm/` 有两条自生成 BGM（`APPROVED`，人工听感 PENDING）；`soundscape.bgm.track` 仍留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 接入。
 
 ---
 
@@ -331,7 +331,7 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | QA | `quality --audio-timeline --audio-assets` | 检查事件边界、资产哈希/状态、轨道结构 |
 | 旧路径 | `r3_build` 不传 `--audio-timeline` | 仍逐行 `adelay/amix`，不改变历史行为 |
 
-> BGM/SFX 目前没有已授权素材；合成测试只使用合成音，不能作为内容素材入库。
+> BGM 已有两条自生成、权利清晰的 `APPROVED` 资产（`bgm_ink_serene_60s` / `bgm_court_elegant_60s`）；SFX 仍无授权素材。BGM 人工听感与 ducking 听感 PENDING。
 
 ---
 
@@ -448,6 +448,6 @@ TTS 模式字段已接线：`audio.yaml tts.mode` 是有效默认，`settings.tt
 | 字幕 | Source Han Sans CN Regular 56 px | 正式构建 |
 | 配音 | SFT 中文女；recitation/classical_recitation | R3-D 决策 |
 | 零样本 | 仅显式选择；CosyVoice2-0.5B | 产品决策 |
-| 声景 | 先关闭或保持 `broadcast_light`；BGM/SFX 留空 | 当前配置 |
+| 声景 | `broadcast_light`；BGM 通过 timeline 接入；SFX 留空 | 当前配置 |
 
 > “推荐”不等于“已验证适用于所有题材”；每次风格/题材变化都要重新看片。

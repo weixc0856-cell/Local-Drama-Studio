@@ -73,11 +73,12 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 ## 5. 音乐与音效
 
-| 资产 | 状态 |
-|---|---|
-| BGM | `NOT_RUN` / 待选型（R3-D），当前无 |
-| 音效 | `NOT_RUN` / 待选型（R3-D），当前无 |
-| 第三方音乐 | 未使用；使用前必须登记授权 |
+| 资产 | 类型 | 文件 | 许可/来源 | 商用 | 状态 |
+|---|---|---|---|---|---|
+| `bgm_ink_serene_60s` | BGM | `assets/audio/bgm/ink_serene_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_court_elegant_60s` | BGM | `assets/audio/bgm/court_elegant_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
+| 音效 | SFX | — | 未选型 | — | `NOT_RUN` |
+| 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
 
 ## 6. 音色
 
@@ -89,7 +90,7 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
 
-> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。SFT 中文女已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM、音效与商用授权尚未完成。
+> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色；BGM 已有 2 条自生成 `APPROVED` 资产并通过 14 s 技术混音；SFX/环境音与商用授权仍未完成。
 > 下表是候选与待核验状态，**不是商用批准**；不能因为素材来自 Pixabay / Mixkit / 某个开源项目，就把整个来源标记为商用通过。
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |

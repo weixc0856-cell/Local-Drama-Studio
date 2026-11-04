@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_cv27_zh_25007250_20261104",
+  "asset_type": "tts_prompt",
+  "status": "TECHNICALLY_VALIDATED",
+  "approved_for_production": false,
+  "review_status": "PENDING_REVIEW",
+  "selected_role": "primary",
+  "source": {
+    "provider": "Mozilla Common Voice",
+    "dataset": "Common Voice Scripted Speech 27.0 (2026-09-11) zh-CN",
+    "dataset_version": "cv-corpus-27.0-2026-09-11",
+    "source_url": "https://commonvoice.mozilla.org/zh-CN/datasets",
+    "archive": "cv-corpus-27.0-2026-09-11-zh-CN.tar.gz",
+    "clip": "common_voice_zh-CN_25007250.mp3",
+    "up_votes": 13,
+    "down_votes": 0,
+    "duration_ms": 5724,
+    "age_label": "thirties",
+    "gender_label": "female_feminine",
+    "accent_label": "出生地：44 广东省",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license_status": "CC0_1_0",
+    "terms_note": "Mozilla Common Voice README: CC0; by downloading you agree not to determine speaker identity. No identity inference performed.",
+    "speaker_id_hashed": "sha256:2ebfbd351d36245dbb4369dce59eb2b60b11301a17276d84ec89864edd7b6902"
+  },
+  "transcript": "金国均为嘉庆二十五年进士金光杰之子。",
+  "audio": {
+    "path": "assets/audio/prompts/pending/cv27_zh_25007250_20261104.wav",
+    "sha256": "f67f1c8ba77bdee2e1450d46a2bf2f1a20cdd312b7a920a05244877863425378",
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "pcm_s16le"
+  },
+  "audio_qa": {
+    "verdict": "REVIEW",
+    "note": "SNR below 30 dB on the original clip; cleaned version was worse and rejected. Human listening required."
+  },
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "SELECTED_FOR_REVIEW",
+    "note": "CC0 candidate; zero-shot technical PASS; still not approved for production."
+  },
+  "zero_shot_test": {
+    "model": "CosyVoice2-0.5B",
+    "prompt_text": "金国均为嘉庆二十五年进士金光杰之子。",
+    "output": "experiments/voice_asset_discovery/common_voice_27/zeroshot/cv27_zh_25007250_20261104_zeroshot.wav",
+    "sha256": "ef5e1346c41bcb1ee09767059db28900f4574c3e2e008c3ad3fad7bbf952cd05",
+    "seconds": 4.3,
+    "synth_seconds": 29.553,
+    "verdict": "PASS"
+  }
+}

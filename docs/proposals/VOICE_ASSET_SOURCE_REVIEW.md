@@ -18,7 +18,7 @@
 | Piper / Sherpa-ONNX | 本地模型 | `DISCOVERED` | 只作测试源；逐 Voice Model Card 核验 |
 | 自己录制 | 本地文件 | `LICENSE_VERIFIED` | 已有 3.37 s 自录 prompt；需人工试听后才能 `APPROVED` |
 
-**首批种子库当前 = 0 个外部 `APPROVED`；自录 `narrator_self` 为唯一 `APPROVED` 生产音色。AISHELL-3 两条 `REJECTED`，LibriVox 一条 `PENDING_REVIEW`。** 这是真实状态，不是目标数量。
+**首批种子库当前 = 0 个外部 `APPROVED`；自录 `narrator_self` 为唯一 `APPROVED` 生产音色。AISHELL-3 两条 `REJECTED`，LibriVox 一条 `PENDING_REVIEW`；Common Voice 27.0 另选 4 条 `PENDING_REVIEW`。** 这是真实状态，不是目标数量。
 
 ---
 
@@ -148,6 +148,24 @@
 
 ---
 
+## 2.4 Mozilla Common Voice 27.0（2026-11-04 筛选）
+
+本机档案：`C:/Users/99236/Downloads/1789498250119-cv-corpus-27.0-2026-09-11-zh-CN.tar.gz`（22 GB）。
+只提取元数据与 4 条候选，**未镜像/再分发**数据集；WAV 留在本地，仓库只登记 meta。
+
+筛选规则：`validated.tsv`、`up_votes >= 2`、`down_votes == 0`、4.5–7.5 s、文本 8–40 字、16 kHz mono。
+
+| 候选 | 角色 | 时长 | 数据集标签 | 原始 QA | 状态 |
+|---|---|---|---|---|---|
+| `cv27_zh_25007250_20261104.wav` | primary | 5.72 s | female_feminine / thirties | SNR 24.58 dB；zero-shot PASS | `TECHNICALLY_VALIDATED` / review PENDING |
+| `cv27_zh_32901597_20261104.wav` | primary | 5.87 s | male_masculine / twenties | SNR 28.54 dB；zero-shot PASS | `TECHNICALLY_VALIDATED` / review PENDING |
+| `cv27_zh_27532467_20261104.wav` | alternate | 6.70 s | female_feminine / twenties | SNR 24.79 dB（REVIEW） | `PENDING_REVIEW` |
+| `cv27_zh_32901020_20261104.wav` | alternate | 7.02 s | male_masculine / twenties | SNR 19.17 dB（REVIEW） | `PENDING_REVIEW` |
+
+- 许可：Common Voice README 标注 CC0-1.0；下载条款要求不得反推说话人身份。本项目只使用数据集自报 gender/age 标签，不做身份推断。
+- 清洗版 SNR 反而下降（anlmdn + 24 kHz），已拒绝；保留原始 16 kHz 版本。
+- 未做人工试听、角色适配、zero-shot 克隆验收；不得写入 `assets/audio/manifest.json` 作为生产资产。
+
 ## 3. 技术筛选结论
 
 - **3–8 s 是我们的筛选标准，不是 CosyVoice 的硬限制。** 本地 CosyVoice 代码对 prompt 的硬上限约 30 s（16 kHz token 提取），官方示例用 16 kHz prompt；社区经验建议 3–10 s（5–8 s 更稳）。系统应按 3–8 s 筛选，但错误信息/文档不要写成“模型只支持 8 s”。
@@ -161,22 +179,22 @@
 
 | 目标 | 目标数量 | 当前 |
 |---|---|---|
-| 旁白音色 | 3–5 | 0 `APPROVED` |
-| 诗词朗诵音色 | 2–3 | 0 `APPROVED`；1 个 LibriVox 候选（美国公有领域） |
+| 旁白音色 | 3–5 | 0 外部 `APPROVED`；4 条 Common Voice `PENDING_REVIEW`；`narrator_self` 已 `APPROVED` |
+| 诗词朗诵音色 | 2–3 | 0 `APPROVED`；1 个 LibriVox 候选 `PENDING_REVIEW` |
 | 角色音色 | 2–3 | 0 `APPROVED` |
-| 来源可追溯 | 100% | 4 个候选有 source/hash/transcript；2 个来源 `BLOCKED`（Common Voice / AISHELL 许可） |
+| 来源可追溯 | 100% | 自录 + LibriVox + AISHELL×2 + Common Voice×4 均有 source/hash/transcript；AISHELL 已 `REJECTED`，Common Voice 已本地筛选 |
 
-**不要**把 5.25 s LibriVox 候选写成“已入库音色”；它是 `PENDING_REVIEW`，AISHELL 两条已 `REJECTED`。
+**不要**把 LibriVox / Common Voice 候选写成“已入库音色”；它们都是 `PENDING_REVIEW`，AISHELL 两条已 `REJECTED`。
 
 ---
 
 ## 5. 建议的下一步（按顺序）
 
-1. **Common Voice**：决定是否注册 MDC 账号并接受 Data Consumer Terms；若不能，保持 `BLOCKED`，不要下载/镜像。
-2. **AISHELL-3**：Sample 已下载并完成 1 条技术验证；向 OpenSLR/数据提供方书面确认 Apache-2.0 是否覆盖商业使用。未确认前保持 `BLOCKED`，不要下载 19 GB 全量。
+1. **Common Voice**：已用本机档案筛选 4 条候选；继续做人工试听/角色适配，不镜像数据集，不反推身份；通过后才可 `LICENSE_VERIFIED`。
+2. **AISHELL-3**：两条候选已按 2026-11-04 决策 `REJECTED`；不再下载全量或做商用澄清。
 3. **LibriVox**：对中国商用辖区做法务复核；确认读者身份是否影响权利；人工试听候选；通过后才有资格 `LICENSE_VERIFIED` + `APPROVED`。
 4. **自录**：做一次 voice-profile 试听/参数记录；它是最可控的正式音色来源。
-5. **VOICE-ASSET 代码**：等 PRD 批准后，再实现 adapter/registry/slicing/QA；本轮只落候选与元数据。
+5. **VOICE-ASSET 代码**：已实现 `voice/profiles.py`、候选元数据、状态门与 manifest；当前只差人工试听/审批与完整多角色成片。
 
 ---
 
