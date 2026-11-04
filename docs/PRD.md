@@ -460,7 +460,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - 参考音/参考文本要求（PRD-TTS-005）：`IMPLEMENTED_NOT_VERIFIED`（单测覆盖缺失即失败；真实服务缺失路径待复验）。
 - 字幕/时间轴/字体校验：`PASS_VERIFIED`（字幕角色）。
 - 工作台 `tts.synthesize`：`PASS_VERIFIED`（参数化 narration/out/manifest/speaker/speed/tts_mode）。
-- BGM/音效/多轨混音：`IMPLEMENTED_NOT_VERIFIED`（代码/合成测试）；真实授权资产与听感 `PARTIAL`。
+- BGM/多轨混音：`PASS_VERIFIED`（14 s 真实 build + quality PASS）；SFX 仍 `IMPLEMENTED_NOT_VERIFIED`；人工听感/ducking 复核 PENDING。
 - 字体资产可复现：`PASS_VERIFIED`（`fetch_fonts.py` 重建/校验）。
 - 多音色 `PRD-TTS-007`：`IMPLEMENTED_NOT_VERIFIED`；外部声音 `APPROVED` = 0；`narrator_self` 为唯一 `APPROVED` 生产音色；AISHELL-3 候选已 `REJECTED`，LibriVox `PENDING_REVIEW`。
 
@@ -567,7 +567,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - 字体：来源/许可/哈希/预览已验证；6 个 OTF 与 LICENSE 存在于本地，但整个 `assets/fonts/` 被 `.gitignore` 排除。
 - 模型：版本与许可证已登记在 `TECH_STACK` / 授权台账；Wan 文本编码器的底层许可仍标注“待复核”。
 - CosyVoice 模型权重、预置音色、生成音频的商用条款：`UNVERIFIED`；不得因代码 Apache-2.0 推断可商用。
-- BGM/音效：`NOT_RUN`，未选型、未登记。
+- BGM：2 条自生成 `APPROVED` 资产已登记并完成 14 s 技术混音（`PASS_VERIFIED`）；人工听感 PENDING。音效/环境音：`IMPLEMENTED_NOT_VERIFIED`，无授权素材。
 - 平台 AI 标识字段：仅文档要求，未进入生产 manifest。
 
 ---
@@ -736,7 +736,7 @@ v1.x 明确不做：
 | `segments.build` 任务 | `PASS_VERIFIED` | 真实 4 段 segments.json + meta |
 | `quality.check` 任务 | `PASS_VERIFIED` | 图片 4/4、音频、成片、哈希全部 PASS |
 | P1 端到端（3-5 分段） | `PASS_VERIFIED` | 14.0 s / 1080×1920 / 4 段 / 4 行女声 / quality PASS |
-| BGM / 音效 | `NOT_RUN` | 未选型、未登记 |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 2 条自生成 BGM 已登记；14 s 真实 build + quality PASS；人工听感 PENDING；SFX 无授权素材 |
 | 平台包装 / 发布 / 数据 | `NOT_RUN` | 无实现 |
 | 多期夜间批处理 | `NOT_RUN` | 无调度器 |
 | 统一资产台账/版本号 | `NOT_RUN` | 只有目录扫描与构建目录 |
@@ -809,7 +809,7 @@ v1.x 明确不做：
 | 序 | 工作 | 验收 |
 |---|---|---|
 | P2-1 | 资产台账（哈希、来源、期数归属、版本） | 任一成片可反查全部输入 |
-| P2-2 | BGM/音效选型与授权登记 | 至少 1 首 BGM + 2 个音效有许可证据 |
+| P2-2 | BGM/音效选型与授权登记：2 条自生成 BGM 已登记；音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
 | P2-3 | 女声商用授权核验（P1 已进入正式成片） | 许可状态不再是 `UNVERIFIED` |
 | P2-4 | 平台包装与发布记录 | 一条作品有封面/标题/正文/话题/发布记录 |
 | P2-5 | 统一结果清单与成本摘要 | 每期输出成功/降级/失败 + 耗时 |
@@ -842,14 +842,14 @@ v1.x 明确不做：
 
 | 状态 | 需求 |
 |---|---|
-| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006/007`、`PRD-CASE-001`、`PRD-AUDIO-006`、`PRD-MOTION-001/002/003` |
-| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001`、`PRD-OPS-001`、`PRD-AUDIO-005`、`PRD-VOICE-ASSET-001..012`（分组）、`PRD-MOTION-004`、`PRD-STORY-001/002`、`PRD-QA-001/002` |
-| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001`、`PRD-TTS-007`、`PRD-AUDIO-001..004` |
+| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006/007`、`PRD-CASE-001`、`PRD-AUDIO-004/005/006`、`PRD-MOTION-001/002/003` |
+| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001`、`PRD-OPS-001`、`PRD-VOICE-ASSET-001..012`（分组）、`PRD-MOTION-004`、`PRD-STORY-001/002`、`PRD-QA-001/002` |
+| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001`、`PRD-TTS-007`、`PRD-AUDIO-001/002/003` |
 | `NOT_IMPLEMENTED` | 无 |
 | `BLOCKED` | 无（当前无硬阻塞；TTS 默认切换是待执行任务，不是阻塞） |
 | `OPEN_QUESTION` | `PRD-TTS-006`（参考音/模型权重的商用授权） |
 
-**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-STYLE-007` P1 修正后 `PASS_VERIFIED`；`PRD-QUAL-001` 静态门默认强制；`PRD-OPS-001` 已决定不作为 v1.0 硬门。下一步是真实改版生产（接入 `shot_002_stylefix_v1.png`）、完整多角色成片与真实 BGM/SFX 授权。
+**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-STYLE-007` P1 修正后 `PASS_VERIFIED`；`PRD-QUAL-001` 静态门默认强制；`PRD-OPS-001` 已决定不作为 v1.0 硬门。下一步是真实改版生产（接入 `shot_002_stylefix_v1.png`）、使用 `narrator_self` 与已登记 BGM 的 15–30 s 成片，以及 SFX/环境音授权。
 
 ## 24. 2026-11-04 已批准的扩展需求（正式）
 
@@ -881,7 +881,8 @@ v1.x 明确不做：
 - 3–8 s 是项目筛选规则，不是模型硬限制。
 - 声音资产引用 `asset_id`，不复制文件；Voice Profile 不另建资产库。
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
-- 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域 BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
+- 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
+- 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
 
 ### 24.4 运动产品化
 

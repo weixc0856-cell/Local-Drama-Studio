@@ -24,10 +24,10 @@
 | `PRD-AUDIO-001` | §24.2 | 多轨时间线 | 严格 ms、轨道类型、事件边界 | `IMPLEMENTED_NOT_VERIFIED` | `voice/audio_timeline.py`；`test_audio_timeline` | 真实 BGM/SFX 时间线待做 |
 | `PRD-AUDIO-002` | §24.2 | BGM ducking | narration/dialogue 触发，参数可记录 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py` `sidechaincompress`；合成测试 | 真实 BGM 听感未验 |
 | `PRD-AUDIO-003` | §24.2 | SFX 定时/增益/淡入淡出 | 事件级参数 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py`；合成测试 | 真实 SFX 授权/听感未验 |
-| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `IMPLEMENTED_NOT_VERIFIED` | `voice/audio_assets.py`；`release_policy` | 真实 BGM/SFX 资产仍未登记 |
-| `PRD-AUDIO-005` | §24.2 | 成片音频质量门 | 轨道/边界/资产/时长 | `PARTIAL` | `quality.check_audio_timeline`；合成测试 PASS | 真实多轨成片听感未验 |
+| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `PASS_VERIFIED` | 2 条自生成 BGM 已登记 SHA/时长/许可/`APPROVED`；`release_policy` | SFX/环境音仍无授权素材；BGM 人工听感 PENDING |
+| `PRD-AUDIO-005` | §24.2 | 成片音频质量门 | 轨道/边界/资产/时长 | `PASS_VERIFIED` | `experiments/bgm_mix_check/renders3/build_manifest.json`：14.0 s、2 轨、quality PASS；`quality.check_audio_timeline` | 听感/ducking 人工复核 PENDING |
 | `PRD-AUDIO-006` | §24.2 | 旧旁白路径兼容 | 无 timeline 时行为不变 | `PASS_VERIFIED` | P1 14.0 s 真实 build + quality PASS | 保持 |
-| `PRD-VOICE-ASSET-001..012` | §24.3 | 声音资产治理（12 子项） | 来源/许可/哈希/状态；仅 APPROVED 进生产；不镜像数据集 | `PARTIAL` | 自录 `narrator_self` APPROVED；AISHELL 2 条 REJECTED；LibriVox 1 条 PENDING_REVIEW；外部 APPROVED=0 | 12 子项逐项见 `PRD_AMENDMENT`/`VOICE_ASSET_SOURCE_REVIEW`；BGM/SFX 未登记 |
+| `PRD-VOICE-ASSET-001..012` | §24.3 | 声音资产治理（12 子项） | 来源/许可/哈希/状态；仅 APPROVED 进生产；不镜像数据集 | `PARTIAL` | 自录 `narrator_self` APPROVED；AISHELL 2 条 REJECTED；LibriVox 1 条 PENDING_REVIEW；Common Voice 27.0 4 条筛选（2 primary zero-shot 技术通过、2 alternate 待测；均未批准生产；未镜像）；外部 APPROVED=0 | 人工试听/角色适配；CV 4 条未做 zero-shot 验收；BGM/SFX 未登记 |
 | `PRD-MOTION-001` | §24.4 | 运镜模板复用 | CameraMove/resolve_camera | `PASS_VERIFIED`（技术） | M1–M7 真实；`motion/spec.py` | 保持 |
 | `PRD-MOTION-002` | §24.4 | 局部微动区域合同 | RegionSpec + 结构门 | `PASS_VERIFIED`（技术） | `motion/spec.py`；M1/M2/M7 | 保持 |
 | `PRD-MOTION-003` | §24.4 | 局部动态类型 | 水/云/叶/芦苇/倒影/墨扩散 | `PASS_VERIFIED`（技术） | `motion/`；M7 | 保持 |
@@ -57,9 +57,9 @@
 
 | 状态 | 数量 | 需求 |
 |---|---|---|
-| `PASS_VERIFIED` | 10 | TTS-001/002/003；STYLE-006/007；CASE-001；AUDIO-006；MOTION-001/002/003 |
-| `IMPLEMENTED_NOT_VERIFIED` | 12 | GOV-001；STYLE-003/004/005；TTS-005；QUAL-001；UX-001；TTS-007；AUDIO-001..004 |
-| `PARTIAL` | 16 | GOV-002/003；TTS-004；STYLE-001/002；QUAL-002；DATA-001；CONFIG-001；OPS-001；AUDIO-005；VOICE-ASSET-001..012；MOTION-004；STORY-001/002；QA-001/002 |
+| `PASS_VERIFIED` | 12 | TTS-001/002/003；STYLE-006/007；CASE-001；AUDIO-004/005/006；MOTION-001/002/003 |
+| `IMPLEMENTED_NOT_VERIFIED` | 10 | GOV-001；STYLE-003/004/005；TTS-005；QUAL-001；UX-001；TTS-007；AUDIO-001/002/003 |
+| `PARTIAL` | 15 | GOV-002/003；TTS-004；STYLE-001/002；QUAL-002；DATA-001；CONFIG-001；OPS-001；VOICE-ASSET-001..012；MOTION-004；STORY-001/002；QA-001/002 |
 | `NOT_IMPLEMENTED` | 0 | — |
 | `BLOCKED` | 0 | — |
 | `OPEN_QUESTION` | 1 | TTS-006 |

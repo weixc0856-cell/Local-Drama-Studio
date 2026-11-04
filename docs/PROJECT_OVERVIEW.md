@@ -75,7 +75,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | 2.5D 分层 | `PASS_STATIC`（opt-in） | `PlateSpec` + 渲染路径 + 真实渲染 PASS；未成为默认 |
 | 工作台（项目/期数/风格/任务/媒体） | `PASS_VERIFIED` | 39 个真实任务；API/媒体测试通过 |
 | LI 五轮真实 LLM | `PARTIAL` | 3 次 5/5；人工审核 NOT_RUN |
-| BGM / 音效 | `NOT_RUN` | 无授权素材 |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 2 条自生成 BGM 已登记；14 s 真实 build + quality PASS；人工听感 PENDING；SFX 无授权素材 |
 | 商用授权 | `PARTIAL` | 字体/模型/自录声音有登记；预置音色/生成音频商用 UNVERIFIED |
 | 批处理 / 断点续跑 | `NOT_RUN` / 部分 | `r1_batch` 有 job 级续跑；无阶段级 orchestrator |
 | 平台发布 / 数据 | `NOT_IMPLEMENTED` | 只有规范文档 |
@@ -141,7 +141,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 - **已真实验证**：显式 zero-shot（0.5B）1 行 PASS；显式 SFT（300M）1 行 PASS；历史 P1/81.373 为 SFT。
 - **PRD-TTS-001 已满足**：`config/audio.yaml` 默认 `tts.mode: zero_shot`，默认任务真实加载 0.5B；状态 `PASS_VERIFIED`。SFT 仅显式可选。
 - **多音色（提案 `PRD-TTS-007`）**：`config/voices.yaml` + 逐行 `voice_profile` 或 `voice_cast.yaml` sidecar；一次运行只允许一种后端；未 `APPROVED` 档案默认拒绝。
-- **多轨音频（提案 `PRD-AUDIO-*`）**：`audio_timeline.json` + `assets/audio/manifest.json`；BGM ducking/SFX 由 FFmpeg 混音；旧旁白路径保持兼容。
+- **多轨音频（正式 `PRD-AUDIO-*`）**：`audio_timeline.json` + `assets/audio/manifest.json`；BGM ducking/SFX 由 FFmpeg 混音；旧旁白路径保持兼容。
 - **故事圣经（提案 `PRD-STORY-*`）**：`character_bible.yaml` / `shot_bible.yaml` + `story.check`；只校验引用/覆盖/风格，不承诺同脸。
 - `zero_shot` 参考音/参考文本缺一不可；`prompt_text` 必须与参考音逐字一致。
 - 同一端口 50000，两个运行时互斥；启动 `-Model cosyvoice2` 或 `-Model sft`。

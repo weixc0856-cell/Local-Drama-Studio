@@ -82,7 +82,7 @@
 | R3-B 单篇成片 | ✅ `PASS_VERIFIED`：38.04 s / 1080×1920 / 5 静帧 + 1 Wan / 配音 / 字幕 |
 | R3-C 单篇成本 | ✅ `PASS_VERIFIED`：端到端 43.8 min；多篇批处理 `NOT_RUN` |
 | R3 基线提交 | ✅ `0204979`（父 `026509b`） |
-| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM/音效/商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
+| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM 已有 2 条自生成资产并通过 14 s 真实 build；SFX/环境音与商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
 | 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
 | TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
@@ -239,7 +239,7 @@ drama resume <project>       # 断点续跑                      [R7]
 
 后续产品路线见 [docs/ROADMAP.md](docs/ROADMAP.md)（M3《洛神赋》/ M4 平台测试）。早期 R4-R7 只是设计编号，未执行。
 
-当前最长的已验证生产案例是 81.373 秒 / 1080×1920 / 13 段 / 18 句的工笔《春江花月夜》，使用 `scroll_shot.py` + 预渲染 clips；R3 的 38.04 秒单篇是 5 静帧 + 1 Wan 路径。两条路径不要混为一谈。后续路线：R3-D 剩余项（BGM/音效/商用授权）→ M3《洛神赋》完整样片 → M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
+当前最长的已验证生产案例是 81.373 秒 / 1080×1920 / 13 段 / 18 句的工笔《春江花月夜》，使用 `scroll_shot.py` + 预渲染 clips；R3 的 38.04 秒单篇是 5 静帧 + 1 Wan 路径。两条路径不要混为一谈。后续路线：R3-D 剩余项（SFX/环境音/商用授权、BGM 人工听感）→ M3《洛神赋》完整样片 → M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
 
 ---
 

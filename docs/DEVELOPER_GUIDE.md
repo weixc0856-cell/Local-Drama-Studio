@@ -92,6 +92,7 @@ uv sync --python 3.12
 | `scripts\motion_build.py` | 运动渲染 |
 | `scripts\aesthetic_plan.py` / `aesthetic_compare.py` | 美学 A/B |
 | `scripts\static_quality.py` | 静态门（CLI） |
+| `scripts\make_bgm.py` | 重建两条自生成 BGM 铺底 |
 | `scripts\tts_qa.py` | ASR 代理 |
 | `scripts\fetch_fonts.py` | 字体重建 |
 

@@ -163,7 +163,7 @@
 | 工笔/水墨生成与动画质量 | `PARTIAL` | S2 与首批管线样片技术检查通过；静态门 `PARTIAL`（山石纹理重复）；人工审美 PENDING；见 `docs/PIPELINE_AB_VALIDATION.md` |
 | 多篇批处理 | `NOT_RUN` | — |
 | 平台数据 | `NOT_RUN` | — |
-| 女声/字体/BGM/音效选型 | `PARTIAL`（字体/字幕完成；女声已入 P1 成片；排版待审；BGM/音效未完成） | R3-D |
+| 女声/字体/BGM/音效选型 | `PARTIAL`（字体/字幕完成；`narrator_self` 为唯一生产音色；BGM 2 条已登记并完成技术混音；SFX/环境音未完成） | R3-D |
 | P1 技术质量检查 | `PASS_VERIFIED` | 4/4 图片非空非黑；成片 14.0 s / 1080×1920 / 解码 0 / 哈希一致；音频 48 kHz 单声道，max -1.5 dB | P1 |
 | 平台增长/转化 | `NOT_RUN` | — |
 

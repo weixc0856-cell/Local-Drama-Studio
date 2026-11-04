@@ -48,6 +48,56 @@
       "note": "highpass 70 + anlmdn + de-ess + lowpass 8k + loudnorm -23",
       "sha256": "745f569b4f6fa98bde6b18e0be08ad7c1303827e1f6aff128581cc2f1352d08c",
       "added_on": "2026-11-04"
+    },
+    {
+      "id": "bgm_ink_serene_60s",
+      "kind": "bgm",
+      "name": "水墨幽远铺底",
+      "path": "assets/audio/bgm/ink_serene_60s.wav",
+      "sha256": "90b37494eef8f49ee8fbf76e5defc91b0aaa08ba7044fffca825a2869a52f635",
+      "duration_ms": 60000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/bgm/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg sine/pink-noise bed",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ink_wash",
+        "ambient",
+        "slow"
+      ],
+      "default_gain_db": -14.0,
+      "note": "合成环境铺底，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04",
+      "generator": "scripts/make_bgm.py"
+    },
+    {
+      "id": "bgm_court_elegant_60s",
+      "kind": "bgm",
+      "name": "工笔典雅铺底",
+      "path": "assets/audio/bgm/court_elegant_60s.wav",
+      "sha256": "9244ba4f965660cc85da400e205733c08ef1b07e7b4c2e285edae62e41d6bf5a",
+      "duration_ms": 60000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/bgm/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg sine/pink-noise bed",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "court_green_fine_line",
+        "ambient",
+        "elegant"
+      ],
+      "default_gain_db": -14.0,
+      "note": "合成环境铺底，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04",
+      "generator": "scripts/make_bgm.py"
     }
   ],
   "release_policy": {
@@ -57,6 +107,7 @@
       "VERIFIED",
       "APPROVED"
     ],
-    "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。"
+    "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。",
+    "registered_bgm_count": 2
   }
 }

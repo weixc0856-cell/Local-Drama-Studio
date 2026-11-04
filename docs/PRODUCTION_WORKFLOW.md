@@ -16,7 +16,7 @@
 | 5b | 静帧生成 | 4-6 张竖屏关键帧 | FLUX + `comfy.batch`（按 snapshot jobs） | `PARTIAL`（A/B 8 张实图） |
 | 6 | 动态镜头 | 镜头运动 + 局部微动 + 转场；Wan 只作局部补充 | `motion.plan` → `motion.render`（FFmpeg 确定性合成）；Wan I2V 可选 | `PARTIAL`（两风格技术链走通；人工看片 PENDING） |
 | 7 | 旁白/朗诵 | 逐句 TTS；标准朗诵/古典吟诵；发音核验 | CosyVoice + `tts.synthesize`（模式/分句/停顿）；`pronunciation_report.json` + `scripts/tts_qa.py` | `PARTIAL`（波形/ASR 通过；发音人工复核 PENDING） |
-| 8 | 音乐/音效 | BGM、环境声 | 未实现 | `NOT_RUN` / 待选型（R3-D） |
+| 8 | 音乐/音效 | BGM、环境声、ducking | `audio_timeline` + `assets/audio` | `PASS_VERIFIED`（BGM 技术混音）；SFX/环境音 `IMPLEMENTED_NOT_VERIFIED` |
 | 9 | 字幕 | SRT/ASS、时间轴、本地字体 | `r3_build.py` + `config/fonts.yaml` | `PASS_VERIFIED`（P1 4 行） |
 | 10 | 合成 | 1080×1920、混音、字幕 | FFmpeg | `PASS_VERIFIED`（P1 14 s + R3 38 s） |
 | 11 | 质量检查 | 技术 + 音频 + 美学风险 + 内容 + 成本 | `quality.check` / `static_quality --aesthetic` / `quality --aesthetic-motion` / `tts_qa.py` + 人工 | 技术 `PASS_VERIFIED`；美学/音频 `PARTIAL`；人工 H3 `NOT_RUN` |
@@ -24,7 +24,7 @@
 | 13 | 人工审核/发布 | 人看片、手动发布 | 人工 | `PARTIAL` |
 | 14 | 数据记录 | 播放/完播/互动/涨粉 | 未实现 | `NOT_RUN` |
 
-> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；SFT「中文女」已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM、音效与商用授权未完成。必须在下一篇完整样片之前完成。R3-B 的「中文男」只是历史基线。
+> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；SFT「中文女」已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM 已有 2 条自生成 `APPROVED` 资产并通过 14 s 真实 build；SFX/环境音与商用授权仍未完成。R3-B 的「中文男」只是历史基线。
 >
 > **S3-B.2 字体**：`scripts/r3_build.py` 已通过 `config/fonts.yaml` + `src/drama_studio/fonts.py` 使用 `Source Han Sans CN` 字幕，正式构建会校验 OTF SHA-256 并用 `fontselect` 日志拒绝静默 fallback。标题/诗词/现代解说角色仍为 `preview_only`；R3-B 历史成片仍使用 Microsoft YaHei，未覆盖。
 
