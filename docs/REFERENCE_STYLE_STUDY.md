@@ -67,6 +67,7 @@
 - 动画契约已支持 `ScriptShot.type=video`：FLUX 关键帧作为结构锚点，`scripts/video_jobs.py` 生成 Wan I2V jobs；`build_segments` 可混合 Wan 片段与静帧。
 - 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；已启动 2 个 Wan I2V hero shot（`palace_wide`、`ink_dream_03`，576×1024/73 帧），完成后替换对应镜头。
 - 混合方式：`scripts/reference_hybrid.py --segments ... --clips ... --out ...` 把已有 Wan 片段按镜头时长裁剪/循环后替换静帧来源；缺片段仍保留静帧。
+- Wan 输出是 PNG 序列时，用 `scripts/frames_to_clip.py --frames <dir> --out <mp4> --fps 24` 先合成为片段，再交给 `reference_hybrid.py`。
 - 声音：BGM + 自生成 SFX（wind/water/chime/whoosh），不复制参考片音频；无旁白、无字幕文本。
 - 因此当前版本是 **previs / animatic**，不是参考片那种全片连续 AI 视频。
 - 参考片的画面、音乐、文案、具体镜头均未复制；“抄”的是结构规则和声音气质。
