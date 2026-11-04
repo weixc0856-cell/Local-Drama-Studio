@@ -175,7 +175,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 进入 `#/tasks`（任务中心）→ 选择任务类型 → 填参数 → 勾选确认（危险任务）→ “启动任务”。
 
-可用的任务类型（21 种）：
+可用的任务类型（22 种）：
 
 ```text
 doctor.run                 环境诊断
@@ -194,6 +194,7 @@ aesthetic.plan             镜头美学计划
 aesthetic.compare          美学 A/B 对照
 aesthetic.review           美学人工结论
 static.check               静态质量门（单镜头）
+style.consistency          跨镜头风格一致性
 story.check                故事圣经连续性检查
 quality.check              技术质量检查
 tts.synthesize             配音合成

@@ -149,7 +149,7 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>备注（可选）</label>
         <textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
-  } else if (['package.build', 'segments.build', 'quality.check', 'static.check', 'motion.plan', 'motion.render', 'audio.qa',
+  } else if (['package.build', 'segments.build', 'quality.check', 'static.check', 'style.consistency', 'motion.plan', 'motion.render', 'audio.qa',
               'aesthetic.plan', 'aesthetic.compare', 'aesthetic.review'].includes(kindKey)) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
@@ -167,6 +167,13 @@ function launcherForm(kindKey, kinds, episodes) {
             <option value="">require · 缺报告即失败（默认）</option>
             <option value="true">skip · 显式跳过（记录原因）</option>
           </select></div>`;
+    }
+    if (kindKey === 'style.consistency') {
+      fields += `<div class="form-row">
+        <div class="field"><label>风格 preset（可选）</label><input class="input mono" name="style" placeholder="留空取期数 _style_lock.preset_id"></div>
+        <div class="field"><label>人工审片 JSON（可选）</label><input class="input mono" name="review" placeholder="{aesthetic_status, note}"></div>
+      </div>
+      <div class="field"><label>报告输出（可选）</label><input class="input mono" name="out" placeholder="默认 style_consistency_report.json"></div>`;
     }
     if (kindKey === 'static.check') {
       fields += `<div class="form-row">

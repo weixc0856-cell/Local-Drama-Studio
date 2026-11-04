@@ -70,7 +70,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | 双视觉风格规范/配置 | `PASS_STATIC` | 青绿工笔 / 写意水墨，两套独立配置 |
 | 每种风格技术样片 | `PASS_VERIFIED`（各 2 镜头） | M7 两片；不代表完整作品一致性 |
 | 作品级风格锁定 | `IMPLEMENTED_NOT_VERIFIED` | 期数 `_style_lock` revision/hash/history；任务拒绝不同 style；DB `preset_id` 映射 YAML；真实改版生产待跑 |
-| 跨镜头风格一致性验证 | `NOT_RUN` | 只有相邻镜头 LAB/亮度连续性，无风格分类/正式一致性门 |
+| 跨镜头风格一致性验证 | `IMPLEMENTED_NOT_VERIFIED` | `style.consistency` 调色板/跨镜头 LAB/亮度/饱和度/边缘密度；P1 技术 RISK；人工审片 PENDING |
 | 镜头美学 A/B | `PARTIAL` + `PENDING_HUMAN_REVIEW` | 8 张实图、联系表、风险指标 |
 | 2.5D 分层 | `PASS_STATIC`（opt-in） | `PlateSpec` + 渲染路径 + 真实渲染 PASS；未成为默认 |
 | 工作台（项目/期数/风格/任务/媒体） | `PASS_VERIFIED` | 39 个真实任务；API/媒体测试通过 |
@@ -116,7 +116,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | 镜头/资产继承 | 镜头只有 `visual_prompt`，没有 `style_id` 字段 | 不完整 |
 | 生成任务不得覆盖 | `motion.plan` / `aesthetic.plan` 可 `--style` 覆盖；`comfy.batch` 不校验 | **未强制** |
 | 改风格留版本 | UI 直接替换期数 snapshot；无版本表 | **未实现** |
-| 跨镜头风格一致性门 | 只有相邻镜头 LAB/亮度连续性 | **未实现** |
+| 跨镜头风格一致性门 | 已实现技术门，人工审片 PENDING | **PARTIAL** |
 | DB 风格与 YAML preset 一致 | `workspace.styles` 不含 motion/aesthetic profile | **脱节** |
 
 > 这是 Phase C 的重点修复方向，不在 Phase B 修改代码。详细差异见 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。

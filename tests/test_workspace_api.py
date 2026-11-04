@@ -85,6 +85,8 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert "audio_timeline" in kinds["build.rebuild"]["params_schema"]["properties"]
     assert "audio_timeline" in kinds["audio.qa"]["params_schema"]["properties"]
     assert kinds["static.check"]["enabled"] is True
+    assert kinds["style.consistency"]["enabled"] is True
+    assert "review" in kinds["style.consistency"]["params_schema"]["properties"]
     assert "shot_id" in kinds["static.check"]["params_schema"]["properties"]
     assert kinds["story.check"]["enabled"] is True
     assert "characters" in kinds["story.check"]["params_schema"]["properties"]
