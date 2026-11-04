@@ -81,6 +81,7 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert kinds["tts.synthesize"]["blocked_reason"] is None
     assert "tts_mode" in kinds["tts.synthesize"]["params_schema"]["properties"]
     assert "voice_cast" in kinds["tts.synthesize"]["params_schema"]["properties"]
+    assert "episode_id" in kinds["comfy.batch"]["params_schema"]["properties"]
     assert "audio_timeline" in kinds["build.rebuild"]["params_schema"]["properties"]
     assert "audio_timeline" in kinds["audio.qa"]["params_schema"]["properties"]
     assert kinds["static.check"]["enabled"] is True
@@ -128,3 +129,41 @@ def test_extra_params_rejected(client: TestClient) -> None:
     )
     assert response.status_code == 400
     assert response.json()["error"]["code"] == "invalid_params"
+
+
+def test_style_revision_endpoint_versions_the_episode(client: TestClient) -> None:
+    project = client.post("/api/projects", json={"name": "风格版本项目"}).json()
+    ink = client.post("/api/styles", json={
+        "name": "水墨", "preset_id": "ink_wash", "visual_language": "水墨"
+    }).json()
+    court = client.post("/api/styles", json={
+        "name": "青绿", "preset_id": "court_green_fine_line", "visual_language": "工笔"
+    }).json()
+    episode = client.post("/api/episodes", json={
+        "project_id": project["id"], "number": 1, "title": "风格版本期",
+        "track": "video", "style_id": ink["id"],
+    }).json()
+    assert episode["style_snapshot"]["_style_lock"]["revision"] == 1
+
+    updated = client.patch(f"/api/episodes/{episode['id']}", json={"style_id": court["id"]}).json()
+    lock = updated["style_snapshot"]["_style_lock"]
+    assert lock["style_id"] == court["id"]
+    assert lock["preset_id"] == "court_green_fine_line"
+    assert lock["revision"] == 2
+    assert lock["history"][0]["style_id"] == ink["id"]
+
+
+def test_workflow_exposes_real_package_static_aesthetic_motion_nodes(
+        client: TestClient, workspace) -> None:
+    created = make_video_episode(workspace)
+    episode_id = created["episode"]["id"]
+    data = client.get(f"/api/episodes/{episode_id}/workflow").json()
+    nodes = {n["id"]: n for n in data["nodes"]}
+    assert {"source", "package", "script", "storyboard", "static",
+            "aesthetic", "images", "videos", "motion", "voice", "compose"} <= set(nodes)
+    assert nodes["package"]["task_kind"] == "package.build"
+    assert nodes["script"]["task_kind"] == "script.generate"
+    assert nodes["static"]["task_kind"] == "static.check"
+    assert nodes["aesthetic"]["task_kind"] == "aesthetic.plan"
+    assert nodes["motion"]["task_kind"] == "motion.plan"
+    assert "尚未参数化" not in (nodes["voice"].get("task_reason") or "")

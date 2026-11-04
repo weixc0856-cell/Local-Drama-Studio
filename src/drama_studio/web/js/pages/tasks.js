@@ -136,8 +136,12 @@ function launcherForm(kindKey, kinds, episodes) {
       <div class="field"><label>音频资产注册表（可选）</label>
         <input class="input mono" name="audio_assets" placeholder="留空自动使用 assets/audio/manifest.json"></div>`;
   } else if (kindKey === 'comfy.batch') {
-    fields = `<div class="field"><label>jobs JSON（experiments/ 之下）</label>
+    fields = `<div class="field"><label>jobs JSON（experiments/ 或 projects/ 之下）</label>
       <input class="input mono" name="jobs" placeholder="experiments/r3a/jobs_flux.json"></div>
+      <div class="field"><label>绑定期数（可选，用于风格锁校验）</label>
+        <select class="input" name="episode_id"><option value="">不校验</option>
+          ${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}
+        </select></div>
       <div class="field"><label>仅执行指定 job（可选，逗号分隔）</label>
         <input class="input mono" name="only" placeholder="V1,V2"></div>`;
   } else if (kindKey === 'review.accept' || kindKey === 'review.reject') {

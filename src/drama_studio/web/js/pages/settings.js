@@ -108,7 +108,7 @@ export default {
           <div class="panel">
             <div class="panel-head"><span class="panel-title">已知限制</span></div>
             <div class="panel-body col" style="gap:8px">
-              <div class="note">内容与分镜当前只读：ContentPackage → R3 输入 Adapter 尚未实现。</div>
+              <div class="note">内容包与分镜由 package.build / script.generate 任务生成；页面只读展示真实产物。</div>
               <div class="note">TTS 任务未启用：scripts/r3_tts.py 仍硬编码 experiments/r3b。</div>
               <div class="note">人工验收没有写入入口；期数页会显示 NOT_RUN。</div>
             </div>

@@ -148,7 +148,7 @@
 | 规则 | 目标 | 当前 |
 |---|---|---|
 | 每作品一个主风格 | `style_id` 作品级 | 期数 `style_snapshot._style_lock`；项目默认风格仍非强制 |
-| 全片一致 | 不混用 | 期数锁 hash；`comfy.batch` 仍未按 episode 校验 |
+| 全片一致 | 不混用 | 期数锁 hash；`comfy.batch` 绑定 `episode_id` 时校验 production_script |
 | 生成任务不覆盖 | 任务继承 | `motion.plan` / `aesthetic.plan` / `static.check` 拒绝不同 style；其他任务待补 |
 | 改风格留版本 | 新版本/新生产 | `_style_lock.revision` + `history` 保留旧 sha；旧 build 目录不覆盖 |
 | 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性（`PRD-STYLE-007` 仍 `NOT_IMPLEMENTED`） |
