@@ -141,7 +141,7 @@
 ```text
 doctor.run, build.rebuild, comfy.batch, li.run,
 service.comfy.start, service.comfy.stop,
-package.build, script.generate, segments.build,
+package.build, script.generate, video.jobs, segments.build,
 motion.plan, motion.render, audio.qa,
 aesthetic.plan, aesthetic.compare, aesthetic.review,
 static.check, style.consistency, story.check, quality.check, tts.synthesize,

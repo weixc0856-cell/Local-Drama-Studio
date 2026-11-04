@@ -239,6 +239,22 @@ flowchart TD
 | **断点续跑** | 同 `r1_batch` |
 | **当前状态** | `PASS_VERIFIED`（推近类）/ `PASS_LIMITED`（精确位移） |
 
+### 6.1.1 从 ProductionScript 生成 Wan I2V jobs
+
+- `ScriptShot.type=video` + `video_prompt` 表示该镜头用 Wan I2V，而不是静帧推拉。
+- 先用 FLUX 生成 `<shot_id>/` 关键帧；`scripts/video_jobs.py` 读取脚本和关键帧，写 `work/comfy/jobs_video.json`。
+- jobs 的 `reference` 指向关键帧；缺关键帧直接失败，不静默回退。
+- 生成后用 `segments.build --clips work/assets/videos --allow-partial-clips` 混合 Wan 片段与静帧；显式 video 镜头缺片段仍报错。
+- 工作台任务 `video.jobs` 只生成 jobs，不执行生成；执行仍走 `comfy.batch`。
+
+```powershell
+.venv\Scripts\python.exe scripts/video_jobs.py `
+  --script work\production_script.json `
+  --keyframes work/assets/images `
+  --out work\comfy\jobs_video.json `
+  --frames 73
+```
+
 ### 6.2 确定性运动（motion.plan / motion.render）
 
 | 项 | 内容 |
