@@ -676,7 +676,7 @@ v1.x 明确不做：
 
 ## 21. 当前真实完成状态（2026-11-04 更新）
 
-> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **372 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
+> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **376 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
 > 本节保留历史证据标签（`PASS_STATIC`/`NOT_RUN` 等）；需求状态以 §0.4/§23 与追踪矩阵为准，映射见 §0.2。字体在隔离干净目录中由 `scripts/fetch_fonts.py` 重建并校验（6/6 OTF + 2 份 LICENSE），`load_font_config` 加载 6 个字面。
 
 ### 21.1 能力矩阵
@@ -696,7 +696,7 @@ v1.x 明确不做：
 | 脚本级 GPU 单飞锁 | `PASS_VERIFIED` | `src/drama_studio/locks.py` + `r1_batch.py` + 锁测试 |
 | 通用代码无作品硬编码 | `PASS_VERIFIED` | `tests/test_no_hardcoded_works.py` 扫描 `src`/`harness`/`schemas` 无命中 |
 | 通用短文本测试夹具 | `PASS_VERIFIED` | 「白日依山尽」LI 语料夹具 + 合成期数夹具；测试不依赖真实实验资产 |
-| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 372 passed（根 + LI，2026-11-04） |
+| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 376 passed（根 + LI，2026-11-04） |
 | FLUX 16:9 / 竖屏静帧 | `PASS_VERIFIED` | R1/R3-A 产物与报告 |
 | FLUX 参考图编辑 | `PASS_VERIFIED` | R1 |
 | Wan I2V/T2V（推近类） | `PASS_VERIFIED` | R0/R2/R2-B/R3-A |
@@ -883,6 +883,7 @@ v1.x 明确不做：
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
 - 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
 - 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
+- 2026-11-04 已登记 2 条自生成 BGM 与 4 条自生成 SFX（wind/water/chime/whoosh）；人工听感仍为 PENDING。
 
 ### 24.4 运动产品化
 
@@ -890,6 +891,7 @@ v1.x 明确不做：
 - `[PRD-MOTION-002]` 局部微动使用 `RegionSpec` 区域合同；结构区域必须锁定或硬排除。
 - `[PRD-MOTION-003]` 局部动态支持水/云/叶/芦苇/倒影/墨扩散，参数来自 `config/styles.yaml`。
 - `[PRD-MOTION-004]` 结构保护必须可追溯；无自动分割，Wan 只做局部补充，不承担脚本化主体位移。
+- `ScriptShot.type=video` 时，以 FLUX 关键帧为结构锚点生成 Wan I2V 片段；`type=image` 仍是静帧 + 确定性运动。`segments.build` 可混合 Wan 片段与静帧（`--clips --allow-partial-clips`），显式 video 镜头缺片段不得静默降级。工作台任务 `video.jobs` 只生成 Wan jobs，不执行生成。
 
 ### 24.5 Character / Shot Bible
 

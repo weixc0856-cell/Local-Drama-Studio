@@ -77,7 +77,7 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 |---|---|---|---|---|---|
 | `bgm_ink_serene_60s` | BGM | `assets/audio/bgm/ink_serene_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
 | `bgm_court_elegant_60s` | BGM | `assets/audio/bgm/court_elegant_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
-| 音效 | SFX | — | 未选型 | — | `NOT_RUN` |
+| SFX（wind/water/chime/whoosh） | SFX | `assets/audio/sfx/*.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
 | 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
 
 ## 6. 音色

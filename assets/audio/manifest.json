@@ -98,6 +98,99 @@
       "note": "合成环境铺底，无外部采样；技术可用，人工听感待审。",
       "added_on": "2026-11-04",
       "generator": "scripts/make_bgm.py"
+    },
+    {
+      "id": "sfx_wind_soft_30s",
+      "kind": "sfx",
+      "name": "柔和风声",
+      "path": "assets/audio/sfx/sfx_wind_soft_30s.wav",
+      "sha256": "a2c3cf078f10ab7beb6af0a95a9933e74eb837e021bed01cac28a0324b186255",
+      "duration_ms": 30000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/sfx/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg noise/sine synthesis",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "wind",
+        "ambient",
+        "outdoor"
+      ],
+      "default_gain_db": -28.0,
+      "note": "合成音效，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04"
+    },
+    {
+      "id": "sfx_water_flow_20s",
+      "kind": "sfx",
+      "name": "水面流动",
+      "path": "assets/audio/sfx/sfx_water_flow_20s.wav",
+      "sha256": "fd01c3f0c773a13c388c3b5416611f2f76b3e2d0e663fa8f43e2ee245c445878",
+      "duration_ms": 20000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/sfx/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg noise/sine synthesis",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "water",
+        "ambient"
+      ],
+      "default_gain_db": -30.0,
+      "note": "合成音效，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04"
+    },
+    {
+      "id": "sfx_chime_single_6s",
+      "kind": "sfx",
+      "name": "单声钟磬",
+      "path": "assets/audio/sfx/sfx_chime_single_6s.wav",
+      "sha256": "50eb704b9bf34721b2cb2d72e629b4a3610524270869c6aa265d21242134a215",
+      "duration_ms": 6000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/sfx/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg noise/sine synthesis",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "chime",
+        "ritual"
+      ],
+      "default_gain_db": -22.0,
+      "note": "合成音效，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04"
+    },
+    {
+      "id": "sfx_whoosh_2s",
+      "kind": "sfx",
+      "name": "转场风声",
+      "path": "assets/audio/sfx/sfx_whoosh_2s.wav",
+      "sha256": "b6323aba52d1bcba0c4ce14a3d86432417005abd6bfeee2b76d8a5facfd88f36",
+      "duration_ms": 2000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/sfx/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg noise/sine synthesis",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "transition",
+        "whoosh"
+      ],
+      "default_gain_db": -24.0,
+      "note": "合成音效，无外部采样；技术可用，人工听感待审。",
+      "added_on": "2026-11-04"
     }
   ],
   "release_policy": {
@@ -108,6 +201,7 @@
       "APPROVED"
     ],
     "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。",
-    "registered_bgm_count": 2
+    "registered_bgm_count": 2,
+    "registered_sfx_count": 4
   }
 }

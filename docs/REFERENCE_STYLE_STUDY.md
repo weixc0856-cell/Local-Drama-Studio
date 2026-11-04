@@ -54,13 +54,38 @@
 - `experiments/reference_study/images/palace_detail/`
 - `experiments/reference_study/images/ink_dream_01/` ~ `ink_dream_04/`
 
+### 2.4 声音（不复制原片音频）
+
+- BGM：`bgm_court_elegant_60s` / `bgm_ink_serene_60s`（自生成）。
+- SFX：`sfx_wind_soft_30s`、`sfx_water_flow_20s`、`sfx_chime_single_6s`、`sfx_whoosh_2s`（自生成，已登记 manifest）。
+- 参考片只提供“低频铺底 + 风声/水声/钟磬 + 极简留白”的声音策略，不复制其音乐、录音或音效。
+- 带 SFX 的版本：`experiments/reference_study/renders_sfx/palace|ink/final_9x16.mp4`（quality PASS）。
+
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。
-- 运动由 `r3_build` 的确定性 Ken Burns（zoompan）完成；**没有使用 Wan**。
-- 声音只有 BGM，无旁白、无音效、无字幕文本。
-- 因此这是 **previs / animatic**，不是参考片那种连续 AI 视频。
-- 参考片的画面、音乐、文案、具体镜头均未复制；“抄”的是结构规则。
+- 动画契约已支持 `ScriptShot.type=video`：FLUX 关键帧作为结构锚点，`scripts/video_jobs.py` 生成 Wan I2V jobs；`build_segments` 可混合 Wan 片段与静帧。
+- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；Wan I2V 结果到位后再替换 hero shot。
+- 声音：BGM + 自生成 SFX（wind/water/chime/whoosh），不复制参考片音频；无旁白、无字幕文本。
+- 因此当前版本是 **previs / animatic**，不是参考片那种全片连续 AI 视频。
+- 参考片的画面、音乐、文案、具体镜头均未复制；“抄”的是结构规则和声音气质。
+
+## 3.1 原先为什么只能“图片晃来晃去”
+
+原契约的三处限制：
+
+1. `DraftShot.type` 只允许 `image`，`script_engine` 写死 `type="image"`；
+2. `production.build_jobs` 明确拒绝非 image 镜头；
+3. `build_segments` 传 `clips_dir` 时要求每个镜头都有 mp4，不能“部分 Wan + 部分静帧”。
+
+2026-11-04 已改：
+
+- `DraftShot` / `ScriptShot` 支持 `type=image|video` 和 `video_prompt`；
+- `build_jobs` 为所有镜头生成 FLUX 关键帧；`build_video_jobs` / `scripts/video_jobs.py` 为 video 镜头生成 Wan I2V jobs；
+- `build_segments` 新增 `allow_partial_clips`；显式 video 镜头缺片段仍报错，不允许静默降级；
+- 工作台新增 `video.jobs`（只生成 jobs，不执行生成）。
+
+这才是“连续动画”的入口；Wan 的实际生成仍需逐段跑，不能靠静帧 zoompan 冒充。
 
 ## 4. 下一阶段要补的
 

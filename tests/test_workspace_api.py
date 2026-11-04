@@ -94,6 +94,9 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert kinds["package.build"]["enabled"] is True
     assert kinds["script.generate"]["enabled"] is True
     assert kinds["segments.build"]["enabled"] is True
+    assert "allow_partial_clips" in kinds["segments.build"]["params_schema"]["properties"]
+    assert kinds["video.jobs"]["enabled"] is True
+    assert "frames" in kinds["video.jobs"]["params_schema"]["properties"]
     assert kinds["motion.plan"]["enabled"] is True
     assert kinds["motion.render"]["enabled"] is True
     assert kinds["audio.qa"]["enabled"] is True

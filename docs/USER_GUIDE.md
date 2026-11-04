@@ -175,7 +175,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 进入 `#/tasks`（任务中心）→ 选择任务类型 → 填参数 → 勾选确认（危险任务）→ “启动任务”。
 
-可用的任务类型（22 种）：
+可用的任务类型（23 种）：
 
 ```text
 doctor.run                 环境诊断
@@ -194,6 +194,7 @@ aesthetic.plan             镜头美学计划
 aesthetic.compare          美学 A/B 对照
 aesthetic.review           美学人工结论
 static.check               静态质量门（单镜头）
+video.jobs                 Wan I2V 任务生成（不执行）
 style.consistency          跨镜头风格一致性
 story.check                故事圣经连续性检查
 quality.check              技术质量检查
@@ -393,6 +394,18 @@ PRD 默认是 zero-shot：先启动 `-Model cosyvoice2`。SFT 是显式可选：
 检查：每个脚本镜头是否被 Shot Bible 覆盖、人物引用是否存在、风格 id 是否一致、
 角色声音档案是否为 `APPROVED`。报告明确写 `same_face_guarantee: false`；它不检查
 “同一角色是否同一张脸”，那仍需人工视觉复核。
+
+**步骤 5.2：Wan I2V 视频镜头（可选）**
+
+```powershell
+.venv\Scripts\python.exe scripts/video_jobs.py `
+  --script my_case\work\production_script.json `
+  --keyframes my_case\work/assets\images `
+  --out my_case\work\comfy\jobs_video.json `
+  --frames 73
+```
+
+`type=video` 的镜头会以 FLUX 关键帧为参考生成 Wan I2V；其余镜头仍走静帧 + 确定性运动。`segments.build` 传 `--clips` 与 `--allow-partial-clips` 可混合使用。
 
 **步骤 6：FLUX jobs**
 

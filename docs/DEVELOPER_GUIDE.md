@@ -32,7 +32,7 @@ Local-Drama-Studio/
 
 ```powershell
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest          # 372 passed（当前）
+.venv\Scripts\python.exe -m pytest          # 376 passed（当前）
 ```
 
 ---
@@ -93,6 +93,8 @@ uv sync --python 3.12
 | `scripts\aesthetic_plan.py` / `aesthetic_compare.py` | 美学 A/B |
 | `scripts\static_quality.py` | 静态门（CLI） |
 | `scripts\make_bgm.py` | 重建两条自生成 BGM 铺底 |
+| `scripts\make_sfx.py` | 重建风声/水声/钟磬/转场 SFX |
+| `scripts ideo_jobs.py` | 为 `type=video` 镜头从 FLUX 关键帧生成 Wan I2V jobs |
 | `scripts\tts_qa.py` | ASR 代理 |
 | `scripts\fetch_fonts.py` | 字体重建 |
 
@@ -137,7 +139,7 @@ uv sync --python 3.12
 
 ## 5. 任务注册表
 
-定义在 `src/drama_studio/workspace/tasks.py` 的 `TASK_KINDS`（22 种）。每种任务包含：
+定义在 `src/drama_studio/workspace/tasks.py` 的 `TASK_KINDS`（23 种）。每种任务包含：
 
 ```python
 TaskKind(
@@ -309,7 +311,7 @@ ProductionScript
 .venv\Scripts\python.exe -m pytest --collect-only -q
 ```
 
-当前 372 passed。测试覆盖：
+当前 376 passed。测试覆盖：
 
 | 区域 | 文件 |
 |---|---|
