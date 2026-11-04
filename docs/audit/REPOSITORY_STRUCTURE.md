@@ -136,7 +136,7 @@ Local-Drama-Studio/
 | `models.py` | 严格 `Storyboard` 数据契约（char/loc/prop/shot 命名与引用完整性） | **仅测试** | `Storyboard`、`Shot`、`Character`、`Location`、`Prop`、`ShotStatus` |
 | `content_package.py` | 已登记语料 + 通过证据校验的 claim → 严格 `ContentPackage`（draft） | `python -m drama_studio.content_package`、`package.build` | `build_content_package`、`PackageBuildError` |
 | `script_engine.py` | 本地 LLM → 严格 `ProductionScript`（旁白行 + 镜头 + 风格拼接提示词）；有界修复 | `python -m drama_studio.script_engine`、`script.generate` | `ProductionScript`、`DraftScript`、`generate_script`、`compose_visual_prompt` |
-| `production.py` | `ProductionScript` → ComfyUI jobs / `segments.json` / `motion_shots.json`；缺素材直接失败 | `python -m drama_studio.production`、`motion.plan` / `segments.build` 后置 | `build_jobs`、`build_aesthetic_jobs`、`build_motion_plan`、`build_segments` |
+| `production.py` | `ProductionScript` → ComfyUI jobs / `segments.json` / `motion_shots.json`；缺素材直接失败 | `python -m drama_studio.production`、`motion.plan` / `segments.build` 后置 | `build_jobs`、`build_video_jobs`、`build_aesthetic_jobs`、`build_motion_plan`、`build_segments` |
 | `quality.py` | 独立技术质量检查：图片空/黑、视频解码/分辨率、音频峰值/静音、成片哈希；运动与美学风险 | `python -m drama_studio.quality`、`quality.check`、`motion.render` 后置 | `check_image`、`check_video`、`check_audio_manifest`、`check_build`、`check_motion_quality`、`check_dynamic_aesthetics` |
 | `doctor.py` | 环境/服务/模型诊断；四态输出；不猜测 | `drama doctor`、`doctor.run` | `collect_checks`、`summarize`、`write_report` |
 | `cli.py` | Typer CLI：`doctor`、`serve` | `drama` | `app`、`doctor`、`serve` |
