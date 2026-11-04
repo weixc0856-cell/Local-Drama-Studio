@@ -32,7 +32,7 @@ Local-Drama-Studio/
 
 ```powershell
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest          # 376 passed（当前）
+.venv\Scripts\python.exe -m pytest          # 377 passed（当前）
 ```
 
 ---
@@ -311,7 +311,7 @@ ProductionScript
 .venv\Scripts\python.exe -m pytest --collect-only -q
 ```
 
-当前 376 passed。测试覆盖：
+当前 377 passed。测试覆盖：
 
 | 区域 | 文件 |
 |---|---|
