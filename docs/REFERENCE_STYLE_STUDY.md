@@ -39,11 +39,13 @@
 
 ### 2.1.1 Wan I2V hybrid（palace）
 
-- Wan job：`palace_wide`，576×1024 / 73 帧 / 20 步；耗时 1992.33 s（约 33.2 min），峰值 VRAM 5.90 GB。
+- 第一批 `palace_wide`：576×1024 / 73 帧 / 20 步；1992.33 s（约 33.2 min），峰值 VRAM 5.90 GB。
+- 第二批 `palace_gate`：1442.94 s（约 24.0 min），峰值 VRAM 5.77 GB。
 - 首尾帧平均绝对差约 11.58/255，云海与雾气有真实连续变化，建筑保持刚性。
 - 片段：`experiments/reference_study/clips/palace_03.mp4`
-- hybrid 成片：`experiments/reference_study/renders_hybrid/palace/final_9x16.mp4`
-- quality：`PASS`；BGM + SFX 已混入。
+- 1-Wan hybrid：`experiments/reference_study/renders_hybrid/palace/final_9x16.mp4`
+- 2-Wan hybrid：`experiments/reference_study/renders_hybrid2/palace/final_9x16.mp4`
+- quality：两条均 `PASS`；BGM + SFX 已混入。
 
 ### 2.2 水墨梦境型
 
@@ -71,17 +73,19 @@
 
 ### 2.2.1 Wan I2V hybrid（ink）
 
-- Wan job：`ink_dream_03`，576×1024 / 73 帧 / 20 步；耗时 2313.34 s（约 38.6 min），峰值 VRAM 5.82 GB。
+- 第一批 `ink_dream_03`：576×1024 / 73 帧 / 20 步；2313.34 s（约 38.6 min），峰值 VRAM 5.82 GB。
+- 第二批 `ink_dream_04`：1743.12 s（约 29.1 min），峰值 VRAM 5.82 GB。
 - 片段：`experiments/reference_study/clips/ink_02.mp4`
-- hybrid 成片：`experiments/reference_study/renders_hybrid/ink/final_9x16.mp4`
-- quality：`PASS`；BGM + SFX 已混入。
+- 1-Wan hybrid：`experiments/reference_study/renders_hybrid/ink/final_9x16.mp4`
+- 2-Wan hybrid：`experiments/reference_study/renders_hybrid2/ink/final_9x16.mp4`
+- quality：两条均 `PASS`；BGM + SFX 已混入。
 - 墨色/红点/楼阁结构保持稳定，雾气与墨扩散为连续变化。
 
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。
 - 动画契约已支持 `ScriptShot.type=video`：FLUX 关键帧作为结构锚点，`scripts/video_jobs.py` 生成 Wan I2V jobs；`build_segments` 可混合 Wan 片段与静帧。
-- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；`palace_wide` 与 `ink_dream_03` 的 Wan I2V 均已完成并接入 hybrid；其余镜头仍为静帧 + 确定性运动。
+- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；每条片现有 2 个 Wan I2V 镜头（`palace_gate` + `palace_wide`；`ink_dream_04` + `ink_dream_03`）+ 2 个静帧；hybrid2 已通过 quality。
 - 混合方式：`scripts/reference_hybrid.py --segments ... --clips ... --out ...` 把已有 Wan 片段按镜头时长裁剪/循环后替换静帧来源；缺片段仍保留静帧。
 - Wan 输出是 PNG 序列时，用 `scripts/frames_to_clip.py --frames <dir> --out <mp4> --fps 24` 先合成为片段，再交给 `reference_hybrid.py`。
 - 声音：BGM + 自生成 SFX（wind/water/chime/whoosh），不复制参考片音频；无旁白、无字幕文本。
