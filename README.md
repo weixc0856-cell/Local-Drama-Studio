@@ -53,6 +53,7 @@
 | [docs/PRODUCTION_CONFIG_GUIDE.md](docs/PRODUCTION_CONFIG_GUIDE.md) | 实际配置 / 推荐值 / 未验证参数 |
 | [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | 架构、契约、任务、API、扩展 |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 故障排查 |
+| [docs/REFERENCE_STYLE_STUDY.md](docs/REFERENCE_STYLE_STUDY.md) | 参考片风格研究（东方仙宫 / 水墨梦境 previs） |
 | [docs/PROJECT_NEXT_STEPS.md](docs/PROJECT_NEXT_STEPS.md) | P0–P4 路线 |
 | [docs/audit/](docs/audit/) | Phase A 仓库/能力/架构审计 |
 | [docs/PRD_CHANGELOG.md](docs/PRD_CHANGELOG.md) | PRD 变更记录与旧文档冲突修正 |
