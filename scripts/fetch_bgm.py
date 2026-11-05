@@ -15,6 +15,11 @@ import subprocess
 import wave
 from pathlib import Path
 
+KEYNATA_FILTER = ("highpass=f=70,equalizer=f=180:t=q:w=1.5:g=-3,"
+                  "equalizer=f=4200:t=q:w=2.0:g=-3,lowpass=f=14000,"
+                  "afftdn=nf=-40,alimiter=limit=0.95")
+WARM_FILTER = "highpass=f=30,alimiter=limit=0.95"
+
 TRACKS = {
     "ink_strings_duo": {
         "track_id": "classical_duo_24036",
@@ -31,6 +36,21 @@ TRACKS = {
     "ghibli_quartet": {
         "track_id": "classical_quartet_25010",
         "url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_quartet_25010/classical_quartet_25010.mp3",
+    },
+}
+
+WARM_TRACKS = {
+    "pop_canon_major": {
+        "track_id": "jpop_3piece_11623",
+        "url": "https://carf-coder.github.io/keynata-commons/release/tracks/jpop_3piece_11623/jpop_3piece_11623.mp3",
+    },
+    "strings_c_major": {
+        "track_id": "classical_quartet_25041",
+        "url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_quartet_25041/classical_quartet_25041.mp3",
+    },
+    "piano_c_major": {
+        "track_id": "classical_piano_4016",
+        "url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_piano_4016/classical_piano_4016.mp3",
     },
 }
 
@@ -56,21 +76,24 @@ def _ms(path: Path) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out-dir", default="assets/audio/bgm/keynata")
+    parser.add_argument("--set", choices=("keynata", "warm"), default="keynata",
+                        help="keynata = first CC0 set (EQ-cleaned); warm = major-key replacement")
+    parser.add_argument("--out-dir", default=None,
+                        help="default: assets/audio/bgm/<set>")
     args = parser.parse_args()
-    out = Path(args.out_dir)
+    tracks = TRACKS if args.set == "keynata" else WARM_TRACKS
+    filters = KEYNATA_FILTER if args.set == "keynata" else WARM_FILTER
+    out = Path(args.out_dir or f"assets/audio/bgm/{args.set}")
     out.mkdir(parents=True, exist_ok=True)
     results = []
-    for name, spec in TRACKS.items():
+    for name, spec in tracks.items():
         mp3 = out / f"{name}.mp3"
         wav = out / f"{name}.wav"
         if not mp3.is_file():
             _run(["curl.exe", "-L", "-s", "--max-time", "300", "-o", str(mp3), spec["url"]])
         _run([
             "ffmpeg", "-y", "-v", "error", "-i", str(mp3),
-            "-af", "highpass=f=70,equalizer=f=180:t=q:w=1.5:g=-3,"
-                   "equalizer=f=4200:t=q:w=2.0:g=-3,lowpass=f=14000,"
-                   "afftdn=nf=-40,alimiter=limit=0.95",
+            "-af", filters,
             "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(wav),
         ])
         results.append({

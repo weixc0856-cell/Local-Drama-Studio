@@ -180,6 +180,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 两分钟场景片（`shinkai_scenery`） | `PASS_VERIFIED`（技术） | 24 镜头 / 121.3 s；`renders/final_9x16.mp4` 与 `renders_hybrid2/final_9x16.mp4` quality PASS；2 个 hero shot 用 Wan（32.3/36.3 min）；其余 22 静帧 |
 | 30 秒全 Wan 剧情 slice | `PASS_VERIFIED`（技术） | 6/6 Wan 镜头；31.3 s；`experiments/shinkai_scene/renders_story/final_9x16.mp4`；quality PASS；无静帧 |
 | BGM 清理与四风格资产 | `PASS_VERIFIED`（技术） | 旧正弦 drone 全部 `REJECTED`；替换为 4 条 CC0 Keynata 弦乐/钢琴曲（ink/court/shinkai/ghibli）；EQ/afftdn 清理；30 s/2 min 场景片重混 quality PASS |
+| 暖色大调 BGM 与小调否决 | `PASS_VERIFIED`（技术） | 用户否决「阴间」听感后，E/B 小调两条 BGM 标 `REJECTED`；新增 3 条 Keynata 大调曲目（`bgm_warm_pop_canon` / `bgm_warm_strings_c` / `bgm_warm_piano_c`）；`r3_build.py --bgm-id` 支持显式指定；31.3 s 三版、2 min、palace/ink 重混 quality PASS |
 | 全量测试 | 379 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
