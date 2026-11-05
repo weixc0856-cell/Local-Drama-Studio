@@ -45,7 +45,8 @@
 - 片段：`experiments/reference_study/clips/palace_03.mp4`
 - 1-Wan hybrid：`experiments/reference_study/renders_hybrid/palace/final_9x16.mp4`
 - 2-Wan hybrid：`experiments/reference_study/renders_hybrid2/palace/final_9x16.mp4`
-- quality：两条均 `PASS`；BGM + SFX 已混入。
+- Full-Wan：`experiments/reference_study/renders_full/palace/final_9x16.mp4`（4/4 镜头均为 Wan；`palace_stairs` 23.98 min / 5.82 GB，`palace_detail` 34.94 min / 5.86 GB）
+- quality：三条均 `PASS`；BGM + SFX 已混入。
 
 ### 2.2 水墨梦境型
 
@@ -78,15 +79,16 @@
 - 片段：`experiments/reference_study/clips/ink_02.mp4`
 - 1-Wan hybrid：`experiments/reference_study/renders_hybrid/ink/final_9x16.mp4`
 - 2-Wan hybrid：`experiments/reference_study/renders_hybrid2/ink/final_9x16.mp4`
-- quality：两条均 `PASS`；BGM + SFX 已混入。
+- Full-Wan：`experiments/reference_study/renders_full/ink/final_9x16.mp4`（4/4 镜头均为 Wan；`ink_dream_01` 36.72 min / 5.85 GB，`ink_dream_02` 37.08 min / 5.82 GB）
+- quality：三条均 `PASS`；BGM + SFX 已混入。
 - 墨色/红点/楼阁结构保持稳定，雾气与墨扩散为连续变化。
 
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。
 - 动画契约已支持 `ScriptShot.type=video`：FLUX 关键帧作为结构锚点，`scripts/video_jobs.py` 生成 Wan I2V jobs；`build_segments` 可混合 Wan 片段与静帧。
-- 当前 previs 仍以 `r3_build` 的确定性 Ken Burns（zoompan）为主；每条片现有 2 个 Wan I2V 镜头（`palace_gate` + `palace_wide`；`ink_dream_04` + `ink_dream_03`）+ 2 个静帧；hybrid2 已通过 quality。
-- 混合方式：`scripts/reference_hybrid.py --segments ... --clips ... --out ...` 把已有 Wan 片段按镜头时长裁剪/循环后替换静帧来源；缺片段仍保留静帧。
+- 每条片现有 4/4 个 Wan I2V 镜头；`renders_full/palace` 与 `renders_full/ink` 均为 21.3 s、quality PASS。静帧 + Ken Burns 仍保留为无 Wan 时的 fallback。
+- 混合方式：`scripts/reference_hybrid.py --segments ... --clips ... --out ...` 把已有 Wan 片段按镜头时长拉伸（默认 `--mode stretch`，避免短片段循环接缝）后替换静帧来源；缺片段仍保留静帧。
 - Wan 输出是 PNG 序列时，用 `scripts/frames_to_clip.py --frames <dir> --out <mp4> --fps 24` 先合成为片段，再交给 `reference_hybrid.py`。
 - 声音：BGM + 自生成 SFX（wind/water/chime/whoosh），不复制参考片音频；无旁白、无字幕文本。
 - 因此当前版本是 **previs / animatic**，不是参考片那种全片连续 AI 视频。
