@@ -27,7 +27,7 @@
 | FFmpeg 噪声/拟音滤镜 | `anoisesrc`、`highpass`、`lowpass`、`tremolo`、`vibrato` 均可用 | `ffmpeg -filters` |
 | 程序化风声可用性 | 粉噪 10 s → 120 Hz HP + 1.6 kHz LP + 0.12 Hz 颤动 → `-49.71 LUFS / TP -35.28`，非静音 | `experiments/audio_probe/wind_probe.wav` |
 | 外网可达性 | `freepd.com` 200、`freesound.org` 200、`sonniss.com` **403** | `curl.exe` 实测 |
-| 现有音频资产 | 合成 IR + 4 条 CC0 Keynata BGM + 4 条自生成 SFX（wind/water/chime/whoosh） | `ls assets/audio`；`manifest.json` |
+| 现有音频资产 | 合成 IR + 7 条 CC0 Keynata BGM（2 条小调已 REJECTED）+ 4 条自生成 SFX（wind/water/chime/whoosh） | `ls assets/audio`；`manifest.json` |
 | 已在册的候选源 | `BGM-PIXABAY`、`BGM-MIXKIT`、`SFX-FREESOUND`（均 `NOT_RUN`） | `ASSET_AND_LICENSE_REGISTRY.md` §5 |
 | 已进成片的音色 | CosyVoice-300M-SFT「中文男」（R3-B，`PASS_VERIFIED`）；正式生产当前只用 `narrator_self` | 同上 §4 |
 
@@ -497,3 +497,22 @@ line2    8.98 -> 12.44
 
 开启后的实测（两行拼接 + 1100 ms 停顿，48 kHz）：`-22.07 LUFS → -15.53 LUFS`，TP `-1.50 dBTP`。
 与目标 -16 差 0.47 dB，在 ±0.5 容差内。
+
+## 14. BGM 情绪选曲（2026-11-05）
+
+用户反馈：频段指标干净的弦乐/钢琴仍然"阴间、压抑"。根因不是 EQ，而是**调式与织体**：
+
+| 曲目 | Keynata track | 调式 | 处理 |
+|---|---|---|---|
+| `bgm_ink_strings_duo` | `classical_duo_24036` | **E 小调** | `REJECTED` |
+| `bgm_shinkai_piano` | `classical_piano_6134` | **B 小调** | `REJECTED` |
+
+替换规则：只选 `mode = major` 且和声/节奏完整的曲目；Keynata 索引直接给出 `mode`、`tonic`、`bpm`，再用 MIDI 音符直方图 + Krumhansl 调性模板复核，不靠频谱猜情绪。
+
+| 新资产 | track | 音符直方图结论 | 频谱质心 |
+|---|---|---|---|
+| `bgm_warm_pop_canon` | `jpop_3piece_11623` | C major，r=0.946（次选 G major 0.889） | 4268 Hz |
+| `bgm_warm_strings_c` | `classical_quartet_25041` | C major，r=0.910 | 2395 Hz |
+| `bgm_warm_piano_c` | `classical_piano_4016` | G/C major，r=0.856/0.853 | 1268 Hz |
+
+落地方式：`r3_build.py --bgm-id <asset_id>` 覆盖时间线 BGM 轨，实际时间线写入输出目录 `audio_timeline_effective.json`。只做 30 Hz 高通与峰值限制，不再用 EQ 修情绪。Shinkai 场景时间线同时移除了每 8–30 s 的钟磬事件，只保留转场 whoosh。

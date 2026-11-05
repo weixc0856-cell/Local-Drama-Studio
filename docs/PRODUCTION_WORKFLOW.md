@@ -24,7 +24,7 @@
 | 13 | 人工审核/发布 | 人看片、手动发布 | 人工 | `PARTIAL` |
 | 14 | 数据记录 | 播放/完播/互动/涨粉 | 未实现 | `NOT_RUN` |
 
-> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；SFT「中文女」已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM 已替换为 4 条 CC0 Keynata 弦乐/钢琴曲并通过真实 build；SFX/环境音与商用授权仍未完成。R3-B 的「中文男」只是历史基线。
+> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；SFT「中文女」已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM 已改为大调暖色曲目（`bgm_warm_*`）并通过真实 build，小调「阴间」曲目已 REJECTED；SFX/环境音与商用授权仍未完成。R3-B 的「中文男」只是历史基线。
 >
 > **S3-B.2 字体**：`scripts/r3_build.py` 已通过 `config/fonts.yaml` + `src/drama_studio/fonts.py` 使用 `Source Han Sans CN` 字幕，正式构建会校验 OTF SHA-256 并用 `fontselect` 日志拒绝静默 fallback。标题/诗词/现代解说角色仍为 `preview_only`；R3-B 历史成片仍使用 Microsoft YaHei，未覆盖。
 

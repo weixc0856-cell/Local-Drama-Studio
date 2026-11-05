@@ -319,7 +319,7 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | `loudness.true_peak_db` | -1.5 | `soundscape.py` | 同上 |
 | `loudness.bgm_lufs` | -26.0 | `soundscape.py` | 参考值；timeline BGM 默认 gain -14 dB，最终两遍 loudnorm 到 -16 LUFS |
 
-> 当前 `assets/audio/bgm/keynata/` 有 4 条 CC0 Keynata 弦乐/钢琴 BGM（`APPROVED`，人工听感 PENDING）；旧 drone 全部 `REJECTED`；`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 接入。
+> 当前可用 BGM：`bgm_warm_pop_canon`、`bgm_warm_strings_c`、`bgm_warm_piano_c`（大调暖色）以及 `bgm_court_strings_duo`、`bgm_ghibli_quartet`；E/B 小调两条与旧 drone 全部 `REJECTED`。`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 或 `--bgm-id` 接入。
 
 ---
 
@@ -335,7 +335,18 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | QA | `quality --audio-timeline --audio-assets` | 检查事件边界、资产哈希/状态、轨道结构 |
 | 旧路径 | `r3_build` 不传 `--audio-timeline` | 仍逐行 `adelay/amix`，不改变历史行为 |
 
-> BGM 已替换为 4 条 CC0-1.0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力，见 `assets/audio/bgm/keynata/`），旧正弦 drone 全部 `REJECTED`；SFX 仍为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
+> BGM 现为 CC0-1.0 Keynata Commons 曲目：3 条大调暖色曲（`bgm_warm_*`，`assets/audio/bgm/warm/`）+ 2 条备用；E/B 小调 2 条与旧正弦 drone 全部 `REJECTED`；SFX 为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
+
+**人工指定 BGM（`--bgm-id`）**：不必改时间线 JSON，直接覆盖 BGM 轨的资产：
+
+```powershell
+.venv\Scripts\python.exe scripts/r3_build.py `
+  --segments <segments.json> --audio <audio_manifest.json> `
+  --audio-timeline <audio_timeline.json> --audio-assets assets/audio/manifest.json `
+  --out <render_dir> --bgm-id bgm_warm_pop_canon
+```
+
+构建会把实际使用的时间线写到 `<render_dir>/audio_timeline_effective.json`，便于反查。暖色大调资产：`bgm_warm_pop_canon`（钢琴/吉他/鼓，canon 进行）、`bgm_warm_strings_c`（C 大调四重奏）、`bgm_warm_piano_c`（C 大调钢琴）。不要用小调曲目再用 EQ 去"修情绪"。
 
 ---
 

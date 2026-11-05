@@ -132,7 +132,7 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 will g
 - `docs/VISUAL_STYLE_SPEC.md` — the two core aesthetics (court green fine-line, ink wash), config boundary, six deterministic animation primitives, S1-S3 validation plan.
 - `docs/R2B_TEST_REPORT.md` — four hero shots; H2 is usable, H3 subject motion direction was wrong.
 - `docs/R3_TEST_REPORT.md` — vertical 576×1024 capability and a 38 s 1080×1920 finished piece; 43.8 min end-to-end; committed as `0204979`.
-- `docs/ROADMAP.md` — R3-D (female voice/font/BGM/SFX selection) is the gate before a second full sample; fonts/subtitles are done, female voice is auditioned and decided but not in a final cut, BGM/SFX are `NOT_RUN`.
+- `docs/ROADMAP.md` — R3-D (female voice/font/BGM/SFX selection) is the gate before a second full sample; fonts/subtitles are done, female voice is auditioned and decided but not in a final cut. BGM has 7 registered CC0 tracks (two minor-key ones `REJECTED` after the 2026-11-05 "陰間" feedback; three warm major-key tracks are the current picks, human listening still PENDING); SFX are self-generated; commercial licensing is `NOT_RUN`.
 
 Planned modules (not implemented; do not assume they exist): `comfy_client.py`, `generation/`, `storyboard/`, `character_manager/`, `audio/`, `subtitles/`, `editing/`, `storage/`, `orchestrator.py`.
 
@@ -168,6 +168,6 @@ Project state model: `projects/workspace.db` stores projects/episodes/styles/tas
 - **R3 measured:** vertical FLUX 576×1024 is 22-53 s/image; vertical Wan 576×1024 / 73 frames is 36.4 min at 5.48 GiB. A 38 s 1080×1920 piece with 5 stills + 1 Wan + 7 TTS lines took 43.8 min end-to-end. 1080×1920 is FFmpeg Lanczos upscale, not native.
 - **R2-B measured:** 4 hero shots 32.6-46.4 min each, peak 5.50-5.66 GiB. Slow push-in (H2) works. Precise subject displacement (H3 boat) is unreliable: 24.6 px but toward the camera, not away. Do not rely on Wan for scripted subject movement; use compositing or change the shot.
 - **CosyVoice scope:** 「中文男」 entered a real final cut in R3-B; 「中文女」 was synthesized, auditioned and decided (Poetry B / Narration B) but has not entered a final cut. Do not describe all presets as verified. Model/voice/commercial terms are separate checks.
-- **R3-D:** fonts/subtitle integration are done; female voice is auditioned and decided but not in a final cut; BGM/SFX and commercial licensing are `NOT_RUN`.
+- **R3-D:** fonts/subtitle integration are done; female voice is auditioned and decided but not in a final cut; BGM is registered (CC0, warm major-key set; human listening PENDING), SFX are self-generated, commercial licensing is `NOT_RUN`.
 - **Workspace rule:** the UI must never invent state. Any value without file or task evidence is `NOT_RUN` / `UNKNOWN`; execution only through the registered task kinds; rebuilds write to a new `projects/<project>/episodes/<episode>/renders/build-<time>/` directory and never overwrite `experiments/r3b/renders`. Workspace runs on port 8765, not an LLM port.
 - **LLM lifecycle:** one llama-server on 8080, one owner. `scripts/llm_server.ps1` starts/stops the project instance; `literary_intelligence/run_li15.py` starts it only when down and stops it only if that run started it. Never leave an idle server holding 8080 — the daily task waits for it.

@@ -259,16 +259,17 @@
       "attribution_required": false,
       "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_duo_24036/classical_duo_24036.mp3",
       "source": "Keynata Commons classical_duo_24036",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "ink_wash",
         "strings",
         "calm"
       ],
       "default_gain_db": -16.0,
-      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
-      "added_on": "2026-11-05"
+      "note": "E minor",
+      "added_on": "2026-11-05",
+      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05"
     },
     {
       "id": "bgm_court_strings_duo",
@@ -307,16 +308,17 @@
       "attribution_required": false,
       "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_piano_6134/classical_piano_6134.mp3",
       "source": "Keynata Commons classical_piano_6134",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "shinkai_scenery",
         "piano",
         "emotional"
       ],
       "default_gain_db": -16.0,
-      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
-      "added_on": "2026-11-05"
+      "note": "B minor",
+      "added_on": "2026-11-05",
+      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05"
     },
     {
       "id": "bgm_ghibli_quartet",
@@ -341,6 +343,82 @@
       "default_gain_db": -16.0,
       "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
       "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_warm_pop_canon",
+      "kind": "bgm",
+      "name": "暖阳流行卡农（钢琴/木吉他/鼓，C 大调）",
+      "path": "assets/audio/bgm/warm/pop_canon_major.wav",
+      "sha256": "6e71c4790435740a41a1504aa773c8ad343f4fb3b80a14e284b6917906a1c283",
+      "duration_ms": 186298,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/warm/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/jpop_3piece_11623/jpop_3piece_11623.mp3",
+      "source": "Keynata Commons jpop_3piece_11623 (major, canon progression)",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "shinkai_scenery",
+        "warm",
+        "major",
+        "pop",
+        "canon"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_warm_strings_c",
+      "kind": "bgm",
+      "name": "暖色弦乐四重奏（C 大调）",
+      "path": "assets/audio/bgm/warm/strings_c_major.wav",
+      "sha256": "1ba736605f43dd74b5b3267379dbceb8b4451a2fedc164fc1bbee971dbcf147c",
+      "duration_ms": 251545,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/warm/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_quartet_25041/classical_quartet_25041.mp3",
+      "source": "Keynata Commons classical_quartet_25041 (C major, 108 bpm)",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "court_green_fine_line",
+        "warm",
+        "major",
+        "strings"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_warm_piano_c",
+      "kind": "bgm",
+      "name": "明亮立式钢琴（C 大调）",
+      "path": "assets/audio/bgm/warm/piano_c_major.wav",
+      "sha256": "3d8688f69e4621736d7b0b49ae82b52526c50d51f41aaaa5271ebac07ecf0560",
+      "duration_ms": 35383,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/warm/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_piano_4016/classical_piano_4016.mp3",
+      "source": "Keynata Commons classical_piano_4016 (C major, 119 bpm)",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ink_wash",
+        "warm",
+        "major",
+        "piano"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
+      "added_on": "2026-11-05"
     }
   ],
   "release_policy": {
@@ -351,7 +429,7 @@
       "APPROVED"
     ],
     "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。",
-    "registered_bgm_count": 4,
+    "registered_bgm_count": 5,
     "registered_sfx_count": 4
   }
 }
