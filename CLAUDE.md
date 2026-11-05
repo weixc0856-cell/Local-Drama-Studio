@@ -63,6 +63,9 @@ scripts\doctor.ps1
 .venv\Scripts\python.exe scripts/audio_asset_entry.py <file> --license <license> --source-platform <platform> --status APPROVED
 .venv\Scripts\python.exe scripts/make_sfx.py --out-dir assets/audio/sfx
 .venv\Scripts\python.exe scripts/video_jobs.py --script <script> --keyframes <images> --out <jobs_video.json>
+
+# Ink 2-minute film: waits for the Shinkai Wan batch, then keyframes -> Wan -> assembly
+.venv\Scripts\python.exe scripts/run_ink_film.py
 .venv\Scripts\python.exe -m drama_studio.quality --aesthetic-motion <motion_manifest.json>
 
 # Deterministic motion (CPU only; no FLUX/Wan)
