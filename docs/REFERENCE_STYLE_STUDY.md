@@ -83,6 +83,19 @@
 - quality：三条均 `PASS`；BGM + SFX 已混入。
 - 墨色/红点/楼阁结构保持稳定，雾气与墨扩散为连续变化。
 
+## 2.5 两分钟新海诚式场景片（24 镜头）
+
+- 静帧：`experiments/shinkai_scene/images/shot_01..24`，FLUX 576×1024 / 4 步 / CFG 1.0，24/24 成功。
+- 内容：夏日积云、空教室、铁道口、电车、雨后街道、天台、神社、便利店、星空、樱花河岸、隧道出口等；无人物、无对白。
+- 2 分钟版：`experiments/shinkai_scene/renders/final_9x16.mp4`
+  - 121.3 s / 1080×1920 / 24 fps
+  - 24 个 5 s 镜头（末镜 6.3 s）
+  - quality：`PASS`
+  - 响度约 -16.2 LUFS / True Peak -1.7 dBFS
+  - BGM + SFX（风/水/钟磬/转场）
+- 2 个 hero shot 正在用 Wan I2V 生成：`shot_01`（积云翻涌）与 `shot_05`（雨街倒影），完成后替换为 hybrid。
+- 新增场景风格 ID：`shinkai_scenery`，`category: scene`；它不改变两种 core 风格（`ink_wash` / `court_green_fine_line`）的产品边界。
+
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。

@@ -386,6 +386,7 @@ class StylePreset(BaseModel):
     name_en: str = Field(min_length=1, max_length=120)
     description: str = Field(min_length=1, max_length=400)
     validation_status: AbilityStatus = "NOT_RUN"
+    category: Literal["core", "scene"] = "core"
 
     # Shared with the workspace style entity.
     visual_language: str = Field(min_length=4, max_length=600)

@@ -21,14 +21,19 @@ FORBIDDEN = ("春江", "洛神", "曹植", "山海经", "山海經", "翩若")
 
 def test_exactly_two_core_styles() -> None:
     registry = load_style_presets(ROOT)
-    assert set(registry.ids()) == CORE_STYLES
+    core = {p.id for p in registry.styles.values() if p.category == "core"}
+    assert core == CORE_STYLES
     assert registry.schema_version
+    assert registry.get("shinkai_scenery").category == "scene"
 
 
 def test_presets_are_partial_until_a_full_film_exists() -> None:
     registry = load_style_presets(ROOT)
     for preset in registry.styles.values():
-        assert preset.validation_status == "PARTIAL"
+        if preset.category == "core":
+            assert preset.validation_status == "PARTIAL"
+        else:
+            assert preset.validation_status in ("NOT_RUN", "PARTIAL")
 
 
 def test_presets_carry_required_visual_contract() -> None:

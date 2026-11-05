@@ -382,6 +382,13 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 9. 生成链路必须从期数快照派生提示词，而不是从代码常量或某次实验目录读取。
 10. `[PRD-STYLE-007]` 同一作品跨镜头风格一致性必须单独验证；2 张不同风格的测试图不能证明完整作品一致性。
 
+### 9.2.1 场景风格（`category: scene`）
+
+- `shinkai_scenery` 是 2026-11-05 新增的**场景短片风格**，不属于两种 core 风格（`ink_wash` / `court_green_fine_line`），也不改变“作品只选一个主风格”的规则。
+- 它只用于纯场景、无人物对白的短片；提示词固化高饱和夏日天空、体积积雨云、金时刻逆光、雨后高光倒影；`validation_status=NOT_RUN`，需真实样片后再升级。
+- 2 分钟场景片：`experiments/shinkai_scene/renders/final_9x16.mp4`（24 镜头 / 121.3 s / quality PASS）。
+- 若要进入正式产品，必须另行批准场景短片的范围与验收，不得把它当作角色动画能力。
+
 ### 9.3 当前状态（2026-11-04）
 
 - 风格 CRUD、期数快照、漂移字段已实现并有测试：`IMPLEMENTED_NOT_VERIFIED`（需求 `PRD-STYLE-001/002` 的基础设施）。
