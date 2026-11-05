@@ -97,6 +97,23 @@
 - `shot_01`（积云翻涌）与 `shot_05`（雨街倒影）的 Wan 均已完成并接入：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`（2 Wan + 22 静帧，121.3 s，quality PASS）。Wan 分别 32.3 min / 5.83 GB 与 36.3 min / 5.92 GB。
 - 新增场景风格 ID：`shinkai_scenery`，`category: scene`；它不改变两种 core 风格（`ink_wash` / `court_green_fine_line`）的产品边界。
 
+## 2.6 30 秒全 Wan 剧情样片（进行中）
+
+为了验证“连续剧情”，不再用 24 张静帧拼贴，而是做 6 镜头 / 30 秒全 Wan vertical slice：
+
+1. `shot_01` 积云翻涌（已有 Wan）
+2. `shot_03` 铁道口列车接近（Wan）
+3. `shot_04` 电车车厢夕阳（Wan）
+4. `shot_12` 黄昏站台（Wan）
+5. `shot_05` 雨后街道倒影（已有 Wan）
+6. `shot_19` 夜色小镇（Wan）
+
+- 叙事线：黄昏 → 列车 → 站台 → 雨 → 夜，一条“归途”视觉线。
+- 6 个镜头全部 Wan 视频，无静帧；音频为 BGM + SFX。
+- 成片：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）。
+- Wan 耗时：`scene_01` 32.3 min、`scene_02` 24.2 min、`scene_03` 36.3 min、`scene_04` 35.4 min、`scene_05` 36.3 min、`scene_06` 35.8 min；峰值 VRAM 5.82–5.95 GB。
+- 2 分钟全 Wan 版本约需 24 个镜头 × 30–39 分钟，约 12–15 小时；这条 30 秒 slice 先验证连续性和观感。
+
 ## 3. 当前实现方式与边界
 
 - 静帧由本机 FLUX.2 klein 生成（576×1024，4 步，CFG 1.0）。
