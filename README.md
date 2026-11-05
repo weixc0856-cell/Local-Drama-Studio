@@ -66,7 +66,7 @@
 | 项目 | 状态 |
 |---|---|
 | 根目录 `.venv`（调度环境） | ✅ 已创建（Python 3.12.10，uv 0.10.8） |
-| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **378 项测试通过** |
+| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **379 项测试通过** |
 | R0-A 硬件与依赖诊断 | ✅ `PASS_VERIFIED`（见 [R0_TEST_REPORT](docs/R0_TEST_REPORT.md)） |
 | R0-B ComfyUI + PyTorch XPU | ✅ `PASS_VERIFIED`：ComfyUI 0.43.0 / torch 2.15.0+xpu / xpu:0 Arc A750 7.75 GiB |
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
@@ -89,7 +89,7 @@
 | 两分钟场景片 | ✅ `PASS_VERIFIED`（技术）：24 镜头 / 121.3 s / 1080×1920 / 2 个 Wan hero + 22 静帧；`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`，quality PASS；风格 `shinkai_scenery`（scene，非 core） |
 | 30 秒全 Wan 剧情 slice | ✅ `PASS_VERIFIED`（技术）：6/6 Wan 镜头 / 31.3 s / 无静帧；`experiments/shinkai_scene/renders_story/final_9x16.mp4`，quality PASS |
 | TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
-| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做）；另加 `shinkai_scenery` scene 风格（2 分钟场景片，NOT_RUN/技术样片） |
+| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做）；另加 `shinkai_scenery` / `ghibli_scenery` scene 风格（2 分钟场景片，NOT_RUN/技术样片；四风格 negative prompt 互斥） |
 | 生产工作台 | ✅ `PASS_VERIFIED`（doctor / build / TTS / ComfyUI 批处理 / quality 真实执行）；LI 任务 `NOT_RUN` |
 | R4-R7（早期编号） | ⛔ 未执行；后续以 ROADMAP 的 M3/M4 为准 |
 
