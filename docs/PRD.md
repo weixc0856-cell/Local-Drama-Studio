@@ -890,7 +890,7 @@ v1.x 明确不做：
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
 - 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
 - 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
-- 2026-11-05 已将 BGM 替换为 4 条 CC0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力）；旧正弦 drone 全部 REJECTED；BGM 做 180/4200Hz EQ、lowpass 与 afftdn；人工听感 PENDING。2026-11-05 用户否决小调/稀疏织体的「阴间」听感，新增 3 条大调暖色曲目，试听后仍被全部否决（`REJECTED`）。随后改用 Wikimedia Commons 的公有领域/CC BY 真录音：Mozart K.330 钢琴、Grieg《晨曲》、Mozart K.525 弦乐、Schubert D.664 钢琴（PD）与 Jason Shaw 木吉他（CC BY 3.0 US，需署名）。`r3_build.py --bgm-id` 可显式指定。**不抽取任何电影/动画原声。**
+- 2026-11-05 已将 BGM 替换为 4 条 CC0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力）；旧正弦 drone 全部 REJECTED；BGM 做 180/4200Hz EQ、lowpass 与 afftdn；人工听感 PENDING。2026-11-05 用户否决小调/稀疏织体的「阴间」听感，新增 3 条大调暖色曲目，试听后仍被全部否决（`REJECTED`）。随后改用 Wikimedia Commons 的公有领域/CC BY 真录音：Mozart K.330 钢琴、Grieg《晨曲》、Mozart K.525 弦乐、Schubert D.664 钢琴（PD）与 Jason Shaw 木吉他（CC BY 3.0 US，需署名）。`r3_build.py --bgm-id` 可显式指定。**不抽取任何电影/动画原声。** 2026-11-05 用户试听 Commons 曲目后反馈「好很多」；6 条标记 `ACCEPTED_PENDING_FINAL`，最终采用哪一条随 `ACCEPTANCE-2MIN-001` 两分钟验收片确定。
 
 ### 24.4 运动产品化
 
