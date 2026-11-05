@@ -386,7 +386,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 
 - `shinkai_scenery` 是 2026-11-05 新增的**场景短片风格**，不属于两种 core 风格（`ink_wash` / `court_green_fine_line`），也不改变“作品只选一个主风格”的规则。
 - 它只用于纯场景、无人物对白的短片；提示词固化高饱和夏日天空、体积积雨云、金时刻逆光、雨后高光倒影；`validation_status=NOT_RUN`，需真实样片后再升级。
-- 2 分钟场景片：`experiments/shinkai_scene/renders/final_9x16.mp4`（24 镜头 / 121.3 s / quality PASS）。
+- 2 分钟场景片：`experiments/shinkai_scene/renders/final_9x16.mp4`（24 静帧 / 121.3 s / quality PASS）；`renders_hybrid2/final_9x16.mp4`（2 个 Wan hero + 22 静帧 / quality PASS）。
 - 若要进入正式产品，必须另行批准场景短片的范围与验收，不得把它当作角色动画能力。
 
 ### 9.3 当前状态（2026-11-04）
