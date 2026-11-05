@@ -177,6 +177,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 视频镜头契约（`PRD-MOTION-004`） | `IMPLEMENTED_NOT_VERIFIED` | `ScriptShot.type=video` + `video_prompt`；`build_video_jobs` 生成 Wan I2V jobs；`build_segments --clips --allow-partial-clips` 混合片段/静帧；2 项生产测试 + 1 项脚本测试 |
 | 自生成 SFX 资产 | `IMPLEMENTED_NOT_VERIFIED` | `sfx_wind/water/chime/whoosh` 已登记 manifest；参考研究 timelines 已接入；人工听感 PENDING |
 | 参考研究 Wan hybrid | `PASS_VERIFIED`（技术） | 两片各 4/4 Wan 镜头；palace 4 镜 24.0/23.98/33.2/34.94 min；ink 4 镜 29.1/38.6/36.72/37.08 min；两条 21.3 s full-Wan quality PASS |
+| 两分钟场景片（`shinkai_scenery`） | `PASS_VERIFIED`（技术） | 24 镜头 / 121.3 s；`renders/final_9x16.mp4` 与 `renders_hybrid2/final_9x16.mp4` quality PASS；2 个 hero shot 用 Wan（32.3/36.3 min）；其余 22 静帧 |
 | 全量测试 | 378 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
