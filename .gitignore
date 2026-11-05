@@ -59,3 +59,6 @@ literary_intelligence/runs/
 # OS
 Thumbs.db
 desktop.ini
+
+# External CC0 BGM source files stay local; manifest keeps hashes
+assets/audio/bgm/keynata/*.mp3

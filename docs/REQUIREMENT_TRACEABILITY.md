@@ -24,7 +24,7 @@
 | `PRD-AUDIO-001` | §24.2 | 多轨时间线 | 严格 ms、轨道类型、事件边界 | `IMPLEMENTED_NOT_VERIFIED` | `voice/audio_timeline.py`；`test_audio_timeline` | 真实 BGM/SFX 时间线待做 |
 | `PRD-AUDIO-002` | §24.2 | BGM ducking | narration/dialogue 触发，参数可记录 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py` `sidechaincompress`；合成测试 | 真实 BGM 听感未验 |
 | `PRD-AUDIO-003` | §24.2 | SFX 定时/增益/淡入淡出 | 事件级参数 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py`；合成测试 | 真实 SFX 授权/听感未验 |
-| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `PASS_VERIFIED` | 2 条自生成 BGM 已登记 SHA/时长/许可/`APPROVED`；`release_policy` | SFX/环境音仍无授权素材；BGM 人工听感 PENDING |
+| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `PASS_VERIFIED` | 4 条 CC0 Keynata BGM 已登记 SHA/时长/许可/`APPROVED`；旧 drone 全部 `REJECTED`；`release_policy` | SFX/环境音仍无授权素材；BGM 人工听感 PENDING |
 | `PRD-AUDIO-005` | §24.2 | 成片音频质量门 | 轨道/边界/资产/时长 | `PASS_VERIFIED` | `experiments/bgm_mix_check/renders3/build_manifest.json`：14.0 s、2 轨、quality PASS；`quality.check_audio_timeline` | 听感/ducking 人工复核 PENDING |
 | `PRD-AUDIO-006` | §24.2 | 旧旁白路径兼容 | 无 timeline 时行为不变 | `PASS_VERIFIED` | P1 14.0 s 真实 build + quality PASS | 保持 |
 | `PRD-VOICE-ASSET-001..012` | §24.3 | 声音资产治理（12 子项） | 来源/许可/哈希/状态；仅 APPROVED 进生产；不镜像数据集 | `PARTIAL` | 自录 `narrator_self` APPROVED；AISHELL 2 条 REJECTED；LibriVox 1 条 PENDING_REVIEW；Common Voice 27.0 4 条筛选（2 primary zero-shot 技术通过、2 alternate 待测；均未批准生产；未镜像）；外部 APPROVED=0 | 人工试听/角色适配；CV 4 条未做 zero-shot 验收；BGM/SFX 未登记 |

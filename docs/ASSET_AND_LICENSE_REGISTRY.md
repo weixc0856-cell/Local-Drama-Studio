@@ -75,8 +75,11 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 | 资产 | 类型 | 文件 | 许可/来源 | 商用 | 状态 |
 |---|---|---|---|---|---|
-| `bgm_ink_serene_60s` | BGM | `assets/audio/bgm/ink_serene_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
-| `bgm_court_elegant_60s` | BGM | `assets/audio/bgm/court_elegant_60s.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_ink_strings_duo` | BGM | `assets/audio/bgm/keynata/ink_strings_duo.wav` | Keynata Commons `classical_duo_24036`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_court_strings_duo` | BGM | `assets/audio/bgm/keynata/court_strings_duo.wav` | Keynata Commons `classical_duo_24015`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_shinkai_piano` | BGM | `assets/audio/bgm/keynata/shinkai_piano.wav` | Keynata Commons `classical_piano_6134`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_ghibli_quartet` | BGM | `assets/audio/bgm/keynata/ghibli_quartet.wav` | Keynata Commons `classical_quartet_25010`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
+| 旧正弦 drone ×4 | BGM | `assets/audio/bgm/*.wav` | 自生成 | — | `REJECTED`（用户明确拒绝嗡嗡声） |
 | SFX（wind/water/chime/whoosh） | SFX | `assets/audio/sfx/*.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
 | 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
 
@@ -90,7 +93,7 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
 
-> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色；BGM 已有 2 条自生成 `APPROVED` 资产并通过 14 s 技术混音；SFX/环境音与商用授权仍未完成。
+> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色；BGM 已替换为 4 条 CC0 Keynata 弦乐/钢琴曲并通过真实混音；旧 drone 全部 REJECTED；SFX/环境音与商用授权仍未完成。
 > 下表是候选与待核验状态，**不是商用批准**；不能因为素材来自 Pixabay / Mixkit / 某个开源项目，就把整个来源标记为商用通过。
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |

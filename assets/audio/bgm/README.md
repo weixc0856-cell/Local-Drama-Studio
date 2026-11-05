@@ -1,16 +1,18 @@
-# BGM 资产（自生成，2026-11-05）
+# BGM 资产（CC0 Keynata Commons，2026-11-05）
 
-四条 BGM 是用 FFmpeg 在本机合成的**程序化环境铺底**，不是第三方录音，也不包含任何外部采样或旋律片段。项目所有者可将其用于本项目及商业成片；生成命令保留在 `scripts/make_bgm.py`，便于复现和替换。
+之前的正弦波/粉噪 drone 已被用户明确拒绝：持续低频与高频毛刺会产生嗡嗡声和烦躁感，**禁止进入生产**。这些旧文件保留在 `assets/audio/bgm/` 仅作历史，manifest 状态已改为 `REJECTED`。
 
-| 文件 | 风格 | 时长 | 响度 | 峰值 |
-|---|---|---|---|---|
-| `ink_serene_60s.wav` | 水墨、幽远、慢速 | 60 s | -25.7 LUFS | -16.0 dBFS |
-| `court_elegant_60s.wav` | 工笔、典雅、明亮 | 60 s | -25.7 LUFS | -15.2 dBFS |
-| `shinkai_piano_60s.wav` | 新海诚、钢琴/情绪 | 60 s | -25.7 LUFS | -15.3 dBFS |
-| `ghibli_pastoral_60s.wav` | 吉卜力、田园、温暖 | 60 s | -25.6 LUFS | -14.9 dBFS |
+当前生产 BGM 全部来自 **Keynata Commons**（机器作曲，CC0 1.0，无需署名，可商用）：
 
-- 格式：48 kHz / mono / PCM s16le。WAV 按仓库规则本地保留（`*.wav` 忽略），manifest 记录 SHA-256；克隆后可用 `scripts/make_bgm.py` 重建。
-- 合成与清理：五声音阶正弦层 + 极低粉噪 + 慢速 tremolo + `highpass=70` + `equalizer=180 -3dB` + `equalizer=4200 -4dB` + `lowpass` + `afftdn=-30` + 淡入淡出 + loudnorm。
-- `assets/audio/manifest.json` 中登记 SHA-256、时长、`status=APPROVED`、`commercial_allowed=true`、`style_tags`、`review_status=PENDING_HUMAN_REVIEW`。
-- **人工听感仍未验收**：`APPROVED` 只代表权利来源清晰、可进入技术混音；不等于审美通过。
-- 外部 CC0/公有领域录音替换时，必须登记来源 URL、许可证据与 SHA-256，并重新做听感与 ducking 检查。
+| 本地 WAV | Keynata track | 风格 | 时长 |
+|---|---|---|---|
+| `keynata/ink_strings_duo.wav` | `classical_duo_24036` | 水墨 · 小提琴/大提琴 | 244 s |
+| `keynata/court_strings_duo.wav` | `classical_duo_24015` | 工笔 · 小提琴/大提琴 | 353 s |
+| `keynata/shinkai_piano.wav` | `classical_piano_6134` | 新海诚 · 钢琴独奏 | 160 s |
+| `keynata/ghibli_quartet.wav` | `classical_quartet_25010` | 吉卜力 · 弦乐四重奏 | 320 s |
+
+- 来源/许可：`assets/audio/bgm/keynata/LICENSE.md`；CC0 1.0，无署名要求，可商用。
+- 处理：`highpass=70`、`equalizer=180 -3dB`、`equalizer=4200 -3dB`、`lowpass=14000`、`afftdn=-40`、`alimiter`；48 kHz mono PCM。
+- 原始 MP3 与清洗 WAV 按仓库规则本地保留；manifest 记录 SHA-256，重跑用 `scripts/fetch_bgm.py`。
+- `review_status=PENDING_HUMAN_REVIEW`：权利清晰不代表人工听感已通过。
+- **禁止**再使用持续 drone 的生成方式；旧 `scripts/make_bgm.py` 已删除。
