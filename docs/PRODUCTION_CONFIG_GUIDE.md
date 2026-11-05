@@ -134,6 +134,10 @@
 | 适用内容 | 山水/长卷/建筑/花鸟/空镜 | 山水/云雾/水面/花鸟/空镜 |
 | `validation_status`（配置字段） | `PARTIAL` | `PARTIAL`（技术样片 + A/B 选型已做，完整作品未做） |
 
+### 5.1.1 场景风格 `shinkai_scenery`
+
+`config/styles.yaml` 新增 `shinkai_scenery`（`category: scene`），用于纯场景、无人物对白的 2 分钟级短片：高饱和天空、体积积雨云、金时刻逆光、雨后倒影。它不是两种 core 风格之一，`validation_status=NOT_RUN`，完整样片见 `experiments/shinkai_scene/renders/`。
+
 ### 5.2 风格配置的边界
 
 - `visual_language` + `positive_prompt` 是自包含的材质/线条/细节描述，进入 `script_engine.compose_visual_prompt`。
