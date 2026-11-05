@@ -62,8 +62,8 @@
       "attribution_required": false,
       "source_url": null,
       "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "ink_wash",
         "ambient",
@@ -71,8 +71,9 @@
       ],
       "default_gain_db": -15.0,
       "generator": "scripts/make_bgm.py",
-      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
-      "added_on": "2026-11-05"
+      "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
+      "added_on": "2026-11-05",
+      "rejected_reason": "drone/hum; user rejected"
     },
     {
       "id": "bgm_court_elegant_60s",
@@ -87,8 +88,8 @@
       "attribution_required": false,
       "source_url": null,
       "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "court_green_fine_line",
         "ambient",
@@ -96,8 +97,9 @@
       ],
       "default_gain_db": -15.0,
       "generator": "scripts/make_bgm.py",
-      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
-      "added_on": "2026-11-05"
+      "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
+      "added_on": "2026-11-05",
+      "rejected_reason": "drone/hum; user rejected"
     },
     {
       "id": "sfx_wind_soft_30s",
@@ -205,8 +207,8 @@
       "attribution_required": false,
       "source_url": null,
       "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "shinkai_scenery",
         "piano",
@@ -214,8 +216,9 @@
       ],
       "default_gain_db": -16.0,
       "generator": "scripts/make_bgm.py",
-      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
-      "added_on": "2026-11-05"
+      "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
+      "added_on": "2026-11-05",
+      "rejected_reason": "drone/hum; user rejected"
     },
     {
       "id": "bgm_ghibli_pastoral_60s",
@@ -230,8 +233,8 @@
       "attribution_required": false,
       "source_url": null,
       "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "ghibli_scenery",
         "pastoral",
@@ -239,7 +242,104 @@
       ],
       "default_gain_db": -16.0,
       "generator": "scripts/make_bgm.py",
-      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
+      "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
+      "added_on": "2026-11-05",
+      "rejected_reason": "drone/hum; user rejected"
+    },
+    {
+      "id": "bgm_ink_strings_duo",
+      "kind": "bgm",
+      "name": "水墨 · 弦乐二重奏",
+      "path": "assets/audio/bgm/keynata/ink_strings_duo.wav",
+      "sha256": "bcf3b11ec6e53992fd765fa399d27a134c22ecf424f2ab9f4b11b777afd7f997",
+      "duration_ms": 247088,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/keynata/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_duo_24036/classical_duo_24036.mp3",
+      "source": "Keynata Commons classical_duo_24036",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ink_wash",
+        "strings",
+        "calm"
+      ],
+      "default_gain_db": -16.0,
+      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_court_strings_duo",
+      "kind": "bgm",
+      "name": "工笔 · 弦乐二重奏",
+      "path": "assets/audio/bgm/keynata/court_strings_duo.wav",
+      "sha256": "e9a1f515b1e9cbbd9154671266eb76c810e8de919fef5ef5fd83e3f437cae6b6",
+      "duration_ms": 356476,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/keynata/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_duo_24015/classical_duo_24015.mp3",
+      "source": "Keynata Commons classical_duo_24015",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "court_green_fine_line",
+        "strings",
+        "elegant"
+      ],
+      "default_gain_db": -16.0,
+      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_shinkai_piano",
+      "kind": "bgm",
+      "name": "新海诚 · 钢琴独奏",
+      "path": "assets/audio/bgm/keynata/shinkai_piano.wav",
+      "sha256": "dce341c82ea4aeb01c709262e7452850e4eea3b49fcd61b9fa1f953641c814bf",
+      "duration_ms": 163194,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/keynata/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_piano_6134/classical_piano_6134.mp3",
+      "source": "Keynata Commons classical_piano_6134",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "shinkai_scenery",
+        "piano",
+        "emotional"
+      ],
+      "default_gain_db": -16.0,
+      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_ghibli_quartet",
+      "kind": "bgm",
+      "name": "吉卜力 · 弦乐四重奏",
+      "path": "assets/audio/bgm/keynata/ghibli_quartet.wav",
+      "sha256": "ce5b748d28411abe97c289cf33bb9341e673594b9d74347b2aa575b4805af405",
+      "duration_ms": 322717,
+      "license_type": "CC0-1.0",
+      "license_evidence": "assets/audio/bgm/keynata/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_quartet_25010/classical_quartet_25010.mp3",
+      "source": "Keynata Commons classical_quartet_25010",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ghibli_scenery",
+        "strings",
+        "pastoral"
+      ],
+      "default_gain_db": -16.0,
+      "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
       "added_on": "2026-11-05"
     }
   ],

@@ -319,7 +319,7 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | `loudness.true_peak_db` | -1.5 | `soundscape.py` | 同上 |
 | `loudness.bgm_lufs` | -26.0 | `soundscape.py` | 参考值；timeline BGM 默认 gain -14 dB，最终两遍 loudnorm 到 -16 LUFS |
 
-> 当前 `assets/audio/bgm/` 有两条自生成 BGM（`APPROVED`，人工听感 PENDING）；`soundscape.bgm.track` 仍留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 接入。
+> 当前 `assets/audio/bgm/keynata/` 有 4 条 CC0 Keynata 弦乐/钢琴 BGM（`APPROVED`，人工听感 PENDING）；旧 drone 全部 `REJECTED`；`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 接入。
 
 ---
 
@@ -335,7 +335,7 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | QA | `quality --audio-timeline --audio-assets` | 检查事件边界、资产哈希/状态、轨道结构 |
 | 旧路径 | `r3_build` 不传 `--audio-timeline` | 仍逐行 `adelay/amix`，不改变历史行为 |
 
-> BGM 已有两条自生成、权利清晰的 `APPROVED` 资产（`bgm_ink_serene_60s` / `bgm_court_elegant_60s`）；SFX 仍无授权素材。BGM 人工听感与 ducking 听感 PENDING。
+> BGM 已替换为 4 条 CC0-1.0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力，见 `assets/audio/bgm/keynata/`），旧正弦 drone 全部 `REJECTED`；SFX 仍为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
 
 ---
 

@@ -92,9 +92,9 @@ uv sync --python 3.12
 | `scripts\motion_build.py` | 运动渲染 |
 | `scripts\aesthetic_plan.py` / `aesthetic_compare.py` | 美学 A/B |
 | `scripts\static_quality.py` | 静态门（CLI） |
-| `scripts\make_bgm.py` | 重建两条自生成 BGM 铺底 |
+| `scripts/fetch_bgm.py` | 下载并清理四条 CC0 Keynata BGM（弦乐/钢琴） |
 | `scripts\make_sfx.py` | 重建风声/水声/钟磬/转场 SFX |
-| `scripts ideo_jobs.py` | 为 `type=video` 镜头从 FLUX 关键帧生成 Wan I2V jobs |
+| `scripts/video_jobs.py` | 为 `type=video` 镜头从 FLUX 关键帧生成 Wan I2V jobs |
 | `scripts\tts_qa.py` | ASR 代理 |
 | `scripts\fetch_fonts.py` | 字体重建 |
 

@@ -59,7 +59,7 @@ scripts\doctor.ps1
 .venv\Scripts\python.exe scripts\aesthetic_compare.py --plan <aesthetic_plan.json> --images <snapshot>/images --out <compare_dir>
 .venv\Scripts\python.exe scripts\static_quality.py --image <png> --style <style> --aesthetic <shot_aesthetic.json> --out <static_quality.json>
 .venv\Scripts\python.exe -m drama_studio.bible --script <production_script.json> --characters <character_bible.yaml> --shots <shot_bible.yaml> --voices config/voices.yaml --out <story_bible_report.json>
-.venv\Scripts\python.exe scripts\make_bgm.py --out-dir assets/audio/bgm
+.venv\Scripts\python.exe scripts/fetch_bgm.py --out-dir assets/audio/bgm/keynata
 .venv\Scripts\python.exe scripts/make_sfx.py --out-dir assets/audio/sfx
 .venv\Scripts\python.exe scripts/video_jobs.py --script <script> --keyframes <images> --out <jobs_video.json>
 .venv\Scripts\python.exe -m drama_studio.quality --aesthetic-motion <motion_manifest.json>

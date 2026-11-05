@@ -41,7 +41,7 @@
 - 成片：`experiments/reference_study/renders/palace/final_9x16.mp4`
 - 时长：21.3 s / 1080×1920 / 24 fps
 - 分镜：白玉天门 → 朱栏石阶 → 云海宫殿全景 → 飞檐斗拱特写
-- BGM：`bgm_court_elegant_60s`
+- BGM：`bgm_court_strings_duo`（CC0 Keynata）
 - quality：`PASS`
 - 响度：约 -15.7 LUFS / True Peak -6.4 dBFS
 
@@ -61,7 +61,7 @@
 - 成片：`experiments/reference_study/renders/ink/final_9x16.mp4`
 - 时长：21.3 s / 1080×1920 / 24 fps
 - 分镜：月下孤舟 → 漂浮楼阁 → 青绿山水 → 月轮云海
-- BGM：`bgm_ink_serene_60s`
+- BGM：`bgm_ink_strings_duo`（CC0 Keynata）
 - quality：`PASS`
 - 响度：约 -15.7 LUFS / True Peak -7.0 dBFS
 
@@ -75,7 +75,7 @@
 
 ### 2.4 声音（不复制原片音频）
 
-- BGM：`bgm_court_elegant_60s` / `bgm_ink_serene_60s`（自生成）。
+- BGM：`bgm_court_strings_duo` / `bgm_ink_strings_duo`（CC0 Keynata）。
 - SFX：`sfx_wind_soft_30s`、`sfx_water_flow_20s`、`sfx_chime_single_6s`、`sfx_whoosh_2s`（自生成，已登记 manifest）。
 - 参考片只提供“低频铺底 + 风声/水声/钟磬 + 极简留白”的声音策略，不复制其音乐、录音或音效。
 - 带 SFX 的版本：`experiments/reference_study/renders_sfx/palace|ink/final_9x16.mp4`（quality PASS）。
@@ -96,7 +96,7 @@
 - 静帧：`experiments/shinkai_scene/images/shot_01..24`，FLUX 576×1024 / 4 步 / CFG 1.0，24/24 成功。
 - 内容：夏日积云、空教室、铁道口、电车、雨后街道、天台、神社、便利店、星空、樱花河岸、隧道出口等；无人物、无对白。
 - 2 分钟静帧版：`experiments/shinkai_scene/renders/final_9x16.mp4`
-- 2 分钟 2-Wan 版：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`；清理 BGM 版：`renders_hybrid2_audio/final_9x16.mp4`
+- 2 分钟 2-Wan 版：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`；清理 BGM 版：`renders_hybrid2_music/final_9x16.mp4`
   - 121.3 s / 1080×1920 / 24 fps
   - 24 个 5 s 镜头（末镜 6.3 s）
   - quality：`PASS`
@@ -105,7 +105,7 @@
 - `shot_01`（积云翻涌）与 `shot_05`（雨街倒影）的 Wan 均已完成并接入：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`（2 Wan + 22 静帧，121.3 s，quality PASS）。Wan 分别 32.3 min / 5.83 GB 与 36.3 min / 5.92 GB。
 - 新增场景风格 ID：`shinkai_scenery`，`category: scene`；它不改变两种 core 风格（`ink_wash` / `court_green_fine_line`）的产品边界。
 
-## 2.6 30 秒全 Wan 剧情样片（进行中）
+## 2.6 30 秒全 Wan 剧情样片（`PASS_VERIFIED` 技术）
 
 为了验证“连续剧情”，不再用 24 张静帧拼贴，而是做 6 镜头 / 30 秒全 Wan vertical slice：
 
@@ -118,9 +118,9 @@
 
 - 叙事线：黄昏 → 列车 → 站台 → 雨 → 夜，一条“归途”视觉线。
 - 6 个镜头全部 Wan 视频，无静帧；音频为 BGM + SFX。
-- 成片：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）；清理 BGM 版：`renders_story_audio/final_9x16.mp4`。
+- 成片：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）；清理 BGM 版：`renders_story_music/final_9x16.mp4`。
 - Wan 耗时：`scene_01` 32.3 min、`scene_02` 24.2 min、`scene_03` 36.3 min、`scene_04` 35.4 min、`scene_05` 36.3 min、`scene_06` 35.8 min；峰值 VRAM 5.82–5.95 GB。
-- 2 分钟全 Wan 版本约需 24 个镜头 × 30–39 分钟，约 12–15 小时；这条 30 秒 slice 先验证连续性和观感。
+- 2 分钟全 Wan 版本：24 个镜头 × 30–39 分钟，约 12–15 小时；24 个 jobs 已提交 `experiments/shinkai_scene/wan24_jobs.json`（`s01..s24`），逐镜落盘到 `wan24/<sid>/`，全部成功后由 `scripts/assemble_scene_24.py` 合成 `renders_24/`。**未完成前不标记完成。**
 
 ## 3. 当前实现方式与边界
 
