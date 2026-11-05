@@ -23,6 +23,18 @@ def _run(cmd: list[str]) -> None:
         raise SystemExit(f"ffmpeg failed: {proc.stderr[-2000:]}")
 
 
+def _probe_duration(path: Path) -> float:
+    proc = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=nw=1:nk=1", str(path)],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
+    try:
+        return float(proc.stdout.strip())
+    except ValueError as exc:
+        raise SystemExit(f"cannot probe clip duration: {path}") from exc
+
+
 def _sha(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as fh:
@@ -37,6 +49,8 @@ def main() -> int:
     parser.add_argument("--clips", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--ready-dir", default=None)
+    parser.add_argument("--mode", choices=("stretch", "loop"), default="stretch",
+                        help="stretch slows the clip to the segment duration; loop repeats it")
     args = parser.parse_args()
     segments_path = (ROOT / args.segments).resolve()
     clips_dir = (ROOT / args.clips).resolve()
@@ -50,11 +64,22 @@ def main() -> int:
             continue
         duration = float(seg["duration"])
         ready = ready_dir / f"{seg['id']}.mp4"
-        _run([
-            "ffmpeg", "-y", "-v", "error", "-stream_loop", "-1", "-i", str(clip),
-            "-t", f"{duration:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
-            "-preset", "medium", "-pix_fmt", "yuv420p", str(ready),
-        ])
+        if args.mode == "stretch":
+            source_duration = max(1e-6, _probe_duration(clip))
+            factor = max(1.0, duration / source_duration)
+            cmd = [
+                "ffmpeg", "-y", "-v", "error", "-i", str(clip),
+                "-vf", f"setpts={factor:.6f}*PTS,fps=24",
+                "-t", f"{duration:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
+                "-preset", "medium", "-pix_fmt", "yuv420p", str(ready),
+            ]
+        else:
+            cmd = [
+                "ffmpeg", "-y", "-v", "error", "-stream_loop", "-1", "-i", str(clip),
+                "-t", f"{duration:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
+                "-preset", "medium", "-pix_fmt", "yuv420p", str(ready),
+            ]
+        _run(cmd)
         seg["type"] = "video"
         seg["source"] = ready.relative_to(ROOT).as_posix()
         seg["sha256"] = _sha(ready)
@@ -64,7 +89,8 @@ def main() -> int:
     out = (ROOT / args.out).resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(segments, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"ok": True, "segments": len(segments), "video_shots": used, "out": str(out)},
+    print(json.dumps({"ok": True, "segments": len(segments), "video_shots": used,
+                      "mode": args.mode, "out": str(out)},
                      ensure_ascii=False))
     return 0
 
