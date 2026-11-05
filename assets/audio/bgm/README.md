@@ -23,10 +23,26 @@ BGM 全部来自 **Keynata Commons**（机器作曲，CC0 1.0，无需署名，�
 
 | 资产 ID | 本地 WAV | Keynata track | 调式/织体 |
 |---|---|---|---|
-| `bgm_warm_pop_canon` | `warm/pop_canon_major.wav` | `jpop_3piece_11623` | 大调 canon 进行；钢琴/吉他/贝斯/鼓 |
-| `bgm_warm_strings_c` | `warm/strings_c_major.wav` | `classical_quartet_25041` | C 大调；弦乐四重奏 |
-| `bgm_warm_piano_c` | `warm/piano_c_major.wav` | `classical_piano_4016` | C 大调；立式钢琴 |
+| `bgm_warm_pop_canon` | `warm/pop_canon_major.wav` | `jpop_3piece_11623` | `REJECTED`（试听仍偏暗） |
+| `bgm_warm_strings_c` | `warm/strings_c_major.wav` | `classical_quartet_25041` | `REJECTED`（试听仍偏暗） |
+| `bgm_warm_piano_c` | `warm/piano_c_major.wav` | `classical_piano_4016` | `REJECTED`（试听仍偏暗） |
 
 - 许可：CC0-1.0，无署名，可商用；明细见 `warm/LICENSE.md`。
 - 选曲依据：Keynata 索引中的 `mode= major` + MIDI 调号；不再依据频谱猜情绪。
 - 人工指定：`scripts/r3_build.py --bgm-id <asset_id>` 会覆盖时间线里的 BGM 轨道，并把实际用的时间线写到输出目录 `audio_timeline_effective.json`。
+
+## 古典/民谣真录音（2026-11-05 最终候选）
+
+Keynata 的三条大调曲目试听后仍被用户判定"过于阴间，全部 pass"。当前候选改为 Wikimedia Commons 的公有领域/CC BY 真录音，明细见 `commons/LICENSE.md`：
+
+| 资产 ID | 本地 WAV | 作品 | 许可 |
+|---|---|---|---|
+| `bgm_mozart_k330_piano` | `commons/mozart_k330_piano.wav` | Mozart K.330 第三乐章 | Public domain |
+| `bgm_green_leaves_guitar` | `commons/green_leaves_guitar.wav` | GREEN LEAVES（Jason Shaw） | CC BY 3.0 US（需署名） |
+| `bgm_grieg_morning` | `commons/grieg_morning.wav` | Grieg《晨曲》 | Public domain |
+| `bgm_mozart_k525_strings` | `commons/mozart_k525_strings.wav` | Mozart K.525 第一乐章 | Public domain |
+| `bgm_schubert_d664_piano` | `commons/schubert_d664_piano.wav` | Schubert D.664 | Public domain |
+| `bgm_serenity_guitar` | `commons/serenity_guitar.wav` | SERENITY（Jason Shaw） | CC BY 3.0 US（需署名） |
+
+- 处理：仅 `highpass=30` + 峰值限制；不做 EQ/降噪。
+- **不抽取电影/动画原声**：商业影片配乐受版权保护，不得切片后登记为项目资产。

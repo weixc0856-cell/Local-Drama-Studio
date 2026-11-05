@@ -683,7 +683,7 @@ v1.x 明确不做：
 
 ## 21. 当前真实完成状态（2026-11-04 更新）
 
-> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **379 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
+> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **384 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
 > 本节保留历史证据标签（`PASS_STATIC`/`NOT_RUN` 等）；需求状态以 §0.4/§23 与追踪矩阵为准，映射见 §0.2。字体在隔离干净目录中由 `scripts/fetch_fonts.py` 重建并校验（6/6 OTF + 2 份 LICENSE），`load_font_config` 加载 6 个字面。
 
 ### 21.1 能力矩阵
@@ -703,7 +703,7 @@ v1.x 明确不做：
 | 脚本级 GPU 单飞锁 | `PASS_VERIFIED` | `src/drama_studio/locks.py` + `r1_batch.py` + 锁测试 |
 | 通用代码无作品硬编码 | `PASS_VERIFIED` | `tests/test_no_hardcoded_works.py` 扫描 `src`/`harness`/`schemas` 无命中 |
 | 通用短文本测试夹具 | `PASS_VERIFIED` | 「白日依山尽」LI 语料夹具 + 合成期数夹具；测试不依赖真实实验资产 |
-| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 379 passed（根 + LI，2026-11-04） |
+| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 384 passed（根 + LI，2026-11-05） |
 | FLUX 16:9 / 竖屏静帧 | `PASS_VERIFIED` | R1/R3-A 产物与报告 |
 | FLUX 参考图编辑 | `PASS_VERIFIED` | R1 |
 | Wan I2V/T2V（推近类） | `PASS_VERIFIED` | R0/R2/R2-B/R3-A |
@@ -743,7 +743,7 @@ v1.x 明确不做：
 | `segments.build` 任务 | `PASS_VERIFIED` | 真实 4 段 segments.json + meta |
 | `quality.check` 任务 | `PASS_VERIFIED` | 图片 4/4、音频、成片、哈希全部 PASS |
 | P1 端到端（3-5 分段） | `PASS_VERIFIED` | 14.0 s / 1080×1920 / 4 段 / 4 行女声 / quality PASS |
-| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 7 条 CC0 Keynata BGM 已登记；E/B 小调 2 条因「阴间」听感 `REJECTED`；新增 3 条大调暖色曲目（pop canon / C 大调四重奏 / C 大调钢琴）；30 s 与 2 min 场景片重混 quality PASS；人工听感 PENDING |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 13 条 BGM 登记：Keynata 7 条中 5 条因「阴间」`REJECTED`（E/B 小调 + 3 条大调暖色仍被否）；Wikimedia Commons 6 条（4 条 Public domain + 2 条 CC BY 3.0 US）为当前候选；30 s 与 2 min 重混 quality PASS；人工听感 PENDING；CC BY 曲目需署名 |
 | 平台包装 / 发布 / 数据 | `NOT_RUN` | 无实现 |
 | 多期夜间批处理 | `NOT_RUN` | 无调度器 |
 | 统一资产台账/版本号 | `NOT_RUN` | 只有目录扫描与构建目录 |
@@ -816,7 +816,7 @@ v1.x 明确不做：
 | 序 | 工作 | 验收 |
 |---|---|---|
 | P2-1 | 资产台账（哈希、来源、期数归属、版本） | 任一成片可反查全部输入 |
-| P2-2 | BGM/音效选型与授权登记：7 条 CC0 Keynata BGM 已登记；小调 2 条已拒绝；暖色大调 3 条待人工选定；外部音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
+| P2-2 | BGM/音效选型与授权登记：13 条 BGM 已登记；Keynata 5 条被用户否决；Commons 古典/民谣 6 条待人工选定；外部音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
 | P2-3 | 女声商用授权核验（P1 已进入正式成片） | 许可状态不再是 `UNVERIFIED` |
 | P2-4 | 平台包装与发布记录 | 一条作品有封面/标题/正文/话题/发布记录 |
 | P2-5 | 统一结果清单与成本摘要 | 每期输出成功/降级/失败 + 耗时 |
@@ -890,7 +890,7 @@ v1.x 明确不做：
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
 - 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
 - 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
-- 2026-11-05 已将 BGM 替换为 4 条 CC0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力）；旧正弦 drone 全部 REJECTED；BGM 做 180/4200Hz EQ、lowpass 与 afftdn；人工听感 PENDING。2026-11-05 用户否决小调/稀疏织体的「阴间」听感，新增 3 条大调暖色曲目（`bgm_warm_pop_canon` / `bgm_warm_strings_c` / `bgm_warm_piano_c`），`r3_build.py --bgm-id` 可显式指定；E 小调与 B 小调两条标 `REJECTED`。
+- 2026-11-05 已将 BGM 替换为 4 条 CC0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力）；旧正弦 drone 全部 REJECTED；BGM 做 180/4200Hz EQ、lowpass 与 afftdn；人工听感 PENDING。2026-11-05 用户否决小调/稀疏织体的「阴间」听感，新增 3 条大调暖色曲目，试听后仍被全部否决（`REJECTED`）。随后改用 Wikimedia Commons 的公有领域/CC BY 真录音：Mozart K.330 钢琴、Grieg《晨曲》、Mozart K.525 弦乐、Schubert D.664 钢琴（PD）与 Jason Shaw 木吉他（CC BY 3.0 US，需署名）。`r3_build.py --bgm-id` 可显式指定。**不抽取任何电影/动画原声。**
 
 ### 24.4 运动产品化
 

@@ -41,7 +41,7 @@
 - 成片：`experiments/reference_study/renders/palace/final_9x16.mp4`
 - 时长：21.3 s / 1080×1920 / 24 fps
 - 分镜：白玉天门 → 朱栏石阶 → 云海宫殿全景 → 飞檐斗拱特写
-- BGM：`bgm_warm_strings_c`（C 大调弦乐四重奏，CC0 Keynata）；暖色重混：`experiments/reference_study/renders_full_warm/palace/final_9x16.mp4`
+- BGM：`bgm_mozart_k525_strings`（莫扎特 K.525，Public domain）；古典重混：`experiments/reference_study/renders_full_classical/palace/final_9x16.mp4`
 - quality：`PASS`
 - 响度：约 -15.7 LUFS / True Peak -6.4 dBFS
 
@@ -61,7 +61,7 @@
 - 成片：`experiments/reference_study/renders/ink/final_9x16.mp4`
 - 时长：21.3 s / 1080×1920 / 24 fps
 - 分镜：月下孤舟 → 漂浮楼阁 → 青绿山水 → 月轮云海
-- BGM：`bgm_warm_piano_c`（C 大调钢琴，CC0 Keynata）；暖色重混：`experiments/reference_study/renders_full_warm/ink/final_9x16.mp4`
+- BGM：`bgm_schubert_d664_piano`（舒伯特 D.664，Public domain）；古典重混：`experiments/reference_study/renders_full_classical/ink/final_9x16.mp4`
 - quality：`PASS`
 - 响度：约 -15.7 LUFS / True Peak -7.0 dBFS
 
@@ -75,7 +75,7 @@
 
 ### 2.4 声音（不复制原片音频）
 
-- BGM：`bgm_warm_strings_c`（palace）/ `bgm_warm_piano_c`（ink），均为 C 大调 CC0 Keynata；小调弦乐二重奏已 `REJECTED`。
+- BGM：`bgm_mozart_k525_strings`（palace）/ `bgm_schubert_d664_piano`（ink），均为 Public domain 真录音；Keynata 小调与暖色大调曲目均被否决。
 - SFX：`sfx_wind_soft_30s`、`sfx_water_flow_20s`、`sfx_chime_single_6s`、`sfx_whoosh_2s`（自生成，已登记 manifest）。
 - 参考片只提供“低频铺底 + 风声/水声/钟磬 + 极简留白”的声音策略，不复制其音乐、录音或音效。
 - 带 SFX 的版本：`experiments/reference_study/renders_sfx/palace|ink/final_9x16.mp4`（quality PASS）。
@@ -119,7 +119,7 @@
 - 叙事线：黄昏 → 列车 → 站台 → 雨 → 夜，一条“归途”视觉线。
 - 6 个镜头全部 Wan 视频，无静帧；音频为 BGM + SFX。
 - 成片（旧 BGM）：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）。
-- 暖色大调重混（2026-11-05，quality PASS）：`renders_story_warm_pop/final_9x16.mp4`（pop canon）、`renders_story_warm_strings/final_9x16.mp4`（C 大调四重奏）、`renders_story_warm_piano/final_9x16.mp4`（C 大调钢琴）。三版共用同一画面，只换 BGM，供人工选定。
+- 古典/民谣重混（2026-11-05，quality PASS）：`renders_story_classical_piano/final_9x16.mp4`（Mozart K.330 钢琴）、`renders_story_acoustic_guitar/final_9x16.mp4`（Jason Shaw 木吉他）、`renders_story_orchestral/final_9x16.mp4`（Grieg《晨曲》）。三版共用同一画面，只换 BGM。
 - Wan 耗时：`scene_01` 32.3 min、`scene_02` 24.2 min、`scene_03` 36.3 min、`scene_04` 35.4 min、`scene_05` 36.3 min、`scene_06` 35.8 min；峰值 VRAM 5.82–5.95 GB。
 - 2 分钟全 Wan 版本：24 个镜头 × 30–39 分钟，约 12–15 小时；24 个 jobs 已提交 `experiments/shinkai_scene/wan24_jobs.json`（`s01..s24`），逐镜落盘到 `wan24/<sid>/`，全部成功后由 `scripts/assemble_scene_24.py` 合成 `renders_24/`。**未完成前不标记完成。**
 
