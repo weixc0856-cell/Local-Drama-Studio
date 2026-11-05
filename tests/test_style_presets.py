@@ -25,6 +25,7 @@ def test_exactly_two_core_styles() -> None:
     assert core == CORE_STYLES
     assert registry.schema_version
     assert registry.get("shinkai_scenery").category == "scene"
+    assert registry.get("ghibli_scenery").category == "scene"
 
 
 def test_presets_are_partial_until_a_full_film_exists() -> None:
@@ -137,3 +138,15 @@ def test_production_baselines_record_the_approved_ab_choice() -> None:
             assert shot.prompt
             assert shot.prompt_sha256
             assert shot.rationale
+
+
+def test_four_styles_are_negatively_isolated() -> None:
+    registry = load_style_presets(ROOT)
+    assert set(registry.ids()) == CORE_STYLES | {"shinkai_scenery", "ghibli_scenery"}
+    negative = {preset.id: preset.negative_prompt for preset in registry.styles.values()}
+    # Each style explicitly rejects the other visual languages.
+    assert "水墨" in negative["court_green_fine_line"]
+    assert "动漫" in negative["ink_wash"]
+    assert "水墨" in negative["shinkai_scenery"]
+    assert "水墨" in negative["ghibli_scenery"]
+    assert len(set(negative.values())) == 4

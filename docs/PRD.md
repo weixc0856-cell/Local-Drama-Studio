@@ -384,7 +384,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 
 ### 9.2.1 场景风格（`category: scene`）
 
-- `shinkai_scenery` 是 2026-11-05 新增的**场景短片风格**，不属于两种 core 风格（`ink_wash` / `court_green_fine_line`），也不改变“作品只选一个主风格”的规则。
+- `shinkai_scenery` 与 `ghibli_scenery` 是 2026-11-05 新增的**场景短片风格**，`category: scene`，不属于两种 core 风格（`ink_wash` / `court_green_fine_line`），也不改变“作品只选一个主风格”的规则。
 - 它只用于纯场景、无人物对白的短片；提示词固化高饱和夏日天空、体积积雨云、金时刻逆光、雨后高光倒影；`validation_status=NOT_RUN`，需真实样片后再升级。
 - 2 分钟场景片：`experiments/shinkai_scene/renders/final_9x16.mp4`（24 静帧 / 121.3 s / quality PASS）；`renders_hybrid2/final_9x16.mp4`（2 个 Wan hero + 22 静帧 / quality PASS）。
 - 若要进入正式产品，必须另行批准场景短片的范围与验收，不得把它当作角色动画能力。
@@ -683,7 +683,7 @@ v1.x 明确不做：
 
 ## 21. 当前真实完成状态（2026-11-04 更新）
 
-> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **378 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
+> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **379 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
 > 本节保留历史证据标签（`PASS_STATIC`/`NOT_RUN` 等）；需求状态以 §0.4/§23 与追踪矩阵为准，映射见 §0.2。字体在隔离干净目录中由 `scripts/fetch_fonts.py` 重建并校验（6/6 OTF + 2 份 LICENSE），`load_font_config` 加载 6 个字面。
 
 ### 21.1 能力矩阵
@@ -703,7 +703,7 @@ v1.x 明确不做：
 | 脚本级 GPU 单飞锁 | `PASS_VERIFIED` | `src/drama_studio/locks.py` + `r1_batch.py` + 锁测试 |
 | 通用代码无作品硬编码 | `PASS_VERIFIED` | `tests/test_no_hardcoded_works.py` 扫描 `src`/`harness`/`schemas` 无命中 |
 | 通用短文本测试夹具 | `PASS_VERIFIED` | 「白日依山尽」LI 语料夹具 + 合成期数夹具；测试不依赖真实实验资产 |
-| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 378 passed（根 + LI，2026-11-04） |
+| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 379 passed（根 + LI，2026-11-04） |
 | FLUX 16:9 / 竖屏静帧 | `PASS_VERIFIED` | R1/R3-A 产物与报告 |
 | FLUX 参考图编辑 | `PASS_VERIFIED` | R1 |
 | Wan I2V/T2V（推近类） | `PASS_VERIFIED` | R0/R2/R2-B/R3-A |
