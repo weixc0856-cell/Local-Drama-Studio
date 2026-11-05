@@ -54,14 +54,14 @@
       "kind": "bgm",
       "name": "水墨幽远铺底",
       "path": "assets/audio/bgm/ink_serene_60s.wav",
-      "sha256": "90b37494eef8f49ee8fbf76e5defc91b0aaa08ba7044fffca825a2869a52f635",
+      "sha256": "538bdd77c6309161959f5accd2cc8abc196e13ed9643a9c3a706b235fd7d1f13",
       "duration_ms": 60000,
       "license_type": "self-generated; project owner-owned, no third-party samples",
       "license_evidence": "assets/audio/bgm/README.md",
       "commercial_allowed": true,
       "attribution_required": false,
       "source_url": null,
-      "source": "procedural FFmpeg sine/pink-noise bed",
+      "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
       "status": "APPROVED",
       "review_status": "PENDING_HUMAN_REVIEW",
       "style_tags": [
@@ -69,24 +69,24 @@
         "ambient",
         "slow"
       ],
-      "default_gain_db": -14.0,
-      "note": "合成环境铺底，无外部采样；技术可用，人工听感待审。",
-      "added_on": "2026-11-04",
-      "generator": "scripts/make_bgm.py"
+      "default_gain_db": -15.0,
+      "generator": "scripts/make_bgm.py",
+      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
+      "added_on": "2026-11-05"
     },
     {
       "id": "bgm_court_elegant_60s",
       "kind": "bgm",
       "name": "工笔典雅铺底",
       "path": "assets/audio/bgm/court_elegant_60s.wav",
-      "sha256": "9244ba4f965660cc85da400e205733c08ef1b07e7b4c2e285edae62e41d6bf5a",
+      "sha256": "d2405447a9ae03a18ab1386c9b8562ceaa6449f05b08804d78b4d2792a6937e0",
       "duration_ms": 60000,
       "license_type": "self-generated; project owner-owned, no third-party samples",
       "license_evidence": "assets/audio/bgm/README.md",
       "commercial_allowed": true,
       "attribution_required": false,
       "source_url": null,
-      "source": "procedural FFmpeg sine/pink-noise bed",
+      "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
       "status": "APPROVED",
       "review_status": "PENDING_HUMAN_REVIEW",
       "style_tags": [
@@ -94,10 +94,10 @@
         "ambient",
         "elegant"
       ],
-      "default_gain_db": -14.0,
-      "note": "合成环境铺底，无外部采样；技术可用，人工听感待审。",
-      "added_on": "2026-11-04",
-      "generator": "scripts/make_bgm.py"
+      "default_gain_db": -15.0,
+      "generator": "scripts/make_bgm.py",
+      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
+      "added_on": "2026-11-05"
     },
     {
       "id": "sfx_wind_soft_30s",
@@ -191,6 +191,56 @@
       "default_gain_db": -24.0,
       "note": "合成音效，无外部采样；技术可用，人工听感待审。",
       "added_on": "2026-11-04"
+    },
+    {
+      "id": "bgm_shinkai_piano_60s",
+      "kind": "bgm",
+      "name": "新海诚钢琴铺底",
+      "path": "assets/audio/bgm/shinkai_piano_60s.wav",
+      "sha256": "5a4b4e4dcb95a55748ac8f9552cc981ebaf27297f89df5e3446362d93475c8a8",
+      "duration_ms": 60000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/bgm/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "shinkai_scenery",
+        "piano",
+        "emotional"
+      ],
+      "default_gain_db": -16.0,
+      "generator": "scripts/make_bgm.py",
+      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
+      "added_on": "2026-11-05"
+    },
+    {
+      "id": "bgm_ghibli_pastoral_60s",
+      "kind": "bgm",
+      "name": "吉卜力田园铺底",
+      "path": "assets/audio/bgm/ghibli_pastoral_60s.wav",
+      "sha256": "27eaa0fc28e04d58db9b3a0122f98ee30c3d0ae188bf08127214c0ef40b6a5df",
+      "duration_ms": 60000,
+      "license_type": "self-generated; project owner-owned, no third-party samples",
+      "license_evidence": "assets/audio/bgm/README.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "source_url": null,
+      "source": "procedural FFmpeg synthesis; EQ + afftdn cleaned",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ghibli_scenery",
+        "pastoral",
+        "warm"
+      ],
+      "default_gain_db": -16.0,
+      "generator": "scripts/make_bgm.py",
+      "note": "合成环境铺底，无外部采样；已做 180/4200Hz EQ、12k/6k/5k lowpass 与 afftdn；人工听感待审。",
+      "added_on": "2026-11-05"
     }
   ],
   "release_policy": {
@@ -201,7 +251,7 @@
       "APPROVED"
     ],
     "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。",
-    "registered_bgm_count": 2,
+    "registered_bgm_count": 4,
     "registered_sfx_count": 4
   }
 }

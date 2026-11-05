@@ -743,7 +743,7 @@ v1.x 明确不做：
 | `segments.build` 任务 | `PASS_VERIFIED` | 真实 4 段 segments.json + meta |
 | `quality.check` 任务 | `PASS_VERIFIED` | 图片 4/4、音频、成片、哈希全部 PASS |
 | P1 端到端（3-5 分段） | `PASS_VERIFIED` | 14.0 s / 1080×1920 / 4 段 / 4 行女声 / quality PASS |
-| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 2 条自生成 BGM 已登记；14 s 真实 build + quality PASS；人工听感 PENDING；SFX 无授权素材 |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 4 条自生成 BGM（ink/court/shinkai/ghibli）已登记并做 EQ/afftdn；30 s 与 2 min 场景片 quality PASS；人工听感 PENDING；SFX 无外部授权素材 |
 | 平台包装 / 发布 / 数据 | `NOT_RUN` | 无实现 |
 | 多期夜间批处理 | `NOT_RUN` | 无调度器 |
 | 统一资产台账/版本号 | `NOT_RUN` | 只有目录扫描与构建目录 |
@@ -816,7 +816,7 @@ v1.x 明确不做：
 | 序 | 工作 | 验收 |
 |---|---|---|
 | P2-1 | 资产台账（哈希、来源、期数归属、版本） | 任一成片可反查全部输入 |
-| P2-2 | BGM/音效选型与授权登记：2 条自生成 BGM 已登记；音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
+| P2-2 | BGM/音效选型与授权登记：4 条自生成 BGM 已登记并清理；外部音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
 | P2-3 | 女声商用授权核验（P1 已进入正式成片） | 许可状态不再是 `UNVERIFIED` |
 | P2-4 | 平台包装与发布记录 | 一条作品有封面/标题/正文/话题/发布记录 |
 | P2-5 | 统一结果清单与成本摘要 | 每期输出成功/降级/失败 + 耗时 |
@@ -890,7 +890,7 @@ v1.x 明确不做：
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
 - 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
 - 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
-- 2026-11-04 已登记 2 条自生成 BGM 与 4 条自生成 SFX（wind/water/chime/whoosh）；人工听感仍为 PENDING。
+- 2026-11-05 已登记 4 条自生成 BGM（ink/court/shinkai/ghibli）与 4 条自生成 SFX（wind/water/chime/whoosh）；BGM 已做 180/4200Hz EQ、lowpass 与 afftdn；人工听感仍为 PENDING。
 
 ### 24.4 运动产品化
 

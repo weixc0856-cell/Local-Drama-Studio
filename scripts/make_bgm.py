@@ -1,4 +1,4 @@
-"""Rebuild the two self-generated BGM beds.
+"""Rebuild the four self-generated BGM beds.
 
 These are deliberately simple, deterministic FFmpeg graphs: pentatonic sine
 layers plus a quiet pink-noise texture, slow tremolo, band limits, fades and
@@ -53,6 +53,20 @@ def build(out_dir: Path) -> list[dict[str, object]]:
             "tremolo": [0.16, 0.20, 0.12, 0.24],
             "lowpass": 4200,
         },
+        "shinkai_piano_60s.wav": {
+            "freqs": [261.63, 329.63, 392.0, 523.25],
+            "noise": 0.006,
+            "gains": [0.12, 0.08, 0.06, 0.035],
+            "tremolo": [0.12, 0.15, 0.18, 0.22],
+            "lowpass": 6000,
+        },
+        "ghibli_pastoral_60s.wav": {
+            "freqs": [196.0, 246.94, 293.66, 392.0],
+            "noise": 0.010,
+            "gains": [0.12, 0.09, 0.07, 0.03],
+            "tremolo": [0.14, 0.18, 0.16, 0.20],
+            "lowpass": 5000,
+        },
     }
     output = []
     for name, spec in specs.items():
@@ -71,7 +85,9 @@ def build(out_dir: Path) -> list[dict[str, object]]:
         labels.append("[anoise]")
         filters.append(
             f"{''.join(labels)}amix=inputs={len(labels)}:duration=longest:normalize=0,"
-            f"highpass=f=55,lowpass=f={spec['lowpass']},"
+            "highpass=f=70,equalizer=f=180:t=q:w=1.5:g=-3,"
+            "equalizer=f=4200:t=q:w=2.0:g=-4,"
+            f"lowpass=f={spec['lowpass']},afftdn=nf=-30,"
             "afade=t=in:st=0:d=3,afade=t=out:st=57:d=3,alimiter=limit=0.85[out]"
         )
         _run([
