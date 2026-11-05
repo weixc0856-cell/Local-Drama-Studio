@@ -96,7 +96,7 @@
 - 静帧：`experiments/shinkai_scene/images/shot_01..24`，FLUX 576×1024 / 4 步 / CFG 1.0，24/24 成功。
 - 内容：夏日积云、空教室、铁道口、电车、雨后街道、天台、神社、便利店、星空、樱花河岸、隧道出口等；无人物、无对白。
 - 2 分钟静帧版：`experiments/shinkai_scene/renders/final_9x16.mp4`
-- 2 分钟 2-Wan 版：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`
+- 2 分钟 2-Wan 版：`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`；清理 BGM 版：`renders_hybrid2_audio/final_9x16.mp4`
   - 121.3 s / 1080×1920 / 24 fps
   - 24 个 5 s 镜头（末镜 6.3 s）
   - quality：`PASS`
@@ -118,7 +118,7 @@
 
 - 叙事线：黄昏 → 列车 → 站台 → 雨 → 夜，一条“归途”视觉线。
 - 6 个镜头全部 Wan 视频，无静帧；音频为 BGM + SFX。
-- 成片：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）。
+- 成片：`experiments/shinkai_scene/renders_story/final_9x16.mp4`（31.3 s / 1080×1920 / quality PASS）；清理 BGM 版：`renders_story_audio/final_9x16.mp4`。
 - Wan 耗时：`scene_01` 32.3 min、`scene_02` 24.2 min、`scene_03` 36.3 min、`scene_04` 35.4 min、`scene_05` 36.3 min、`scene_06` 35.8 min；峰值 VRAM 5.82–5.95 GB。
 - 2 分钟全 Wan 版本约需 24 个镜头 × 30–39 分钟，约 12–15 小时；这条 30 秒 slice 先验证连续性和观感。
 

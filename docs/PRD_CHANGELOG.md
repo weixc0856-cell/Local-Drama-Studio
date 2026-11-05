@@ -179,6 +179,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 参考研究 Wan hybrid | `PASS_VERIFIED`（技术） | 两片各 4/4 Wan 镜头；palace 4 镜 24.0/23.98/33.2/34.94 min；ink 4 镜 29.1/38.6/36.72/37.08 min；两条 21.3 s full-Wan quality PASS |
 | 两分钟场景片（`shinkai_scenery`） | `PASS_VERIFIED`（技术） | 24 镜头 / 121.3 s；`renders/final_9x16.mp4` 与 `renders_hybrid2/final_9x16.mp4` quality PASS；2 个 hero shot 用 Wan（32.3/36.3 min）；其余 22 静帧 |
 | 30 秒全 Wan 剧情 slice | `PASS_VERIFIED`（技术） | 6/6 Wan 镜头；31.3 s；`experiments/shinkai_scene/renders_story/final_9x16.mp4`；quality PASS；无静帧 |
+| BGM 清理与四风格资产 | `PASS_VERIFIED`（技术） | 4 条自生成 BGM：ink/court/shinkai/ghibli；180/4200Hz EQ、lowpass、afftdn；30 s 与 2 min 场景片重混 quality PASS |
 | 全量测试 | 379 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。

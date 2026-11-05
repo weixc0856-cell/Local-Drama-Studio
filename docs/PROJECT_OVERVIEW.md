@@ -75,7 +75,7 @@ Local-Drama-Studio 是一套**本地运行的东方视觉短视频生产工具**
 | 2.5D 分层 | `PASS_STATIC`（opt-in） | `PlateSpec` + 渲染路径 + 真实渲染 PASS；未成为默认 |
 | 工作台（项目/期数/风格/任务/媒体） | `PASS_VERIFIED` | 39 个真实任务；API/媒体测试通过 |
 | LI 五轮真实 LLM | `PARTIAL` | 3 次 5/5；人工审核 NOT_RUN |
-| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 2 条自生成 BGM 已登记；14 s 真实 build + quality PASS；人工听感 PENDING；SFX 无授权素材 |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 4 条自生成 BGM 已登记并清理；30 s/2 min 场景片 quality PASS；人工听感 PENDING；SFX 无外部授权素材 |
 | 商用授权 | `PARTIAL` | 字体/模型/自录声音有登记；预置音色/生成音频商用 UNVERIFIED |
 | 批处理 / 断点续跑 | `NOT_RUN` / 部分 | `r1_batch` 有 job 级续跑；无阶段级 orchestrator |
 | 平台发布 / 数据 | `NOT_IMPLEMENTED` | 只有规范文档 |
