@@ -183,6 +183,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 暖色大调 BGM 与小调否决 | `PASS_VERIFIED`（技术） | 用户否决「阴间」听感后，E/B 小调两条 BGM 标 `REJECTED`；新增 3 条 Keynata 大调曲目（`bgm_warm_pop_canon` / `bgm_warm_strings_c` / `bgm_warm_piano_c`）；`r3_build.py --bgm-id` 支持显式指定；31.3 s 三版、2 min、palace/ink 重混 quality PASS |
 | Commons 真录音 BGM | `PASS_VERIFIED`（技术） | 用户否决全部 Keynata 曲目后，登记 Wikimedia Commons 4 条 PD + 2 条 CC BY 录音；Mozart K.330/K.525、Grieg《晨曲》、Schubert D.664、Jason Shaw 木吉他；31.3 s 三版、2 min 两版、palace/ink 重混 quality PASS |
 | 响度校正 | `PASS_VERIFIED`（技术） | `soundscape.master` 增加处理后二次 loudnorm：ink 从 -19.9 修正到 -16.4 LUFS；新增回归测试 |
+| 两分钟验收计划 | `IN_PROGRESS` | 三条对标片下载并实测（切点/镜长/语法），写入 `REFERENCE_FILMS.md`；24 镜全 Wan 水墨片链条 `run_ink_film.py` 排在 Shinkai 批次之后 |
 | 全量测试 | 384 passed | 2026-11-05 `pytest`（新增音频资产别名、响度校正、登记工具测试） |
 | 全量测试 | 379 passed | 2026-11-04 `pytest` |
 

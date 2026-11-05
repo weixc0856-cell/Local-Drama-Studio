@@ -86,7 +86,8 @@
 | R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM 改用 Wikimedia Commons 公有领域/CC BY 古典与木吉他录音（Mozart/Grieg/Schubert/Jason Shaw），Keynata 5 条被否决；CC BY 曲目需署名；不抽取电影原声；SFX/环境音与商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
 | 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
-| 两分钟场景片 | ✅ `PASS_VERIFIED`（技术）：24 镜头 / 121.3 s / 1080×1920 / 2 个 Wan hero + 22 静帧；`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`，quality PASS；风格 `shinkai_scenery`（scene，非 core） |
+| 两分钟场景片 | ⏳ 24 镜全 Wan 批次生成中（`experiments/shinkai_scene/wan24_jobs.json`，3/18）；旧的 2 Wan + 22 静帧版只作技术兜底；`renders_hybrid2_classical`（Commons 钢琴 BGM）quality PASS |
+| 两分钟水墨片（`ACCEPTANCE-2MIN-001`） | ⏳ 生产链已启动：24 关键帧 → 24 Wan → 120 s；`scripts/run_ink_film.py` 排在 Shinkai 批次之后；验收标准见 [REFERENCE_FILMS.md](docs/REFERENCE_FILMS.md) |
 | 30 秒全 Wan 剧情 slice | ✅ `PASS_VERIFIED`（技术）：6/6 Wan 镜头 / 31.3 s / 无静帧；`experiments/shinkai_scene/renders_story/final_9x16.mp4`，quality PASS |
 | TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
 | 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做）；另加 `shinkai_scenery` / `ghibli_scenery` scene 风格（2 分钟场景片，NOT_RUN/技术样片；四风格 negative prompt 互斥） |
