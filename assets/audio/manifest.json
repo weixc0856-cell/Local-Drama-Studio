@@ -449,7 +449,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Mozart,_Wolfgang_Amadeus_%E2%80%94_Piano_Sonata_No._10_in_C_major,_K._330,_3rd_movement_%E2%80%94_Vadim_Chaimovich_%E2%80%94_Musopen_-8825.mp3",
       "source": "Vadim Chaimovich / Musopen",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "shinkai_scenery",
         "piano",
@@ -458,7 +458,7 @@
         "bright"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Vadim Chaimovich / Musopen",
       "source_platform": "wikimedia_commons"
@@ -478,7 +478,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Jason_Shaw_-_GREEN_LEAVES.ogg",
       "source": "Jason Shaw / audionautix.com",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "ghibli_scenery",
         "guitar",
@@ -487,7 +487,7 @@
         "warm"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Jason Shaw (audionautix.com)",
       "source_platform": "wikimedia_commons"
@@ -507,7 +507,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac",
       "source": "Musopen Symphony",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "shinkai_scenery",
         "orchestral",
@@ -515,7 +515,7 @@
         "sunrise"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Musopen Symphony",
       "source_platform": "wikimedia_commons"
@@ -535,7 +535,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Mozart_K525_Serenade_in_G_Major_1_-_Allegro.ogg",
       "source": "Musopen / European Archive",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "court_green_fine_line",
         "strings",
@@ -543,7 +543,7 @@
         "classical"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Musopen / European Archive",
       "source_platform": "wikimedia_commons"
@@ -563,7 +563,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Schubert_-_Piano_Sonata_No._13_in_A_major,_D664_-_I._Allegro_moderato_(Paul_Pitman).flac",
       "source": "Paul Pitman / Musopen",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "ink_wash",
         "piano",
@@ -571,7 +571,7 @@
         "classical"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Paul Pitman / Musopen",
       "source_platform": "wikimedia_commons"
@@ -591,7 +591,7 @@
       "source_url": "https://commons.wikimedia.org/wiki/File:Jason_Shaw_-_SERENITY.ogg",
       "source": "Jason Shaw / audionautix.com",
       "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "review_status": "ACCEPTED_PENDING_FINAL",
       "style_tags": [
         "ghibli_scenery",
         "guitar",
@@ -599,7 +599,7 @@
         "calm"
       ],
       "default_gain_db": -16.0,
-      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "note": "User audition 2026-11-05: \"much better\"; final pick rides on the 2-minute acceptance.",
       "added_on": "2026-11-05",
       "artist": "Jason Shaw (audionautix.com)",
       "source_platform": "wikimedia_commons"

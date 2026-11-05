@@ -536,3 +536,4 @@ line2    8.98 -> 12.44
 - 处理：`highpass=f=30,alimiter=limit=0.95` → 48 kHz mono；不做 EQ/降噪。
 - 证据与来源清单：`assets/audio/bgm/commons/LICENSE.md`。
 - 拒绝项：任何电影/动画原声切片（《山水情》《秒速5厘米》《龙猫》《千里江山图》展演录音等）。未获书面授权不得登记为项目资产。
+- 2026-11-05 用户试听反馈："好很多"。6 条 commons 曲目 `review_status=ACCEPTED_PENDING_FINAL`；最终采用哪一条随 2 分钟验收片确定。

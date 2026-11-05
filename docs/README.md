@@ -10,6 +10,7 @@
 | 文档 | 内容 |
 |---|---|
 | [REFERENCE_STYLE_STUDY.md](REFERENCE_STYLE_STUDY.md) | 参考片风格研究：东方仙宫 / 水墨梦境 previs、可抄规则与边界 |
+| [REFERENCE_FILMS.md](REFERENCE_FILMS.md) | 2026-11-05 三条两分钟对标片的实测拆解、镜头语法与验收标准 |
 | [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | 产品是什么、能做什么、两种风格、TTS 策略、边界 |
 | [PRODUCTION_PIPELINE_GUIDE.md](PRODUCTION_PIPELINE_GUIDE.md) | 四类生产路径、每阶段输入/输出/命令/失败恢复/续跑 |
 | [USER_GUIDE.md](USER_GUIDE.md) | 从环境准备到一篇成片、工作台操作、复用与排障 |
