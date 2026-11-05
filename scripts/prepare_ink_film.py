@@ -84,12 +84,12 @@ def main() -> int:
     timeline = {
         "schema_version": "1.0",
         "sample_rate": 48000,
-        "duration_ms": 120000,
+        "duration_ms": 121300,
         "tracks": [
             {"track_id": "bgm_main", "type": "bgm", "asset_id": "bgm_schubert_d664_piano",
-             "duration_ms": 120000, "gain_db": -15.0, "loop": True,
+             "duration_ms": 121300, "gain_db": -15.0, "loop": True,
              "fade_in_ms": 2500, "fade_out_ms": 5000, "ducking": None},
-            {"track_id": "sfx_main", "type": "sfx", "duration_ms": 120000, "gain_db": 0.0,
+            {"track_id": "sfx_main", "type": "sfx", "duration_ms": 121300, "gain_db": 0.0,
              "events": [
                  {"event_id": "water_1", "asset_id": "sfx_water_flow_20s", "start_ms": 0,
                   "duration_ms": 20000, "gain_db": -20},
