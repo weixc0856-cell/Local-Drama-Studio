@@ -2,6 +2,7 @@
 
 > 文档状态：`DECISION`（S1 规范落地，2026-11-03）。
 > 本文件是产品两种核心视觉风格的唯一规范来源；可执行配置见 `config/styles.yaml`，校验与导出见 `src/drama_studio/style_presets.py`。
+> 2026-11-05 补充：`config/styles.yaml` 还包含 `shinkai_scenery` 与 `ghibli_scenery`（`category: scene`）场景短片风格；它们不属于两种 core 风格，只用于无人物对白的纯场景片，详见 `docs/REFERENCE_STYLE_STUDY.md` §2.5。
 > 能力状态使用 `docs/PRD.md` §0.2 词典。**规范存在不等于已经生成、验证或进入成片。**
 
 ## 0. 定位与边界

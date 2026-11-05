@@ -134,6 +134,10 @@
 | 适用内容 | 山水/长卷/建筑/花鸟/空镜 | 山水/云雾/水面/花鸟/空镜 |
 | `validation_status`（配置字段） | `PARTIAL` | `PARTIAL`（技术样片 + A/B 选型已做，完整作品未做） |
 
+### 5.1.1 场景风格 `shinkai_scenery` / `ghibli_scenery`
+
+`config/styles.yaml` 新增两套 `category: scene` 风格：`shinkai_scenery`（高饱和天空、体积积雨云、金时刻逆光、雨后倒影）与 `ghibli_scenery`（手绘水粉、温润草木绿、田园/森林/老式建筑）。两者都不是 core 风格，`validation_status=NOT_RUN`，且 negative prompt 显式排斥另一套风格；完整场景样片见 `experiments/shinkai_scene/renders/`。
+
 ### 5.2 风格配置的边界
 
 - `visual_language` + `positive_prompt` 是自包含的材质/线条/细节描述，进入 `script_engine.compose_visual_prompt`。
@@ -309,13 +313,13 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | `soundscape.voice_dynamics.enabled` | `false` | `soundscape.py` | 开启后可达 -16 LUFS |
 | `soundscape.voice_style` | `broadcast_light` | `soundscape.py` | 06 |
 | `soundscape.ambience.track` | `""` | `soundscape.py` | 无授权素材 |
-| `soundscape.bgm.track` | `""` | `soundscape.py` | 无授权素材 |
+| `soundscape.bgm.track` | `""` | `soundscape.py` | BGM 走 timeline 的 `asset_id`，不走该字段 |
 | `soundscape.ducking.enabled` | `true` | `soundscape.py` | 有 BGM 时生效 |
 | `loudness.dialogue_lufs` | -16.0 | `soundscape.py` | soundscape 关闭时 `r3_build` 硬编码 -16 |
 | `loudness.true_peak_db` | -1.5 | `soundscape.py` | 同上 |
-| `loudness.bgm_lufs` | -26.0 | `soundscape.py` | BGM 未接入 |
+| `loudness.bgm_lufs` | -26.0 | `soundscape.py` | 参考值；timeline BGM 默认 gain -14 dB，最终两遍 loudnorm 到 -16 LUFS |
 
-> 当前没有 BGM/环境音；`ambience.track`/`bgm.track` 为空。不要在没有授权的情况下填入曲目。
+> 当前可用 BGM：`bgm_mozart_k330_piano`、`bgm_green_leaves_guitar`、`bgm_grieg_morning`、`bgm_mozart_k525_strings`、`bgm_schubert_d664_piano`、`bgm_serenity_guitar`（4 条 PD + 2 条 CC BY，见 `assets/audio/bgm/commons/`）以及 `bgm_court_strings_duo`、`bgm_ghibli_quartet`；Keynata 其余曲目与旧 drone 全部 `REJECTED`。CC BY 曲目必须署名。`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 或 `--bgm-id` 接入。
 
 ---
 
@@ -331,7 +335,22 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | QA | `quality --audio-timeline --audio-assets` | 检查事件边界、资产哈希/状态、轨道结构 |
 | 旧路径 | `r3_build` 不传 `--audio-timeline` | 仍逐行 `adelay/amix`，不改变历史行为 |
 
-> BGM/SFX 目前没有已授权素材；合成测试只使用合成音，不能作为内容素材入库。
+> BGM 现为 Wikimedia Commons 的公有领域/CC BY 真录音（`assets/audio/bgm/commons/`）：4 条 Public domain + 2 条 CC BY 3.0 US（需署名）；Keynata 5 条与旧正弦 drone 全部 `REJECTED`；SFX 为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
+
+**登记新音频**：`scripts/audio_asset_entry.py <file> --license <license> --source-platform <platform> --artist <name> --status APPROVED` 会计算 SHA-256、ffprobe 时长并输出可直接粘贴的条目；`APPROVED` 条目必须给出已验证的 `--license`，需要署名的曲目必须同时给 `--attribution-required --attribution-text`。
+
+**资产字段两种写法都接受**：旧版 `id`/`kind`/`license_type` 与模板版 `asset_id`/`type`/`license`/`attribution_text`/`tags` 由 `voice/audio_assets.py` 归一到同一模型；`style` 会转成 `style_tags`。新增字段 `artist`、`source_platform`、`attribution` 用于来源与署名追踪。
+
+**人工指定 BGM（`--bgm-id`）**：不必改时间线 JSON，直接覆盖 BGM 轨的资产：
+
+```powershell
+.venv\Scripts\python.exe scripts/r3_build.py `
+  --segments <segments.json> --audio <audio_manifest.json> `
+  --audio-timeline <audio_timeline.json> --audio-assets assets/audio/manifest.json `
+  --out <render_dir> --bgm-id bgm_mozart_k330_piano
+```
+
+构建会把实际使用的时间线写到 `<render_dir>/audio_timeline_effective.json`，便于反查。候选资产：`bgm_mozart_k330_piano`（明亮钢琴）、`bgm_green_leaves_guitar`（木吉他）、`bgm_grieg_morning`（晨曲）、`bgm_mozart_k525_strings`、`bgm_schubert_d664_piano`、`bgm_serenity_guitar`。不要用小调曲目再用 EQ 去"修情绪"。
 
 ---
 
@@ -448,6 +467,6 @@ TTS 模式字段已接线：`audio.yaml tts.mode` 是有效默认，`settings.tt
 | 字幕 | Source Han Sans CN Regular 56 px | 正式构建 |
 | 配音 | SFT 中文女；recitation/classical_recitation | R3-D 决策 |
 | 零样本 | 仅显式选择；CosyVoice2-0.5B | 产品决策 |
-| 声景 | 先关闭或保持 `broadcast_light`；BGM/SFX 留空 | 当前配置 |
+| 声景 | `broadcast_light`；BGM 通过 timeline 接入；SFX 留空 | 当前配置 |
 
 > “推荐”不等于“已验证适用于所有题材”；每次风格/题材变化都要重新看片。

@@ -172,7 +172,20 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | 风格锁定（`PRD-STYLE-003/004`） | `IMPLEMENTED_NOT_VERIFIED` | `style_lock.py`；episode snapshot `_style_lock{revision,sha256,history}`；`preset_id` 映射 YAML；任务拒绝不同 style；期数详情可创建新 revision；8 个单测 + API 测试 |
 | 工作流页节点（`PRD-UX-001`） | `IMPLEMENTED_NOT_VERIFIED` | `discovery._workflow` 增加 package/static/aesthetic/motion；script/voice 指向真实任务；删除过期文案；API 测试 |
 | 跨镜头风格一致性（`PRD-STYLE-007`） | `PASS_VERIFIED` | `style_consistency.py` + `style.consistency`；P1 4 镜头修正后技术 OK（ΔE 9.22 / luma 7.13）；项目所有者 2026-11-04 明确通过；最终 build 接入待做 |
-| 全量测试 | 372 passed | 2026-11-04 `pytest` |
+| BGM 资产与多轨混音（`PRD-AUDIO-004/005`） | `PASS_VERIFIED` | 2 条自生成 BGM 登记 `assets/audio/manifest.json`；P1 14.0 s 真实 build + BGM timeline；quality PASS；`experiments/bgm_mix_check/renders3/build_manifest.json` |
+| Common Voice 27.0 筛选 | `TECHNICALLY_VALIDATED`（2 primary）/ `PENDING_REVIEW`（2 alternate） | 本机档案筛选 4 条；原始 16 kHz mono；2 条 zero-shot 技术 PASS；未镜像、未反推身份、未批准生产 |
+| 视频镜头契约（`PRD-MOTION-004`） | `IMPLEMENTED_NOT_VERIFIED` | `ScriptShot.type=video` + `video_prompt`；`build_video_jobs` 生成 Wan I2V jobs；`build_segments --clips --allow-partial-clips` 混合片段/静帧；2 项生产测试 + 1 项脚本测试 |
+| 自生成 SFX 资产 | `IMPLEMENTED_NOT_VERIFIED` | `sfx_wind/water/chime/whoosh` 已登记 manifest；参考研究 timelines 已接入；人工听感 PENDING |
+| 参考研究 Wan hybrid | `PASS_VERIFIED`（技术） | 两片各 4/4 Wan 镜头；palace 4 镜 24.0/23.98/33.2/34.94 min；ink 4 镜 29.1/38.6/36.72/37.08 min；两条 21.3 s full-Wan quality PASS |
+| 两分钟场景片（`shinkai_scenery`） | `PASS_VERIFIED`（技术） | 24 镜头 / 121.3 s；`renders/final_9x16.mp4` 与 `renders_hybrid2/final_9x16.mp4` quality PASS；2 个 hero shot 用 Wan（32.3/36.3 min）；其余 22 静帧 |
+| 30 秒全 Wan 剧情 slice | `PASS_VERIFIED`（技术） | 6/6 Wan 镜头；31.3 s；`experiments/shinkai_scene/renders_story/final_9x16.mp4`；quality PASS；无静帧 |
+| BGM 清理与四风格资产 | `PASS_VERIFIED`（技术） | 旧正弦 drone 全部 `REJECTED`；替换为 4 条 CC0 Keynata 弦乐/钢琴曲（ink/court/shinkai/ghibli）；EQ/afftdn 清理；30 s/2 min 场景片重混 quality PASS |
+| 暖色大调 BGM 与小调否决 | `PASS_VERIFIED`（技术） | 用户否决「阴间」听感后，E/B 小调两条 BGM 标 `REJECTED`；新增 3 条 Keynata 大调曲目（`bgm_warm_pop_canon` / `bgm_warm_strings_c` / `bgm_warm_piano_c`）；`r3_build.py --bgm-id` 支持显式指定；31.3 s 三版、2 min、palace/ink 重混 quality PASS |
+| Commons 真录音 BGM | `PASS_VERIFIED`（技术） | 用户否决全部 Keynata 曲目后，登记 Wikimedia Commons 4 条 PD + 2 条 CC BY 录音；Mozart K.330/K.525、Grieg《晨曲》、Schubert D.664、Jason Shaw 木吉他；31.3 s 三版、2 min 两版、palace/ink 重混 quality PASS |
+| 响度校正 | `PASS_VERIFIED`（技术） | `soundscape.master` 增加处理后二次 loudnorm：ink 从 -19.9 修正到 -16.4 LUFS；新增回归测试 |
+| 两分钟验收计划 | `IN_PROGRESS` | 三条对标片下载并实测（切点/镜长/语法），写入 `REFERENCE_FILMS.md`；24 镜全 Wan 水墨片链条 `run_ink_film.py` 排在 Shinkai 批次之后 |
+| 全量测试 | 384 passed | 2026-11-05 `pytest`（新增音频资产别名、响度校正、登记工具测试） |
+| 全量测试 | 379 passed | 2026-11-04 `pytest` |
 
 **修正历史记录**：本文件 §3 中“`config/audio.yaml` 未改默认”“`tts.py` 未改默认”的表述是治理轮的历史状态；后续实现批次已改为 `zero_shot`，并完成真实 2 行验证。正式 PRD 仍未写入 AUDIO/VOICE-ASSET/MOTION/STORY/QA 提案需求，相关实现只能标 `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL`。
 

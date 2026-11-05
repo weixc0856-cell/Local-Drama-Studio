@@ -43,7 +43,7 @@ styles:
     character_design: 人物以远景或中景出现，比例准确，衣纹线条清晰；v1 不承诺跨镜头正脸一致
     environment_design: 山石、树木、建筑、水面结构明确；同一空间内山形与建筑方位稳定，不换岸、不跳变
     positive_prompt: 宋代院体青绿工笔风格，绢本设色，细密绢纹与矿物颜料层；石青石绿为主，赭石泥金点缀；游丝描与铁线描勾勒的建筑、树木、山石与花鸟结构清晰；远近层次分明，留白克制；克制而精致，不是照片写实
-    negative_prompt: 现代建筑，电线，霓虹灯，高饱和青橙调色，塑料质感，CG 发光粒子，过度磨皮，照片写实，文字，水印，字幕，低清晰度，结构崩坏，多余肢体
+    negative_prompt: 现代建筑，电线，霓虹灯，高饱和青橙调色，塑料质感，CG 发光粒子，过度磨皮，照片写实，文字，水印，字幕，低清晰度，结构崩坏，多余肢体，水墨渗染，粗糙笔触，现代 3D，强烈镜头光晕，高对比动漫天空
 
     reference_assets: []
     aspect_ratio: "9:16"
@@ -214,7 +214,7 @@ styles:
     character_design: 人物概括、虚化或剪影；不追求面部细节，不承诺跨镜头一致
     environment_design: 山、水、云、树以墨色层次区分；空间关系依靠叠墨与留白，不依靠硬透视
     positive_prompt: 东方写意水墨风格，生宣纸本，墨分五色，浓淡干湿自然渗化；大面积留白，笔触概括，局部虚化；以墨黑灰为主，少量赭石与淡花青；画面气韵流动，不是黑白滤镜
-    negative_prompt: 黑白滤镜，硬边缘阈值，矢量插画，照片写实，高饱和，现代建筑，文字，水印，字幕，CG 发光，结构崩坏，多余肢体
+    negative_prompt: 黑白滤镜，硬边缘阈值，矢量插画，照片写实，高饱和，现代建筑，文字，水印，字幕，CG 发光，结构崩坏，多余肢体，动漫，卡通，现代 3D，锐利数码线稿，镜头光晕，水粉厚涂，绢本设色
 
     reference_assets: []
     aspect_ratio: "9:16"
@@ -365,6 +365,456 @@ styles:
 
 # 2026-11-04 人工 A/B 选型基线。完整 prompt 与 sha256 来自 source_snapshot；
 # 生成链路可按 style_id 读取 production_baselines，但不得按 style_id 写代码分支。
+  shinkai_scenery:
+    id: shinkai_scenery
+    name: 新海诚式透明光影场景
+    name_en: Luminous Anime Scenery
+    description: 现代日本动画电影背景美术：高饱和夏日天空、体积积雨云、金时刻逆光与雨后高光倒影，主要用于纯场景短片。
+    validation_status: NOT_RUN
+    visual_language: 现代日本动画电影背景美术；高饱和蔚蓝天空与体积积雨云，金时刻逆光，雨后路面高光倒影，空气透视与镜头光晕；细节丰富但画面干净，无人物
+    color_palette:
+      天空: '#3F8FD2'
+      积云: '#F2F7FB'
+      夕阳: '#F4B860'
+      阴影: '#29405E'
+      草木: '#6E9F58'
+      路面: '#4A4F57'
+      高光: '#FFF3DA'
+    lighting: 金时刻低角度逆光与云隙光；高对比但不过曝；雨后高光与水面反射；阴影保留蓝色层次
+    camera_language: 慢速推近、缓慢拉远、横移长卷；轻微镜头光晕，不用手持晃动
+    composition: 电影级广角与纵深；天空/积云占画面重要比例；前景（电线/栏杆/草丛）—中景（街道/铁道/水面）—远景（山/云）三层分明；9:16 竖屏
+    character_design: 无人物或仅远处剪影；不承诺同脸
+    environment_design: 现代日本小镇、铁道、学校、便利店、河堤、海边与城市天台；建筑与电线结构清晰，云层体积感强
+    positive_prompt: 现代日本动画电影背景美术，超精细场景，高饱和蔚蓝天空，巨大的体积积雨云，金时刻逆光与镜头光晕，雨后路面高光倒影，空气透视，细节丰富，画面干净，无人物
+    negative_prompt: 人物特写，人脸，文字，水印，logo，低清晰度，结构崩坏，多余肢体，照片写实，过饱和脏色，塑料感，传统水墨，工笔，绢本，纸张纹理，粗糙水彩，褪色低饱和
+    reference_assets: []
+    aspect_ratio: '9:16'
+    applicable_content_types:
+    - 现代场景
+    - 天空
+    - 街道
+    - 铁道
+    - 雨后
+    - 空镜
+    source_files:
+    - docs/VISUAL_STYLE_SPEC.md
+    material:
+      kind: paper
+      prompt: 数字动画背景美术，干净线稿与柔和赛璐璐光影，细节丰富
+    line:
+      style: fine_line
+      prompt: 清晰但不过分粗重的轮廓线，建筑与电线结构准确
+    detail:
+      level: high
+      prompt: 建筑、云层、草木与水面细节丰富；远处保留空气透视
+    motion:
+      primary:
+      - slow_push_in
+      - scroll_pan
+      - slow_lateral_track
+      local:
+      - clouds
+      - mist
+      - water
+      - birds
+      - petals
+      - foliage
+      wan:
+        allowed: true
+        usage: local_supplement
+        note: 只做云、雨、水面、飞鸟的局部连续运动；不做人物动作
+      forbidden:
+      - fast_pan
+      - handheld_shake
+      - subject_displacement
+      camera:
+        default: slow_push_in
+        allowed:
+        - slow_push_in
+        - slow_pull_out
+        - scroll_pan
+        - slow_lateral_track
+        - push_in_with_pan
+        - static
+        scroll_speed_px_s: 26
+        slow_track_speed_factor: 0.6
+        push_rate_per_s: 0.008
+        push_pan_fraction: 0.02
+        push_scale_min: 1.03
+        push_scale_max: 1.06
+        easing: ease_in_out
+        focus:
+        - 0.5
+        - 0.48
+      local_policy:
+        water_ripple:
+          enabled: true
+          amplitude_px: 2.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 50
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+        reflection_distortion:
+          enabled: true
+          amplitude_px: 1.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 40
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+          reflection_ratio: 0.55
+          reflection_lag_s: 0.2
+          smear_px: 3.0
+        cloud_drift:
+          enabled: true
+          amplitude_px: 11.0
+          period_s: 22.0
+          opacity: 1.0
+          feather_px: 60
+        leaf_sway:
+          enabled: true
+          amplitude_px: 1.0
+          period_s: 6.5
+          opacity: 1.0
+          feather_px: 30
+          sway_exponent: 1.4
+          top_decay: 0.2
+        reed_sway:
+          enabled: true
+          amplitude_px: 1.5
+          period_s: 7.0
+          opacity: 1.0
+          feather_px: 35
+          sway_exponent: 1.3
+          top_decay: 0.2
+        ink_diffusion:
+          enabled: false
+          amplitude_px: 0
+          period_s: 10.0
+          opacity: 0.0
+          feather_px: 60
+      transition:
+        type: crossfade
+        duration_s: 0.8
+        max_fraction: 0.3
+        feather: 0.12
+        direction: ltr
+        seed: 17
+    aesthetic_profile:
+      composition:
+        preferred_strategies:
+        - rule_of_thirds
+        - diagonal
+        - vertical_depth
+        - high_distance
+        - deep_distance
+        - negative_space
+        default_subject_position: center
+        whitespace_range:
+        - 0.05
+        - 0.3
+        shot_sizes:
+        - extreme_wide
+        - wide
+        - medium
+      lighting:
+        preferred:
+        - sunset_warm
+        - cloud_gap
+        - backlight
+        - soft_ambient
+        - morning_side
+        default_key: sun_low
+        default_quality: soft
+        default_direction: back
+        default_contrast: high
+        rim_light: allowed
+      color:
+        continuity_group: shinkai_scenery
+        dominant_keys:
+        - 天空
+        - 积云
+        secondary_keys:
+        - 阴影
+        - 路面
+        accent_keys:
+        - 夕阳
+        - 草木
+        - 高光
+        default_temperature: split
+        saturation_range:
+        - 0.55
+        - 0.95
+        value_range: full
+      depth:
+        default_layers: 3
+        aerial_perspective: true
+        sharpness_falloff: deep
+      mise_en_scene:
+        period: 现代日本
+        architecture_positive: 现代小镇、铁道、学校、便利店、河堤、城市天台；电线与建筑结构清晰
+        positive_constraints:
+        - 无人物特写
+        - 云层与天空有体积感
+        - 雨后路面有高光倒影
+      storytelling:
+        default_rhythm: slow
+        emotion_vocabulary:
+        - 通透
+        - 夏日
+        - 怀旧
+        - 安静
+        - 辽阔
+    compositing:
+      primitives:
+      - scroll_pan
+      - line_reveal
+      - local_motion
+      - parallax_2_5d
+      texture:
+        kind: paper
+        asset: null
+        opacity: 0.06
+        note: 极轻纸纹，不得压过天空与云层
+      parallax:
+        allowed: true
+        requires: 需要前景/中景独立层；没有层时回退单层推拉
+        camera_moves:
+        - slow_push_in
+        - slow_pull_out
+        - slow_lateral_track
+        max_plates: 3
+        depth_alpha_min: 0.45
+        depth_alpha_max: 0.85
+        background_margin: 0.05
+      note: 光晕与云层运动必须克制；不要添加文字或 UI
+    category: scene
+  ghibli_scenery:
+    id: ghibli_scenery
+    name: 吉卜力手绘田园
+    name_en: Hand-painted Pastoral Animation
+    description: 手绘不透明水彩/水粉背景美术：温润的草木绿、泥土棕与夏日天空，田园、老式建筑与茂密森林，纯场景短片。
+    validation_status: NOT_RUN
+    visual_language: 手绘日本动画背景美术；不透明水彩/水粉厚涂，温润的草木绿、泥土棕与天空蓝，田园、老式砖木建筑与茂密森林，漫射自然光，生机充沛，无人物
+    color_palette:
+      天空: '#6FA9CF'
+      草地: '#5E8C4A'
+      泥土: '#8B6B4A'
+      树影: '#2F4A38'
+      云白: '#F7F2E4'
+      阳光: '#E7B75E'
+      木色: '#6B4A35'
+    lighting: 明朗温暖的漫射自然光；树影与云层柔和，避免刺眼数码高光；黄昏可带暖色但不过曝
+    camera_language: 慢速推近、轻微横移、静态长镜头；前景草木轻摆，背景云层慢移
+    composition: 田园/森林/小镇的宽景与中景；前景草木、中景建筑/道路、远景山与云；9:16 竖屏保持呼吸感
+    character_design: 无人物或仅远处剪影；不承诺同脸
+    environment_design: 手绘草地、杂木林、老式砖木房屋、田埂、溪流与夏日积云；材质有笔触与水粉颗粒
+    positive_prompt: 手绘日本动画电影背景美术，不透明水彩/水粉厚涂，温润的草木绿、泥土棕与天空蓝，田园与老式砖木建筑，茂密手绘森林，柔和漫射自然光，夏日积云，生机充沛，无人物
+    negative_prompt: 照片写实，数码高光，光滑 3D 渲染，水墨，绢本，强烈镜头光晕，赛博朋克，锐利机械线稿，高对比霓虹，阴暗粗粝，文字，水印，logo
+    reference_assets: []
+    aspect_ratio: '9:16'
+    applicable_content_types:
+    - 田园
+    - 森林
+    - 小镇
+    - 夏日
+    - 空镜
+    source_files:
+    - docs/VISUAL_STYLE_SPEC.md
+    material:
+      kind: paper
+      prompt: 手绘水粉/水彩背景，纸张与笔触颗粒可见，温润不反光
+    line:
+      style: freehand
+      prompt: 手绘轮廓自然，不完全笔直，保留笔触与颜料边缘
+    detail:
+      level: high
+      prompt: 草木、叶片、建筑与云层细节丰富，但保留手绘概括
+    motion:
+      primary:
+      - slow_push_in
+      - slow_lateral_track
+      - static
+      local:
+      - clouds
+      - foliage
+      - water
+      - birds
+      - petals
+      wan:
+        allowed: true
+        usage: local_supplement
+        note: 只做云、草叶、水面、飞鸟的局部运动；不做人物动作
+      forbidden:
+      - fast_pan
+      - handheld_shake
+      - subject_displacement
+      camera:
+        default: slow_push_in
+        allowed:
+        - slow_push_in
+        - slow_pull_out
+        - slow_lateral_track
+        - scroll_pan
+        - push_in_with_pan
+        - static
+        scroll_speed_px_s: 16
+        slow_track_speed_factor: 0.55
+        push_rate_per_s: 0.007
+        push_pan_fraction: 0.018
+        push_scale_min: 1.03
+        push_scale_max: 1.05
+        easing: ease_in_out
+        focus:
+        - 0.5
+        - 0.5
+      local_policy:
+        water_ripple:
+          enabled: true
+          amplitude_px: 2.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 50
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+        reflection_distortion:
+          enabled: true
+          amplitude_px: 1.4
+          period_s: 11.0
+          opacity: 1.0
+          feather_px: 40
+          wavelength_px: 340
+          vertical_ratio: 0.24
+          perspective_far_scale: 0.14
+          reflection_ratio: 0.55
+          reflection_lag_s: 0.2
+          smear_px: 3.0
+        cloud_drift:
+          enabled: true
+          amplitude_px: 11.0
+          period_s: 22.0
+          opacity: 1.0
+          feather_px: 60
+        leaf_sway:
+          enabled: true
+          amplitude_px: 1.0
+          period_s: 6.5
+          opacity: 1.0
+          feather_px: 30
+          sway_exponent: 1.4
+          top_decay: 0.2
+        reed_sway:
+          enabled: true
+          amplitude_px: 1.5
+          period_s: 7.0
+          opacity: 1.0
+          feather_px: 35
+          sway_exponent: 1.3
+          top_decay: 0.2
+        ink_diffusion:
+          enabled: false
+          amplitude_px: 0
+          period_s: 10.0
+          opacity: 0.0
+          feather_px: 60
+      transition:
+        type: crossfade
+        duration_s: 1.0
+        max_fraction: 0.32
+        feather: 0.15
+        direction: ltr
+        seed: 21
+    aesthetic_profile:
+      composition:
+        preferred_strategies:
+        - rule_of_thirds
+        - diagonal
+        - vertical_depth
+        - deep_distance
+        - negative_space
+        default_subject_position: center
+        whitespace_range:
+        - 0.08
+        - 0.32
+        shot_sizes:
+        - extreme_wide
+        - wide
+        - medium
+      lighting:
+        preferred:
+        - sunset_warm
+        - soft_ambient
+        - morning_side
+        - cloud_gap
+        default_key: sun_high
+        default_quality: soft
+        default_direction: side_left
+        default_contrast: medium
+        rim_light: rare
+      color:
+        continuity_group: ghibli_scenery
+        dominant_keys:
+        - 天空
+        - 草地
+        secondary_keys:
+        - 云白
+        - 树影
+        accent_keys:
+        - 阳光
+        - 泥土
+        - 木色
+        default_temperature: warm
+        saturation_range:
+        - 0.55
+        - 0.9
+        value_range: full
+      depth:
+        default_layers: 3
+        aerial_perspective: true
+        sharpness_falloff: medium
+      mise_en_scene:
+        period: 现代/昭和田园
+        architecture_positive: 老式砖木房屋、田埂、溪流、杂木林与手绘草地，结构质朴
+        positive_constraints:
+        - 无人物特写
+        - 草木与云层有手绘笔触
+        - 避免数码塑料光泽
+      storytelling:
+        default_rhythm: slow
+        emotion_vocabulary:
+        - 温暖
+        - 夏日
+        - 怀旧
+        - 生机
+        - 宁静
+    compositing:
+      primitives:
+      - scroll_pan
+      - local_motion
+      - parallax_2_5d
+      - paper_texture
+      texture:
+        kind: paper
+        asset: null
+        opacity: 0.1
+        note: 水粉纸纹可见但不压过画面
+      parallax:
+        allowed: true
+        requires: 前景草木/中景建筑独立层；缺层时回退单层推拉
+        camera_moves:
+        - slow_push_in
+        - slow_pull_out
+        - slow_lateral_track
+        max_plates: 3
+        depth_alpha_min: 0.45
+        depth_alpha_max: 0.85
+        background_margin: 0.05
+      note: 不加入镜头光晕、霓虹或数码锐化
+    category: scene
 production_baselines:
   court_green_fine_line:
     decided_at: '2026-11-04'

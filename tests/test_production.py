@@ -460,3 +460,92 @@ def test_motion_plan_requires_a_static_report_unless_explicitly_skipped(tmp_path
         raise AssertionError("missing static report must fail by default")
     build_motion_plan(script, require_static_gate=False, **kwargs)
     assert (episode / "motion_shots.json").is_file()
+
+
+def test_build_video_jobs_requires_keyframes_and_writes_wan_jobs(tmp_path: Path) -> None:
+    from drama_studio.production import build_video_jobs
+
+    root, episode, script, _ = _motion_fixture(tmp_path)
+    (root / "workflows").mkdir(exist_ok=True)
+    (root / "workflows" / "r0_wan_i2v_api.json").write_text("{}", encoding="utf-8")
+    data = script.model_dump()
+    data["shots"][1]["type"] = "video"
+    data["shots"][1]["video_prompt"] = "云气缓慢横向漂移，山体保持刚性"
+    video_script = ProductionScript.model_validate(data)
+    jobs_path = episode / "comfy" / "jobs_video.json"
+    result = build_video_jobs(
+        video_script,
+        root=root,
+        episode_root=episode,
+        keyframes_dir=episode / "assets" / "images",
+        jobs_path=jobs_path,
+    )
+    assert result["job_count"] == 1
+    jobs = json.loads(jobs_path.read_text(encoding="utf-8"))
+    assert jobs[0]["id"] == "shot_002"
+    assert jobs[0]["type"] == "video"
+    assert jobs[0]["reference"]["input_name"] == "shot_002.png"
+    params = json.loads((root / jobs[0]["params"]).read_text(encoding="utf-8"))
+    assert params["frames"] == 73
+    assert params["width"] == 576 and params["height"] == 1024
+    assert params["input_image"] == "shot_002.png"
+    assert "云气" in params["positive_prompt"]
+
+
+def test_video_shot_without_keyframe_fails(tmp_path: Path) -> None:
+    from drama_studio.production import build_video_jobs
+
+    root, episode, script, _ = _motion_fixture(tmp_path)
+    (root / "workflows").mkdir(exist_ok=True)
+    (root / "workflows" / "r0_wan_i2v_api.json").write_text("{}", encoding="utf-8")
+    data = script.model_dump()
+    data["shots"][1]["type"] = "video"
+    video_script = ProductionScript.model_validate(data)
+    empty = episode / "empty_keyframes"
+    empty.mkdir()
+    with pytest.raises(ProductionError, match="no keyframe image"):
+        build_video_jobs(
+            video_script, root=root, episode_root=episode,
+            keyframes_dir=empty, jobs_path=episode / "comfy" / "jobs_video.json",
+        )
+
+
+def test_segments_can_mix_video_clip_and_image_when_explicit(tmp_path: Path) -> None:
+    import subprocess
+
+    root, episode, script, audio = _motion_fixture(tmp_path)
+    clips = episode / "clips"
+    clips.mkdir()
+    subprocess.run(
+        ["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=3",
+         "-pix_fmt", "yuv420p", "-c:v", "libx264", str(clips / "shot_002.mp4")],
+        check=True, capture_output=True,
+    )
+    result = build_segments(
+        script,
+        root=root,
+        episode_root=episode,
+        images_dir=episode / "assets" / "images",
+        audio_manifest=audio,
+        out_path=episode / "segments.json",
+        clips_dir=clips,
+        allow_partial_clips=True,
+        align_audio=False,
+    )
+    assert result["count"] == 2
+    segments = json.loads((episode / "segments.json").read_text(encoding="utf-8"))
+    kinds = {seg["id"]: seg["type"] for seg in segments}
+    assert kinds == {"shot_001": "image", "shot_002": "video"}
+
+
+def test_explicit_video_shot_cannot_fall_back_to_a_still(tmp_path: Path) -> None:
+    root, episode, script, audio = _motion_fixture(tmp_path)
+    data = script.model_dump()
+    data["shots"][1]["type"] = "video"
+    video_script = ProductionScript.model_validate(data)
+    with pytest.raises(ProductionError, match="type=video"):
+        build_segments(
+            video_script, root=root, episode_root=episode,
+            images_dir=episode / "assets" / "images", audio_manifest=audio,
+            out_path=episode / "segments.json",
+        )

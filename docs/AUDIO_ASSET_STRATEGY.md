@@ -27,9 +27,9 @@
 | FFmpeg 噪声/拟音滤镜 | `anoisesrc`、`highpass`、`lowpass`、`tremolo`、`vibrato` 均可用 | `ffmpeg -filters` |
 | 程序化风声可用性 | 粉噪 10 s → 120 Hz HP + 1.6 kHz LP + 0.12 Hz 颤动 → `-49.71 LUFS / TP -35.28`，非静音 | `experiments/audio_probe/wind_probe.wav` |
 | 外网可达性 | `freepd.com` 200、`freesound.org` 200、`sonniss.com` **403** | `curl.exe` 实测 |
-| 现有音频资产 | 仅 `assets/audio/ir/synthetic_hall_0.9s.wav`（合成 IR） | `ls assets/audio` |
+| 现有音频资产 | 合成 IR + 13 条 BGM（Keynata 7 条中 5 条 REJECTED；Commons 6 条 PD/CC BY）+ 4 条自生成 SFX（wind/water/chime/whoosh） | `ls assets/audio`；`manifest.json` |
 | 已在册的候选源 | `BGM-PIXABAY`、`BGM-MIXKIT`、`SFX-FREESOUND`（均 `NOT_RUN`） | `ASSET_AND_LICENSE_REGISTRY.md` §5 |
-| 已进成片的音色 | CosyVoice-300M-SFT「中文男」（R3-B，`PASS_VERIFIED`） | 同上 §4 |
+| 已进成片的音色 | CosyVoice-300M-SFT「中文男」（R3-B，`PASS_VERIFIED`）；正式生产当前只用 `narrator_self` | 同上 §4 |
 
 注意：`sonniss.com` 返回 403，说明**就算决定用 Sonniss，也要先解决获取路径**（官网/镜像/离线包），不能假设"下就能下"。
 
@@ -497,3 +497,43 @@ line2    8.98 -> 12.44
 
 开启后的实测（两行拼接 + 1100 ms 停顿，48 kHz）：`-22.07 LUFS → -15.53 LUFS`，TP `-1.50 dBTP`。
 与目标 -16 差 0.47 dB，在 ±0.5 容差内。
+
+## 14. BGM 情绪选曲（2026-11-05）
+
+用户反馈：频段指标干净的弦乐/钢琴仍然"阴间、压抑"。根因不是 EQ，而是**调式与织体**：
+
+| 曲目 | Keynata track | 调式 | 处理 |
+|---|---|---|---|
+| `bgm_ink_strings_duo` | `classical_duo_24036` | **E 小调** | `REJECTED` |
+| `bgm_shinkai_piano` | `classical_piano_6134` | **B 小调** | `REJECTED` |
+
+替换规则：只选 `mode = major` 且和声/节奏完整的曲目；Keynata 索引直接给出 `mode`、`tonic`、`bpm`，再用 MIDI 音符直方图 + Krumhansl 调性模板复核，不靠频谱猜情绪。
+
+| 新资产 | track | 音符直方图结论 | 频谱质心 |
+|---|---|---|---|
+| `bgm_warm_pop_canon` | `jpop_3piece_11623` | C major，r=0.946（次选 G major 0.889） | 4268 Hz |
+| `bgm_warm_strings_c` | `classical_quartet_25041` | C major，r=0.910 | 2395 Hz |
+| `bgm_warm_piano_c` | `classical_piano_4016` | G/C major，r=0.856/0.853 | 1268 Hz |
+
+落地方式：`r3_build.py --bgm-id <asset_id>` 覆盖时间线 BGM 轨，实际时间线写入输出目录 `audio_timeline_effective.json`。只做 30 Hz 高通与峰值限制，不再用 EQ 修情绪。Shinkai 场景时间线同时移除了每 8–30 s 的钟磬事件，只保留转场 whoosh。
+
+> 后续：这三条曲目试听后仍被用户判定"过于阴间，全部 pass"，已标 `REJECTED`。最终候选见 §15（Wikimedia Commons 公有领域/CC BY 真录音）。
+
+## 15. 古典/民谣真录音（Wikimedia Commons，2026-11-05）
+
+用户否定了 Keynata 的三条大调曲目（"过于阴间，全部 pass"），并要求直接对标经典动画原声。**商业影片原声不能扒**：那是受版权保护的录音与作品，切成 BGM 再标成自有/`APPROVED` 属于侵权，项目不做。替代方案是选用**公有领域或 CC BY 的真实录音**，同样经过历史检验、调性明亮。
+
+| 资产 | 作品 | 许可 | 调性（音频直方图） | 用途 |
+|---|---|---|---|---|
+| `bgm_mozart_k330_piano` | Mozart K.330 第三乐章（Vadim Chaimovich / Musopen） | Public domain | G major r=0.794 | 新海诚 · 明亮钢琴 |
+| `bgm_green_leaves_guitar` | GREEN LEAVES（Jason Shaw） | CC BY 3.0 US | D major r=0.777 | 吉卜力 · 木吉他 |
+| `bgm_grieg_morning` | Grieg《晨曲》（Musopen Symphony） | Public domain | B major r=0.834 | 日出/云海 |
+| `bgm_mozart_k525_strings` | Mozart K.525 第一乐章 | Public domain | D major r=0.788 | 工笔 · 弦乐 |
+| `bgm_schubert_d664_piano` | Schubert D.664 第一乐章（Paul Pitman） | Public domain | E major r=0.790 | 水墨 · 钢琴 |
+| `bgm_serenity_guitar` | SERENITY（Jason Shaw） | CC BY 3.0 US | A major r=0.755 | 吉卜力 · 备用 |
+
+- CC BY 曲目**必须随片署名**：`GREEN LEAVES by Jason Shaw (audionautix.com), CC BY 3.0 US`；`SERENITY by Jason Shaw (audionautix.com), CC BY 3.0 US`。
+- 处理：`highpass=f=30,alimiter=limit=0.95` → 48 kHz mono；不做 EQ/降噪。
+- 证据与来源清单：`assets/audio/bgm/commons/LICENSE.md`。
+- 拒绝项：任何电影/动画原声切片（《山水情》《秒速5厘米》《龙猫》《千里江山图》展演录音等）。未获书面授权不得登记为项目资产。
+- 2026-11-05 用户试听反馈："好很多"。6 条 commons 曲目 `review_status=ACCEPTED_PENDING_FINAL`；最终采用哪一条随 2 分钟验收片确定。

@@ -154,3 +154,17 @@ def test_repository_uses_the_agreed_style():
     """06 was chosen by listening; the config must say so."""
     settings = load_settings(ROOT)
     assert settings.voice_style == "broadcast_light"
+
+
+@pytest.mark.skipif(subprocess.run(["ffmpeg", "-version"], capture_output=True).returncode != 0,
+                    reason="ffmpeg unavailable")
+def test_master_hits_target_loudness_after_processing(tmp_path):
+    """EQ/echo move the level, so the master must correct the processed file."""
+    settings = SoundscapeSettings.from_config(SECTION, LOUDNESS)
+    source = write_tone(tmp_path / "voice.wav", seconds=3.0)
+    out = tmp_path / "out.wav"
+    result = master(source, out, root=ROOT, settings=settings)
+    assert result.status == "PASS", result.note
+    measured = measure_loudness(out, settings)
+    target = settings.target_lufs
+    assert abs(float(measured["input_i"]) - target) <= 1.0, measured

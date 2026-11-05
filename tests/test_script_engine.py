@@ -122,3 +122,16 @@ def test_style_is_composed_traceably() -> None:
     assert first != second
     assert first.endswith("同一画面")
     assert second.endswith("同一画面")
+
+
+def test_generate_script_preserves_video_shot_type(tmp_path: Path) -> None:
+    draft = _draft(3)
+    draft["shots"][0]["type"] = "video"
+    draft["shots"][0]["video_prompt"] = "云雾缓慢横向漂移，山体保持刚性"
+    script = generate_script(
+        _package(tmp_path), _style(tmp_path), tmp_path / "production_script.json",
+        base_url="http://llm.test", model="test", http_client=_client([draft]),
+    )
+    assert script.shots[0].type == "video"
+    assert script.shots[0].video_prompt.startswith("云雾")
+    assert script.shots[1].type == "image"

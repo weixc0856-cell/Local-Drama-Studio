@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_cv27_zh_32901020_20261104",
+  "asset_type": "tts_prompt",
+  "status": "PENDING_REVIEW",
+  "approved_for_production": false,
+  "review_status": "PENDING_REVIEW",
+  "selected_role": "alternate",
+  "source": {
+    "provider": "Mozilla Common Voice",
+    "dataset": "Common Voice Scripted Speech 27.0 (2026-09-11) zh-CN",
+    "dataset_version": "cv-corpus-27.0-2026-09-11",
+    "source_url": "https://commonvoice.mozilla.org/zh-CN/datasets",
+    "archive": "cv-corpus-27.0-2026-09-11-zh-CN.tar.gz",
+    "clip": "common_voice_zh-CN_32901020.mp3",
+    "up_votes": 16,
+    "down_votes": 0,
+    "duration_ms": 7020,
+    "age_label": "twenties",
+    "gender_label": "male_masculine",
+    "accent_label": "出生地：11 北京市",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license_status": "CC0_1_0",
+    "terms_note": "Mozilla Common Voice README: CC0; by downloading you agree not to determine speaker identity. No identity inference performed.",
+    "speaker_id_hashed": "sha256:d29c3d33253a4657630744a86c430840e67100a47e409a0b3d1a094537e26936"
+  },
+  "transcript": "色指数是天文学中利用颜色来显示恒星表面温度的一个纯量。",
+  "audio": {
+    "path": "assets/audio/prompts/pending/cv27_zh_32901020_20261104.wav",
+    "sha256": "59ee20b592b45ce61abda2e73ddf0263894e3ac17d041c56a81899812b0ed539",
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "pcm_s16le"
+  },
+  "audio_qa": {
+    "verdict": "REVIEW",
+    "note": "SNR below 30 dB on the original clip; cleaned version was worse and rejected. Human listening required."
+  },
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "SELECTED_FOR_REVIEW",
+    "note": "CC0 candidate; not approved for production."
+  }
+}

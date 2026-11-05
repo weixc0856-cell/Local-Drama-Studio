@@ -35,6 +35,8 @@ class AudioAsset(BaseModel):
 
     asset_id: str = Field(min_length=1, max_length=120)
     asset_type: str = Field(min_length=1, max_length=40)
+    name: str | None = Field(default=None, max_length=200)
+    artist: str | None = Field(default=None, max_length=200)
     path: str = Field(min_length=1, max_length=500)
     sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     duration_ms: int | None = Field(default=None, ge=0)
@@ -42,8 +44,13 @@ class AudioAsset(BaseModel):
     license_evidence: str | None = None
     commercial_allowed: bool | None = None
     attribution_required: bool = False
+    attribution: str | None = None
     source_url: str | None = None
+    source_platform: str | None = None
     status: AssetStatus = "UNKNOWN"
+    style_tags: list[str] = Field(default_factory=list, max_length=12)
+    default_gain_db: float | None = Field(default=None, ge=-60.0, le=24.0)
+    review_status: str | None = Field(default=None, max_length=40)
 
     @model_validator(mode="after")
     def _sha_or_status(self) -> "AudioAsset":
@@ -102,12 +109,27 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+_FIELD_ALIASES = {
+    "id": "asset_id",
+    "kind": "asset_type",
+    "type": "asset_type",
+    "license": "license_type",
+    "attribution_text": "attribution",
+    "tags": "style_tags",
+}
+
+
 def _normalise(item: dict[str, Any]) -> dict[str, Any]:
-    data = dict(item)
-    if "asset_id" not in data and "id" in data:
-        data["asset_id"] = data["id"]
-    if "asset_type" not in data and "kind" in data:
-        data["asset_type"] = data["kind"]
+    """Accept both the legacy ``id``/``kind``/``license_type`` spelling and the
+    explicit ``asset_id``/``type``/``license`` template fields."""
+    data: dict[str, Any] = {}
+    for key, value in item.items():
+        canonical = _FIELD_ALIASES.get(key, key)
+        if canonical in data:
+            continue
+        data[canonical] = value
+    if "style_tags" not in data and isinstance(data.get("style"), str):
+        data["style_tags"] = [data["style"]]
     return data
 
 

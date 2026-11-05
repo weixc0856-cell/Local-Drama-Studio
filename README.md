@@ -53,6 +53,7 @@
 | [docs/PRODUCTION_CONFIG_GUIDE.md](docs/PRODUCTION_CONFIG_GUIDE.md) | 实际配置 / 推荐值 / 未验证参数 |
 | [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | 架构、契约、任务、API、扩展 |
 | [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 故障排查 |
+| [docs/REFERENCE_STYLE_STUDY.md](docs/REFERENCE_STYLE_STUDY.md) | 参考片风格研究（东方仙宫 / 水墨梦境 previs） |
 | [docs/PROJECT_NEXT_STEPS.md](docs/PROJECT_NEXT_STEPS.md) | P0–P4 路线 |
 | [docs/audit/](docs/audit/) | Phase A 仓库/能力/架构审计 |
 | [docs/PRD_CHANGELOG.md](docs/PRD_CHANGELOG.md) | PRD 变更记录与旧文档冲突修正 |
@@ -65,7 +66,7 @@
 | 项目 | 状态 |
 |---|---|
 | 根目录 `.venv`（调度环境） | ✅ 已创建（Python 3.12.10，uv 0.10.8） |
-| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **372 项测试通过** |
+| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **384 项测试通过** |
 | R0-A 硬件与依赖诊断 | ✅ `PASS_VERIFIED`（见 [R0_TEST_REPORT](docs/R0_TEST_REPORT.md)） |
 | R0-B ComfyUI + PyTorch XPU | ✅ `PASS_VERIFIED`：ComfyUI 0.43.0 / torch 2.15.0+xpu / xpu:0 Arc A750 7.75 GiB |
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
@@ -82,11 +83,14 @@
 | R3-B 单篇成片 | ✅ `PASS_VERIFIED`：38.04 s / 1080×1920 / 5 静帧 + 1 Wan / 配音 / 字幕 |
 | R3-C 单篇成本 | ✅ `PASS_VERIFIED`：端到端 43.8 min；多篇批处理 `NOT_RUN` |
 | R3 基线提交 | ✅ `0204979`（父 `026509b`） |
-| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM/音效/商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
+| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM 改用 Wikimedia Commons 公有领域/CC BY 古典与木吉他录音（Mozart/Grieg/Schubert/Jason Shaw），Keynata 5 条被否决；CC BY 曲目需署名；不抽取电影原声；SFX/环境音与商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
 | 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
+| 两分钟场景片 | ⏳ 24 镜全 Wan 批次生成中（`experiments/shinkai_scene/wan24_jobs.json`，3/18）；旧的 2 Wan + 22 静帧版只作技术兜底；`renders_hybrid2_classical`（Commons 钢琴 BGM）quality PASS |
+| 两分钟水墨片（`ACCEPTANCE-2MIN-001`） | ⏳ 生产链已启动：24 关键帧 → 24 Wan → 120 s；`scripts/run_ink_film.py` 排在 Shinkai 批次之后；验收标准见 [REFERENCE_FILMS.md](docs/REFERENCE_FILMS.md) |
+| 30 秒全 Wan 剧情 slice | ✅ `PASS_VERIFIED`（技术）：6/6 Wan 镜头 / 31.3 s / 无静帧；`experiments/shinkai_scene/renders_story/final_9x16.mp4`，quality PASS |
 | TTS 默认策略 | ✅ PRD：默认 **CosyVoice2-0.5B zero-shot**；300M SFT 仅显式可选。默认任务真实 0.5B 2 行 PASS（`PRD-TTS-001` = `PASS_VERIFIED`）；显式模式/运行时校验/manifest 记录已实现；`config/voices.yaml` 支持逐行多音色与 `voice_cast.yaml` sidecar |
-| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做） |
+| 双风格状态 | `PASS_STATIC`（规范/配置）；`PASS_VERIFIED`（各 2 镜头技术样片，M7）；`IMPLEMENTED_NOT_VERIFIED`（作品级 rev/hash/task 拒绝覆盖）；`PASS_VERIFIED`（P1 修正后技术 OK + 人工通过；最终 build 接入待做）；另加 `shinkai_scenery` / `ghibli_scenery` scene 风格（2 分钟场景片，NOT_RUN/技术样片；四风格 negative prompt 互斥） |
 | 生产工作台 | ✅ `PASS_VERIFIED`（doctor / build / TTS / ComfyUI 批处理 / quality 真实执行）；LI 任务 `NOT_RUN` |
 | R4-R7（早期编号） | ⛔ 未执行；后续以 ROADMAP 的 M3/M4 为准 |
 
@@ -239,7 +243,7 @@ drama resume <project>       # 断点续跑                      [R7]
 
 后续产品路线见 [docs/ROADMAP.md](docs/ROADMAP.md)（M3《洛神赋》/ M4 平台测试）。早期 R4-R7 只是设计编号，未执行。
 
-当前最长的已验证生产案例是 81.373 秒 / 1080×1920 / 13 段 / 18 句的工笔《春江花月夜》，使用 `scroll_shot.py` + 预渲染 clips；R3 的 38.04 秒单篇是 5 静帧 + 1 Wan 路径。两条路径不要混为一谈。后续路线：R3-D 剩余项（BGM/音效/商用授权）→ M3《洛神赋》完整样片 → M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
+当前最长的已验证生产案例是 81.373 秒 / 1080×1920 / 13 段 / 18 句的工笔《春江花月夜》，使用 `scroll_shot.py` + 预渲染 clips；R3 的 38.04 秒单篇是 5 静帧 + 1 Wan 路径。两条路径不要混为一谈。后续路线：R3-D 剩余项（SFX/环境音/商用授权、BGM 人工听感）→ M3《洛神赋》完整样片 → M4 平台发布与数据验证；R3-D 完成前不进入《洛神赋》正式样片。
 
 ---
 

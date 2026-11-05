@@ -39,6 +39,12 @@
 
 ## 3. 待验证
 
+### ACCEPTANCE-2MIN-001 · 两分钟水墨片（2026-11-05 进行中）
+
+| 里程碑 | 内容 | 状态 | 证据 |
+|---|---|---|---|
+| 两分钟水墨片验收 | 24 镜全 Wan / 120 s / 1080×1920 / quality PASS | `IN_PROGRESS` | [REFERENCE_FILMS.md](REFERENCE_FILMS.md)；`experiments/ink_dream/run_ink_film.log` |
+
 ### S · 双核心视觉风格（2026-11-03 立项）
 
 定位：产品视觉方向收敛为两种核心美学——宋代院体青绿工笔（`court_green_fine_line`）与东方写意水墨（`ink_wash`）。规范、配置与首批样片已落地；静态质量门与动画仍待人工验收。见 [VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)。

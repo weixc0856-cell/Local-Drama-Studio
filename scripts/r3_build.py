@@ -98,6 +98,9 @@ def main() -> int:
                         help="optional multi-track audio_timeline.json; keeps legacy line mix when absent")
     parser.add_argument("--audio-assets", default=None,
                         help="audio asset registry for BGM/SFX (default: assets/audio/manifest.json if present)")
+    parser.add_argument("--bgm-id", default=None,
+                        help="override every BGM track's asset_id in --audio-timeline; "
+                             "writes audio_timeline_effective.json into --out for provenance")
     parser.add_argument("--allow-overwrite", action="store_true",
                         help="allow replacing an existing final_9x16.mp4 in --out")
     args = parser.parse_args()
@@ -198,6 +201,20 @@ def main() -> int:
 
         timeline_arg = Path(args.audio_timeline)
         timeline_arg = timeline_arg if timeline_arg.is_absolute() else (ROOT / timeline_arg)
+        if args.bgm_id:
+            effective = json.loads(timeline_arg.read_text(encoding="utf-8"))
+            seen = 0
+            for track in effective.get("tracks", []):
+                if track.get("type") == "bgm":
+                    track["asset_id"] = args.bgm_id
+                    seen += 1
+            if not seen:
+                raise SystemExit("--bgm-id given but the timeline has no bgm track")
+            timeline_arg = out_dir / "audio_timeline_effective.json"
+            timeline_arg.write_text(
+                json.dumps(effective, ensure_ascii=False, indent=2) + '\n',
+                encoding="utf-8",
+            )
         if args.audio_assets:
             assets_arg = Path(args.audio_assets)
             assets_arg = assets_arg if assets_arg.is_absolute() else (ROOT / assets_arg)

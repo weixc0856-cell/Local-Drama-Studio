@@ -1701,7 +1701,9 @@ def check_build(manifest_path: Path, *, root: Path | None = None) -> dict[str, A
         # R3 accepts both stills and pre-rendered clips; check each by its own
         # media type instead of assuming every segment is an image.
         if segment.get("type") == "video":
-            images.append(check_video(resolve(source), expected_width=1080, expected_height=1920))
+            # A Wan/source clip may be 576x1024 or 1080x1920; the final file
+            # above is the one that must be exactly 1080x1920.
+            images.append(check_video(resolve(source)))
         else:
             images.append(check_image(resolve(source)))
     if images:

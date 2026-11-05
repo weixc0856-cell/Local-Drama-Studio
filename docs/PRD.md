@@ -382,6 +382,13 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 9. 生成链路必须从期数快照派生提示词，而不是从代码常量或某次实验目录读取。
 10. `[PRD-STYLE-007]` 同一作品跨镜头风格一致性必须单独验证；2 张不同风格的测试图不能证明完整作品一致性。
 
+### 9.2.1 场景风格（`category: scene`）
+
+- `shinkai_scenery` 与 `ghibli_scenery` 是 2026-11-05 新增的**场景短片风格**，`category: scene`，不属于两种 core 风格（`ink_wash` / `court_green_fine_line`），也不改变“作品只选一个主风格”的规则。
+- 它只用于纯场景、无人物对白的短片；提示词固化高饱和夏日天空、体积积雨云、金时刻逆光、雨后高光倒影；`validation_status=NOT_RUN`，需真实样片后再升级。
+- 2 分钟场景片：`experiments/shinkai_scene/renders/final_9x16.mp4`（24 静帧 / 121.3 s / quality PASS）；`renders_hybrid2/final_9x16.mp4`（2 个 Wan hero + 22 静帧 / quality PASS）。
+- 若要进入正式产品，必须另行批准场景短片的范围与验收，不得把它当作角色动画能力。
+
 ### 9.3 当前状态（2026-11-04）
 
 - 风格 CRUD、期数快照、漂移字段已实现并有测试：`IMPLEMENTED_NOT_VERIFIED`（需求 `PRD-STYLE-001/002` 的基础设施）。
@@ -460,7 +467,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - 参考音/参考文本要求（PRD-TTS-005）：`IMPLEMENTED_NOT_VERIFIED`（单测覆盖缺失即失败；真实服务缺失路径待复验）。
 - 字幕/时间轴/字体校验：`PASS_VERIFIED`（字幕角色）。
 - 工作台 `tts.synthesize`：`PASS_VERIFIED`（参数化 narration/out/manifest/speaker/speed/tts_mode）。
-- BGM/音效/多轨混音：`IMPLEMENTED_NOT_VERIFIED`（代码/合成测试）；真实授权资产与听感 `PARTIAL`。
+- BGM/多轨混音：`PASS_VERIFIED`（14 s 真实 build + quality PASS）；SFX 仍 `IMPLEMENTED_NOT_VERIFIED`；人工听感/ducking 复核 PENDING。
 - 字体资产可复现：`PASS_VERIFIED`（`fetch_fonts.py` 重建/校验）。
 - 多音色 `PRD-TTS-007`：`IMPLEMENTED_NOT_VERIFIED`；外部声音 `APPROVED` = 0；`narrator_self` 为唯一 `APPROVED` 生产音色；AISHELL-3 候选已 `REJECTED`，LibriVox `PENDING_REVIEW`。
 
@@ -567,7 +574,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 - 字体：来源/许可/哈希/预览已验证；6 个 OTF 与 LICENSE 存在于本地，但整个 `assets/fonts/` 被 `.gitignore` 排除。
 - 模型：版本与许可证已登记在 `TECH_STACK` / 授权台账；Wan 文本编码器的底层许可仍标注“待复核”。
 - CosyVoice 模型权重、预置音色、生成音频的商用条款：`UNVERIFIED`；不得因代码 Apache-2.0 推断可商用。
-- BGM/音效：`NOT_RUN`，未选型、未登记。
+- BGM：4 条 **CC0-1.0 Keynata Commons** 弦乐/钢琴曲已登记并清理（`PASS_VERIFIED` 技术）；旧 drone 全部 `REJECTED`；人工听感 PENDING。音效/环境音：`IMPLEMENTED_NOT_VERIFIED`，无外部授权素材。
 - 平台 AI 标识字段：仅文档要求，未进入生产 manifest。
 
 ---
@@ -676,7 +683,7 @@ v1.x 明确不做：
 
 ## 21. 当前真实完成状态（2026-11-04 更新）
 
-> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **372 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
+> 证据基线：2026-11-04 工作区（HEAD `06f91e4` + 未提交 M8/声景/TTS 工作）。根测试与 LI 测试合并为一条命令，当前 **384 项通过**。历史 136/246 等数字是当时快照，不再作为当前基线。
 > 本节保留历史证据标签（`PASS_STATIC`/`NOT_RUN` 等）；需求状态以 §0.4/§23 与追踪矩阵为准，映射见 §0.2。字体在隔离干净目录中由 `scripts/fetch_fonts.py` 重建并校验（6/6 OTF + 2 份 LICENSE），`load_font_config` 加载 6 个字面。
 
 ### 21.1 能力矩阵
@@ -696,7 +703,7 @@ v1.x 明确不做：
 | 脚本级 GPU 单飞锁 | `PASS_VERIFIED` | `src/drama_studio/locks.py` + `r1_batch.py` + 锁测试 |
 | 通用代码无作品硬编码 | `PASS_VERIFIED` | `tests/test_no_hardcoded_works.py` 扫描 `src`/`harness`/`schemas` 无命中 |
 | 通用短文本测试夹具 | `PASS_VERIFIED` | 「白日依山尽」LI 语料夹具 + 合成期数夹具；测试不依赖真实实验资产 |
-| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 372 passed（根 + LI，2026-11-04） |
+| 一条命令执行全部测试 | `PASS_VERIFIED` | `pytest` 384 passed（根 + LI，2026-11-05） |
 | FLUX 16:9 / 竖屏静帧 | `PASS_VERIFIED` | R1/R3-A 产物与报告 |
 | FLUX 参考图编辑 | `PASS_VERIFIED` | R1 |
 | Wan I2V/T2V（推近类） | `PASS_VERIFIED` | R0/R2/R2-B/R3-A |
@@ -736,7 +743,7 @@ v1.x 明确不做：
 | `segments.build` 任务 | `PASS_VERIFIED` | 真实 4 段 segments.json + meta |
 | `quality.check` 任务 | `PASS_VERIFIED` | 图片 4/4、音频、成片、哈希全部 PASS |
 | P1 端到端（3-5 分段） | `PASS_VERIFIED` | 14.0 s / 1080×1920 / 4 段 / 4 行女声 / quality PASS |
-| BGM / 音效 | `NOT_RUN` | 未选型、未登记 |
+| BGM / 音效 | `PASS_VERIFIED`（BGM 技术）/ `IMPLEMENTED_NOT_VERIFIED`（SFX） | 13 条 BGM 登记：Keynata 7 条中 5 条因「阴间」`REJECTED`（E/B 小调 + 3 条大调暖色仍被否）；Wikimedia Commons 6 条（4 条 Public domain + 2 条 CC BY 3.0 US）为当前候选；30 s 与 2 min 重混 quality PASS；人工听感 PENDING；CC BY 曲目需署名 |
 | 平台包装 / 发布 / 数据 | `NOT_RUN` | 无实现 |
 | 多期夜间批处理 | `NOT_RUN` | 无调度器 |
 | 统一资产台账/版本号 | `NOT_RUN` | 只有目录扫描与构建目录 |
@@ -809,7 +816,7 @@ v1.x 明确不做：
 | 序 | 工作 | 验收 |
 |---|---|---|
 | P2-1 | 资产台账（哈希、来源、期数归属、版本） | 任一成片可反查全部输入 |
-| P2-2 | BGM/音效选型与授权登记 | 至少 1 首 BGM + 2 个音效有许可证据 |
+| P2-2 | BGM/音效选型与授权登记：13 条 BGM 已登记；Keynata 5 条被用户否决；Commons 古典/民谣 6 条待人工选定；外部音效待补 | `PARTIAL`（BGM 技术）/ 音效 `NOT_RUN` |
 | P2-3 | 女声商用授权核验（P1 已进入正式成片） | 许可状态不再是 `UNVERIFIED` |
 | P2-4 | 平台包装与发布记录 | 一条作品有封面/标题/正文/话题/发布记录 |
 | P2-5 | 统一结果清单与成本摘要 | 每期输出成功/降级/失败 + 耗时 |
@@ -842,14 +849,14 @@ v1.x 明确不做：
 
 | 状态 | 需求 |
 |---|---|
-| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006/007`、`PRD-CASE-001`、`PRD-AUDIO-006`、`PRD-MOTION-001/002/003` |
-| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001`、`PRD-OPS-001`、`PRD-AUDIO-005`、`PRD-VOICE-ASSET-001..012`（分组）、`PRD-MOTION-004`、`PRD-STORY-001/002`、`PRD-QA-001/002` |
-| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001`、`PRD-TTS-007`、`PRD-AUDIO-001..004` |
+| `PASS_VERIFIED` | `PRD-TTS-001/002/003`、`PRD-STYLE-006/007`、`PRD-CASE-001`、`PRD-AUDIO-004/005/006`、`PRD-MOTION-001/002/003` |
+| `PARTIAL` | `PRD-GOV-002/003`、`PRD-TTS-004`（UI/任务/报告未全验）、`PRD-STYLE-001/002`、`PRD-QUAL-002`、`PRD-DATA-001`、`PRD-CONFIG-001`、`PRD-OPS-001`、`PRD-VOICE-ASSET-001..012`（分组）、`PRD-MOTION-004`、`PRD-STORY-001/002`、`PRD-QA-001/002` |
+| `IMPLEMENTED_NOT_VERIFIED` | `PRD-GOV-001`、`PRD-STYLE-003/004/005`、`PRD-TTS-005`、`PRD-QUAL-001`、`PRD-UX-001`、`PRD-TTS-007`、`PRD-AUDIO-001/002/003` |
 | `NOT_IMPLEMENTED` | 无 |
 | `BLOCKED` | 无（当前无硬阻塞；TTS 默认切换是待执行任务，不是阻塞） |
 | `OPEN_QUESTION` | `PRD-TTS-006`（参考音/模型权重的商用授权） |
 
-**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-STYLE-007` P1 修正后 `PASS_VERIFIED`；`PRD-QUAL-001` 静态门默认强制；`PRD-OPS-001` 已决定不作为 v1.0 硬门。下一步是真实改版生产（接入 `shot_002_stylefix_v1.png`）、完整多角色成片与真实 BGM/SFX 授权。
+**当前状态**：`PRD-TTS-001` 默认 0.5B zero-shot 已真实落地；`PRD-STYLE-003/004` 的锁与 revision 已实现（`IMPLEMENTED_NOT_VERIFIED`）；`PRD-STYLE-007` P1 修正后 `PASS_VERIFIED`；`PRD-QUAL-001` 静态门默认强制；`PRD-OPS-001` 已决定不作为 v1.0 硬门。下一步是真实改版生产（接入 `shot_002_stylefix_v1.png`）、使用 `narrator_self` 与已登记 BGM 的 15–30 s 成片，以及 SFX/环境音授权。
 
 ## 24. 2026-11-04 已批准的扩展需求（正式）
 
@@ -881,7 +888,9 @@ v1.x 明确不做：
 - 3–8 s 是项目筛选规则，不是模型硬限制。
 - 声音资产引用 `asset_id`，不复制文件；Voice Profile 不另建资产库。
 - 2026-11-04 决策：AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` 数量为 0；`narrator_self` 为当前唯一 `APPROVED` 生产音色。
-- 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域 BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
+- 2026-11-04 从本机 Common Voice 27.0 zh-CN 档案筛选 4 条候选（2 primary 已 zero-shot 技术验证，2 alternate 待测）；均未批准生产。未镜像数据集、未反推身份，原始 WAV 仅本地保留。
+- 正式发布前 `assets/audio/manifest.json` 必须登记至少 1 首 CC0/公有领域或项目自生成（无第三方权利）BGM（完整 SHA-256 + 来源）；未登记音频不得混入成片。
+- 2026-11-05 已将 BGM 替换为 4 条 CC0 Keynata Commons 弦乐/钢琴曲（水墨/工笔/新海诚/吉卜力）；旧正弦 drone 全部 REJECTED；BGM 做 180/4200Hz EQ、lowpass 与 afftdn；人工听感 PENDING。2026-11-05 用户否决小调/稀疏织体的「阴间」听感，新增 3 条大调暖色曲目，试听后仍被全部否决（`REJECTED`）。随后改用 Wikimedia Commons 的公有领域/CC BY 真录音：Mozart K.330 钢琴、Grieg《晨曲》、Mozart K.525 弦乐、Schubert D.664 钢琴（PD）与 Jason Shaw 木吉他（CC BY 3.0 US，需署名）。`r3_build.py --bgm-id` 可显式指定。**不抽取任何电影/动画原声。** 2026-11-05 用户试听 Commons 曲目后反馈「好很多」；6 条标记 `ACCEPTED_PENDING_FINAL`，最终采用哪一条随 `ACCEPTANCE-2MIN-001` 两分钟验收片确定。
 
 ### 24.4 运动产品化
 
@@ -889,6 +898,7 @@ v1.x 明确不做：
 - `[PRD-MOTION-002]` 局部微动使用 `RegionSpec` 区域合同；结构区域必须锁定或硬排除。
 - `[PRD-MOTION-003]` 局部动态支持水/云/叶/芦苇/倒影/墨扩散，参数来自 `config/styles.yaml`。
 - `[PRD-MOTION-004]` 结构保护必须可追溯；无自动分割，Wan 只做局部补充，不承担脚本化主体位移。
+- `ScriptShot.type=video` 时，以 FLUX 关键帧为结构锚点生成 Wan I2V 片段；`type=image` 仍是静帧 + 确定性运动。`segments.build` 可混合 Wan 片段与静帧（`--clips --allow-partial-clips`），显式 video 镜头缺片段不得静默降级。工作台任务 `video.jobs` 只生成 Wan jobs，不执行生成。
 
 ### 24.5 Character / Shot Bible
 

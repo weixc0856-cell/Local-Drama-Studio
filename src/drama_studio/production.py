@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .script_engine import ProductionScript
 
 FLUX_WORKFLOW = "workflows/r0_flux_t2i_api.json"
+WAN_I2V_WORKFLOW = "workflows/r0_wan_i2v_api.json"
 
 
 class ProductionError(RuntimeError):
@@ -62,8 +63,10 @@ def build_jobs(
     jobs = []
     for shot in _shots(script):
         shot_id = _field(shot, "shot_id")
-        if _field(shot, "type") != "image":
-            raise ProductionError(f"{shot_id}: only image shots are supported by the FLUX job builder")
+        shot_type = _field(shot, "type", "image")
+        if shot_type not in ("image", "video"):
+            raise ProductionError(f"{shot_id}: unsupported shot type {shot_type!r}")
+        # FLUX stills are the keyframes for both image and video shots.
         params = {
             "positive_prompt": _field(shot, "visual_prompt"),
             "negative_prompt": _field(shot, "negative_prompt", ""),
@@ -79,6 +82,7 @@ def build_jobs(
         jobs.append(
             {
                 "id": shot_id,
+                "type": shot_type,
                 "workflow": workflow,
                 "params": _rel(params_file, root),
                 "out": _rel(episode_root / "assets" / "images" / shot_id, root),
@@ -91,6 +95,92 @@ def build_jobs(
         "job_count": len(jobs),
         "workflow": workflow,
         "workflow_sha256": _sha256(root / workflow),
+    }
+
+
+def build_video_jobs(
+    script: Any,
+    *,
+    root: Path,
+    episode_root: Path,
+    keyframes_dir: Path,
+    jobs_path: Path,
+    only: set[str] | None = None,
+    workflow: str = WAN_I2V_WORKFLOW,
+    seed_base: int = 9200,
+    width: int = 576,
+    height: int = 1024,
+    frames: int = 73,
+    steps: int = 20,
+    cfg: float = 5.0,
+    shift: float = 8.0,
+) -> dict[str, Any]:
+    """Create Wan I2V jobs for ``type=video`` shots from their FLUX keyframes.
+
+    The FLUX image is the structural anchor; the Wan prompt describes only the
+    intended continuous motion and preservation constraints. A missing keyframe
+    is a hard failure, not a reason to silently fall back to a still.
+    """
+    params_dir = episode_root / "comfy" / "video_params"
+    params_dir.mkdir(parents=True, exist_ok=True)
+    jobs = []
+    for shot in _shots(script):
+        if _field(shot, "type", "image") != "video":
+            continue
+        shot_id = _field(shot, "shot_id")
+        if only and shot_id not in only:
+            continue
+        image = _find_image(keyframes_dir / shot_id)
+        if image is None:
+            raise ProductionError(f"{shot_id}: video shot has no keyframe image in {keyframes_dir / shot_id}")
+        motion = str(_field(shot, "motion") or "").strip()
+        positive = str(_field(shot, "video_prompt") or "").strip()
+        if not positive:
+            positive = (
+                f"{_field(shot, 'visual_prompt')}；镜头运动：{motion or '极慢推近'}；"
+                "只改变云雾、水面、光线与衣袂等局部动态；保持原图构图、建筑结构、主体形状与色彩；"
+                "不改变镜头方向，不新增物体，不出现文字、水印、字幕"
+            )
+        params = {
+            "positive_prompt": positive,
+            "negative_prompt": (
+                "镜头抖动，频闪，闪烁，结构变形，建筑形变，主体漂移，融化，崩坏，"
+                "多余肢体，文字，水印，字幕，低清晰度"
+            ),
+            "input_image": f"{shot_id}.png",
+            "seed": seed_base + int(_field(shot, "index", 0)),
+            "width": width,
+            "height": height,
+            "frames": frames,
+            "steps": steps,
+            "cfg": cfg,
+            "shift": shift,
+            "filename_prefix": f"video/{shot_id}",
+        }
+        params_file = params_dir / f"{shot_id}.json"
+        params_file.write_text(json.dumps(params, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
+        jobs.append(
+            {
+                "id": shot_id,
+                "type": "video",
+                "workflow": workflow,
+                "params": _rel(params_file, root),
+                "out": _rel(episode_root / "assets" / "videos" / shot_id, root),
+                "reference": {
+                    "source": _rel(image, root),
+                    "input_name": f"{shot_id}.png",
+                },
+            }
+        )
+    jobs_path.parent.mkdir(parents=True, exist_ok=True)
+    jobs_path.write_text(json.dumps(jobs, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
+    return {
+        "jobs": _rel(jobs_path, root),
+        "job_count": len(jobs),
+        "workflow": workflow,
+        "workflow_sha256": _sha256(root / workflow),
+        "frames": frames,
+        "only": sorted(only) if only else None,
     }
 
 
@@ -500,6 +590,7 @@ def build_segments(
     audio_manifest: Path,
     out_path: Path,
     clips_dir: Path | None = None,
+    allow_partial_clips: bool = False,
     sequence: Path | None = None,
     align_audio: bool = False,
     leading_ms: int = 0,
@@ -508,8 +599,9 @@ def build_segments(
 ) -> dict[str, Any]:
     """Map shots to R3 segments.json; every shot must have a real clip or image.
 
-    ``clips_dir`` switches shots to pre-rendered video segments (``<shot_id>.mp4``);
-    every shot must then have a clip. ``sequence`` replaces the per-shot list with
+    ``clips_dir`` prefers pre-rendered video segments (``<shot_id>.mp4``); by
+    default every shot must have a clip, while ``allow_partial_clips`` falls
+    back to a still for missing clips. ``sequence`` replaces the per-shot list with
     one already assembled motion sequence whose length must cover the narration.
     ``align_audio`` replaces the planned shot duration with the exact audio timing
     of its bound lines, so cuts land on speech boundaries instead of drifting.
@@ -558,10 +650,15 @@ def build_segments(
         for position, shot in enumerate(_shots(script), start=1):
             shot_id = _field(shot, "shot_id")
             clip = (clips_dir / f"{shot_id}.mp4") if clips_dir is not None else None
-            if clip is not None:
-                if not clip.is_file():
-                    raise ProductionError(f"{shot_id}: 没有生成动态片段（{clip}）")
+            shot_type = _field(shot, "type", "image")
+            if clip is not None and clip.is_file():
                 kind, source = "video", clip
+            elif shot_type == "video":
+                raise ProductionError(
+                    f"{shot_id}: type=video 必须提供动态片段"
+                    + (f"（{clip}）" if clip is not None else "（未提供 clips_dir）"))
+            elif clip is not None and not allow_partial_clips:
+                raise ProductionError(f"{shot_id}: 没有生成动态片段（{clip}）")
             else:
                 image = _find_image(images_dir / shot_id)
                 if image is None:
@@ -613,6 +710,8 @@ def main() -> int:
     parser.add_argument("--audio", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--clips", default=None, help="directory of pre-rendered <shot_id>.mp4 video segments")
+    parser.add_argument("--allow-partial-clips", action="store_true",
+                        help="use stills for shots without a clip; explicit video shots still need one")
     parser.add_argument("--sequence", default=None, help="assembled motion sequence (single video segment)")
     parser.add_argument("--motion-plan", action="store_true", help="write a motion plan instead of segments.json")
     parser.add_argument("--style", default=None, help="style preset id for --motion-plan")
@@ -676,6 +775,7 @@ def main() -> int:
                 audio_manifest=_path(args.audio),
                 out_path=_path(args.out),
                 clips_dir=_path(args.clips),
+                allow_partial_clips=args.allow_partial_clips,
                 sequence=_path(args.sequence),
                 align_audio=args.align_audio,
                 leading_ms=args.leading_ms,

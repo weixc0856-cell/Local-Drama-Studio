@@ -21,7 +21,7 @@
 | 3 | 数据契约 | 严格 Pydantic、ID/引用完整性、JSON Schema | 测试；`ProductionScript` 生产入口 | `models.py`、`script_engine.py`、`literary_intelligence/schemas/` | `test_models` 6、`test_script_engine` 4、LI schemas/roles | **PASS_VERIFIED**（契约本身） / **PARTIAL**（单一契约目标） | `models.Storyboard` **只被测试使用**；实际生产用 `ProductionScript`。两套契约并存 |
 | 4 | ContentPackage | 已登记语料 + 证据校验 claim → 严格 draft | `python -m drama_studio.content_package`、`package.build` | `content_package.py`、`literary_intelligence/harness/*` | `test_content_package_build` 2；P1 真实 4 场景 | **PASS_VERIFIED**（短文本） / **PASS_LIMITED**（长篇） | 只验证了 4 句夹具；完整诗篇/长篇未跑；claim 全部未人工 approved |
 | 5 | 文案生成 | 本地 LLM → `ProductionScript`；2 次有界修复；原始输出保留 | `python -m drama_studio.script_engine`、`script.generate` | `script_engine.py` | `test_script_engine` 4；P1 `script_raw_attempt1/2` + 最终脚本 | **PASS_VERIFIED**（CLI 真实 LLM） / **PARTIAL**（工作台新生成） | P1 真实任务 `task_20261103113359` 因后置校验 `ModuleNotFoundError` 被标记 FAILED；随后成功任务是 `--reuse`，未再次真实调用 LLM。当前代码已修，但“工作台新生成”未重新实证 |
-| 6 | 分镜处理 | 3–5 镜头、覆盖全部台词、镜头 ID 连续、风格拼接 | 同上；`aesthetic.plan` 读取 | `script_engine.py`、`aesthetics.py` | `test_script_engine`、`test_aesthetics` 13 | **PASS_VERIFIED**（4 镜头） | 只允许 `type=image` 进入 `build_jobs`；镜头上限 24，脚本要求 3–5；未做人物/场景资产分镜 |
+| 6 | 分镜处理 | 3–5 镜头、覆盖全部台词、镜头 ID 连续、风格拼接 | 同上；`aesthetic.plan` 读取 | `script_engine.py`、`aesthetics.py` | `test_script_engine`、`test_aesthetics` 13 | **PASS_VERIFIED**（4 镜头） | `build_jobs` 为 image/video 镜头都生成 FLUX 关键帧；`build_video_jobs` 为 video 镜头生成 Wan I2V；镜头上限 24，脚本要求 3–5 |
 | 7 | FLUX 图片生成 | ComfyUI 提交→轮询→下载→哈希；576×1024；4 步；CFG 1.0 | `scripts\r1_batch.py`、`comfy.batch` | `r0_comfy_probe.py`、`r1_batch.py`、`workflows/r0_flux_t2i_api.json` | P1 4/4、gongbi 13 张、R1/R3 报告；`logs/r0/R0-C-flux*` | **PASS_VERIFIED**（历史） / **NOT_RUN**（当前服务） | 8188 当前未监听；P1 生成 76.6/59.0/44.7/16.1 s；R3 竖屏 22–53 s/张 |
 | 8 | Wan 视频生成 | Wan2.2 TI2V 5B，20 步，I2V/T2V，73 帧 | `r1_batch.py`（jobs JSON） | `workflows/r0_wan_*.json`、`r0_comfy_probe.py` | `docs/R2*`、`docs/R3*`、`assets/vertical/06_flower_pushin_wan.mp4`、`logs/r0/R0-D-wan-i2v` | **PASS_VERIFIED**（推近类） / **PASS_LIMITED**（精确主体位移） | 原 `experiments/r2*`、`r3a`、`r3b` 目录已缺失；报告仍在。H3 船体 24.6 px 但方向错误；121 帧有颜色漂移 |
 | 9 | 参考图/关键帧 | FLUX ReferenceLatent 编辑；J2 参考；4 张 16:9 关键帧 | `r1_batch.py` + `workflows/r1_flux_edit_api.json` | 同左 + `assets/*.meta.json` | `assets/keyframes/*.meta.json`、`assets/visual_style/reference/*.meta.json`、R1 报告 | **PASS_VERIFIED** | 一致性是“空间锚点稳定”，不是人物/跨镜头同一张脸；KF4 光源有歧义 |
@@ -29,7 +29,7 @@
 | 11 | 字幕生成 | SRT + ASS、整数毫秒时间轴、本地字体、fontselect 校验 | `scripts\r3_build.py`、`build.rebuild` | `voice/timeline.py`、`fonts.py`、`r3_build.py` | P1/M7/gongbi `drama.srt`/`drama.ass`/`timeline.json`/`fontselect.log`；`test_fonts` | **PASS_VERIFIED** | `config/audio.yaml` 的 `subtitles.max_chars_per_line/max_lines/format/burn_in` **未被消费**；每行一条字幕，不自动换行；`burn_in` 总是尝试生成烧录版 |
 | 12 | FFmpeg 合成 | 1080×1920 / 24 fps / H.264 + AAC + mov_text；Ken Burns；混音；淡入淡出 | `scripts\r3_build.py`、`build.rebuild` | `r3_build.py`、`voice/soundscape.py` | P1 14.0 s、R3 38.042 s、gongbi 81.373 s、M7 两片；`quality_report` PASS | **PASS_VERIFIED** | 1080×1920 是 Lanczos 放大，不是原生；每次构建写新目录，拒绝覆盖；当前 `soundscape.enabled=true` 会让新构建与历史构建音频不同 |
 | 13 | 质量检查 | 图片空/黑、视频解码/分辨率、音频峰值/静音、成片哈希；运动/美学风险 | `python -m drama_studio.quality`、`quality.check`、`motion.render` 后置 | `quality.py` | `test_quality` 3、`test_motion_quality_gates` 11、`test_quality_plates` 9 | **PASS_VERIFIED**（技术） / **PARTIAL**（运动/美学） | 技术门是独立的；运动门 `motion.render` 会跑，但 `quality.check` UI 只暴露 `manifest`，无法从 UI 选 `motion_manifest`；发音正确性只到 `PARTIAL` |
-| 14 | 任务注册表 | 22 种任务；参数 Pydantic；单飞锁；前置/后置；日志；取消 | `drama serve` → `/api/tasks` | `workspace/tasks.py` | `test_workspace_*` 37、`test_workspace_motion_tasks` 1；DB 39 个任务 | **PASS_VERIFIED** | 注册表不是唯一执行路径：`scripts/*.py` 可直接跑；CLI 只对 GPU 有跨进程锁，TTS/LLM 无 |
+| 14 | 任务注册表 | 23 种任务；参数 Pydantic；单飞锁；前置/后置；日志；取消 | `drama serve` → `/api/tasks` | `workspace/tasks.py` | `test_workspace_*` 37、`test_workspace_motion_tasks` 1；DB 39 个任务 | **PASS_VERIFIED** | 注册表不是唯一执行路径：`scripts/*.py` 可直接跑；CLI 只对 GPU 有跨进程锁，TTS/LLM 无 |
 | 15 | GPU 单飞锁 | `logs/locks/gpu-comfy.lock` + SQLite `lock_key` 唯一索引 | `r1_batch.py`、`comfy.batch` | `locks.py`、`store.py` SCHEMA | `test_locks` 3、`test_workspace_store` 6 | **PASS_VERIFIED** | 只覆盖 ComfyUI/GPU；TTS、LLM、FFmpeg 不共享此锁；`service.comfy.start` 的前置 lambda 实际总是空 |
 | 16 | 任务恢复 | 服务重启把遗留 `RUNNING` 标成 `FAILED`；取消条件迁移 | `drama serve` lifespan | `store.recover_stale_tasks`、`tasks.TaskRunner._execute` | `test_workspace_store`、`test_workspace_review` | **PASS_VERIFIED**（代码/测试） | 没有真实崩溃恢复演练；中断后不会自动重跑，只标记失败 |
 | 17 | SQLite 工作台 | projects/episodes/styles/tasks/meta；只存用户事实 | `drama serve` | `workspace/store.py` | `test_workspace_store` 6；真实 DB 4/4/4/39 | **PASS_VERIFIED** | 生产状态不落库；`styles` 与 `config/styles.yaml` 不自动同步 |
@@ -84,7 +84,7 @@
 ### 2.6 分镜（6）
 
 - `DraftScript` 强制 3–5 镜头；`ProductionScript` 强制镜头索引连续、每行至少被一个镜头覆盖。
-- `build_jobs` 只接受 `type=image`；`video` 镜头不能直接进 FLUX 作业。
+- `build_jobs` 为所有镜头生成 FLUX 关键帧；`build_video_jobs` 只为 `type=video` 生成 Wan I2V jobs。
 - P1 4 镜头/4 行；gongbi 13 镜头/18 行（由人工脚本生成，不是 LLM 3–5 限制路径）。
 
 ### 2.7 FLUX（7）
@@ -136,12 +136,12 @@
 
 ### 2.14 任务注册表（14）
 
-22 种任务：
+23 种任务：
 
 ```text
 doctor.run, build.rebuild, comfy.batch, li.run,
 service.comfy.start, service.comfy.stop,
-package.build, script.generate, segments.build,
+package.build, script.generate, video.jobs, segments.build,
 motion.plan, motion.render, audio.qa,
 aesthetic.plan, aesthetic.compare, aesthetic.review,
 static.check, style.consistency, story.check, quality.check, tts.synthesize,
