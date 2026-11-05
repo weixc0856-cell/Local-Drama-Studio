@@ -14,7 +14,7 @@
 | `PRD-GOV-001` | §0.1 | PRD 是唯一 SSOT；冲突按优先级处理 | 其他文档不得创造/覆盖需求；冲突有记录与修正 | `IMPLEMENTED_NOT_VERIFIED` | PRD §0.1；本文件；PRD_CHANGELOG | 待项目所有者评审确认；确认后再改代码 |
 | `PRD-GOV-002` | §0.2 | 需求状态必须由真实证据决定 | 无证据不得 `PASS_VERIFIED`；Mock/单测不等于端到端 | `PARTIAL` | 审计发现文档/状态多处过期；本文件已按证据标注 | 继续清理旧文档中的过期状态 |
 | `PRD-GOV-003` | §0.2/§21 | 历史证据路径缺失必须如实标注 | 不伪造路径；报告保留；替代证据可查 | `PARTIAL` | `docs/audit/REPOSITORY_STRUCTURE.md` §8 已标注 R1–R3/S2 目录缺失 | 旧报告中的失效路径需逐条加注或索引 |
-| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；379 tests | 保持；SFT 继续显式 |
+| `PRD-TTS-001` | §11.1 | **默认调用 CosyVoice2-0.5B zero-shot** | 默认配置/默认任务实际加载 0.5B；manifest 记录 `zero_shot/CosyVoice2` | `PASS_VERIFIED` | 2026-11-04 默认配置真实 2 行；`voice_profile` 真实 2 行；manifest `zero_shot/CosyVoice2/0.5B/prompt/voice_cast`；384 tests | 保持；SFT 继续显式 |
 | `PRD-TTS-002` | §11.1 | 300M SFT 仅显式可选，不能作为默认 | 必须显式 `tts_mode=sft` + `-Model sft`；任务/manifest 可追溯 | `PASS_VERIFIED` | 2026-11-04 真实 SFT 1 行；P1/81.373 历史 SFT 成片 | 保留为可选模式；UI/任务需明确默认不是它 |
 | `PRD-TTS-003` | §11.1 | 模型/服务/参数不满足时明确报错，禁止静默回退 | 0.5B 缺失/加载失败/参考音缺失 → 失败；不得回退 300M | `PASS_VERIFIED` | SFT↔zero-shot 双向错配均真实报错；`_validate_runtime` 校验 `/health` | 保持；新增模式必须同样校验 |
 | `PRD-TTS-004` | §11.1 | UI/任务/配置/日志/manifest/报告记录实际模型与模式 | `tts_mode/model_class/model_dir/speaker_id/prompt` 可查 | `PARTIAL` | CLI 输出与 `audio_manifest.json` 真实 2 行；任务参数/UI 已加 `tts_mode`、`voice_profile`、`voices`；任务结果回传 `voice_cast` | UI/任务/生产报告仍未做真实端到端；报告模板需引用这些字段 |
@@ -24,7 +24,7 @@
 | `PRD-AUDIO-001` | §24.2 | 多轨时间线 | 严格 ms、轨道类型、事件边界 | `IMPLEMENTED_NOT_VERIFIED` | `voice/audio_timeline.py`；`test_audio_timeline` | 真实 BGM/SFX 时间线待做 |
 | `PRD-AUDIO-002` | §24.2 | BGM ducking | narration/dialogue 触发，参数可记录 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py` `sidechaincompress`；合成测试 | 真实 BGM 听感未验 |
 | `PRD-AUDIO-003` | §24.2 | SFX 定时/增益/淡入淡出 | 事件级参数 | `IMPLEMENTED_NOT_VERIFIED` | `voice/mix.py`；合成测试 | 真实 SFX 授权/听感未验 |
-| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `PASS_VERIFIED` | 7 条 CC0 Keynata BGM 已登记 SHA/时长/许可；小调 2 条与旧 drone `REJECTED`；`--bgm-id` 可人工指定；`release_policy` | SFX/环境音仍无授权素材；BGM 人工听感 PENDING |
+| `PRD-AUDIO-004` | §24.2 | 音频资产台账 | 单一 manifest；状态/hash/许可 | `PASS_VERIFIED` | 13 条 BGM 已登记 SHA/时长/许可；Keynata 5 条与旧 drone `REJECTED`；Commons 6 条（4 PD + 2 CC BY）；`--bgm-id` 可人工指定；`release_policy` | SFX/环境音仍无授权素材；BGM 人工听感 PENDING |
 | `PRD-AUDIO-005` | §24.2 | 成片音频质量门 | 轨道/边界/资产/时长 | `PASS_VERIFIED` | `experiments/bgm_mix_check/renders3/build_manifest.json`：14.0 s、2 轨、quality PASS；`quality.check_audio_timeline` | 听感/ducking 人工复核 PENDING |
 | `PRD-AUDIO-006` | §24.2 | 旧旁白路径兼容 | 无 timeline 时行为不变 | `PASS_VERIFIED` | P1 14.0 s 真实 build + quality PASS | 保持 |
 | `PRD-VOICE-ASSET-001..012` | §24.3 | 声音资产治理（12 子项） | 来源/许可/哈希/状态；仅 APPROVED 进生产；不镜像数据集 | `PARTIAL` | 自录 `narrator_self` APPROVED；AISHELL 2 条 REJECTED；LibriVox 1 条 PENDING_REVIEW；Common Voice 27.0 4 条筛选（2 primary zero-shot 技术通过、2 alternate 待测；均未批准生产；未镜像）；外部 APPROVED=0 | 人工试听/角色适配；CV 4 条未做 zero-shot 验收；BGM/SFX 未登记 |

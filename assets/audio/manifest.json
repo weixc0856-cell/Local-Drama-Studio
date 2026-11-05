@@ -73,7 +73,8 @@
       "generator": "scripts/make_bgm.py",
       "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
       "added_on": "2026-11-05",
-      "rejected_reason": "drone/hum; user rejected"
+      "rejected_reason": "drone/hum; user rejected",
+      "source_platform": "project"
     },
     {
       "id": "bgm_court_elegant_60s",
@@ -99,7 +100,8 @@
       "generator": "scripts/make_bgm.py",
       "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
       "added_on": "2026-11-05",
-      "rejected_reason": "drone/hum; user rejected"
+      "rejected_reason": "drone/hum; user rejected",
+      "source_platform": "project"
     },
     {
       "id": "sfx_wind_soft_30s",
@@ -218,7 +220,8 @@
       "generator": "scripts/make_bgm.py",
       "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
       "added_on": "2026-11-05",
-      "rejected_reason": "drone/hum; user rejected"
+      "rejected_reason": "drone/hum; user rejected",
+      "source_platform": "project"
     },
     {
       "id": "bgm_ghibli_pastoral_60s",
@@ -244,7 +247,8 @@
       "generator": "scripts/make_bgm.py",
       "note": "用户 2026-11-05 明确拒绝：持续正弦 drone 产生嗡嗡声/烦躁感，禁止进入生产。",
       "added_on": "2026-11-05",
-      "rejected_reason": "drone/hum; user rejected"
+      "rejected_reason": "drone/hum; user rejected",
+      "source_platform": "project"
     },
     {
       "id": "bgm_ink_strings_duo",
@@ -269,7 +273,8 @@
       "default_gain_db": -16.0,
       "note": "E minor",
       "added_on": "2026-11-05",
-      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05"
+      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_court_strings_duo",
@@ -293,7 +298,8 @@
       ],
       "default_gain_db": -16.0,
       "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
-      "added_on": "2026-11-05"
+      "added_on": "2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_shinkai_piano",
@@ -318,7 +324,8 @@
       "default_gain_db": -16.0,
       "note": "B minor",
       "added_on": "2026-11-05",
-      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05"
+      "rejected_reason": "minor key / sparse texture; user rejected the dark \"阴间\" mood on 2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_ghibli_quartet",
@@ -342,7 +349,8 @@
       ],
       "default_gain_db": -16.0,
       "note": "CC0 machine-composed strings/piano; no sustained drone; local EQ/afftdn cleanup.",
-      "added_on": "2026-11-05"
+      "added_on": "2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_warm_pop_canon",
@@ -357,8 +365,8 @@
       "attribution_required": false,
       "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/jpop_3piece_11623/jpop_3piece_11623.mp3",
       "source": "Keynata Commons jpop_3piece_11623 (major, canon progression)",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "shinkai_scenery",
         "warm",
@@ -368,7 +376,9 @@
       ],
       "default_gain_db": -16.0,
       "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
-      "added_on": "2026-11-05"
+      "added_on": "2026-11-05",
+      "rejected_reason": "user rejected the still-dark mood after audition on 2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_warm_strings_c",
@@ -383,8 +393,8 @@
       "attribution_required": false,
       "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_quartet_25041/classical_quartet_25041.mp3",
       "source": "Keynata Commons classical_quartet_25041 (C major, 108 bpm)",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "court_green_fine_line",
         "warm",
@@ -393,7 +403,9 @@
       ],
       "default_gain_db": -16.0,
       "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
-      "added_on": "2026-11-05"
+      "added_on": "2026-11-05",
+      "rejected_reason": "user rejected the still-dark mood after audition on 2026-11-05",
+      "source_platform": "keynata"
     },
     {
       "id": "bgm_warm_piano_c",
@@ -408,8 +420,8 @@
       "attribution_required": false,
       "source_url": "https://carf-coder.github.io/keynata-commons/release/tracks/classical_piano_4016/classical_piano_4016.mp3",
       "source": "Keynata Commons classical_piano_4016 (C major, 119 bpm)",
-      "status": "APPROVED",
-      "review_status": "PENDING_HUMAN_REVIEW",
+      "status": "REJECTED",
+      "review_status": "REJECTED",
       "style_tags": [
         "ink_wash",
         "warm",
@@ -418,7 +430,179 @@
       ],
       "default_gain_db": -16.0,
       "note": "Major-key warm texture chosen after the minor/drone rejection; only 30 Hz high-pass and peak limiting, no EQ surgery.",
-      "added_on": "2026-11-05"
+      "added_on": "2026-11-05",
+      "rejected_reason": "user rejected the still-dark mood after audition on 2026-11-05",
+      "source_platform": "keynata"
+    },
+    {
+      "id": "bgm_mozart_k330_piano",
+      "kind": "bgm",
+      "name": "莫扎特 C 大调钢琴奏鸣曲 K.330 第三乐章",
+      "path": "assets/audio/bgm/commons/mozart_k330_piano.wav",
+      "sha256": "e220cc3bfef0d7efe2661a25b7065ad05c57c8a122c7d43c42949a087b9c4cd9",
+      "duration_ms": 231146,
+      "license_type": "Public domain",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "attribution": null,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mozart,_Wolfgang_Amadeus_%E2%80%94_Piano_Sonata_No._10_in_C_major,_K._330,_3rd_movement_%E2%80%94_Vadim_Chaimovich_%E2%80%94_Musopen_-8825.mp3",
+      "source": "Vadim Chaimovich / Musopen",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "shinkai_scenery",
+        "piano",
+        "major",
+        "classical",
+        "bright"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Vadim Chaimovich / Musopen",
+      "source_platform": "wikimedia_commons"
+    },
+    {
+      "id": "bgm_green_leaves_guitar",
+      "kind": "bgm",
+      "name": "GREEN LEAVES（木吉他）",
+      "path": "assets/audio/bgm/commons/green_leaves_guitar.wav",
+      "sha256": "7acadf4fe7bd907f6066737f329c5cea7b40b956604d304a6e7dc201a2154dd5",
+      "duration_ms": 135784,
+      "license_type": "CC-BY-3.0-US",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": true,
+      "attribution": "GREEN LEAVES by Jason Shaw (audionautix.com), CC BY 3.0 US",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jason_Shaw_-_GREEN_LEAVES.ogg",
+      "source": "Jason Shaw / audionautix.com",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ghibli_scenery",
+        "guitar",
+        "major",
+        "acoustic",
+        "warm"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Jason Shaw (audionautix.com)",
+      "source_platform": "wikimedia_commons"
+    },
+    {
+      "id": "bgm_grieg_morning",
+      "kind": "bgm",
+      "name": "格里格《晨曲》",
+      "path": "assets/audio/bgm/commons/grieg_morning.wav",
+      "sha256": "04a8be98ebeab0147c3312fa4b87372d45f2c2dfb14c989135fa9713dd7a1963",
+      "duration_ms": 229183,
+      "license_type": "Public domain",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "attribution": null,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac",
+      "source": "Musopen Symphony",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "shinkai_scenery",
+        "orchestral",
+        "major",
+        "sunrise"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Musopen Symphony",
+      "source_platform": "wikimedia_commons"
+    },
+    {
+      "id": "bgm_mozart_k525_strings",
+      "kind": "bgm",
+      "name": "莫扎特《弦乐小夜曲》第一乐章",
+      "path": "assets/audio/bgm/commons/mozart_k525_strings.wav",
+      "sha256": "9ff5acaed5f8e032b865d812ca09286fa4963c54e0c2c199706bc4cab2324351",
+      "duration_ms": 252587,
+      "license_type": "Public domain",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "attribution": null,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mozart_K525_Serenade_in_G_Major_1_-_Allegro.ogg",
+      "source": "Musopen / European Archive",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "court_green_fine_line",
+        "strings",
+        "major",
+        "classical"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Musopen / European Archive",
+      "source_platform": "wikimedia_commons"
+    },
+    {
+      "id": "bgm_schubert_d664_piano",
+      "kind": "bgm",
+      "name": "舒伯特 A 大调钢琴奏鸣曲 D.664",
+      "path": "assets/audio/bgm/commons/schubert_d664_piano.wav",
+      "sha256": "da415ba2ee2b19abd42587c3110730744f370d70d7bf49a82dbaddf579855588",
+      "duration_ms": 466160,
+      "license_type": "Public domain",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": false,
+      "attribution": null,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Schubert_-_Piano_Sonata_No._13_in_A_major,_D664_-_I._Allegro_moderato_(Paul_Pitman).flac",
+      "source": "Paul Pitman / Musopen",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ink_wash",
+        "piano",
+        "major",
+        "classical"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Paul Pitman / Musopen",
+      "source_platform": "wikimedia_commons"
+    },
+    {
+      "id": "bgm_serenity_guitar",
+      "kind": "bgm",
+      "name": "SERENITY（木吉他）",
+      "path": "assets/audio/bgm/commons/serenity_guitar.wav",
+      "sha256": "08e2d9171295f62c657f5d55ecc568f6f0da1364a8e997fb93b340559b27a278",
+      "duration_ms": 110211,
+      "license_type": "CC-BY-3.0-US",
+      "license_evidence": "assets/audio/bgm/commons/LICENSE.md",
+      "commercial_allowed": true,
+      "attribution_required": true,
+      "attribution": "SERENITY by Jason Shaw (audionautix.com), CC BY 3.0 US",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jason_Shaw_-_SERENITY.ogg",
+      "source": "Jason Shaw / audionautix.com",
+      "status": "APPROVED",
+      "review_status": "PENDING_HUMAN_REVIEW",
+      "style_tags": [
+        "ghibli_scenery",
+        "guitar",
+        "major",
+        "calm"
+      ],
+      "default_gain_db": -16.0,
+      "note": "Public-domain or CC BY recording; only 30 Hz high-pass and peak limiting.",
+      "added_on": "2026-11-05",
+      "artist": "Jason Shaw (audionautix.com)",
+      "source_platform": "wikimedia_commons"
     }
   ],
   "release_policy": {
@@ -429,7 +613,8 @@
       "APPROVED"
     ],
     "note": "正式发布前至少登记 1 首 CC0/公有领域 BGM，含完整 SHA-256 与来源；未登记音频不得混入成片。",
-    "registered_bgm_count": 5,
+    "registered_bgm_count": 8,
     "registered_sfx_count": 4
-  }
+  },
+  "schema_version": "2.0.0"
 }

@@ -220,6 +220,40 @@ def measure_loudness(source: Path, settings: SoundscapeSettings) -> dict[str, An
     return json.loads(match.group(0))
 
 
+def _measure_file(path: Path, settings: "SoundscapeSettings") -> dict[str, Any]:
+    proc = _run([
+        "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+        "-af", f"loudnorm=I={settings.target_lufs}:TP={settings.true_peak}:"
+               f"LRA={settings.lra}:print_format=json",
+        "-f", "null", "-",
+    ])
+    match = LOUDNORM_JSON.search(proc.stderr)
+    if not match:
+        return {}
+    return json.loads(match.group(0))
+
+
+def _apply_loudnorm(source: Path, target: Path, measured: dict[str, Any],
+                    settings: "SoundscapeSettings") -> None:
+    """Second real pass: normalise the *processed* file to the target loudness.
+
+    The first pass measures the dry input, so EQ/reverb can move the result by
+    several LU. This pass uses the measured values of the processed file.
+    """
+    proc = _run([
+        "ffmpeg", "-y", "-v", "error", "-i", str(source),
+        "-af", f"loudnorm=I={settings.target_lufs}:TP={settings.true_peak}:"
+               f"LRA={settings.lra}:measured_I={measured['input_i']}:"
+               f"measured_TP={measured['input_tp']}:"
+               f"measured_LRA={measured['input_lra']}:"
+               f"measured_thresh={measured['input_thresh']}:"
+               f"offset={measured['target_offset']}:linear=false",
+        "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(target),
+    ])
+    if proc.returncode != 0:
+        raise SoundscapeError(f"响度校正失败：{proc.stderr[-1200:]}")
+
+
 def master(vocal_wav: Path, out_wav: Path, *, root: Path | None = None,
            settings: SoundscapeSettings | None = None) -> SoundscapeResult:
     """Apply EQ, reverb and a two-pass loudness normalisation.
@@ -298,16 +332,18 @@ def master(vocal_wav: Path, out_wav: Path, *, root: Path | None = None,
     if proc.returncode != 0:
         raise SoundscapeError(f"声景渲染失败：{proc.stderr[-1600:]}")
 
-    check = _run([
-        "ffmpeg", "-hide_banner", "-nostats", "-i", str(out_wav),
-        "-af", f"loudnorm=I={settings.target_lufs}:TP={settings.true_peak}:"
-               f"LRA={settings.lra}:print_format=json",
-        "-f", "null", "-",
-    ])
-    final = {}
-    match = LOUDNORM_JSON.search(check.stderr)
-    if match:
-        final = json.loads(match.group(0))
+    final = _measure_file(out_wav, settings)
+    correction = None
+    try:
+        deviation = abs(float(final.get("input_i", settings.target_lufs)) - settings.target_lufs)
+    except (TypeError, ValueError):
+        deviation = 0.0
+    if final and deviation > 0.5:
+        correction = final
+        corrected = out_wav.with_suffix(".normalise.wav")
+        _apply_loudnorm(out_wav, corrected, final, settings)
+        corrected.replace(out_wav)
+        final = _measure_file(out_wav, settings)
 
     report = {
         "stage": "soundscape.master",
@@ -317,6 +353,7 @@ def master(vocal_wav: Path, out_wav: Path, *, root: Path | None = None,
         "filter": ";".join(graph),
         "measured_before": measured,
         "measured_after": final,
+        "correction_pass": correction,
         "targets": {"lufs": settings.target_lufs, "true_peak": settings.true_peak,
                     "lra": settings.lra},
         "beds": {"ambience": settings.ambience, "bgm": settings.bgm},

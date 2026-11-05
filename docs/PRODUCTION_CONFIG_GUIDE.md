@@ -319,7 +319,7 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | `loudness.true_peak_db` | -1.5 | `soundscape.py` | 同上 |
 | `loudness.bgm_lufs` | -26.0 | `soundscape.py` | 参考值；timeline BGM 默认 gain -14 dB，最终两遍 loudnorm 到 -16 LUFS |
 
-> 当前可用 BGM：`bgm_warm_pop_canon`、`bgm_warm_strings_c`、`bgm_warm_piano_c`（大调暖色）以及 `bgm_court_strings_duo`、`bgm_ghibli_quartet`；E/B 小调两条与旧 drone 全部 `REJECTED`。`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 或 `--bgm-id` 接入。
+> 当前可用 BGM：`bgm_mozart_k330_piano`、`bgm_green_leaves_guitar`、`bgm_grieg_morning`、`bgm_mozart_k525_strings`、`bgm_schubert_d664_piano`、`bgm_serenity_guitar`（4 条 PD + 2 条 CC BY，见 `assets/audio/bgm/commons/`）以及 `bgm_court_strings_duo`、`bgm_ghibli_quartet`；Keynata 其余曲目与旧 drone 全部 `REJECTED`。CC BY 曲目必须署名。`soundscape.bgm.track` 留空，BGM 通过 `audio_timeline.json` 的 `asset_id` 或 `--bgm-id` 接入。
 
 ---
 
@@ -335,7 +335,11 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 | QA | `quality --audio-timeline --audio-assets` | 检查事件边界、资产哈希/状态、轨道结构 |
 | 旧路径 | `r3_build` 不传 `--audio-timeline` | 仍逐行 `adelay/amix`，不改变历史行为 |
 
-> BGM 现为 CC0-1.0 Keynata Commons 曲目：3 条大调暖色曲（`bgm_warm_*`，`assets/audio/bgm/warm/`）+ 2 条备用；E/B 小调 2 条与旧正弦 drone 全部 `REJECTED`；SFX 为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
+> BGM 现为 Wikimedia Commons 的公有领域/CC BY 真录音（`assets/audio/bgm/commons/`）：4 条 Public domain + 2 条 CC BY 3.0 US（需署名）；Keynata 5 条与旧正弦 drone 全部 `REJECTED`；SFX 为项目自生成、无第三方采样。BGM 人工听感与 ducking 听感 PENDING。
+
+**登记新音频**：`scripts/audio_asset_entry.py <file> --license <license> --source-platform <platform> --artist <name> --status APPROVED` 会计算 SHA-256、ffprobe 时长并输出可直接粘贴的条目；`APPROVED` 条目必须给出已验证的 `--license`，需要署名的曲目必须同时给 `--attribution-required --attribution-text`。
+
+**资产字段两种写法都接受**：旧版 `id`/`kind`/`license_type` 与模板版 `asset_id`/`type`/`license`/`attribution_text`/`tags` 由 `voice/audio_assets.py` 归一到同一模型；`style` 会转成 `style_tags`。新增字段 `artist`、`source_platform`、`attribution` 用于来源与署名追踪。
 
 **人工指定 BGM（`--bgm-id`）**：不必改时间线 JSON，直接覆盖 BGM 轨的资产：
 
@@ -343,10 +347,10 @@ scripts\r3_tts.py ... --voice-cast work\voice_cast.yaml
 .venv\Scripts\python.exe scripts/r3_build.py `
   --segments <segments.json> --audio <audio_manifest.json> `
   --audio-timeline <audio_timeline.json> --audio-assets assets/audio/manifest.json `
-  --out <render_dir> --bgm-id bgm_warm_pop_canon
+  --out <render_dir> --bgm-id bgm_mozart_k330_piano
 ```
 
-构建会把实际使用的时间线写到 `<render_dir>/audio_timeline_effective.json`，便于反查。暖色大调资产：`bgm_warm_pop_canon`（钢琴/吉他/鼓，canon 进行）、`bgm_warm_strings_c`（C 大调四重奏）、`bgm_warm_piano_c`（C 大调钢琴）。不要用小调曲目再用 EQ 去"修情绪"。
+构建会把实际使用的时间线写到 `<render_dir>/audio_timeline_effective.json`，便于反查。候选资产：`bgm_mozart_k330_piano`（明亮钢琴）、`bgm_green_leaves_guitar`（木吉他）、`bgm_grieg_morning`（晨曲）、`bgm_mozart_k525_strings`、`bgm_schubert_d664_piano`、`bgm_serenity_guitar`。不要用小调曲目再用 EQ 去"修情绪"。
 
 ---
 

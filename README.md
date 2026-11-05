@@ -66,7 +66,7 @@
 | 项目 | 状态 |
 |---|---|
 | 根目录 `.venv`（调度环境） | ✅ 已创建（Python 3.12.10，uv 0.10.8） |
-| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **379 项测试通过** |
+| 配置 / 数据契约 / doctor | ✅ 已实现；当前 **384 项测试通过** |
 | R0-A 硬件与依赖诊断 | ✅ `PASS_VERIFIED`（见 [R0_TEST_REPORT](docs/R0_TEST_REPORT.md)） |
 | R0-B ComfyUI + PyTorch XPU | ✅ `PASS_VERIFIED`：ComfyUI 0.43.0 / torch 2.15.0+xpu / xpu:0 Arc A750 7.75 GiB |
 | R0-C FLUX 静态图 | ✅ `PASS_VERIFIED`：512×512 / 4 步 / 99.5s / 峰值 2.61 GiB |
@@ -83,7 +83,7 @@
 | R3-B 单篇成片 | ✅ `PASS_VERIFIED`：38.04 s / 1080×1920 / 5 静帧 + 1 Wan / 配音 / 字幕 |
 | R3-C 单篇成本 | ✅ `PASS_VERIFIED`：端到端 43.8 min；多篇批处理 `NOT_RUN` |
 | R3 基线提交 | ✅ `0204979`（父 `026509b`） |
-| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM 已改为大调暖色曲目（pop canon / C 大调弦乐 / C 大调钢琴），小调「阴间」曲目已 REJECTED；SFX/环境音与商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
+| R3-D 声音/字体/BGM/音效选型 | ⚠️ `PARTIAL`：字体/字幕完成；SFT「中文女」已进入 P1 与 81.373 s 工笔；BGM 改用 Wikimedia Commons 公有领域/CC BY 古典与木吉他录音（Mozart/Grieg/Schubert/Jason Shaw），Keynata 5 条被否决；CC BY 曲目需署名；不抽取电影原声；SFX/环境音与商用授权未完成；默认已切换为 CosyVoice2-0.5B zero-shot，SFT 显式可选 |
 | P1 生产闭环 | ✅ `PASS_VERIFIED`：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 14.0 s 成片 → quality PASS；见 PRD §21 |
 | 完整工笔案例 | ✅ `PASS_VERIFIED`（技术+验证）：81.373 s / 1080×1920 / 13 段 / 18 句；`scroll_shot.py` + 预渲染 clips，不是 `motion.plan` 自动运动；见本地 `projects/proj_chunjiang_gongbi/episodes/ep_chunjiang_gongbi_01/PRODUCTION_REPORT.md` |
 | 两分钟场景片 | ✅ `PASS_VERIFIED`（技术）：24 镜头 / 121.3 s / 1080×1920 / 2 个 Wan hero + 22 静帧；`experiments/shinkai_scene/renders_hybrid2/final_9x16.mp4`，quality PASS；风格 `shinkai_scenery`（scene，非 core） |

@@ -79,9 +79,15 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | `bgm_court_strings_duo` | BGM | `assets/audio/bgm/keynata/court_strings_duo.wav` | Keynata Commons `classical_duo_24015`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
 | `bgm_shinkai_piano` | BGM | `assets/audio/bgm/keynata/shinkai_piano.wav` | Keynata Commons `classical_piano_6134`；CC0-1.0；B 小调 | 是 | `REJECTED`（小调，用户否决听感） |
 | `bgm_ghibli_quartet` | BGM | `assets/audio/bgm/keynata/ghibli_quartet.wav` | Keynata Commons `classical_quartet_25010`；CC0-1.0；F 大调 | 是 | `APPROVED`（人工听感 PENDING） |
-| `bgm_warm_pop_canon` | BGM | `assets/audio/bgm/warm/pop_canon_major.wav` | Keynata Commons `jpop_3piece_11623`；CC0-1.0；大调 canon | 是 | `APPROVED`（人工听感 PENDING） |
-| `bgm_warm_strings_c` | BGM | `assets/audio/bgm/warm/strings_c_major.wav` | Keynata Commons `classical_quartet_25041`；CC0-1.0；C 大调 | 是 | `APPROVED`（人工听感 PENDING） |
-| `bgm_warm_piano_c` | BGM | `assets/audio/bgm/warm/piano_c_major.wav` | Keynata Commons `classical_piano_4016`；CC0-1.0；C 大调 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_warm_pop_canon` | BGM | `assets/audio/bgm/warm/pop_canon_major.wav` | Keynata Commons `jpop_3piece_11623`；CC0-1.0；大调 canon | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_warm_strings_c` | BGM | `assets/audio/bgm/warm/strings_c_major.wav` | Keynata Commons `classical_quartet_25041`；CC0-1.0；C 大调 | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_warm_piano_c` | BGM | `assets/audio/bgm/warm/piano_c_major.wav` | Keynata Commons `classical_piano_4016`；CC0-1.0；C 大调 | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_mozart_k330_piano` | BGM | `assets/audio/bgm/commons/mozart_k330_piano.wav` | Wikimedia Commons；Mozart K.330 第三乐章（Vadim Chaimovich / Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_green_leaves_guitar` | BGM | `assets/audio/bgm/commons/green_leaves_guitar.wav` | Jason Shaw / audionautix.com；CC BY 3.0 US；**需署名** | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_grieg_morning` | BGM | `assets/audio/bgm/commons/grieg_morning.wav` | Grieg《晨曲》（Musopen Symphony）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_mozart_k525_strings` | BGM | `assets/audio/bgm/commons/mozart_k525_strings.wav` | Mozart K.525（Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_schubert_d664_piano` | BGM | `assets/audio/bgm/commons/schubert_d664_piano.wav` | Schubert D.664（Paul Pitman / Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_serenity_guitar` | BGM | `assets/audio/bgm/commons/serenity_guitar.wav` | Jason Shaw / audionautix.com；CC BY 3.0 US；**需署名** | 是 | `APPROVED`（人工听感 PENDING） |
 | 旧正弦 drone ×4 | BGM | `assets/audio/bgm/*.wav` | 自生成 | — | `REJECTED`（用户明确拒绝嗡嗡声） |
 | SFX（wind/water/chime/whoosh） | SFX | `assets/audio/sfx/*.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
 | 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
@@ -96,7 +102,7 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
 
-> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色；BGM 现有 7 条 CC0 Keynata 曲目；其中 E/B 小调 2 条因「阴间」听感被 `REJECTED`，另新增 3 条大调暖色曲目并通过真实混音；旧 drone 全部 REJECTED；SFX/环境音与商用授权仍未完成。
+> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色。BGM 共 13 条登记：Keynata 7 条（E/B 小调 2 条 + 暖色大调 3 条均被用户否决为「阴间」→ `REJECTED`；工笔/吉卜力 2 条保留备用）与 Wikimedia Commons 6 条（4 条 Public domain + 2 条 CC BY 3.0 US，后者必须署名）。旧 drone 全部 `REJECTED`。**不抽取任何电影/动画原声**。SFX/环境音与商用授权仍未完成。
 > 下表是候选与待核验状态，**不是商用批准**；不能因为素材来自 Pixabay / Mixkit / 某个开源项目，就把整个来源标记为商用通过。
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |
