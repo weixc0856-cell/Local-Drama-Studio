@@ -2,7 +2,7 @@
 
 > 起草日期：2026-11-04
 > 状态：`ACTIVE`（2026-11-04 部分实施；以代码与资产清单为准）
-> 前置：[AUDIO_SOUNDSCAPE_PLAN.md](AUDIO_SOUNDSCAPE_PLAN.md)（S1 已落地）、[ASSET_AND_LICENSE_REGISTRY.md](ASSET_AND_LICENSE_REGISTRY.md) §5
+> 前置：AUDIO_SOUNDSCAPE_PLAN.md（已删除，见 Git 历史）（S1 已落地）、[ASSET_AND_LICENSE_REGISTRY.md](ASSET_AND_LICENSE_REGISTRY.md) §5
 > 本机实测数据均在文中标注来源；凡是与建议不一致的地方，以实测与条款原文为准。
 
 > **2026-11-04 决策**：`narrator_self` 是唯一 `APPROVED` 生产音色；`sft_male_01`/`sft_female_01` 正式生产停用；AISHELL-3 两条候选 `REJECTED`；LibriVox 一条 `PENDING_REVIEW`；外部 `APPROVED` = 0。正式发布前必须在 `assets/audio/manifest.json` 登记至少 1 首 CC0/公有领域 BGM（含完整 SHA-256 与来源），未登记音频不得混入成片。
@@ -119,7 +119,7 @@ SNR（语音段 RMS − 静音段 RMS）
 | D | 商业声音库/数字人授权（ElevenLabs、PlayHT 等） | 低（但受服务条款） | 高 | 引入外部服务与订阅，另算 |
 | E | 公共数据集切片（LibriTTS 等） | **高** | 低 | **不推荐**，见 §5.1 |
 
-同时要承认一个技术事实：**CosyVoice-300M-SFT 的 zero-shot 相似度本来就弱**（[AUDIO_SOUNDSCAPE_PLAN.md](AUDIO_SOUNDSCAPE_PLAN.md) §5.3 已记录）。所以"录得不好"里，至少有一部分是模型能力，不是录音质量。**在换素材之前，先用同一段 prompt 分别在 SFT 与 CosyVoice2-0.5B 上各跑一次**，才能分清是"录得差"还是"模型差"；后者换什么素材都救不回来。
+同时要承认一个技术事实：**CosyVoice-300M-SFT 的 zero-shot 相似度本来就弱**（AUDIO_SOUNDSCAPE_PLAN.md（已删除，见 Git 历史） §5.3 已记录）。所以"录得不好"里，至少有一部分是模型能力，不是录音质量。**在换素材之前，先用同一段 prompt 分别在 SFT 与 CosyVoice2-0.5B 上各跑一次**，才能分清是"录得差"还是"模型差"；后者换什么素材都救不回来。
 
 ## 5. 对参考建议的逐条更正
 

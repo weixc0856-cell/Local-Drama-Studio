@@ -88,8 +88,8 @@ def _zero_shot_client() -> httpx.Client:
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
             return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice2",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
+                "status": "ready", "model_class": "VoxCPM2",
+                "model_dir": "D:/AI/models/voxcpm2",
                 "speakers": [], "modes": ["zero_shot"],
             })
         return httpx.Response(404)
@@ -207,80 +207,23 @@ def test_mixed_backends_are_refused(tmp_path: Path) -> None:
             root=root, http_client=_zero_shot_client())
 
 
-def test_sft_cast_sends_two_speakers(tmp_path: Path) -> None:
+def test_sft_is_retired(tmp_path: Path) -> None:
     root = _root(tmp_path)
     payload = {
         "schema_version": "1.0", "default_profile": "male",
         "profiles": [
             {"profile_id": "male", "display_name": "M", "tts_mode": "sft",
-             "speaker": "测试男", "status": "APPROVED", "commercial_allowed": True,
-             "license_evidence": "x"},
-            {"profile_id": "female", "display_name": "F", "tts_mode": "sft",
-             "speaker": "测试女", "status": "APPROVED", "commercial_allowed": True,
+             "speaker": "中文男", "status": "APPROVED", "commercial_allowed": True,
              "license_evidence": "x"},
         ],
     }
     (root / "config" / "voices.yaml").write_text(
         yaml.safe_dump(payload, allow_unicode=True), encoding="utf-8")
-    narration = _narration(root, [
-        {"text": "第一句", "voice_profile": "male"},
-        {"text": "第二句", "voice_profile": "female"},
-    ])
-    bodies: list[dict] = []
-    wav = _wav_bytes()
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT",
-                "speakers": ["测试男", "测试女"], "modes": ["sft"],
-            })
-        bodies.append(json.loads(request.content))
-        return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
-    result = synthesize_narration(
-        narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
-        root=root, http_client=client, force=True)
-    assert [body["speaker"] for body in bodies] == ["测试男", "测试女"]
-    manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
-    assert manifest["lines"][0]["speaker"] == "测试男"
-    assert manifest["lines"][1]["speaker"] == "测试女"
-    assert manifest["tts_mode"] == "sft"
-
-
-def test_mixed_sft_speakers_are_validated_against_runtime(tmp_path: Path) -> None:
-    root = _root(tmp_path)
-    payload = {
-        "schema_version": "1.0", "default_profile": "male",
-        "profiles": [
-            {"profile_id": "male", "display_name": "M", "tts_mode": "sft",
-             "speaker": "测试男", "status": "APPROVED", "commercial_allowed": True,
-             "license_evidence": "x"},
-            {"profile_id": "ghost", "display_name": "G", "tts_mode": "sft",
-             "speaker": "不存在", "status": "APPROVED", "commercial_allowed": True,
-             "license_evidence": "x"},
-        ],
-    }
-    (root / "config" / "voices.yaml").write_text(
-        yaml.safe_dump(payload, allow_unicode=True), encoding="utf-8")
-    narration = _narration(root, [{"text": "第一句", "voice_profile": "ghost"}])
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT",
-                "speakers": ["测试男"], "modes": ["sft"],
-            })
-        return httpx.Response(500)
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
-    with pytest.raises(TTSError, match="没有预置音色"):
+    narration = _narration(root, [{"text": "第一句", "voice_profile": "male"}])
+    with pytest.raises(TTSError, match="退休"):
         synthesize_narration(
             narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
-            root=root, http_client=client, force=True)
+            root=root, http_client=_zero_shot_client(), force=True)
 
 
 def test_changing_a_line_profile_invalidates_the_manifest(

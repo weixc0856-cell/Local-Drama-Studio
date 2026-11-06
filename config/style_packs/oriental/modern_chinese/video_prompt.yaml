@@ -1,0 +1,13 @@
+schema_version: '1.0'
+motion_vocabulary:
+- mist drift
+- water flow
+- robe sway
+secondary_limit: 2
+preserve:
+- negative space
+- traditional motifs
+avoid:
+- neon colour
+- 3D plastic surfaces
+- heavy photoreal texture

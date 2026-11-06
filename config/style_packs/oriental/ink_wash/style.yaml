@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.ink_wash
+name: 水墨风
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 墨分五色、宣纸渗化、大面积留白。
+layers:
+- identity
+- execution
+- consistency

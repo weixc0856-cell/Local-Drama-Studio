@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- photographic depth of field
+- soft airbrush shading
+- texture noise
+note: For validator and human checklist only; prompts use positive anchors.

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: sky blue
+  hex: '#A8D8EA'
+- name: leaf green
+  hex: '#A8C686'
+- name: soft pink
+  hex: '#F6C6C9'
+- name: warm white
+  hex: '#FFF7E6'
+- name: dusk violet
+  hex: '#B7A9C9'
+saturation_range:
+- 0.05
+- 0.3
+edge_density_range:
+- 0.03
+- 0.12
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

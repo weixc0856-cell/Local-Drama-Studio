@@ -1,0 +1,7 @@
+schema_version: '1.0'
+allowed_moves:
+- dolly_in
+- crane
+- tilt
+preferred_lens_mm: 35
+dof_strategy: deep

@@ -1,0 +1,6 @@
+schema_version: '1.0'
+allowed_moves:
+- pan
+- dolly_in
+preferred_lens_mm: 50
+dof_strategy: medium

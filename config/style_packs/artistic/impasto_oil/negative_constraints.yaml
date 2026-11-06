@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- flat digital shading
+- clean vector edges
+- photo texture
+note: For validator and human checklist only; prompts use positive anchors.

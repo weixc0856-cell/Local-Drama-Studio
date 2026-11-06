@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.gongbi
+name: 工笔国风
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 铁线描、矿物颜料、绢本设色。
+layers:
+- identity
+- execution
+- consistency

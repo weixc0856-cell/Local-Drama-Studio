@@ -1,0 +1,13 @@
+schema_version: '1.0'
+motion_vocabulary:
+- graphic pop-in
+- repeated motif movement
+- panel transition
+secondary_limit: 2
+preserve:
+- bold outlines
+- flat colour fields
+avoid:
+- photographic depth of field
+- soft airbrush shading
+- texture noise

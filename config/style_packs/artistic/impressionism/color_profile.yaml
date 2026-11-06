@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: lavender
+  hex: '#B9A7D6'
+- name: butter
+  hex: '#F2D98C'
+- name: river blue
+  hex: '#8FB8D9'
+- name: rose
+  hex: '#E7A3A8'
+- name: fresh green
+  hex: '#9DBF8E'
+saturation_range:
+- 0.1
+- 0.45
+edge_density_range:
+- 0.03
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

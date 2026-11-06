@@ -1,0 +1,8 @@
+schema_version: '1.0'
+materials:
+- silk
+- mineral pigment
+- fine ink line
+texture_cues:
+- fine contours
+- mineral pigment layering

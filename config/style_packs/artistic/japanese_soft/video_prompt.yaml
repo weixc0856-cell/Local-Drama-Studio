@@ -1,0 +1,13 @@
+schema_version: '1.0'
+motion_vocabulary:
+- wind in leaves
+- hair sway
+- cloud drift
+secondary_limit: 2
+preserve:
+- character design
+- soft light
+avoid:
+- heavy contrast
+- photoreal skin
+- dark palette

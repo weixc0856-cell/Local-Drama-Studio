@@ -9,9 +9,10 @@
 
 | 资产 | 文件 | 大小 | sha256 | 许可证 | 状态 |
 |---|---|---|---|---|---|
-| FLUX.2 Klein 4B | `flux-2-klein-4b-Q4_K_M.gguf` | 2.60 GB | `0b25d143c8469b34…` | Apache-2.0（HF 模型卡） | `PASS_VERIFIED` |
-| FLUX 文本编码器 | `text_encoders/qwen_3_4b.safetensors` | 8.04 GB | `6c671498573ac2f7…` | Apache-2.0 | `PASS_VERIFIED` |
-| FLUX.2 VAE | `vae/flux2-vae.safetensors` | 336 MB | `868fe7b343cc8f3a…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
+| FLUX.3 Klein distilled | `diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf` | 3.67 GB | `a0fe17e27da76608…` | FLUX Kommunity License（年营收 < 500 万美元免费商用；需内容过滤与 AI 标注） | `PASS_LIMITED`（本机 5/5 出图；风格门禁未过，见 `MODEL_UPGRADE_POC.md`） |
+| FLUX.3 文本编码器 | `text_encoders/qwen3vl_4b_int8_convrot.safetensors` | 4.86 GB | `32de113cbf8282b0…` | 随 BFL 仓库分发；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
+| FLUX.2 VAE（复用） | `vae/flux2-vae.safetensors` | 336 MB | `868fe7b343cc8f3a…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
+| ~~FLUX.2 Klein 4B~~（已退役，保留回退） | `flux-2-klein-4b-Q4_K_M.gguf` | 2.60 GB | `0b25d143c8469b34…` | Apache-2.0（HF 模型卡） | 退役，不再作为默认 |
 | Wan2.2 TI2V 5B | `Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3.43 GB | `95b19697b7f98e65…` | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
 | Wan 文本编码器 | `text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 6.73 GB | `c3355d30191f1f06…` | 随 Comfy-Org 重打包；底层 UMT5 待复核 | `PASS_VERIFIED` |
 | Wan2.2 VAE | `vae/wan2.2_vae.safetensors` | 1.41 GB | `e40321bd36b97099…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
@@ -26,7 +27,7 @@
 | ComfyUI-GGUF | `6ea2651` / gguf 0.19.0 | Apache-2.0 | — |
 | PyTorch | 2.15.0+xpu | BSD-3-Clause | — |
 | torchvision / torchaudio | 0.29.2 / 2.11.1 +xpu | BSD-3-Clause | — |
-| CosyVoice | 300M-SFT 运行时 | Apache-2.0（本地 LICENSE） | 模型与预置音色条款待复核 |
+| VoxCPM2 | 2B 运行时（`D:\AI\VoxCPM-Runtime`） | Apache-2.0（代码与权重） | 参考音权利单独核验 |
 | FFmpeg / ffprobe | 8.1-full_build（gyan） | **GPLv3 构建** | 内部渲染；分发二进制需评估 GPL |
 | llama.cpp（D:\AI） | SYCL b12024 | MIT | 模型许可按各模型卡 |
 | Python 调度依赖 | 见 TECH_STACK | 各包元数据 | 未发现 copyleft 冲突 |
@@ -96,8 +97,8 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 | 音色 | 来源 | 状态 |
 |---|---|---|
-| 「中文男」SFT 预置音色 | CosyVoice-300M-SFT | `PASS_VERIFIED` 合成；商用/平台使用条款待复核 |
-| 「中文女」SFT 预置音色 | CosyVoice-300M-SFT | 已进入 P1 与 81.373 s 工笔（`PASS_VERIFIED` 技术）；商用待核验 |
+| 本人参考音克隆（`narrator_self`） | VoxCPM2，参考音 `assets/audio/prompts/my_voice_clean_v1.wav` | `PASS_VERIFIED`（技术，盲听 7/7）；商用范围见 `VOICE_RIGHTS.md` |
+| ~~SFT 预置音色（中文男/中文女）~~ | CosyVoice-300M-SFT | 已退役（2026-11-06）；历史产物仅作证据保留 |
 | 自定义克隆音色 | 未使用 | `NOT_RUN` |
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
@@ -107,8 +108,8 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TTS-COSY-MALE | TTS 音色 | 中文男（基线） | 本地 CosyVoice | CosyVoice-300M-SFT | — | Apache-2.0（代码）；音色条款待核验 | 待核验 | 待核验 | 待核验 | 本地 | 已有音频哈希 | `PASS_VERIFIED`（合成）/ 授权 `PARTIAL` | `experiments/r3b/audio_manifest.json` |
-| TTS-COSY-FEMALE | TTS 音色 | 中文女 | 本地 CosyVoice | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PASS_VERIFIED`（技术，P1/81.373）；商用待核验 | `experiments/r3d/voice/` |
+| TTS-COSY-MALE | TTS 音色 | 中文男（已退役） | 本地 CosyVoice（已停用） | CosyVoice-300M-SFT | — | Apache-2.0（代码）；音色条款待核验 | 待核验 | 待核验 | 待核验 | 本地 | 已有音频哈希 | `PASS_VERIFIED`（合成）/ 授权 `PARTIAL` | `experiments/r3b/audio_manifest.json` |
+| TTS-COSY-FEMALE | TTS 音色 | 中文女（已退役） | 本地 CosyVoice（已停用） | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PASS_VERIFIED`（技术，P1/81.373）；商用待核验 | `experiments/r3d/voice/` |
 | TTS-ALI-WEN | TTS 音色 | 温怀清 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-ALI-YU | TTS 音色 | 余小云 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-VOLC-BV115 | TTS 音色 | 古风少御 BV115 | 火山引擎 | 火山引擎 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |

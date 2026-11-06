@@ -2,12 +2,12 @@
 # a quality target. Calibrate only after R0-C / R0-D produce measured evidence.
 profiles:
   r0_image:
-    model: flux_2_klein_4b
+    model: flux_3_klein
     width: 512
     height: 512
-    steps: 4
+    steps: 16
     cfg: 1.0
-    sampler: euler
+    sampler: er_sde
     scheduler: simple
     seed: 42
     batch_size: 1

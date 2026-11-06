@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- matte paper texture
+- earth tones
+- hand-painted brushwork
+note: For validator and human checklist only; prompts use positive anchors.

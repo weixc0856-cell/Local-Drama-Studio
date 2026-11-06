@@ -1,0 +1,9 @@
+schema_version: '1.0'
+materials:
+- paper fibre
+- torn edges
+- halftone print
+- aged photograph
+texture_cues:
+- torn paper edges
+- visible print texture

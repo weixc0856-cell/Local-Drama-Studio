@@ -3,9 +3,11 @@
 > 文档状态：Phase B 生产流程文档（2026-11-04）
 > 适用：v1.0 基线 + 当前工作区
 > 原则：以实际代码为准；规划路径单独标注，不混入“已验证”。
-> 相关：[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)、[USER_GUIDE.md](USER_GUIDE.md)、[PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md)、[QUALITY_AND_METRICS.md](QUALITY_AND_METRICS.md)
+> 相关：PROJECT_OVERVIEW.md（已删除，见 Git 历史）、[USER_GUIDE.md](USER_GUIDE.md)、[PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md)、[QUALITY_AND_METRICS.md](QUALITY_AND_METRICS.md)
 
 ---
+
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
 
 ## 0. 先看结论：当前有四条生产路径
 
@@ -186,7 +188,7 @@ flowchart TD
 | 项 | 内容 |
 |---|---|
 | **目的** | 生成 576×1024 竖屏静帧（或 A/B 变体） |
-| **输入** | `jobs.json` + `params/*.json` + `workflows/r0_flux_t2i_api.json` |
+| **输入** | `jobs.json` + `params/*.json` + `workflows/flux3_t2i_api.json` |
 | **输出** | `assets/images/<shot>/shot_*.png`；`job.json`；`workflow.submitted.json`；`history.json` |
 | **Schema** | job：`id/workflow/params/out`；params：`positive_prompt/negative_prompt/seed/width/height/steps/cfg/filename_prefix` |
 | **实际模块** | `scripts/r1_batch.py`、`scripts/r0_comfy_probe.py` |
@@ -318,7 +320,7 @@ flowchart TD
 - 禁止静默回退：0.5B 不可用/加载失败/参考音缺失 → 失败，不回退 300M。
 - 已实现：`--tts-mode` / 任务 `tts_mode` 显式选择；`/health` 校验 300M-SFT vs 0.5B；manifest 记录 `tts_mode/model_class/speaker_id`。
 - 当前状态：`config/audio.yaml` 默认 `tts.mode: zero_shot`；默认任务真实加载 0.5B；`PRD-TTS-001 = PASS_VERIFIED`。SFT 仅显式可选。
-- 详见 [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) §5、[PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md) §6。
+- 详见 PROJECT_OVERVIEW.md（已删除，见 Git 历史） §5、[PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md) §6。
 
 ### 7.2 音频 QA
 

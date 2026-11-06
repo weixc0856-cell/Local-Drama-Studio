@@ -7,7 +7,7 @@ Three levels are kept strictly apart:
 3. ``classical_recitation`` — slower line pacing plus intra-line breath pauses.
 
 ``chant`` (a real melody with pitch and note durations) is declared unsupported
-in ``config/audio.yaml``: the SFT service has no pitch or duration control. This
+in ``config/audio.yaml``: the runtime has no pitch or duration control. This
 module will not approximate it and will not label a plain recitation as chant.
 """
 
@@ -51,7 +51,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
                              "intra_line_pause_ms": 0, "split_at_punctuation": False,
                              "punctuation": "，、；：？。！",
                              "metrical_split": False, "metrical_pause_ms": 0},
-    "chant": {"supported": False, "reason": "CosyVoice-300M-SFT 无音高/旋律/时长控制接口"},
+    "chant": {"supported": False, "reason": "VoxCPM2 无音高/旋律/时长控制接口"},
 }
 
 

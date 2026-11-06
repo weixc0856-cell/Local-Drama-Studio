@@ -253,8 +253,7 @@ function launcherForm(kindKey, kinds, episodes) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="form-row">
-        <div class="field"><label>音色（可选）</label><input class="input" name="speaker" placeholder="例如：中文女"></div>
-        <div class="field"><label>音色档案（可选）</label><input class="input mono" name="voice_profile" placeholder="config/voices.yaml 的 profile_id"></div>
+                <div class="field"><label>音色档案（可选）</label><input class="input mono" name="voice_profile" placeholder="config/voices.yaml 的 profile_id"></div>
         <div class="field"><label>语速（可选）</label><input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="留空用档案/默认"></div>
       </div>
       <div class="field"><label>max_tokens</label><input class="input" name="max_tokens" type="number" value="2000"></div>`;
@@ -281,14 +280,11 @@ function launcherForm(kindKey, kinds, episodes) {
       <div class="field"><label>合成模式</label>
         <select class="input" name="tts_mode">
           <option value="">读取 config/audio.yaml（默认 zero_shot）</option>
-          <option value="sft">sft · 预置音色（CosyVoice-300M-SFT）</option>
-          <option value="zero_shot">zero_shot · 参考音克隆（CosyVoice2-0.5B）</option>
+                    <option value="zero_shot">zero_shot · 参考音克隆（VoxCPM2）</option>
         </select></div>
       <div class="field"><label>音色档案（可选）</label>
         <input class="input mono" name="voice_profile" placeholder="profile_id；逐行 voice_profile 优先；留空走旧配置"></div>
       <div class="form-row">
-        <div class="field"><label>音色（仅 SFT）</label>
-          <input class="input" name="speaker" placeholder="例如：中文女；留空读取 narration.json / config"></div>
         <div class="field"><label>语速（可选）</label>
           <input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="1.0"></div>
       </div>

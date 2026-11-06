@@ -50,8 +50,8 @@
 - 尾部亮度斜率；
 - 首/中/末帧对照、区域裁切对照、异常帧对照、亮度时间轴。
 
-权威结果：`experiments/audit/M0/visual_failure_audit.json`（含 10 条 findings 与全部实测）。
-`experiments/audit/M0/run-20261104-071740/` 是生成该结果的原始 run；更早的 run 是阈值迭代过程中的中间产物，不作为证据。
+权威结果：原 `experiments/audit/M0/visual_failure_audit.json`（含 10 条 findings 与全部实测）；该目录已在 2026-11-06 的本地清理中删除，结论保留在本文。
+生成该结果的原始 run 为 `experiments/audit/M0/run-20261104-071740/`（已删除）；更早的 run 只是阈值迭代中间产物，不作为证据。
 
 ## 2. 逐项根因
 

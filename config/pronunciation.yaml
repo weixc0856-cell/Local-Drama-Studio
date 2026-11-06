@@ -21,7 +21,7 @@ capabilities:
   acoustic_substitution: true
   display_text_protected: true
   substitution_method: "curated homophone alias, acoustic layer only"
-  note: CosyVoice-300M-SFT /tts 只接收 text / speaker / speed / text_frontend；谐音替换在调用前完成
+  note: VoxCPM2 /tts 接收 text / prompt_wav / prompt_text / speed / text_frontend；谐音替换在调用前完成
 
 entries:
   - id: bianzhou

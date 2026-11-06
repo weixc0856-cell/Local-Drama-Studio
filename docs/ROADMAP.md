@@ -35,7 +35,7 @@
 
 ### 工具层（非内容里程碑）
 
-本地生产工作台已可运行：只读派生真实产物状态，并开放 doctor / 合成重建等受限任务入口。它不改变 M3/M4 的状态或前置条件；内容包 Adapter、内容编辑、TTS 参数化仍未实现。见 [WORKSPACE_REPORT.md](WORKSPACE_REPORT.md) 与 ADR-014。
+本地生产工作台已可运行：只读派生真实产物状态，并开放 doctor / 合成重建等受限任务入口。它不改变 M3/M4 的状态或前置条件；内容包 Adapter、内容编辑、TTS 参数化仍未实现。见 WORKSPACE_REPORT.md（已删除，见 Git 历史） 与 ADR-014。
 
 ## 3. 待验证
 
@@ -43,7 +43,7 @@
 
 | 里程碑 | 内容 | 状态 | 证据 |
 |---|---|---|---|
-| 两分钟水墨片验收 | 24 镜全 Wan / 120 s / 1080×1920 / quality PASS | `IN_PROGRESS` | [REFERENCE_FILMS.md](REFERENCE_FILMS.md)；`experiments/ink_dream/run_ink_film.log` |
+| 两分钟水墨片验收 | 24 镜全 Wan / 120 s / 1080×1920 / quality PASS | `IN_PROGRESS` | [REFERENCE_FILMS.md](REFERENCE_STUDY.md)；`experiments/ink_dream/run_ink_film.log` |
 
 ### S · 双核心视觉风格（2026-11-03 立项）
 
@@ -59,7 +59,7 @@
 | S2.3 | 管线 B 更慢长卷样片 | `PARTIAL`（技术通过，人工待审） |
 | S3 | 双风格链路（按三件事分别评价） | ① 独立规范/配置 `PASS_STATIC`；② 各风格 2 镜头技术样片 `PASS_VERIFIED`（M7）；③ 作品级锁定 `PARTIAL`；跨镜头一致性正式验证 `NOT_RUN` |
 
-执行记录见 [`S2_TEST_REPORT.md`](S2_TEST_REPORT.md) 与 [`PIPELINE_AB_VALIDATION.md`](PIPELINE_AB_VALIDATION.md)。
+执行记录见 `S2_TEST_REPORT.md`（已删除，见 Git 历史） 与 `PIPELINE_AB_VALIDATION.md`（已删除，见 Git 历史）。
 
 约束：不新增模型/LoRA/依赖；复用现有 FLUX/Wan/FFmpeg 与 R3 合成；Wan 只做局部动态；S2 未通过前不扩展为新的生产子系统。本阶段与 R3-D、M3 并列推进，不取消 R3-D。
 
@@ -73,7 +73,7 @@
 | S4 | zero-shot 克隆（`/tts/upload`，CosyVoice2-0.5B + 自录 prompt） | `PASS_STATIC`（端到端跑通；300M 已实测到韵尾与音色问题） |
 | S5 | 标题段 + 时间戳账本（audio-first） | `PASS_STATIC`（header/ledger 落地，镜头时长随音频） |
 
-见 [AUDIO_SOUNDSCAPE_PLAN.md](AUDIO_SOUNDSCAPE_PLAN.md) §14。素材与授权路径见 [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md)：S2 可走程序化拟音（零素材零风险），S3 只采用 CC0 曲库，S4 先做录音诊断再决定是否克隆。
+见 AUDIO_SOUNDSCAPE_PLAN.md（已删除，见 Git 历史） §14。素材与授权路径见 [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md)：S2 可走程序化拟音（零素材零风险），S3 只采用 CC0 曲库，S4 先做录音诊断再决定是否克隆。
 
 ### M8 · 高质量动态表现与 2.5D 分层视差（2026-11-04 立项）
 
@@ -96,7 +96,7 @@
 | M8-D(3) | 视差策略进 `config/styles.yaml`（两风格差异化参数 + 消费者 + 边界门） | `PASS_STATIC` |
 | M8-E(2) | 生产任务注册表接入（新增任务类型/工作台入口） | `NOT_RUN`（当前仍靠 CLI/实验入口） |
 
-见 [M8_0_STATE_AUDIT.md](M8_0_STATE_AUDIT.md)、[M8_A_PARALLAX_REPORT.md](M8_A_PARALLAX_REPORT.md) 与 [M8_B1_PLATE_SOURCE_REPORT.md](M8_B1_PLATE_SOURCE_REPORT.md)、[M8_B2_ASSET_LAYER_REPORT.md](M8_B2_ASSET_LAYER_REPORT.md)、[M8_B3_TARGET_SHAPE_REPORT.md](M8_B3_TARGET_SHAPE_REPORT.md)。M8 不改变 M1–M7 与 S1–S3 的任何既有状态；已有 `PENDING_HUMAN_REVIEW` 项仍是前置阻塞，不得以新样片替代。
+见 M8_0_STATE_AUDIT.md（已删除，见 Git 历史）、M8_A_PARALLAX_REPORT.md（已删除，见 Git 历史） 与 M8_B1_PLATE_SOURCE_REPORT.md（已删除，见 Git 历史）、M8_B2_ASSET_LAYER_REPORT.md（已删除，见 Git 历史）、M8_B3_TARGET_SHAPE_REPORT.md（已删除，见 Git 历史）。M8 不改变 M1–M7 与 S1–S3 的任何既有状态；已有 `PENDING_HUMAN_REVIEW` 项仍是前置阻塞，不得以新样片替代。
 
 约束：不修改 `RegionSpec` / `ParallaxSpec` 正式契约与 `check_rigid_protection` 的全局逻辑；不安装 MoviePy / DiffSynth-Studio / ComfyUI-WanVideoWrapper；2.5D 不得用逐像素深度 warp 实现；M8-A 的结论只能由人工看片确定。
 
@@ -244,7 +244,7 @@
 
 按顺序只做四件：
 
-1. 完成 S2 人工看片并记录结论（技术检查已通过；管线 A/B 首批样片见 [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md)）。
+1. 完成 S2 人工看片并记录结论（技术检查已通过；管线 A/B 首批样片见 PIPELINE_AB_VALIDATION.md（已删除，见 Git 历史））。
 2. 完成 R3-D（女声/字体/BGM/音效选型与授权核验）。
 3. 完成《洛神赋》样片（M3），使用双核心风格之一。
 4. 拿真实作品去抖音/小红书测试（M4）。

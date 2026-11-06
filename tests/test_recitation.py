@@ -4,6 +4,7 @@ import io
 import json
 import wave
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
@@ -18,8 +19,13 @@ def _root(tmp_path: Path) -> Path:
         'paths: {}\ntts:\n  base_url: "http://tts.test"\n  sample_rate: 48000\n',
         encoding="utf-8",
     )
+    prompt = tmp_path / "assets" / "prompt.wav"
+    prompt.parent.mkdir(parents=True, exist_ok=True)
+    prompt.write_bytes(_wav_bytes(seconds=1.0))
     (tmp_path / "config" / "audio.yaml").write_text(
-        'tts:\n  mode: sft\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+        'tts:\n  mode: zero_shot\n  zero_shot:\n'
+        '    prompt_audio: "assets/prompt.wav"\n    prompt_text: "测试参考文本"\n',
+        encoding="utf-8",
     )
     return tmp_path
 
@@ -57,7 +63,8 @@ def test_chant_is_declared_unsupported(tmp_path: Path) -> None:
         mode_spec(root, "chant")
 
 
-def test_recitation_synthesizes_parts_and_records_layers(tmp_path: Path) -> None:
+def test_recitation_synthesizes_parts_and_records_layers(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     root = _root(tmp_path)
     narration = root / "episode" / "narration.json"
     narration.parent.mkdir(parents=True)
@@ -77,14 +84,19 @@ def test_recitation_synthesizes_parts_and_records_layers(tmp_path: Path) -> None
         ),
         encoding="utf-8",
     )
-    bodies: list[dict] = []
-    wav = _wav_bytes()
+    bodies: list[str] = []
+
+    def fake_zero_shot(text, *, prompt_wav, prompt_text, out_wav, speed, base, timeout):
+        bodies.append(text)
+        Path(out_wav).write_bytes(_wav_bytes())
+        return SimpleNamespace(synth_seconds=0.1)
+
+    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready", "model_class": "CosyVoice", "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT", "speakers": ["测试音色"], "modes": ["sft", "zero_shot"]})
-        bodies.append(json.loads(request.content))
-        return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
+            return httpx.Response(200, json={"status": "ready", "model_class": "VoxCPM2", "model_dir": "D:/AI/models/voxcpm2", "speakers": [], "modes": ["zero_shot"]})
+        return httpx.Response(404)
 
     client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
     result = synthesize_narration(
@@ -92,9 +104,7 @@ def test_recitation_synthesizes_parts_and_records_layers(tmp_path: Path) -> None
         root=root, http_client=client,
     )
     assert result.mode == "recitation"
-    assert [body["text"] for body in bodies] == [
-        "春江潮水——连海平，海上明月——共潮生。"
-    ]
+    assert bodies == ["春江潮水——连海平，海上明月——共潮生。"]
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
     assert manifest["mode"] == "recitation"
     assert manifest["speed"] == 0.92

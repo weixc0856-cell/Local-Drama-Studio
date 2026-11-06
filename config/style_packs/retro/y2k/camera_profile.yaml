@@ -1,0 +1,6 @@
+schema_version: '1.0'
+allowed_moves:
+- orbit
+- dolly_in
+preferred_lens_mm: 85
+dof_strategy: shallow

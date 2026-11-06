@@ -1,0 +1,8 @@
+schema_version: '1.0'
+materials:
+- gouache background
+- soft paper texture
+- natural light
+texture_cues:
+- character design
+- soft light

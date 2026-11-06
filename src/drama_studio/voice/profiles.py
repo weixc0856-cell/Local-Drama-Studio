@@ -1,7 +1,8 @@
 """Voice profile and cast contracts.
 
-A voice profile is the unit that may enter production. It names either an SFT
-preset speaker or a zero-shot reference recording, and carries the status and
+A voice profile is the unit that may enter production. It names a zero-shot
+reference recording (the legacy SFT preset-speaker shape still parses but is
+retired at synthesis), and carries the status and
 licence fields that gate production use. Profiles are deliberately separate
 from the audio asset registry: the registry owns files and hashes, while a
 profile owns the *performance* choice (mode, speaker, prompt, speed).
@@ -9,9 +10,8 @@ profile owns the *performance* choice (mode, speaker, prompt, speed).
 The loader is opt-in. ``narration.json`` may name a profile per line; without
 one, the historical ``tts.mode`` / ``default_speaker`` / ``zero_shot`` config
 path is unchanged. A run may mix profiles, but only within one backend mode:
-one CosyVoice process can load either CosyVoice-300M-SFT or CosyVoice2-0.5B,
-so mixing ``sft`` and ``zero_shot`` in one run is refused instead of silently
-switching the service.
+the 50000 runtime serves one model at a time, so mixing ``sft`` and
+``zero_shot`` is still refused; ``sft`` itself is retired.
 """
 
 from __future__ import annotations
@@ -288,7 +288,7 @@ def cast_sha256(casts: list[dict[str, Any]]) -> str:
 
 
 def validate_one_backend(casts: list[ResolvedVoice]) -> str:
-    """One CosyVoice process serves one model; refuse mixed backend modes."""
+    """One runtime serves one model; refuse mixed backend modes."""
     modes = {cast.tts_mode for cast in casts}
     if len(modes) != 1:
         raise VoiceProfileError(

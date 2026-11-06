@@ -27,7 +27,7 @@ Local-Drama-Studio/
 
 - 根 `.venv`：Python 3.12，只装调度依赖；**永不装 torch**。
 - `runtime/ComfyUI/.venv`：PyTorch XPU + ComfyUI + GGUF；`src/` 不得导入。
-- `D:\AI\CosyVoice-Runtime`：Python 3.10，TTS；不向其安装项目依赖。
+- `D:\AI\VoxCPM-Runtime`：Python 3.12，TTS + openai-whisper（ASR QA）；不向其安装项目依赖。
 - `D:\AI\models`：模型仓库，不在仓库内。
 
 ```powershell
@@ -189,7 +189,7 @@ TaskKind(
 
 | 文件 | 节点要点 |
 |---|---|
-| `r0_flux_t2i_api.json` | `UnetLoaderGGUF` → `CLIPLoader(flux2, cpu)` → `Flux2Scheduler` + `CFGGuider(1.0)` + `SamplerCustomAdvanced` |
+| `flux3_t2i_api.json` | `UnetLoaderGGUF`（FLUX.3 Q4_K_M）→ `CLIPLoader(flux3, cpu)` → `EmptyFlux2LatentImage` + `KSampler(er_sde/simple, 16 步, CFG 1.0)` |
 | `r1_flux_edit_api.json` | `LoadImage → VAEEncode → ReferenceLatent` + `EmptyFlux2LatentImage` |
 | `r0_wan_i2v_api.json` | `Wan22ImageToVideoLatent` + `ModelSamplingSD3(shift=8)` + `KSampler(uni_pc, simple, 20)` |
 | `r0_wan_t2v_api.json` | 同上，无 `start_image` |

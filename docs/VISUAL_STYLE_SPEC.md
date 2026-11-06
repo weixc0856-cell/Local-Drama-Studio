@@ -271,16 +271,16 @@
 - **镜头运动**：`static / slow_push_in / slow_pull_out / scroll_pan / push_in_with_pan / slow_lateral_track`，支持三次缓动、焦点、起止缩放、方向；参数由 `motion.camera` 决定，结果写入 `motion_manifest.json`。
 - **2026-11-04 A/B 基线**：`config/styles.yaml` 的 `production_baselines` 记录工笔 `shot_001=A/shot_002=A`、水墨 `shot_001=B/shot_002=A`，含完整 prompt、sha256 与人工理由。
 - **局部微动**：`water_ripple / cloud_drift / leaf_sway / reed_sway / ink_diffusion / reflection_distortion`；每个图层必须有显式区域与排除框，静态结构带差值可独立检查。
-- **Wan 运动遮罩（2026-11-04，M5）**：项目 Wan2.2 TI2V 5B 工作流没有 `mask` / `motion_mask` 输入；`Wan22ImageToVideoLatent` 的内部 `noise_mask` 只作用于起始图，不是空间运动遮罩。M5 = `NOT_RUN (UNSUPPORTED_WORKFLOW)`，Wan 不得宣称主体保护或运动遮罩；主力管线保持“静态首帧 + 确定性局部微动”。详见 [`M5_WAN_MOTION_MASK_REPORT.md`](M5_WAN_MOTION_MASK_REPORT.md)。
-- **声学层谐音替换（2026-11-04，M6）**：`source_text / display_text / tts_text / acoustic_text` 四层分离；只为已确认的 G2P 缺口配置 `tts_alias`，只改 `acoustic_text`，字幕与原文逐字不变；5 条谐音（碣石/潇湘/扁舟/似霰/青枫浦）已完成音频验证与人工复核，状态为 `verified`；ASR 用拼音 TONE3 编辑距离判定，全篇 18/18、探针 12/12。2026-11-04 人工听感驳回 2/2/3 硬切与 220 ms 数字静音后，改为整句/整联推理 + 破折号气口，行间停顿 800–1000 ms；不再生成段级 WAV。详见 [`M6_PRONUNCIATION_REPORT.md`](M6_PRONUNCIATION_REPORT.md)。
-- **转场时间轴（2026-11-04，M4）**：转场左侧从上一镜头的尾部 handle 截取（`left_start > 0`），不再从 0 重放开头；`body + transition + body` 的总时长按帧量化并断言等于 plan total；水墨转场固定使用 `alphamerge + overlay`，禁止 `maskedmerge`；转场前后做 ΔE/色度差异检查，跨风格时在 manifest 预警。时序门禁接受 transition manifest，在已声明转场/切点处豁免帧间跳变。详见 [`M4_TRANSITIONS_REPORT.md`](M4_TRANSITIONS_REPORT.md)。
-- **渲染顺序（2026-11-04，M3）**：固定为“源图比例中间画布 → 局部图层合成 → 相机裁切/缩放 → 纸纹”；遮罩与主体经过同一相机变换，非 9:16 源图不再被强制拉成 540×960。门禁：`check_rigid_protection`（锁定区域多帧差 + 边缘漂移）与 `check_temporal_continuity`（帧间突变、尾部变暗、频闪），详见 [`M3_QUALITY_GATES_REPORT.md`](M3_QUALITY_GATES_REPORT.md)。
-- **局部运动算法（2026-11-04，M2）**：水面改为透视衰减的低频行波 + 网格位移；倒影只做纵向、绑定水面相位并加纵向拖尾；植物按 Y 轴非线性权重、根部严格 0；云雾改为平滑流动噪声，取消整层平移与透明度振荡。参数全部在 `config/styles.yaml` 的 `motion.local_policy`（`wavelength_px`、`vertical_ratio`、`perspective_far_scale`、`reflection_ratio`、`reflection_lag_s`、`smear_px`、`sway_exponent`、`top_decay`）。详见 [`M2_MOTION_ALGORITHMS_REPORT.md`](M2_MOTION_ALGORITHMS_REPORT.md)。
-- **区域语义与权限（2026-11-04，M1）**：`motion_regions.json` 的镜头条目可写 `{regions, layers}`。角色为 `rigid_object / fluid_surface / reflection / vegetation / atmosphere / background / independent_overlay`，权限为 `locked / hard_excluded / controlled / allowed`。`locked/hard_excluded` 区域会从所有与其相交的局部图层中自动扣除；`reflection` 必须 `follows` 一个 `rigid_object`，且只能使用 `reflection_distortion`；非倒影层会自动排除倒影区域；扣除后 alpha 覆盖率低于 0.2% 时该图层被拒绝并记录原因。旧格式（镜头 → 图层列表）仍可读取，但标记为 `legacy`，不提供主体保护。详见 [`M1_REGION_PROTECTION_REPORT.md`](M1_REGION_PROTECTION_REPORT.md)。
+- **Wan 运动遮罩（2026-11-04，M5）**：项目 Wan2.2 TI2V 5B 工作流没有 `mask` / `motion_mask` 输入；`Wan22ImageToVideoLatent` 的内部 `noise_mask` 只作用于起始图，不是空间运动遮罩。M5 = `NOT_RUN (UNSUPPORTED_WORKFLOW)`，Wan 不得宣称主体保护或运动遮罩；主力管线保持“静态首帧 + 确定性局部微动”。详见 `M5_WAN_MOTION_MASK_REPORT.md`（已删除，见 Git 历史）。
+- **声学层谐音替换（2026-11-04，M6）**：`source_text / display_text / tts_text / acoustic_text` 四层分离；只为已确认的 G2P 缺口配置 `tts_alias`，只改 `acoustic_text`，字幕与原文逐字不变；5 条谐音（碣石/潇湘/扁舟/似霰/青枫浦）已完成音频验证与人工复核，状态为 `verified`；ASR 用拼音 TONE3 编辑距离判定，全篇 18/18、探针 12/12。2026-11-04 人工听感驳回 2/2/3 硬切与 220 ms 数字静音后，改为整句/整联推理 + 破折号气口，行间停顿 800–1000 ms；不再生成段级 WAV。详见 `M6_PRONUNCIATION_REPORT.md`（已删除，见 Git 历史）。
+- **转场时间轴（2026-11-04，M4）**：转场左侧从上一镜头的尾部 handle 截取（`left_start > 0`），不再从 0 重放开头；`body + transition + body` 的总时长按帧量化并断言等于 plan total；水墨转场固定使用 `alphamerge + overlay`，禁止 `maskedmerge`；转场前后做 ΔE/色度差异检查，跨风格时在 manifest 预警。时序门禁接受 transition manifest，在已声明转场/切点处豁免帧间跳变。详见 `M4_TRANSITIONS_REPORT.md`（已删除，见 Git 历史）。
+- **渲染顺序（2026-11-04，M3）**：固定为“源图比例中间画布 → 局部图层合成 → 相机裁切/缩放 → 纸纹”；遮罩与主体经过同一相机变换，非 9:16 源图不再被强制拉成 540×960。门禁：`check_rigid_protection`（锁定区域多帧差 + 边缘漂移）与 `check_temporal_continuity`（帧间突变、尾部变暗、频闪），详见 `M3_QUALITY_GATES_REPORT.md`（已删除，见 Git 历史）。
+- **局部运动算法（2026-11-04，M2）**：水面改为透视衰减的低频行波 + 网格位移；倒影只做纵向、绑定水面相位并加纵向拖尾；植物按 Y 轴非线性权重、根部严格 0；云雾改为平滑流动噪声，取消整层平移与透明度振荡。参数全部在 `config/styles.yaml` 的 `motion.local_policy`（`wavelength_px`、`vertical_ratio`、`perspective_far_scale`、`reflection_ratio`、`reflection_lag_s`、`smear_px`、`sway_exponent`、`top_decay`）。详见 `M2_MOTION_ALGORITHMS_REPORT.md`（已删除，见 Git 历史）。
+- **区域语义与权限（2026-11-04，M1）**：`motion_regions.json` 的镜头条目可写 `{regions, layers}`。角色为 `rigid_object / fluid_surface / reflection / vegetation / atmosphere / background / independent_overlay`，权限为 `locked / hard_excluded / controlled / allowed`。`locked/hard_excluded` 区域会从所有与其相交的局部图层中自动扣除；`reflection` 必须 `follows` 一个 `rigid_object`，且只能使用 `reflection_distortion`；非倒影层会自动排除倒影区域；扣除后 alpha 覆盖率低于 0.2% 时该图层被拒绝并记录原因。旧格式（镜头 → 图层列表）仍可读取，但标记为 `legacy`，不提供主体保护。详见 `M1_REGION_PROTECTION_REPORT.md`（已删除，见 Git 历史）。
 - **转场**：`crossfade / ink_dissolve / ink_reveal / ink_spread`；水墨转场使用距离场 + 噪声遮罩，无二值阈值；转场只消耗上一镜头尾部 handle，序列总时长不变。
 - **风格隔离**：两种风格的运动策略、局部类型、转场类型均在各自 `motion` 配置中声明；通用代码不写 `if style == ...`。
 
-实测证据与逐项状态见 [`MOTION_VOICE_UPGRADE_REPORT.md`](MOTION_VOICE_UPGRADE_REPORT.md)。人工看片前，相关能力一律 `PARTIAL`。
+实测证据与逐项状态见 `MOTION_VOICE_UPGRADE_REPORT.md`（已删除，见 Git 历史）。人工看片前，相关能力一律 `PARTIAL`。
 
 质量原则：
 
@@ -306,7 +306,7 @@
 
 **冻结**：每次生成写新的 `snapshot-<时间>/`，保存设计、编译 Prompt、参数、工作流/风格哈希；不覆盖旧版本。
 
-状态：数据结构与编译 `PASS_STATIC`；真实 A/B 生成、静态/动态风险检查 `PARTIAL`；人工审美 `PENDING_HUMAN_REVIEW`。证据见 [`AESTHETIC_DESIGN_REPORT.md`](AESTHETIC_DESIGN_REPORT.md)。
+状态：数据结构与编译 `PASS_STATIC`；真实 A/B 生成、静态/动态风险检查 `PARTIAL`；人工审美 `PENDING_HUMAN_REVIEW`。证据见 `AESTHETIC_DESIGN_REPORT.md`（已删除，见 Git 历史）。
 
 ### 5.4 合成与母版
 
@@ -340,7 +340,7 @@
 
 ### S2 · 视觉技术验证（2026-11-03 已执行，待人工看片）
 
-分别完成两个独立片段，先验证技术栈能否达到目标，再谈完整生产。执行结果见 [`S2_TEST_REPORT.md`](S2_TEST_REPORT.md)。
+分别完成两个独立片段，先验证技术栈能否达到目标，再谈完整生产。执行结果见 `S2_TEST_REPORT.md`（已删除，见 Git 历史）。
 
 | 项 | 状态 | 证据 |
 |---|---|---|
@@ -351,7 +351,7 @@
 | Wan 局部动态 | `NOT_RUN` | 本轮刻意只用静帧 + 确定性动画 |
 | 线描显现 / 2.5D | `NOT_RUN` | 未实现 |
 
-首批管线验证的完整记录见 [`PIPELINE_AB_VALIDATION.md`](PIPELINE_AB_VALIDATION.md)。
+首批管线验证的完整记录见 `PIPELINE_AB_VALIDATION.md`（已删除，见 Git 历史）。
 
 片段与证据要求（两段相同）：
 

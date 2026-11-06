@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: paper cream
+  hex: '#E8DCC8'
+- name: ink black
+  hex: '#1B1B1B'
+- name: vermilion
+  hex: '#C0392B'
+- name: cobalt
+  hex: '#2E5E9E'
+- name: olive
+  hex: '#6B7A3A'
+saturation_range:
+- 0.1
+- 0.6
+edge_density_range:
+- 0.06
+- 0.25
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

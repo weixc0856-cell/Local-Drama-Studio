@@ -1,0 +1,13 @@
+{
+  "project_id": "deng_guan_que_lou",
+  "title": "登鹳雀楼",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 47,
+  "language": "zh-CN",
+  "created_at": "2026-11-06",
+  "notes": "Script-to-Film Phase 1 示例项目；镜头语言见 docs/FILM_PRODUCTION_GUIDE.md",
+  "visual": {
+    "style_id": "oriental.ink_wash",
+    "style_version": "1.0.0"
+  }
+}

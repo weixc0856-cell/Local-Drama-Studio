@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: ink black
+  hex: '#1B1A17'
+- name: mid ink
+  hex: '#7A756D'
+- name: pale ink
+  hex: '#C2BDB2'
+- name: xuan
+  hex: '#EDE4D3'
+- name: cinnabar
+  hex: '#9A4A3A'
+saturation_range:
+- 0.0
+- 0.15
+edge_density_range:
+- 0.02
+- 0.1
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

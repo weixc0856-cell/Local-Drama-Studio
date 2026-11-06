@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: azurite
+  hex: '#2E5E75'
+- name: malachite
+  hex: '#4E7A5E'
+- name: cinnabar
+  hex: '#B23A2E'
+- name: pale ochre
+  hex: '#C8A56A'
+- name: silk
+  hex: '#E3D6BE'
+saturation_range:
+- 0.08
+- 0.35
+edge_density_range:
+- 0.1
+- 0.3
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

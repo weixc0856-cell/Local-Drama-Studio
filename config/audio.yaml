@@ -1,16 +1,16 @@
 tts:
-  # 默认合成模式：zero_shot（CosyVoice2-0.5B）。SFT（CosyVoice-300M-SFT）
-  # 只能由 CLI/任务显式选择；代码不根据 enabled 开关静默回退。
+  # 默认合成模式：zero_shot（参考音克隆）。唯一后端 VoxCPM2（服务端口 50000）。
+  # SFT 预置音色已退休（2026-11-06）：字段保留只为解析旧配置，运行时不再接受 speaker。
   mode: zero_shot
-  default_speaker: "中文女"     # 仅 SFT 显式模式使用的默认音色
+  default_speaker: "中文女"     # 已退休：仅旧配置兼容，不发给运行时
   zero_shot:
     # 只有显式选择 zero_shot 时才会使用；必须与参考音逐字一致。
     prompt_audio: "assets/audio/prompts/my_voice_clean_v1.wav"
     prompt_text: "希望你以后能够做的比我还好呦。"
     speed: 0.90                # 0.5B 本身偏慢；0.82 会拉长到 7.2s，0.90 更接近镜头长度
-    runtime: cosyvoice2        # 仅 CosyVoice2-0.5B；300M 的 zero-shot 已实测丢韵尾/音色漂移
+    runtime: voxcpm2          # 50000 上的唯一运行时；旧 CosyVoice2-0.5B 已停用
   sample_rate: 48000        # resample all tracks to 48 kHz for FFmpeg
-  speakers:                 # voice_id -> CosyVoice SFT preset speaker
+  speakers:                 # 已退休：voice_id -> 旧 SFT 音色，仅作历史映射
     male_01: "中文男"
     male_02: "中文男"
     female_01: "中文女"
@@ -29,7 +29,7 @@ loudness:
   true_peak_db: -1.5
 
 # 诵读模式：只控制速度、停顿与分句，不改变任何汉字。
-# CosyVoice-300M-SFT 的 /tts 只接收 text / speaker / speed；没有音素、拼音、
+# VoxCPM2 的 /tts 只接收 text / 参考音 / prompt_text / speed；没有音素、拼音、
 # 音高或时长接口。因此 chant（真正吟唱）明确标记为不支持，不得用普通朗诵冒充。
 narration_modes:
   narration:
@@ -60,7 +60,7 @@ narration_modes:
     metrical_pause_ms: 0
   chant:
     supported: false
-    reason: CosyVoice-300M-SFT 无音高、旋律与时长控制接口；真正吟唱需要另行验证歌声模型
+    reason: VoxCPM2 无音高、旋律与时长控制接口；真正吟唱需要另行验证歌声模型
 
 # 声景母带：只作用于拼接后的整段对白（不是逐句），默认关闭。
 # 开启前必须有 IR 与（可选的）环境音/垫乐，且这些资产要在许可清单内。
