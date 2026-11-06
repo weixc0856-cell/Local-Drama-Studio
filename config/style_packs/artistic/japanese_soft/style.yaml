@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.japanese_soft
+name: 日系小清新
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 明亮、清透、治愈的生活感动画。
+layers:
+- identity
+- execution
+- consistency

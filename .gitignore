@@ -62,3 +62,20 @@ desktop.ini
 
 # External CC0 BGM source files stay local; manifest keeps hashes
 assets/audio/bgm/keynata/*.mp3
+
+# Reference-board candidate images stay local; manifests and jobs are tracked.
+config/style_packs/*/*/reference_board/candidates/**/*.png
+
+# Reference-board generation output dirs (01, 02, ...): keep jobs/params/manifest only
+config/style_packs/*/*/reference_board/candidates/[0-9][0-9]/
+
+# Sample Script-to-Film project: text is tracked, media/staging stay local
+!projects/deng_guan_que_lou/
+projects/deng_guan_que_lou/*
+!projects/deng_guan_que_lou/*.json
+!projects/deng_guan_que_lou/*.yaml
+!projects/deng_guan_que_lou/prompts/
+!projects/deng_guan_que_lou/prompts/*.json
+
+# Reference-board run manifest is generated per batch
+config/style_packs/*/*/reference_board/candidates/jobs_manifest.json

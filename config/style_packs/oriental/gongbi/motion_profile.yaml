@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- petal fall
+- bird flight
+- robe sway
+secondary_motions:
+- leaf tremble
+secondary_limit: 2

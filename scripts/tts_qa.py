@@ -1,8 +1,8 @@
-"""ASR proxy QA for narration audio (run with the CosyVoice runtime venv).
+"""ASR proxy QA for narration audio (run with the VoxCPM runtime venv).
 
 Run this with the environment that has ``openai-whisper`` installed, e.g.::
 
-    D:\\AI\\CosyVoice-Runtime\\venv\\Scripts\\python.exe scripts\\tts_qa.py ^
+    D:\\AI\\VoxCPM-Runtime\\venv\\Scripts\\python.exe scripts\\tts_qa.py ^
         --manifest projects/<project>/episodes/<episode>/audio_manifest.json
 
 Whisper is a proxy, not an ear: classical Chinese homophones are easy for it to
@@ -79,8 +79,8 @@ def main() -> int:
     except ImportError:
         print(json.dumps({
             "ok": False,
-            "error": "openai-whisper 未安装。请用 CosyVoice 运行时 venv 执行："
-                     "D:\\AI\\CosyVoice-Runtime\\venv\\Scripts\\python.exe scripts\\tts_qa.py ...",
+            "error": "openai-whisper 未安装。请在 VoxCPM 运行时 venv 中安装后再执行本脚本：\n"
+                     "D:\\AI\\VoxCPM-Runtime\\venv\\Scripts\\python.exe -m pip install openai-whisper",
         }, ensure_ascii=False))
         return 2
 
@@ -180,13 +180,13 @@ def main() -> int:
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     # Pinyin-level verdict runs in the project venv, where pypinyin is installed;
-    # Whisper stays in the CosyVoice runtime venv. Character CER is kept as a
+    # Whisper stays in the VoxCPM runtime venv. Character CER is kept as a
     # secondary signal and must not fail a correct homophone.
     checker = ROOT / "scripts" / "asr_pinyin_check.py"
     project_python = ROOT / ".venv" / "Scripts" / "python.exe"
     pinyin_ok = None
     if checker.is_file() and project_python.is_file():
-        # The parent process is the CosyVoice venv (Python 3.10); its
+        # The parent process is the VoxCPM venv (Python 3.12); its
         # PYTHONPATH/PYTHONHOME would poison the 3.12 project venv. -I makes
         # the checker isolated and use only its own site-packages.
         env = {key: value for key, value in os.environ.items()

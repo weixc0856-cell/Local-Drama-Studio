@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- photoreal depth of field
+- soft gradients
+- 3D volume
+note: For validator and human checklist only; prompts use positive anchors.

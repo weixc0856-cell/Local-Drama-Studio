@@ -1,25 +1,22 @@
 ﻿#requires -Version 5.1
 <#
 .SYNOPSIS
-    Start / stop / inspect the local CosyVoice runtime on port 50000.
+    Start / stop / inspect the local TTS runtime on port 50000 (VoxCPM2).
 
 .DESCRIPTION
-    Cosmetic Voice has two runtimes and they are mutually exclusive on 50000:
+    50000 belongs to exactly one runtime: D:\AI\VoxCPM-Runtime (VoxCPM2, CPU only,
+    no VRAM). The file keeps its historical name because the docs and daily habit
+    refer to it; the CosyVoice runtimes it used to launch are retired
+    (2026-11-06) and D:\AI\CosyVoice-Runtime is being deleted.
 
-      cosyvoice2  CosyVoice2-0.5B (start_cosyvoice.bat)      -- zero-shot, better
-                  pronunciation and speaker similarity; no preset voices.
-      sft         CosyVoice-300M-SFT (start_cosyvoice_sft.bat) -- preset speakers
-                  (中文男/中文女); its zero-shot loses finals and drifts in pitch.
-
-    This script only *launches* those batch files. Nothing under
-    D:\AI\CosyVoice-Runtime is modified: the project's rule is that the shared
-    environment stays untouched, and the choice of runtime belongs here.
+    The script only launches D:\AI\VoxCPM-Runtime\start_voxcpm.bat and stops
+    python processes whose executable lives under that directory. Nothing in the
+    shared runtime is modified.
 
     Whoever starts the service stops it. Port 50000 is single-owner, like 8080.
 
 .EXAMPLE
     scripts\cosyvoice_server.ps1 -Action start
-    scripts\cosyvoice_server.ps1 -Action start -Model sft
     scripts\cosyvoice_server.ps1 -Action status
     scripts\cosyvoice_server.ps1 -Action stop
 #>
@@ -28,19 +25,17 @@ param(
     [ValidateSet("start", "stop", "status")]
     [string]$Action = "status",
 
-    [ValidateSet("cosyvoice2", "sft")]
-    [string]$Model = "cosyvoice2",
+    # Old command lines pass -Model cosyvoice2/sft. Only voxcpm2 still exists.
+    [string]$Model = "voxcpm2",
 
     [int]$Port = 50000,
     [int]$TimeoutSeconds = 240
 )
 
 $ErrorActionPreference = "Stop"
-$Runtime = "D:\AI\CosyVoice-Runtime"
-$Launchers = @{
-    "cosyvoice2" = Join-Path $Runtime "start_cosyvoice.bat"
-    "sft"        = Join-Path $Runtime "start_cosyvoice_sft.bat"
-}
+$Runtime = "D:\AI\VoxCPM-Runtime"
+$Launcher = Join-Path $Runtime "start_voxcpm.bat"
+$ExpectedModelClass = "VoxCPM2"
 
 function Get-Health {
     try {
@@ -56,11 +51,11 @@ function Stop-Runtime {
     $procs = Get-Process -Name python -ErrorAction SilentlyContinue |
         Where-Object { $_.Path -like "$Runtime*" }
     if (-not $procs) {
-        Write-Host "No CosyVoice process is running."
+        Write-Host "No VoxCPM2 process is running."
         return
     }
     foreach ($proc in $procs) {
-        Write-Host "Stopping CosyVoice python PID $($proc.Id)"
+        Write-Host "Stopping VoxCPM2 python PID $($proc.Id)"
         Stop-Process -Id $proc.Id -Force
     }
     Start-Sleep -Seconds 2
@@ -68,7 +63,7 @@ function Stop-Runtime {
     if ($health) {
         Write-Warning "Port $Port still answers; another process owns it."
     } else {
-        Write-Host "CosyVoice stopped; port $Port is free."
+        Write-Host "VoxCPM2 stopped; port $Port is free."
     }
 }
 
@@ -76,13 +71,20 @@ switch ($Action) {
     "status" {
         $health = Get-Health
         if (-not $health) {
-            Write-Host "CosyVoice is not running on $Port."
+            Write-Host "VoxCPM2 is not running on $Port."
             exit 0
         }
         Write-Host ("status={0} model_class={1} sample_rate={2}" -f `
             $health.status, $health.model_class, $health.sample_rate)
         Write-Host ("model_dir={0}" -f $health.model_dir)
-        Write-Host ("speakers={0}" -f ($health.speakers -join ", "))
+        Write-Host ("load_seconds={0} timesteps={1} cfg={2}" -f `
+            $health.load_seconds, $health.timesteps, $health.cfg)
+        $modeText = if ($health.modes) { $health.modes -join "," } else { "none" }
+        $speakerText = if ($health.speakers) { $health.speakers -join "," } else { "none" }
+        Write-Host ("modes={0} speakers={1}" -f $modeText, $speakerText)
+        if ($health.model_class -and $health.model_class -ne $ExpectedModelClass) {
+            Write-Warning "Port $Port is served by $($health.model_class), not $ExpectedModelClass."
+        }
         exit 0
     }
     "stop" {
@@ -90,31 +92,35 @@ switch ($Action) {
         exit 0
     }
     "start" {
+        if ($Model -ne "voxcpm2") {
+            Write-Error ("TTS 后端 $Model 已退休：50000 现在只跑 VoxCPM2。" +
+                "用 -Model voxcpm2（或不传 -Model），SFT 预置音色不再可用。")
+            exit 1
+        }
         $health = Get-Health
         if ($health) {
             Write-Host ("Port {0} is already in use by {1} ({2}). Not starting another instance." -f `
                 $Port, $health.model_class, $health.status)
             exit 0
         }
-        $launcher = $Launchers[$Model]
-        if (-not (Test-Path $launcher)) {
-            Write-Error "Launcher not found: $launcher"
+        if (-not (Test-Path $Launcher)) {
+            Write-Error "Launcher not found: $Launcher"
             exit 1
         }
-        Start-Process -FilePath $launcher -WindowStyle Hidden | Out-Null
-        Write-Host "Starting $Model from $launcher"
+        Start-Process -FilePath $Launcher -WindowStyle Hidden | Out-Null
+        Write-Host "Starting VoxCPM2 from $Launcher"
 
         $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
         while ((Get-Date) -lt $deadline) {
             Start-Sleep -Seconds 5
             $health = Get-Health
             if ($health -and $health.status -eq "ready") {
-                Write-Host ("Ready: model_class={0} sample_rate={1}" -f `
-                    $health.model_class, $health.sample_rate)
+                Write-Host ("Ready: model_class={0} sample_rate={1} load_seconds={2}" -f `
+                    $health.model_class, $health.sample_rate, $health.load_seconds)
                 exit 0
             }
         }
-        Write-Warning "CosyVoice did not become ready within $TimeoutSeconds s. Check the runtime console."
+        Write-Warning "VoxCPM2 did not become ready within $TimeoutSeconds s. Check $Runtime\logs\server.log."
         exit 1
     }
 }

@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.impasto_oil
+name: 油画厚涂
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 颜料堆叠、刮刀笔触与画布肌理。
+layers:
+- identity
+- execution
+- consistency

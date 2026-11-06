@@ -2,6 +2,8 @@
 
 > 核实日期：2026-11-02。以下"已核实"项均由本机命令实际执行得到，不是推断。
 
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
+
 ## 1. 已核实硬件与系统
 
 | 项目 | 实测值 | 证据来源 |
@@ -41,14 +43,14 @@ FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV�
 - **2026-11-03 核验（项目默认实例）**：`8080` 提供 `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf`，CPU-only（`-ngl 0`），`-c 65536`（**64K 上下文，已验证可用**），别名 `Qwen3-30B-A3B-Instruct-2507,default`。不占显存，约 19 GB 内存。`config/settings.yaml` 的 `llm.model` / `llm.model_path` / `llm.context_size` 记录这一事实。
 - **服务生命周期**：8080 同一时间只允许一个 llama-server。项目用 `scripts\llm_server.ps1 -Action start|stop|status` 管理；调用结束必须 `stop`，空闲时端口必须为空。`literary_intelligence/run_li15.py` 在服务未启动时自动启动，并只停止自己启动的实例。
 
-### 3.2 CosyVoice
+### 3.2 VoxCPM2（TTS）
 
-- 目录：`D:\AI\CosyVoice-Runtime`
-- 独立 Python 3.10 venv，CPU 推理，端口 **50000**
-- 两种模式共用端口，同一时刻只能启动一个：
-  - `start_cosyvoice.bat` → CosyVoice2-0.5B，zero-shot 克隆，24 kHz
-  - `start_cosyvoice_sft.bat` → CosyVoice-300M-SFT，预置音色，22.05 kHz
-- 2026-11-02 实测：服务未启动（50000 未监听）。
+- 目录：`D:\AI\VoxCPM-Runtime`（CosyVoice-Runtime 已于 2026-11-06 删除）
+- 独立 Python 3.12 venv，CPU 推理，端口 **50000**，输出 **48 kHz**
+- 唯一模式：参考音克隆（`zero_shot`）；SFT 预置音色已退休
+- 启动：`scripts\cosyvoice_server.ps1 -Action start` → `start_voxcpm.bat`
+- ASR QA：同一 venv 内安装 `openai-whisper`，供 `scripts/tts_qa.py` 调用
+- 实测：加载约 25–30 秒到 `ready`；单句 RTF ≈ 9–12（CPU）
 
 ### 3.3 模型仓库
 
@@ -72,7 +74,8 @@ FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV�
 |---|---|---|---|---|
 | 调度环境 | `D:\Local-Drama-Studio\.venv` | 3.12 | typer / rich / pydantic / pyyaml / httpx / websockets / pysubs2 / pillow / pytest | torch、comfyui、模型推理依赖 |
 | 生成环境 | `D:\Local-Drama-Studio\runtime\ComfyUI\.venv` | 3.12 | PyTorch XPU、ComfyUI requirements、ComfyUI-GGUF | 业务代码依赖 |
-| 现有 TTS 环境 | `D:\AI\CosyVoice-Runtime\venv` | 3.10 | 保持不变 | 本项目不向其安装任何东西 |
+| TTS 环境 | `D:\AI\VoxCPM-Runtime
+env` | 3.12 | voxcpm 2.0.3 + openai-whisper | 本项目不向其安装项目依赖 |
 | 系统 Python | `C:\...\Python312` | 3.12 | 不使用 | 不安装任何项目依赖 |
 
 创建方式：
@@ -157,7 +160,7 @@ ai_shared:
 | 8188 | ComfyUI | 运行中（R0 验证时） | `scripts/start.ps1` 启动 |
 | 8080 | 本地 LLM（llama.cpp，唯一端口） | 由当前使用者占用，用完即停 | `Qwen3-30B-A3B-Instruct-2507`；项目实例为 CPU-only `-ngl 0`，64K（`-c 65536`）；定时任务让路 |
 | 8081 | 已废弃 | 不再使用 | 原项目 LLM 端口；ADR-013 后统一到 8080 |
-| 50000 | CosyVoice | 未监听 | 用 `D:\AI\CosyVoice-Runtime` 启动 |
+| 50000 | VoxCPM2 | 未监听 | `scripts\cosyvoice_server.ps1 -Action start` |
 
 ## 7. 显存预算（R0 实测）
 
@@ -168,7 +171,7 @@ ai_shared:
 | 空闲（Wan 结束后） | — | 7.75 GiB 空闲 | ComfyUI 自动卸载模型 |
 | 空闲（FLUX 结束后） | — | 5.16 GiB 空闲 | 约 2.6 GB 留在缓存，仍可加载 Wan |
 | Qwen3-30B-A3B（LLM） | 18.56 GB | 不占显存（CPU-only） | 8080 项目实例为 `-ngl 0`，占约 19 GB 内存；GPU 模式与 ComfyUI **不可共存** |
-| CosyVoice | — | 未在 R0 测试 | CPU 推理，不占显存 |
+| VoxCPM2 | — | 未在 R0 测试 | CPU 推理，不占显存 |
 
 补充实测结论：
 
@@ -226,7 +229,7 @@ R1 关键帧是 768×432（432/32=13.5），不能直接作为 I2V 输入；R2 �
 - `D:\AI\start_server.bat` 及其 `.bak-*` 备份
 - `D:\AI\bin-sycl\`、`bin\`、`bin-old\`
 - `D:\AI\models\` 顶层的任何 `.gguf`
-- `D:\AI\CosyVoice-Runtime\venv\`、`app\` 中的两处本地补丁
+- `D:\AI\VoxCPM-Runtimeenv\`（含 ASR 依赖）
 - 其他项目（`D:\CourseStudio`、`D:\Project\*` 等）的虚拟环境与依赖
 - 系统 Python 的 site-packages
 - 8080 上不属于本项目的进程

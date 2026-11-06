@@ -1159,7 +1159,7 @@ def _workflow(detail: dict[str, Any]) -> dict[str, Any]:
         ),
         node(
             "voice", "配音", script_out, "tts.synthesize",
-            "从 narration.json 逐句合成；支持显式 SFT / zero-shot 与 voice profile",
+            "从 narration.json 逐句合成；VoxCPM2 zero-shot + voice profile（SFT 已退休）",
         ),
         node("subtitles", "字幕", voice_files),
         node(

@@ -1,0 +1,9 @@
+schema_version: '1.0'
+primary_motions:
+- mist drift
+- water flow
+- robe sway
+secondary_motions:
+- tree sway
+- cloud drift
+secondary_limit: 2

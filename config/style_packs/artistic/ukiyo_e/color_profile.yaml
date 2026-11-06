@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: indigo
+  hex: '#1F3A5F'
+- name: vermilion
+  hex: '#C1442E'
+- name: rice
+  hex: '#EFE3CC'
+- name: ochre
+  hex: '#B98A4A'
+- name: charcoal
+  hex: '#2B2B2B'
+saturation_range:
+- 0.1
+- 0.4
+edge_density_range:
+- 0.08
+- 0.25
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

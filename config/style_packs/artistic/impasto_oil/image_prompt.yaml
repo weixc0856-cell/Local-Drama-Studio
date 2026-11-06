@@ -1,0 +1,21 @@
+schema_version: '1.0'
+identity: impasto oil painting
+medium: thick oil paint, palette knife, canvas weave
+materials:
+- oil paint
+- canvas
+- palette knife
+composition:
+- strong volume and light
+- weighted colour blocks
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- thick raised paint ridges
+- visible palette knife strokes
+- canvas weave texture

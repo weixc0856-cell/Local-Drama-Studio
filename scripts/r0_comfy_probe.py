@@ -7,7 +7,7 @@ prove model compatibility in R0-C/R0-D with the smallest possible surface:
     submit API workflow -> poll /history -> download outputs -> record evidence
 
 Usage:
-    python scripts/r0_comfy_probe.py --workflow workflows/r0_flux_t2i_api.json \
+    python scripts/r0_comfy_probe.py --workflow workflows/flux3_t2i_api.json \
         --out logs/r0/flux_t2i --timeout 1800
 """
 

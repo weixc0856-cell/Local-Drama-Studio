@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- ink diffusion
+- mist drift
+- water flow
+secondary_motions:
+- branch sway
+secondary_limit: 2

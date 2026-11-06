@@ -1,4 +1,4 @@
-"""Zero-shot TTS against the local CosyVoice runtime.
+"""Zero-shot TTS against the local VoxCPM2 runtime (port 50000).
 
 The runtime has no ``/inference_zero_shot``; zero-shot is ``POST /tts/upload``
 with the reference wav as a form file. Two facts constrain everything here:
@@ -94,10 +94,10 @@ def synthesize(text: str, *, prompt_wav: Path, prompt_text: str, out_wav: Path,
                 response = client.post(base.rstrip("/") + "/tts/upload",
                                        data=data, files=files)
         except httpx.HTTPError as exc:
-            raise ZeroShotError(f"CosyVoice 请求失败：{exc}") from exc
+            raise ZeroShotError(f"TTS 运行时请求失败：{exc}") from exc
 
     if response.status_code != 200:
-        raise ZeroShotError(f"CosyVoice 返回 {response.status_code}: {response.text[:600]}")
+        raise ZeroShotError(f"TTS 运行时返回 {response.status_code}: {response.text[:600]}")
 
     out_wav.write_bytes(response.content)
     headers = response.headers

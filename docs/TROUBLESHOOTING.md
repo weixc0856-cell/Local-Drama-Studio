@@ -6,6 +6,8 @@
 
 ---
 
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
+
 ## 0. 排障顺序（固定）
 
 ```powershell

@@ -1,0 +1,13 @@
+schema_version: '1.0'
+motion_vocabulary:
+- metal rotation
+- reflection sweep
+- liquid morph
+secondary_limit: 2
+preserve:
+- specular reflections
+- transparent material refraction
+avoid:
+- matte paper texture
+- earth tones
+- hand-painted brushwork

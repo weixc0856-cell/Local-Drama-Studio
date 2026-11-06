@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.modern_chinese
+name: 国风新中式
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 东方传统元素与现代设计语言融合。
+layers:
+- identity
+- execution
+- consistency

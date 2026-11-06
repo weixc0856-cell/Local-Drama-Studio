@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: silver
+  hex: '#C0C6CF'
+- name: hot pink
+  hex: '#FF69B4'
+- name: ice blue
+  hex: '#A8E6FF'
+- name: lime
+  hex: '#C6FF00'
+- name: pearl
+  hex: '#F5F0FA'
+saturation_range:
+- 0.2
+- 0.7
+edge_density_range:
+- 0.03
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

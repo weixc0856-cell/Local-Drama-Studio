@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- graphic pop-in
+- repeated motif movement
+- panel transition
+secondary_motions:
+- halftone shimmer
+secondary_limit: 2

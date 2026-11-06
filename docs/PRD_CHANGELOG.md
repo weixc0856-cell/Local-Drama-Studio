@@ -1,6 +1,6 @@
 # PRD 变更记录与文档冲突修正
 
-> 文档状态：PRD 配套变更记录（2026-11-04）
+> 文档状态：PRD 配套变更记录（2026-11-06）
 > 唯一需求来源：[PRD.md](PRD.md)
 > 适用：所有产品/架构/开发/测试/用户/审计文档
 > 规则：本文件记录“PRD 改了什么、为什么改、哪些旧文档被修正”；不创造新需求。
@@ -11,8 +11,8 @@
 
 | 项 | 值 |
 |---|---|
-| 当前 PRD 版本 | 2026-11-04 SSOT 修订 |
-| 上一版 | 2026-11-03 基线重建 |
+| 当前 PRD 版本 | 2026-11-06 SSOT 修订 |
+| 上一版 | 2026-11-04 SSOT 修订 |
 | 唯一 PRD 文件 | `docs/PRD.md` |
 | 需求追踪 | [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md) |
 | 状态口径 | PRD §0.2（六态需求状态 + 历史标签映射） |
@@ -21,9 +21,26 @@
 
 ---
 
-## 2. 本次变更（2026-11-04）
+## 2. 本次变更（2026-11-06）
 
-### 2.1 治理
+| 项 | 变更 |
+|---|---|
+| 图像线 | FLUX.2 Klein → **FLUX.3 Klein**（ADR-016）：16 步、CFG 1.0、`workflows/flux3_t2i_api.json`；`config/models.yaml` 改为 `flux_3_klein`；FLUX.2 工作流与权重退役 |
+| 文本编码器 | Qwen3-4B → **Qwen3-VL-4B**（`qwen3vl_4b_int8_convrot.safetensors`，CPU） |
+| 提示词放大器 | 官方 9B w4a8 在本机不可用；生产改用本地 Qwen 生成英文 caption（`docs/MODEL_UPGRADE_POC.md` §10） |
+| 语音 | CosyVoice2-0.5B → **VoxCPM2**（50000，48 kHz，CPU，参考音克隆）；SFT 与 300M 能力退役；ASR QA 的 Whisper 迁入 VoxCPM 运行时 |
+| 视频 | Wan2.2 TI2V 5B 不变；MiniMax H3 记为 `NOT_RUN`（未实测） |
+| 风格 | 双核心风格决定（ADR-015）被取代：4 套旧风格不再作为产品方向，新风格系统规划 12 种，待设计 |
+| 动画 | 流程将整体重构；`motion/` 与 motion policy 在替换前继续作为现行实现 |
+| 文档 | R0–R3、R3-D、M1–M8、管线 A/B、冻结与项目审计报告从工作区移除（Git 历史可取）；`docs/README.md` 重写为现存文件的索引 |
+| 证据 | `logs/r0/`、`logs/audit/` 已删除；旧 `PASS_VERIFIED` 不再能由日志复核 |
+
+影响的需求：`PRD-TTS-001/002/003/006`、`PRD-STYLE-001/005/006`，以及 PRD §9/§10/§11 的状态描述。
+
+---
+## 3. 本次变更（2026-11-04）
+
+### 3.1 治理
 
 | 变更 | 位置 | 说明 |
 |---|---|---|
@@ -35,7 +52,7 @@
 | 需求追踪 | PRD §23 | 矩阵与状态汇总入口 |
 | 本次治理不改代码 | 本文件 §5 | 只改 PRD/文档；已有工作区代码改动按差距记录 |
 
-### 2.2 TTS 默认决策（覆盖此前决定）
+### 3.2 TTS 默认决策（覆盖此前决定）
 
 | 项 | 2026-11-04 早先决定（已被取代） | 本版 PRD（最新） |
 |---|---|---|
@@ -54,7 +71,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 - 因此 `PRD-TTS-001` = `PARTIAL`，不是 `PASS_VERIFIED`。默认切换是下一项代码任务。
 - 本次 PRD 治理**没有**把默认配置改成 zero-shot，以遵守“先文档治理、后代码开发”的指令。
 
-### 2.3 双视觉风格
+### 3.3 双视觉风格
 
 | 变更 | PRD 位置 | 说明 |
 |---|---|---|
@@ -67,7 +84,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 | 跨镜头一致性单独验证 | §9.2 `PRD-STYLE-007` | 不能用两张图代替 |
 | S3 拆分状态 | §9.3 | 不再用单一 PARTIAL/NOT_RUN 概括 |
 
-### 2.4 81.373 s 工笔案例
+### 3.4 81.373 s 工笔案例
 
 | 变更 | PRD 位置 | 说明 |
 |---|---|---|
@@ -75,7 +92,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 | 明确实现路径 | §21.3 | `scroll_shot.py` + 预渲染 clips；**不是** `motion.plan` |
 | 明确不可外推 | §21.3 | 不能证明 motion.plan 自动运动或跨镜头风格一致性 |
 
-### 2.5 其他需求编号
+### 3.5 其他需求编号
 
 | 编号 | 需求 | 状态 |
 |---|---|---|
@@ -89,7 +106,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 
 ---
 
-## 3. 旧文档冲突修正
+## 4. 旧文档冲突修正
 
 以下旧文档/旧状态与本版 PRD 冲突，已在本轮修正或明确标注：
 
@@ -115,7 +132,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 
 ---
 
-## 4. 需要项目所有者确认
+## 5. 需要项目所有者确认
 
 1. 本 PRD 版本与需求编号是否批准为唯一基线。
 2. `PRD-TTS-001` 默认 0.5B：是否按下一项代码任务执行（切换默认、更新测试/UI/文档、真实端到端复验）。
@@ -126,7 +143,7 @@ PRD 位置：§11.1（需求）、§11.3（状态）、§0.4（编号 `PRD-TTS-0
 
 ---
 
-## 5. 本轮实际写入
+## 6. 本轮实际写入
 
 ```text
 docs/PRD.md                      # SSOT 修订、需求编号、TTS/风格/案例/状态
@@ -149,7 +166,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 
 ---
 
-## 6. 下一步
+## 7. 下一步
 
 1. 审阅并批准本 PRD/追踪矩阵。
 2. 批准后执行 `PRD-TTS-001`：默认切换 0.5B zero-shot，更新配置/UI/测试/文档，做真实端到端复验。
@@ -158,7 +175,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 
 ---
 
-## 7. 后续执行更新（2026-11-04，实现批次）
+## 8. 后续执行更新（2026-11-04，实现批次）
 
 > 本节记录 PRD 治理之后的真实执行结果；不改变正式 PRD 的需求正文。
 
@@ -184,6 +201,7 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 | Commons 真录音 BGM | `PASS_VERIFIED`（技术） | 用户否决全部 Keynata 曲目后，登记 Wikimedia Commons 4 条 PD + 2 条 CC BY 录音；Mozart K.330/K.525、Grieg《晨曲》、Schubert D.664、Jason Shaw 木吉他；31.3 s 三版、2 min 两版、palace/ink 重混 quality PASS |
 | 响度校正 | `PASS_VERIFIED`（技术） | `soundscape.master` 增加处理后二次 loudnorm：ink 从 -19.9 修正到 -16.4 LUFS；新增回归测试 |
 | 两分钟验收计划 | `IN_PROGRESS` | 三条对标片下载并实测（切点/镜长/语法），写入 `REFERENCE_FILMS.md`；24 镜全 Wan 水墨片链条 `run_ink_film.py` 排在 Shinkai 批次之后 |
+| 两分钟全 Wan 场景片 | `PASS_VERIFIED`（技术） | 24/24 Wan 镜头、无静帧；121.3 s / 1080×1920 / quality PASS；`experiments/shinkai_scene/renders_24/final_9x16.mp4`；BGM Mozart K.330 |
 | 全量测试 | 384 passed | 2026-11-05 `pytest`（新增音频资产别名、响度校正、登记工具测试） |
 | 全量测试 | 379 passed | 2026-11-04 `pytest` |
 
@@ -192,13 +210,13 @@ docs/TECH_STACK.md / CONTENT_SPEC.md / ASSET_AND_LICENSE_REGISTRY.md / PRODUCTIO
 
 ---
 
-## 8. PRD 变更提案（待批准）
+## 9. PRD 变更提案（待批准）
 
 `docs/proposals/PRD_AMENDMENT_2026-11-04.md` 把 AUDIO、`PRD-TTS-007`、VOICE-ASSET、MOTION、STORY、QA 合并为一个待批准变更包，并规定唯一资产台账、唯一多轨时间线、唯一音色档案、唯一故事圣经 sidecar，避免重复建设。该文件**不是**正式 PRD；批准前不得把其中需求标为 `PASS_VERIFIED`。
 
 ---
 
-## 9. 2026-11-04 变更提案批准并合并
+## 10. 2026-11-04 变更提案批准并合并
 
 项目所有者于 2026-11-04 批准 `docs/proposals/PRD_AMENDMENT_2026-11-04.md` 全部检查项：
 

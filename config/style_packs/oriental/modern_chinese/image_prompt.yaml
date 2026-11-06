@@ -1,0 +1,23 @@
+schema_version: '1.0'
+identity: modern Chinese aesthetic
+medium: refined digital painting with traditional motifs
+materials:
+- silk
+- lacquer
+- stone
+- ink wash accents
+composition:
+- generous negative space
+- symmetry with offset focal point
+- layered depth
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- restrained azurite and cinnabar accents
+- visible negative space
+- traditional architectural motifs

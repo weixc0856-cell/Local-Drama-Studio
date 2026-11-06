@@ -1,0 +1,23 @@
+schema_version: '1.0'
+identity: retro paper collage art
+medium: cut paper, torn edges, vintage photo fragments, screen-print texture
+materials:
+- paper fibre
+- torn edges
+- halftone print
+- aged photograph
+composition:
+- asymmetric layered layout
+- overlapping fragments
+- deliberate empty paper gaps
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- every element reads as a cut paper piece
+- visible torn edges and print grain
+- layers cast small local shadows

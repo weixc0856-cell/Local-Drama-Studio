@@ -1,0 +1,23 @@
+schema_version: '1.0'
+identity: 1980s synthwave retro-futurism
+medium: neon light, chrome surfaces, grid horizon, scan lines
+materials:
+- chrome
+- neon tube
+- glossy plastic
+- film grain
+composition:
+- strong central vanishing point
+- symmetrical geometry
+- low horizon
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- neon magenta and cyan light sources
+- grid receding to a central vanishing point
+- chrome reflections

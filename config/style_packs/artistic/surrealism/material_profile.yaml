@@ -1,0 +1,8 @@
+schema_version: '1.0'
+materials:
+- smooth paint
+- sand
+- still water
+texture_cues:
+- dream logic
+- scale paradox

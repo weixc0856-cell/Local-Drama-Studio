@@ -1,0 +1,7 @@
+schema_version: '1.0'
+materials:
+- oil on canvas
+- short visible strokes
+texture_cues:
+- broken brushwork
+- light atmosphere

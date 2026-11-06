@@ -7,9 +7,11 @@
 
 ---
 
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
+
 ## 0. 先读这三条
 
-1. **PRD 默认 TTS 是 CosyVoice2-0.5B zero-shot**；300M SFT「中文女」仅显式可选。当前代码/配置默认仍是 SFT（`PRD-TTS-001` = `PARTIAL`）。现在要按 PRD 跑 zero-shot：启动 `-Model cosyvoice2`，并显式 `--tts-mode zero_shot`；要跑 SFT：启动 `-Model sft`，显式 `--tts-mode sft`。两种运行时不能混用。
+1. **TTS 运行时只有一个：VoxCPM2**（`D:\AI\VoxCPM-Runtime`，端口 50000，48 kHz，CPU）。默认走参考音克隆（`zero_shot`）；CosyVoice 的 SFT 预置音色已退休（2026-11-06），`--tts-mode sft` 会直接报错。
 2. **工作台的“合成重建”只重合成，不重新生成图片/配音**。它读取期数产物目录里的 `segments.json` + `audio_manifest.json`。
 3. **不要覆盖历史成片**。工作台每次写新的 `renders/build-<时间>/`；不要手动改旧目录。
 
@@ -29,7 +31,7 @@
 | 模型 | `D:\AI\models` 下 FLUX / Wan / 文本编码器 / VAE，大小与 `config/models.yaml` 一致 |
 | 字体 | `assets/fonts` 下 6 个 OTF（可由 `fetch_fonts.py` 重建） |
 | ComfyUI | `runtime/ComfyUI` 独立 venv，torch XPU 可用 |
-| CosyVoice | `D:\AI\CosyVoice-Runtime`，端口 50000 |
+| VoxCPM2 | `D:\AI\VoxCPM-Runtime`，端口 50000，48 kHz |
 | LLM | `D:\AI` 的 llama.cpp，端口 8080 |
 
 ### 1.2 首次安装
@@ -82,9 +84,8 @@ scripts\start.ps1
 # 2) 启动本地 LLM（8080，CPU-only，64K）
 scripts\llm_server.ps1 -Action start
 
-# 3) 启动 CosyVoice（50000）
-#    PRD 默认：CosyVoice2-0.5B zero-shot（当前代码默认仍是 SFT，见 §0）
-scripts\cosyvoice_server.ps1 -Action start -Model cosyvoice2
+# 3) 启动 VoxCPM2（50000，CPU，48 kHz）
+scripts\cosyvoice_server.ps1 -Action start
 
 # 4) 启动工作台（8765）
 .venv\Scripts\drama.exe serve --port 8765
@@ -104,7 +105,7 @@ scripts\cosyvoice_server.ps1 -Action status
 |---|---|---|
 | ComfyUI | 8188 | `/system_stats` 返回 XPU |
 | LLM | 8080 | `/health` 返回 `status=ok` |
-| CosyVoice | 50000 | `/health` 返回 `status=ready`，SFT 时 `speakers` 含中文女 |
+| VoxCPM2 | 50000 | `/health` 返回 `status=ready` 且 `model_class=VoxCPM2` |
 | 工作台 | 8765 | 页面能打开，右上角服务胶囊变绿 |
 
 ### 2.3 正常关闭
@@ -118,14 +119,13 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 规则：**谁启动，谁停止**。8080 与 50000 都是单实例，空闲时不要占着。
 
-### 2.4 两个 CosyVoice 运行时（互斥）
+### 2.4 TTS 运行时（单实例）
 
-| 命令 | 模型 | 用途 |
-|---|---|---|
-| `scripts\cosyvoice_server.ps1 -Action start -Model cosyvoice2` | CosyVoice2-0.5B | **PRD 默认**：zero-shot 参考音克隆 |
-| `scripts\cosyvoice_server.ps1 -Action start -Model sft` | CosyVoice-300M-SFT | 显式可选：预置音色（中文男/中文女） |
+只有一个运行时：`D:\AI\VoxCPM-Runtime`（VoxCPM2，CPU，48 kHz）。脚本名保留历史叫法，`-Model` 参数只剩 `voxcpm2`。
 
-同一时间只能跑一个。切换前先 `-Action stop`。
+- 启动：`scripts\cosyvoice_server.ps1 -Action start`
+- 首次加载约 25–30 秒，`/health` 期间返回 `loading`
+- SFT 预置音色（中文男/中文女）已退休；旧命令 `-Model sft` 会失败
 
 ---
 

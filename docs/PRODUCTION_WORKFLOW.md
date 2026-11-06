@@ -180,7 +180,7 @@ R3 单篇 38.04 秒：
 | TTS 12 行 / 26.93 s（recitation, CPU） | 103 s |
 | 8 张 576×1024 FLUX（4 步 / CFG 1.0） | 143.2 s；稳态 16.1 s/张；峰值 3.04 GiB |
 
-全部 CPU + FFmpeg/Pillow；未占用 GPU。完整证据见 [`MOTION_VOICE_UPGRADE_REPORT.md`](MOTION_VOICE_UPGRADE_REPORT.md)。
+全部 CPU + FFmpeg/Pillow；未占用 GPU。完整证据见 `MOTION_VOICE_UPGRADE_REPORT.md`（已删除，见 Git 历史）。
 
 ## 7. 夜间批次（提案，`NOT_RUN`）
 

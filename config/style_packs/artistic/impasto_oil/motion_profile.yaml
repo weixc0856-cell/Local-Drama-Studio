@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- paint stroke emergence
+- light across ridges
+secondary_motions:
+- canvas grain shift
+secondary_limit: 2

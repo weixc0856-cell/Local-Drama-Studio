@@ -1,0 +1,336 @@
+{
+  "project_id": "deng_guan_que_lou",
+  "shots": [
+    {
+      "shot_id": "S01",
+      "scene_id": "SC01",
+      "narration_ids": [
+        "N001"
+      ],
+      "character_in_frame": false,
+      "keyframe_note": null,
+      "duration_seconds": 6.0,
+      "shot_size": "ews",
+      "camera": {
+        "move": "crane",
+        "angle": "high",
+        "lens_mm": 24,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "cloud bands drifting",
+        "midground": "mountain ridges",
+        "background": "setting sun, yellow river valley"
+      },
+      "motion": {
+        "primary": "camera_descent",
+        "secondary": [
+          "cloud_drift"
+        ]
+      },
+      "continuity": {
+        "previous_shot": null,
+        "next_shot": "S02",
+        "lighting": "golden_hour",
+        "environment": "mountains_river_tower",
+        "character_state": "none",
+        "motion_direction": "static",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S02",
+      "scene_id": "SC01",
+      "narration_ids": [
+        "N002"
+      ],
+      "character_in_frame": false,
+      "keyframe_note": null,
+      "duration_seconds": 5.0,
+      "shot_size": "ws",
+      "camera": {
+        "move": "crane",
+        "angle": "low",
+        "lens_mm": 35,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "wooden eaves entering frame",
+        "midground": "ancient tower against the sky",
+        "background": "afterglow"
+      },
+      "motion": {
+        "primary": "camera_tilt_up",
+        "secondary": [
+          "cloud_drift"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S01",
+        "next_shot": "S03",
+        "lighting": "golden_hour",
+        "environment": "mountains_river_tower",
+        "character_state": "none",
+        "motion_direction": "static",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S03",
+      "scene_id": "SC02",
+      "narration_ids": [],
+      "character_in_frame": true,
+      "keyframe_note": null,
+      "duration_seconds": 5.0,
+      "shot_size": "ms",
+      "camera": {
+        "move": "tracking",
+        "angle": "eye",
+        "lens_mm": 50,
+        "dof": "medium"
+      },
+      "layers": {
+        "foreground": "robe sleeve and railing",
+        "midground": "poet climbing wooden stairs",
+        "background": "river and mountains"
+      },
+      "motion": {
+        "primary": "camera_follow",
+        "secondary": [
+          "robe_sway"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S02",
+        "next_shot": "S04",
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "left_to_right",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S04",
+      "scene_id": "SC02",
+      "narration_ids": [
+        "N003"
+      ],
+      "character_in_frame": true,
+      "keyframe_note": null,
+      "duration_seconds": 6.0,
+      "shot_size": "ws",
+      "camera": {
+        "move": "tracking",
+        "angle": "eye",
+        "lens_mm": 35,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "tree branches softly blurred",
+        "midground": "mountain ridge",
+        "background": "sunset sky, atmospheric haze"
+      },
+      "motion": {
+        "primary": "camera_lateral",
+        "secondary": [
+          "branch_sway"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S03",
+        "next_shot": "S05",
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "left_to_right",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S05",
+      "scene_id": "SC02",
+      "narration_ids": [
+        "N004"
+      ],
+      "character_in_frame": false,
+      "keyframe_note": "vertical composition: the river runs from the bottom edge of the frame to the top edge, mountains filling the left and right sides, the image fills the entire portrait frame edge to edge",
+      "duration_seconds": 7.0,
+      "shot_size": "ws",
+      "camera": {
+        "move": "crane",
+        "angle": "high",
+        "lens_mm": 24,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "river surface glints",
+        "midground": "yellow river winding through mountains",
+        "background": "layered peaks and clouds"
+      },
+      "motion": {
+        "primary": "camera_forward",
+        "secondary": [
+          "water_flow",
+          "cloud_drift"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S04",
+        "next_shot": "S06",
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "toward_camera",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S06",
+      "scene_id": "SC02",
+      "narration_ids": [
+        "N005"
+      ],
+      "character_in_frame": true,
+      "keyframe_note": null,
+      "duration_seconds": 6.0,
+      "shot_size": "mcu",
+      "camera": {
+        "move": "dolly_in",
+        "angle": "eye",
+        "lens_mm": 85,
+        "dof": "shallow"
+      },
+      "layers": {
+        "foreground": "railing detail",
+        "midground": "poet in profile, gazing outward",
+        "background": "sunset bokeh"
+      },
+      "motion": {
+        "primary": "camera_push_in",
+        "secondary": []
+      },
+      "continuity": {
+        "previous_shot": "S05",
+        "next_shot": "S07",
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "toward_camera",
+        "match_cut_to": "S05"
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S07",
+      "scene_id": "SC02",
+      "narration_ids": [
+        "N006"
+      ],
+      "character_in_frame": true,
+      "keyframe_note": null,
+      "duration_seconds": 7.0,
+      "shot_size": "ews",
+      "camera": {
+        "move": "dolly_out",
+        "angle": "high",
+        "lens_mm": 24,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "tower silhouette",
+        "midground": "poet small against the landscape",
+        "background": "vast mountains under afterglow"
+      },
+      "motion": {
+        "primary": "camera_pull_out",
+        "secondary": [
+          "cloud_drift"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S06",
+        "next_shot": "S08",
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "away_from_camera",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    },
+    {
+      "shot_id": "S08",
+      "scene_id": "SC02",
+      "narration_ids": [],
+      "character_in_frame": false,
+      "keyframe_note": null,
+      "duration_seconds": 5.0,
+      "shot_size": "ews",
+      "camera": {
+        "move": "static",
+        "angle": "high",
+        "lens_mm": 24,
+        "dof": "deep"
+      },
+      "layers": {
+        "foreground": "distant drifting clouds",
+        "midground": "tower as a small silhouette on the ridge",
+        "background": "last light on layered distant peaks"
+      },
+      "motion": {
+        "primary": "environment_drift",
+        "secondary": [
+          "cloud_drift"
+        ]
+      },
+      "continuity": {
+        "previous_shot": "S07",
+        "next_shot": null,
+        "lighting": "golden_hour",
+        "environment": "tower_river_mountains",
+        "character_state": "poet_on_tower",
+        "motion_direction": "static",
+        "match_cut_to": null
+      },
+      "generation": {
+        "image_model": "flux3",
+        "video_model": "wan2.2_ti2v_5b",
+        "status": "planned"
+      }
+    }
+  ]
+}

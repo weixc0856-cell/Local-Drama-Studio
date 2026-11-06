@@ -237,11 +237,11 @@ def _service_checks(settings: Settings) -> list[Check]:
     if _port_open(tts_host, tts_port):
         status, detail = _http_probe(f"{tts.base_url.rstrip('/')}/health")
         checks.append(
-            Check("svc.tts", "CosyVoice TTS 服务", status, detail, False, {"base_url": tts.base_url})
+            Check("svc.tts", "VoxCPM2 TTS 服务", status, detail, False, {"base_url": tts.base_url})
         )
     else:
         checks.append(
-            Check("svc.tts", "CosyVoice TTS 服务", NOT_RUN, f"{tts.base_url} 未监听（R6 前不要求）")
+            Check("svc.tts", "VoxCPM2 TTS 服务", NOT_RUN, f"{tts.base_url} 未监听（R6 前不要求）")
         )
 
     return checks

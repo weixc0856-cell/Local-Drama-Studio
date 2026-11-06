@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.pop_art
+name: 波普艺术
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 漫画网点、粗黑轮廓与大色块的商业图像语言。
+layers:
+- identity
+- execution
+- consistency

@@ -1,0 +1,54 @@
+{
+  "project_id": "deng_guan_que_lou",
+  "language": "zh-CN",
+  "segments": [
+    {
+      "id": "N001",
+      "text": "登鹳雀楼。",
+      "emotion": "solemn",
+      "delivery": "calm",
+      "speed": 0.9,
+      "pause_after_ms": 1200
+    },
+    {
+      "id": "N002",
+      "text": "唐代，王之涣。",
+      "emotion": "calm",
+      "delivery": "gentle",
+      "speed": 0.95,
+      "pause_after_ms": 900
+    },
+    {
+      "id": "N003",
+      "text": "白日依山尽。",
+      "emotion": "open",
+      "delivery": "gentle",
+      "speed": 0.95,
+      "pause_after_ms": 800
+    },
+    {
+      "id": "N004",
+      "text": "黄河入海流。",
+      "emotion": "majestic",
+      "delivery": "expansive",
+      "speed": 0.9,
+      "pause_after_ms": 1500
+    },
+    {
+      "id": "N005",
+      "text": "欲穷千里目。",
+      "emotion": "contemplative",
+      "delivery": "slower",
+      "speed": 0.88,
+      "pause_after_ms": 1000
+    },
+    {
+      "id": "N006",
+      "text": "更上一层楼。",
+      "emotion": "resolute",
+      "delivery": "rising",
+      "speed": 0.92,
+      "pause_after_ms": 2500
+    }
+  ]
+}

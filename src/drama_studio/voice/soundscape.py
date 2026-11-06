@@ -145,7 +145,7 @@ EARLY_GAINS = (0.55, 0.42, 0.32, 0.24, 0.18, 0.13, 0.09, 0.06)
 
 
 BROADCAST_STYLES = {
-    # Measured on the CosyVoice2 clone: dynamics (p90-p10 of frame levels)
+    # Measured on the pre-2026-11-06 CosyVoice2 clone; VoxCPM2 levels differ: dynamics (p90-p10 of frame levels)
     # 43.8 dB raw -> 39.9 dB light -> 33.2 dB strong.
     "broadcast_light": {
         "eq": "entry(200,1.5);entry(3000,2.5);entry(5500,1.5);entry(7500,-2)",

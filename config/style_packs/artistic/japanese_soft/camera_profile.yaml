@@ -1,0 +1,7 @@
+schema_version: '1.0'
+allowed_moves:
+- tracking
+- dolly_in
+- pan
+preferred_lens_mm: 35
+dof_strategy: medium

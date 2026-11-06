@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.synthwave
+name: 合成波
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 霓虹网格、镀铬反射与 80 年代未来主义。
+layers:
+- identity
+- execution
+- consistency
