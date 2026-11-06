@@ -8,4 +8,4 @@
 - 不含：向第三方再分发原始录音
 - 记录日期：2026-11-04
 
-原始文件位于 `D:\AI\CosyVoice-Runtime/assets\my_voice_5s.wav`，本项目未改动该文件，仅复制后处理。
+原始文件位于 `CosyVoice-Runtime/assets\my_voice_5s.wav`，本项目未改动该文件，仅复制后处理。

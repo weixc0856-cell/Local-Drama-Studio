@@ -1,0 +1,20 @@
+{
+  "style": "oriental.gongbi",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "distant mountain ranges above a wide river",
+    "a lone traditional Chinese fishing boat with a woven awning on a misty river",
+    "a misty valley with layered peaks",
+    "an old pine growing from a cliff rock",
+    "a tall waterfall between cliffs with wide empty sky above",
+    "a full moon over still water and reeds",
+    "a wooden pavilion in light rain",
+    "an empty riverbank with reeds and stones",
+    "lotus leaves floating on a quiet pond",
+    "bamboo grove in thin mist",
+    "snow-covered peaks under pale sky",
+    "bare winter branches at a quiet pond with wide open water beside them"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

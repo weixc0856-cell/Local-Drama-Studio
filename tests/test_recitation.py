@@ -95,7 +95,7 @@ def test_recitation_synthesizes_parts_and_records_layers(
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready", "model_class": "VoxCPM2", "model_dir": "D:/AI/models/voxcpm2", "speakers": [], "modes": ["zero_shot"]})
+            return httpx.Response(200, json={"status": "ready", "model_class": "VoxCPM2", "model_dir": "models/voxcpm2", "speakers": [], "modes": ["zero_shot"]})
         return httpx.Response(404)
 
     client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")

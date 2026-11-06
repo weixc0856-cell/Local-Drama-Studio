@@ -202,7 +202,7 @@ Local-Drama-Studio 是一个**本地化、自动化、可管理的东方视觉�
 | FFmpeg | 合成/转码/探测 | — | 唯一合成工具 |
 | 本地工作台 | 状态与任务 | 8765 | 仅 127.0.0.1，不占用模型端口 |
 
-硬约束：根 `.venv` 不安装 torch；生成环境在 `runtime/ComfyUI/.venv`；模型权重在 `D:\AI\models`，不复制进仓库。
+硬约束：根 `.venv` 不安装 torch；生成环境在 `runtime/ComfyUI/.venv`；模型权重在 `models`，不复制进仓库。
 
 ### 4.4 单一事实来源
 
@@ -589,7 +589,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 ## 16. 环境与资源管理
 
 1. 两套 Python 环境不得合并；根 `.venv` 不装 torch。
-2. 模型仓库唯一为 `D:\AI\models`；顶层 GGUF 不得移动；新增编码器/VAE 放子目录。
+2. 模型仓库唯一为 `models`；顶层 GGUF 不得移动；新增编码器/VAE 放子目录。
 3. 本地 LLM 只使用 8080，同一时间只允许一个实例；“谁启动，谁停止”。
 4. ComfyUI 8188、VoxCPM2 50000、工作台 8765；不得新增第二个模型端口。
 5. GPU 租户互斥：LLM（GPU 模式）、FLUX、Wan 不得并行；CPU-only LLM 仍占用约 19 GB 内存，与生成任务错峰。

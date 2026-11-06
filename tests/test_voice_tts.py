@@ -43,7 +43,7 @@ def _client(health: dict | None = None) -> httpx.Client:
     payload = health or {
         "status": "ready",
         "model_class": "VoxCPM2",
-        "model_dir": "D:/AI/models/voxcpm2",
+        "model_dir": "models/voxcpm2",
         "speakers": [],
         "modes": ["zero_shot"],
     }
@@ -206,7 +206,7 @@ def test_zero_shot_rejects_a_foreign_runtime(tmp_path: Path) -> None:
     narration = _narration(root, ["白日依山尽"])
     client = _client({
         "status": "ready", "model_class": "CosyVoice2",
-        "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
+        "model_dir": "other-runtime/CosyVoice2-0.5B",
         "speakers": [], "modes": ["zero_shot"],
     })
     with pytest.raises(TTSError, match="请求 zero-shot"):

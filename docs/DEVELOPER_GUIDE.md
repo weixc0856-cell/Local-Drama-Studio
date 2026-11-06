@@ -27,8 +27,8 @@ Local-Drama-Studio/
 
 - 根 `.venv`：Python 3.12，只装调度依赖；**永不装 torch**。
 - `runtime/ComfyUI/.venv`：PyTorch XPU + ComfyUI + GGUF；`src/` 不得导入。
-- `D:\AI\VoxCPM-Runtime`：Python 3.12，TTS + openai-whisper（ASR QA）；不向其安装项目依赖。
-- `D:\AI\models`：模型仓库，不在仓库内。
+- `VoxCPM-Runtime`：Python 3.12，TTS + openai-whisper（ASR QA）；不向其安装项目依赖。
+- `models`：模型仓库，不在仓库内。
 
 ```powershell
 uv sync --python 3.12

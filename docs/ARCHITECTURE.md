@@ -28,7 +28,7 @@
 │  script_engine ──► storyboard ──► generation ──► audio ──► subtitles ──► editing ──► MP4   │
 │       │                │              │             │                       │               │
 │       ▼                ▼              ▼             ▼                       ▼               │
-│  D:\AI llama.cpp   Pydantic       ComfyUI HTTP    CosyVoice            FFmpeg               │
+│  本地 AI 服务 llama.cpp   Pydantic       ComfyUI HTTP    CosyVoice            FFmpeg               │
 │  (OpenAI API)      契约 + SQLite   + WebSocket     HTTP                 subprocess           │
 │                                        │                                                   │
 │                                        ▼                                                   │
@@ -43,7 +43,7 @@
 - Python 调度层**不 import torch**，只通过 HTTP/WebSocket 和子进程操作外部引擎。
 - ComfyUI **不承担业务状态**：不存分镜、不管重试、不管人物资产版本。
 - FFmpeg 是唯一合成工具，不引入 MoviePy/Remotion。
-- 本地 LLM 与 TTS 复用 `D:\AI` 已有运行时，不重复安装。
+- 本地 LLM 与 TTS 复用 `本地 AI 服务` 已有运行时，不重复安装。
 - 本地工作台（`src/drama_studio/workspace/` + `web/`）属于调度层的观测与受限执行界面，不拥有独立生产状态，不绕过服务生命周期。
 
 ---

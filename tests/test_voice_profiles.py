@@ -89,7 +89,7 @@ def _zero_shot_client() -> httpx.Client:
         if request.url.path == "/health":
             return httpx.Response(200, json={
                 "status": "ready", "model_class": "VoxCPM2",
-                "model_dir": "D:/AI/models/voxcpm2",
+                "model_dir": "models/voxcpm2",
                 "speakers": [], "modes": ["zero_shot"],
             })
         return httpx.Response(404)

@@ -8,6 +8,16 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
+
+$EnvFile = Join-Path $Root '.env'
+if (Test-Path $EnvFile) {
+  Get-Content -LiteralPath $EnvFile | ForEach-Object {
+    if ($_ -match '^\s*([A-Za-z0-9_]+)\s*=\s*(.+?)\s*$') {
+      $k = $matches[1]; $v = $matches[2].Trim('"').Trim("'")
+      if (-not [Environment]::GetEnvironmentVariable($k)) { [Environment]::SetEnvironmentVariable($k, $v) }
+    }
+  }
+}
 Set-Location $Root
 
 Write-Host "[1/4] Sync orchestration environment (.venv)"
@@ -68,8 +78,12 @@ if (Test-Path $GgufReq) {
     if ($LASTEXITCODE -ne 0) { throw "ComfyUI-GGUF requirements install failed" }
 }
 
-Write-Host "  - extra_model_paths.yaml -> D:\AI\models"
-Copy-Item (Join-Path $Root "config\comfyui_extra_model_paths.yaml") (Join-Path $ComfyDir "extra_model_paths.yaml") -Force
+$ModelsRoot = $env:DRAMA_MODELS_ROOT
+if (-not $ModelsRoot) { throw "Set DRAMA_MODELS_ROOT in .env (see .env.example)" }
+Write-Host "  - extra_model_paths.yaml -> $ModelsRoot"
+$template = Get-Content -LiteralPath (Join-Path $Root "config\comfyui_extra_model_paths.yaml") -Raw
+$template.Replace('${DRAMA_MODELS_ROOT}', $ModelsRoot) |
+  Set-Content -LiteralPath (Join-Path $ComfyDir "extra_model_paths.yaml") -Encoding utf8
 
 Write-Host "[4/4] Probe PyTorch XPU"
 & $ComfyPy -c "import torch; print('torch', torch.__version__); print('xpu_available', torch.xpu.is_available()); print('device_count', torch.xpu.device_count()); [print('device', i, torch.xpu.get_device_name(i)) for i in range(torch.xpu.device_count())]"
