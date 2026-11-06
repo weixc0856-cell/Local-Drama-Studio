@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a full moon over still water and reeds. Chinese gongbi fine-line painting. silk ground, iron-wire contours, mineral pigments. composition: precise decorative layout, balanced negative space, clear hierarchical detail. lighting: soft even light, no dramatic shadow, cool temperature, low contrast. materials: silk, mineral pigment, fine ink line. camera: locked-off camera, 50mm lens, deep depth of field. crisp iron-wire outlines. flat mineral pigment layers. visible silk ground. reference board sample, no characters. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 5106,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/oriental_gongbi/06"
+}

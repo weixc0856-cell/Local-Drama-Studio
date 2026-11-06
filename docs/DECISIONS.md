@@ -35,11 +35,11 @@
 
 ---
 
-## ADR-003 模型权重统一存放 `D:\AI\models`，不复制
+## ADR-003 模型权重统一存放 `models`，不复制
 
 **背景**：多个 AI 项目重复下载十 GB 级权重既浪费磁盘，也会造成版本漂移。
 
-**决策**：唯一模型仓库为 `D:\AI\models`；ComfyUI 通过 `extra_model_paths.yaml` 引用。新文件放子目录，顶层 GGUF 保持原位。
+**决策**：唯一模型仓库为 `models`；ComfyUI 通过 `extra_model_paths.yaml` 引用。新文件放子目录，顶层 GGUF 保持原位。
 
 **后果**：
 

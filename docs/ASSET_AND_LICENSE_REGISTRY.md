@@ -5,7 +5,7 @@
 
 ## 1. 模型与权重
 
-路径统一在 `D:\AI\models`，不进入 Git。
+路径统一在 `models`，不进入 Git。
 
 | 资产 | 文件 | 大小 | sha256 | 许可证 | 状态 |
 |---|---|---|---|---|---|
@@ -27,9 +27,9 @@
 | ComfyUI-GGUF | `6ea2651` / gguf 0.19.0 | Apache-2.0 | — |
 | PyTorch | 2.15.0+xpu | BSD-3-Clause | — |
 | torchvision / torchaudio | 0.29.2 / 2.11.1 +xpu | BSD-3-Clause | — |
-| VoxCPM2 | 2B 运行时（`D:\AI\VoxCPM-Runtime`） | Apache-2.0（代码与权重） | 参考音权利单独核验 |
+| VoxCPM2 | 2B 运行时（`VoxCPM-Runtime`） | Apache-2.0（代码与权重） | 参考音权利单独核验 |
 | FFmpeg / ffprobe | 8.1-full_build（gyan） | **GPLv3 构建** | 内部渲染；分发二进制需评估 GPL |
-| llama.cpp（D:\AI） | SYCL b12024 | MIT | 模型许可按各模型卡 |
+| llama.cpp（本地 AI 服务） | SYCL b12024 | MIT | 模型许可按各模型卡 |
 | Python 调度依赖 | 见 TECH_STACK | 各包元数据 | 未发现 copyleft 冲突 |
 
 ## 3. 视觉资产
