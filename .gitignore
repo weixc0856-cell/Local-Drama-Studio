@@ -76,3 +76,6 @@ projects/deng_guan_que_lou/*
 !projects/deng_guan_que_lou/*.yaml
 !projects/deng_guan_que_lou/prompts/
 !projects/deng_guan_que_lou/prompts/*.json
+
+# Reference-board run manifest is generated per batch
+config/style_packs/*/*/reference_board/candidates/jobs_manifest.json
