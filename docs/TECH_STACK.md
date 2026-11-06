@@ -8,7 +8,7 @@
 
 1. 不继续扩大技术栈；新增组件必须有明确业务需求、技术依据和实际验证。
 2. 不升级 PyTorch / ComfyUI / 工作流节点，除非重新跑对应阶段验收。
-3. 模型权重不进 Git，统一放在 `D:\AI\models`。
+3. 模型权重不进 Git，统一放在 `models`。
 4. 根 `.venv` 不安装 torch；生成环境独立在 `runtime/ComfyUI/.venv`。
 5. 所有新增依赖必须说明必要性。v1.0 冻结后仅因本地生产工作台新增 `fastapi` / `uvicorn`（ADR-014）；其余新增依赖仍需先说明业务需求与许可证。
 
@@ -30,7 +30,7 @@
 | Wan2.2 VAE | Wan 解码 | `wan2.2_vae.safetensors`，1.41 GB | Apache-2.0（同仓库） | `PASS_VERIFIED` |
 | CosyVoice | 中文旁白/朗诵 | CosyVoice-300M-SFT，CPU | Apache-2.0（本地 LICENSE）；模型/音色/生成音频商用条款 `UNVERIFIED` | 中文男/中文女均进入真实成片（R3-B、P1、81.373 s）；zero-shot 2 行 E2E，未进正式成片；商用 `UNVERIFIED`。PRD 默认：CosyVoice2-0.5B zero-shot；SFT 仅显式可选。 |
 | FFmpeg / ffprobe | 剪辑、混音、字幕、放大 | 8.1-full_build（gyan） | **GPLv3 构建**（`--enable-gpl --enable-version3`） | `PASS_VERIFIED` |
-| 本地 llama.cpp（D:\AI） | 剧本/分镜/提示词 | SYCL b12024 | MIT（llama.cpp）；模型许可按各模型卡 | `PASS_VERIFIED`（CLI 真实 P1 4 镜头）；工作台新生成路径 Phase C 重新实证 |
+| 本地 llama.cpp（本地 AI 服务） | 剧本/分镜/提示词 | SYCL b12024 | MIT（llama.cpp）；模型许可按各模型卡 | `PASS_VERIFIED`（CLI 真实 P1 4 镜头）；工作台新生成路径 Phase C 重新实证 |
 
 > CosyVoice「中文男」在 R3-B 进入真实成片；「中文女」已进入 P1 与 81.373 s 工笔，并完成人工试听/韵律决策（Poetry B / Narration B）。zero-shot 只有 2 行 E2E，未进正式成片。**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选。** R3-D 剩余项：BGM、音效、最终排版与所有声音的商用授权核验。
 
@@ -64,7 +64,7 @@
 | 推理后端 | PyTorch XPU（无 CUDA） |
 | 生成环境 | `runtime/ComfyUI/.venv` |
 | 调度环境 | 根 `.venv` |
-| 模型仓库 | `D:\AI\models`（顶层 GGUF 不能移动） |
+| 模型仓库 | `models`（顶层 GGUF 不能移动） |
 | 端口 | ComfyUI 8188；本地 LLM 8080（单端口，定时任务让路）；CosyVoice 50000 |
 
 ## 4. 性能基线（实测，非估算）

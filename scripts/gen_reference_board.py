@@ -17,17 +17,17 @@ from drama_studio.style_engine import compile_image_prompt, get_pack, packs_root
 
 SUBJECTS = [
     "distant mountain ranges above a wide river",
-    "a lone fishing boat on a calm river at dawn",
+    "a lone traditional Chinese fishing boat with a woven awning on a misty river",
     "a misty valley with layered peaks",
     "an old pine growing from a cliff rock",
-    "a waterfall descending between dark rocks",
+    "a tall waterfall between cliffs with wide empty sky above",
     "a full moon over still water and reeds",
     "a wooden pavilion in light rain",
     "an empty riverbank with reeds and stones",
     "lotus leaves floating on a quiet pond",
     "bamboo grove in thin mist",
     "snow-covered peaks under pale sky",
-    "spring riverbank with sparse blossom branches",
+    "bare winter branches at a quiet pond with wide open water beside them",
 ]
 
 
@@ -46,10 +46,18 @@ def main() -> int:
     params_dir.mkdir(parents=True, exist_ok=True)
 
     jobs = []
+    camera = "static" if "static" in pack.camera.allowed_moves else pack.camera.allowed_moves[0]
     for index, subject in enumerate(SUBJECTS[: args.limit], start=1):
         prompt = compile_image_prompt(
-            pack, subject=subject, layers={}, camera_move="static",
-            extra_note="reference board sample, no characters",
+            pack, subject=subject, layers={}, camera_move=camera,
+            extra_note=(
+                "reference board sample, no characters, "
+                "traditional wooden boat with no engine and no modern cabin"
+                if index == 2 else
+                "reference board sample, no characters, generous empty space for breathing room"
+                if index in (5, 12) else
+                "reference board sample, no characters"
+            ),
         )
         params = {
             "positive_prompt": prompt,

@@ -28,20 +28,20 @@
 
 | 角色 | 模型 | 文件 | 大小（字节） | 节点 |
 |---|---|---|---|---|
-| 图像 | FLUX.3 Klein distilled Q4_K_M | `D:\AI\models\diffusion_models\flux3\flux-3-image-klein-Q4_K_M.gguf` | 3,666,908,064 | `UnetLoaderGGUF` |
-| 图像文本编码器 | Qwen3-4B | `D:\AI\models\text_encoders\qwen_3_4b.safetensors` | 8,044,982,048 | `CLIPLoader(type=flux2, device=cpu)` |
-| 图像 VAE | FLUX.2 VAE | `D:\AI\models\vae\flux2-vae.safetensors` | 336,211,292 | `VAELoader` |
-| 视频 | Wan2.2 TI2V 5B Q4_K_M | `D:\AI\models\Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3,433,116,000 | `UnetLoaderGGUF` |
-| 视频文本编码器 | UMT5-XXL fp8 | `D:\AI\models\text_encoders\umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 6,735,906,897 | `CLIPLoader(type=wan, device=cpu)` |
-| 视频 VAE | Wan2.2 VAE | `D:\AI\models\vae\wan2.2_vae.safetensors` | 1,409,400,960 | `VAELoader` |
-| 文本 | Qwen3-30B-A3B-Instruct-2507 Q4_K_M | `D:\AI\models\Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | ~18.56 GB | llama.cpp 8080 |
-| TTS | VoxCPM2（2B） | `D:\AI\modelsoxcpm2`（模型）+ `D:\AI\VoxCPM-Runtime`（服务） | 目录 | HTTP 50000，CPU，48 kHz |
+| 图像 | FLUX.3 Klein distilled Q4_K_M | `models\diffusion_models\flux3\flux-3-image-klein-Q4_K_M.gguf` | 3,666,908,064 | `UnetLoaderGGUF` |
+| 图像文本编码器 | Qwen3-4B | `models\text_encoders\qwen_3_4b.safetensors` | 8,044,982,048 | `CLIPLoader(type=flux2, device=cpu)` |
+| 图像 VAE | FLUX.2 VAE | `models\vae\flux2-vae.safetensors` | 336,211,292 | `VAELoader` |
+| 视频 | Wan2.2 TI2V 5B Q4_K_M | `models\Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3,433,116,000 | `UnetLoaderGGUF` |
+| 视频文本编码器 | UMT5-XXL fp8 | `models\text_encoders\umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 6,735,906,897 | `CLIPLoader(type=wan, device=cpu)` |
+| 视频 VAE | Wan2.2 VAE | `models\vae\wan2.2_vae.safetensors` | 1,409,400,960 | `VAELoader` |
+| 文本 | Qwen3-30B-A3B-Instruct-2507 Q4_K_M | `models\Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | ~18.56 GB | llama.cpp 8080 |
+| TTS | VoxCPM2（2B） | `modelsoxcpm2`（模型）+ `VoxCPM-Runtime`（服务） | 目录 | HTTP 50000，CPU，48 kHz |
 
 **硬约束**：
 
 - FLUX 必须用 Qwen3-**4B** 编码器 + FLUX.2 VAE；不能用 Qwen3-8B 或 FLUX.1 VAE。
 - Wan TI2V-5B 用它自己的 VAE/latent 工作流；不是 14B 的缩小版。
-- 两个扩散 GGUF 必须在 `D:\AI\models` 顶层。
+- 两个扩散 GGUF 必须在 `models` 顶层。
 - `doctor` 会拒绝缺失或大小不符的文件。
 
 ---
@@ -219,9 +219,9 @@ preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` �
 ```text
 zero-shot（唯一模式）
   scripts\cosyvoice_server.ps1 -Action start
-  -> D:\AI\VoxCPM-Runtime\start_voxcpm.bat
+  -> VoxCPM-Runtime\start_voxcpm.bat
   -> api_server.py（FastAPI，端口 50000，CPU）
-  -> 权重 D:\AI\modelsoxcpm2（model.safetensors + audiovae.pth）
+  -> 权重 modelsoxcpm2（model.safetensors + audiovae.pth）
   -> POST /tts 或 /tts/upload -> model.generate(reference_wav_path=...)
   -> 48 kHz WAV；响应头 X-Audio-Seconds / X-Synth-Seconds / X-Sample-Rate
 

@@ -4,12 +4,12 @@
     Start / stop / inspect the local TTS runtime on port 50000 (VoxCPM2).
 
 .DESCRIPTION
-    50000 belongs to exactly one runtime: D:\AI\VoxCPM-Runtime (VoxCPM2, CPU only,
+    50000 belongs to exactly one runtime: VoxCPM-Runtime (VoxCPM2, CPU only,
     no VRAM). The file keeps its historical name because the docs and daily habit
     refer to it; the CosyVoice runtimes it used to launch are retired
-    (2026-11-06) and D:\AI\CosyVoice-Runtime is being deleted.
+    (2026-11-06) and CosyVoice-Runtime is being deleted.
 
-    The script only launches D:\AI\VoxCPM-Runtime\start_voxcpm.bat and stops
+    The script only launches VoxCPM-Runtime\start_voxcpm.bat and stops
     python processes whose executable lives under that directory. Nothing in the
     shared runtime is modified.
 
@@ -33,7 +33,20 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$Runtime = "D:\AI\VoxCPM-Runtime"
+$ProjectRoot = Split-Path -Parent $PSScriptRoot
+
+$EnvFile = Join-Path $ProjectRoot '.env'
+if (Test-Path $EnvFile) {
+  Get-Content -LiteralPath $EnvFile | ForEach-Object {
+    if ($_ -match '^\s*([A-Za-z0-9_]+)\s*=\s*(.+?)\s*$') {
+      $k = $matches[1]; $v = $matches[2].Trim('"').Trim("'")
+      if (-not [Environment]::GetEnvironmentVariable($k)) { [Environment]::SetEnvironmentVariable($k, $v) }
+    }
+  }
+}
+$Runtime = $env:VOXCPM_RUNTIME
+if (-not $Runtime -and $env:DRAMA_AI_HOME) { $Runtime = Join-Path $env:DRAMA_AI_HOME 'VoxCPM-Runtime' }
+if (-not $Runtime) { throw 'Set VOXCPM_RUNTIME or DRAMA_AI_HOME in .env (see .env.example)' }
 $Launcher = Join-Path $Runtime "start_voxcpm.bat"
 $ExpectedModelClass = "VoxCPM2"
 

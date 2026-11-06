@@ -19,7 +19,7 @@ runtime/ComfyUI/
 runtime/*.7z
 runtime/*.zip
 
-# Models never enter this repo (canonical store: D:\AI\models)
+# Models never enter this repo (canonical store lives outside the repo)
 models/
 *.gguf
 *.safetensors
@@ -79,3 +79,6 @@ projects/deng_guan_que_lou/*
 
 # Reference-board run manifest is generated per batch
 config/style_packs/*/*/reference_board/candidates/jobs_manifest.json
+
+# Local environment (machine paths). Track .env.example instead.
+.env

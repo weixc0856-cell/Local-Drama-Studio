@@ -7,6 +7,13 @@ import wave
 from pathlib import Path
 from types import SimpleNamespace
 
+import os
+
+_ROOT = Path(__file__).resolve().parents[1]
+os.environ.setdefault("DRAMA_MODELS_ROOT", str(_ROOT / "runtime" / "models"))
+os.environ.setdefault("DRAMA_AI_HOME", str(_ROOT / "runtime"))
+os.environ.setdefault("VOXCPM_RUNTIME", str(_ROOT / "runtime" / "VoxCPM-Runtime"))
+
 import pytest
 from PIL import Image
 

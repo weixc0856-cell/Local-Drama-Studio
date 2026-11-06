@@ -11,6 +11,7 @@ prompt problem from a model problem.
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 import subprocess
@@ -31,7 +32,11 @@ PAIRS = [
     ("明天", "ming", "ng"), ("民族", "min", "n"),
 ]
 TEXT = "，".join(word for word, _, _ in PAIRS) + "。"
-WHISPER = Path(r"D:\AI\VoxCPM-Runtime\venv\Scripts\python.exe")
+_AI_HOME = os.environ.get("DRAMA_AI_HOME")
+_RUNTIME = os.environ.get("VOXCPM_RUNTIME") or (
+    str(Path(_AI_HOME) / "VoxCPM-Runtime") if _AI_HOME else str(Path("VoxCPM-Runtime"))
+)
+WHISPER = Path(_RUNTIME) / "venv" / "Scripts" / "python.exe"
 PROMPT_TEXT = "希望你以后能够做的比我还好呦。"
 
 
@@ -69,7 +74,7 @@ def require_whisper() -> None:
     if not WHISPER.is_file():
         raise MissingDependencyError(
             f"Whisper 解释器不存在：{WHISPER}\n"
-            "请确认 VoxCPM 运行时已安装：D:/AI/VoxCPM-Runtime")
+            "请确认 VoxCPM 运行时已安装：VoxCPM-Runtime")
     probe = subprocess.run([str(WHISPER), "-c", "import whisper"],
                            capture_output=True, text=True)
     if probe.returncode != 0:

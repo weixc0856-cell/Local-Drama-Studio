@@ -111,12 +111,12 @@
 6. **VoxCPM2 官方不支持 xpu。** RTF 0.30 是 RTX 4090 的数，本机只能先按 CPU 估算。
 7. **“三项全换会失去问题定位能力”这一条成立**，应当坚持新旧双轨。
 
-## 4. D:\AI 放置方案
+## 4. 本地 AI 服务 放置方案
 
 原则：不移动、不覆盖现有文件；新增模型一律进子目录；顶层只允许 llama.cpp 的 `.gguf`（`start_server.bat` 只扫顶层）。
 
 ```
-D:\AI\models\
+models\
   diffusion_models\
     flux3\        flux-3-image-klein-Q4_K_M.gguf                 3.67 GB   (P0)
                   flux3-image-klein-int8-convrot.safetensors    5.83 GB   (P0 备选)
@@ -132,7 +132,7 @@ D:\AI\models\
 ```
 
 - ComfyUI 已通过 `extra_model_paths.yaml` 映射 `diffusion_models`、`text_encoders`、`vae`，子目录可递归扫描，**不需要改 yaml**。
-- VoxCPM2 不是 ComfyUI 模型，放 `D:\AI\models\voxcpm2\`，由独立服务加载。
+- VoxCPM2 不是 ComfyUI 模型，放 `models\voxcpm2\`，由独立服务加载。
 - 磁盘预算：P0 最小 8.53 GB（+6.72 GB 放大器）；P1 4.96 GB；P2 40.08 GB。全部下载约 60.3 GB，D: 现有 382 GB，充足。
 - 内存预算：P0/P1 与现有链路同量级；P2 需要约 37 GB 工作集，且**必须确认 8080 的 CPU LLM 未运行**。
 - 授权门：BFL 官方仓库是 gated，需要先在 Hugging Face 接受许可再下载；unsloth 的 GGUF 不受此限，但授权仍按 BFL 原许可执行。
@@ -192,8 +192,8 @@ D:\AI\models\
 
 | 文件 | 放置位置 | 大小 | SHA-256 校验 |
 |---|---|---|---|
-| `flux-3-image-klein-Q4_K_M.gguf` | `D:\AI\models\diffusion_models\flux3\` | 3,666,908,064 B | 与官方 LFS `a0fe17e2…` 一致 |
-| `qwen3vl_4b_int8_convrot.safetensors` | `D:\AI\models\text_encoders\` | 4,858,559,240 B | 与官方 LFS `32de113c…` 一致 |
+| `flux-3-image-klein-Q4_K_M.gguf` | `models\diffusion_models\flux3\` | 3,666,908,064 B | 与官方 LFS `a0fe17e2…` 一致 |
+| `qwen3vl_4b_int8_convrot.safetensors` | `models\text_encoders\` | 4,858,559,240 B | 与官方 LFS `32de113c…` 一致 |
 | `flux2-vae.safetensors` | 复用现有 | 336,211,292 B | 未变 |
 
 BFL 官方仓库为 gated（未授权返回 401），实际从同名镜像 `ml-resources/flux-3-image-klein-comfy` 下载，再用官方 LFS 的 SHA-256 逐字节校验，全部一致。
@@ -406,8 +406,8 @@ FLUX.3 的问题：
 
 | 项 | 值 |
 |---|---|
-| 运行时 | `D:\AI\VoxCPM-Runtime`（独立 venv，不并入根 `.venv` 与 ComfyUI venv） |
-| 权重 | `D:\AI\models\voxcpm2`，`model.safetensors` 4,580,080,592 B + `audiovae.pth` 376,951,122 B |
+| 运行时 | `VoxCPM-Runtime`（独立 venv，不并入根 `.venv` 与 ComfyUI venv） |
+| 权重 | `models\voxcpm2`，`model.safetensors` 4,580,080,592 B + `audiovae.pth` 376,951,122 B |
 | 完整性 | SHA-256 与 HF 官方 LFS 一致（`f7f964cf…` / `94b5d51e…`） |
 | 授权 | Apache-2.0（代码与权重）；TOS 附伦理条款；参考音权利沿用 `VOICE_RIGHTS.md` |
 | 参考音 | `assets/audio/prompts/my_voice_clean_v1.wav`（本人录音，16 s） |
@@ -499,6 +499,6 @@ MiniMax H3 Community License：适用地域为全球**除 EU、英国、韩国�
 - **实践上大概率不可用于生产**：8 GB 显存要同时承载 8.76 GB DiT 与 9.57 GB TE 的流式加载，单镜耗时按量级推算为小时级；我们现有 Wan 单镜 36 min 已经是瓶颈。
 - 若要给出确定答案，最小有意义实验为 GGUF 可用质量组合（21.75 GB，约 4 h 下载）+ 单段 5 s 测试，并设硬停止线：**单段超过 90 min 即判不可用**。
 
-**2026-11-06 决策**：用户决定中止 H3 权重下载，不做实测。H3 的状态保持 **`NOT_RUN`**，§12 的结论只停留在代码与硬件分析层面，不得写成“已验证不可用”。已下载的部分文件（约 194 MB）已删除，`D:\AI\models` 未留下 H3 权重。
+**2026-11-06 决策**：用户决定中止 H3 权重下载，不做实测。H3 的状态保持 **`NOT_RUN`**，§12 的结论只停留在代码与硬件分析层面，不得写成“已验证不可用”。已下载的部分文件（约 194 MB）已删除，`models` 未留下 H3 权重。
 
 若日后硬件变化（显存 ≥ 24 GB）或需要重新评估，按 §12.2 的组合重开，并沿用同一停止线。

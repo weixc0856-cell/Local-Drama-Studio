@@ -12,8 +12,8 @@
 | 制作层 | 剧本、旁白、分镜、连续性、剪辑时间轴、提示词编译 | Python 3.12 + Pydantic（`film/`、`style_engine/`） |
 | 图像 | 关键帧、场景与人物 | ComfyUI + **FLUX.3 Klein**（GGUF Q4_K_M，16 步，CFG 1.0） |
 | 视频 | 镜头动画 | ComfyUI + **Wan2.2 TI2V 5B**（GGUF Q4_K_M） |
-| 语音 | 逐句旁白 | **VoxCPM2**（`D:\AI\VoxCPM-Runtime`，端口 50000，48 kHz，CPU） |
-| 文本 | 剧本结构化、分镜、提示词 | 本地 llama.cpp（`D:\AI`，端口 8080，Qwen3-30B-A3B） |
+| 语音 | 逐句旁白 | **VoxCPM2**（`VoxCPM-Runtime`，端口 50000，48 kHz，CPU） |
+| 文本 | 剧本结构化、分镜、提示词 | 本地 llama.cpp（`本地 AI 服务`，端口 8080，Qwen3-30B-A3B） |
 | 合成 | 剪辑、混音、字幕、转码 | FFmpeg 8.1 |
 
 ComfyUI 只是生成引擎，不是项目本体；业务状态、调度、质量门与制作层都在 Python 侧。
@@ -46,6 +46,11 @@ ComfyUI 只是生成引擎，不是项目本体；业务状态、调度、质量
 ## 快速开始
 
 ```powershell
+# 1) 本机路径写进 .env（不进 Git）
+Copy-Item .env.example .env
+#    编辑 DRAMA_MODELS_ROOT / DRAMA_AI_HOME
+
+# 2) 安装与体检
 uv sync --python 3.12
 
 # 环境与模型体检
@@ -91,7 +96,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 - 根 `.venv`（Python 3.12，uv）只做调度，**不装 torch**。
 - `runtime/ComfyUI/.venv`（PyTorch XPU + ComfyUI + GGUF），生成专用。
-- 模型仓库 `D:\AI\models`，单端口：ComfyUI 8188、LLM 8080、TTS 50000、工作台 8765。
+- 模型仓库 `models`，单端口：ComfyUI 8188、LLM 8080、TTS 50000、工作台 8765。
 - 8 GB A750 是独占资源：LLM / FLUX / Wan 不同时生成。
 - 本地 HTTP 探测必须绕过系统代理（`httpx(trust_env=False)` / `curl.exe`）。
 

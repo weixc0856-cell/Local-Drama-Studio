@@ -2,7 +2,7 @@
 
 > 文档状态：Phase B 操作手册（2026-11-04）
 > 读者：不需要读源码的实际制作者
-> 适用：Windows 11、本机已安装本仓库、模型在 `D:\AI\models`
+> 适用：Windows 11、本机已安装本仓库、模型在 `models`
 > 原则：只写真实存在的页面/按钮/命令；不存在的能力明确标注“当前没有”。
 
 ---
@@ -11,7 +11,7 @@
 
 ## 0. 先读这三条
 
-1. **TTS 运行时只有一个：VoxCPM2**（`D:\AI\VoxCPM-Runtime`，端口 50000，48 kHz，CPU）。默认走参考音克隆（`zero_shot`）；CosyVoice 的 SFT 预置音色已退休（2026-11-06），`--tts-mode sft` 会直接报错。
+1. **TTS 运行时只有一个：VoxCPM2**（`VoxCPM-Runtime`，端口 50000，48 kHz，CPU）。默认走参考音克隆（`zero_shot`）；CosyVoice 的 SFT 预置音色已退休（2026-11-06），`--tts-mode sft` 会直接报错。
 2. **工作台的“合成重建”只重合成，不重新生成图片/配音**。它读取期数产物目录里的 `segments.json` + `audio_manifest.json`。
 3. **不要覆盖历史成片**。工作台每次写新的 `renders/build-<时间>/`；不要手动改旧目录。
 
@@ -27,17 +27,17 @@
 | Python | 3.12（根 `.venv` 由 uv 创建） |
 | uv | 0.10.x |
 | FFmpeg / ffprobe | 8.1-full_build（PATH 可用） |
-| 磁盘 | 项目盘与 `D:\AI\models` 至少 40 GiB 空闲 |
-| 模型 | `D:\AI\models` 下 FLUX / Wan / 文本编码器 / VAE，大小与 `config/models.yaml` 一致 |
+| 磁盘 | 项目盘与 `models` 至少 40 GiB 空闲 |
+| 模型 | `models` 下 FLUX / Wan / 文本编码器 / VAE，大小与 `config/models.yaml` 一致 |
 | 字体 | `assets/fonts` 下 6 个 OTF（可由 `fetch_fonts.py` 重建） |
 | ComfyUI | `runtime/ComfyUI` 独立 venv，torch XPU 可用 |
-| VoxCPM2 | `D:\AI\VoxCPM-Runtime`，端口 50000，48 kHz |
-| LLM | `D:\AI` 的 llama.cpp，端口 8080 |
+| VoxCPM2 | `VoxCPM-Runtime`，端口 50000，48 kHz |
+| LLM | `本地 AI 服务` 的 llama.cpp，端口 8080 |
 
 ### 1.2 首次安装
 
 ```powershell
-cd D:\Local-Drama-Studio
+cd 项目根目录
 
 # 1) 调度环境
 uv sync --python 3.12
@@ -58,7 +58,7 @@ scripts\doctor.ps1
 ### 1.3 模型与字体位置（不要移动）
 
 ```text
-D:\AI\models\
+models\
 ├─ flux-2-klein-4b-Q4_K_M.gguf          # 必须在顶层
 ├─ Wan2.2-TI2V-5B-Q4_K_M.gguf           # 必须在顶层
 ├─ text_encoders\qwen_3_4b.safetensors
@@ -67,7 +67,7 @@ D:\AI\models\
    vae\wan2.2_vae.safetensors
 ```
 
-`D:\AI\start_server.bat` 只扫描顶层 `*.gguf`；不要移动这两个扩散模型。
+`本地 AI 服务\start_server.bat` 只扫描顶层 `*.gguf`；不要移动这两个扩散模型。
 
 ---
 
@@ -76,7 +76,7 @@ D:\AI\models\
 ### 2.1 启动顺序
 
 ```powershell
-cd D:\Local-Drama-Studio
+cd 项目根目录
 
 # 1) 启动 ComfyUI（8188）
 scripts\start.ps1
@@ -121,7 +121,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 
 ### 2.4 TTS 运行时（单实例）
 
-只有一个运行时：`D:\AI\VoxCPM-Runtime`（VoxCPM2，CPU，48 kHz）。脚本名保留历史叫法，`-Model` 参数只剩 `voxcpm2`。
+只有一个运行时：`VoxCPM-Runtime`（VoxCPM2，CPU，48 kHz）。脚本名保留历史叫法，`-Model` 参数只剩 `voxcpm2`。
 
 - 启动：`scripts\cosyvoice_server.ps1 -Action start`
 - 首次加载约 25–30 秒，`/health` 期间返回 `loading`
@@ -242,7 +242,7 @@ review.reject              人工验收·拒绝
 **前置**：8188 / 8080 / 50000 都启动。**P1 是历史 SFT 案例复现**：必须 `-Model sft`；当前 `p1_e2e.py` 没有 `--tts-mode` 参数，默认配置为 `sft` 时才可运行。按 PRD 的新默认 zero-shot，请用 §4.3 手工链并显式 `--tts-mode zero_shot`（启动 `-Model cosyvoice2`）。
 
 ```powershell
-cd D:\Local-Drama-Studio
+cd 项目根目录
 
 # 服务（另开窗口或已启动）
 scripts\start.ps1
@@ -502,7 +502,7 @@ $out = "my_case\renders\build-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
 | doctor 报告 | `logs/doctor-*.json` |
 | ComfyUI 日志 | `logs/comfyui.log` / `logs/comfyui.err.log` |
 | LLM 日志 | `logs/llm-8080.out.log` / `.err.log` |
-| CosyVoice 日志 | `D:\AI\CosyVoice-Runtime\logs\server.log` / `server-sft.log` |
+| CosyVoice 日志 | `CosyVoice-Runtime\logs\server.log` / `server-sft.log` |
 | 实验产物 | `experiments/` |
 | 视觉资产 | `assets/keyframes/`、`assets/vertical/`、`assets/visual_style/` |
 | 字体 | `assets/fonts/` |

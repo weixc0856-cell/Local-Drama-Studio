@@ -11,7 +11,7 @@
 ## 0. 排障顺序（固定）
 
 ```powershell
-cd D:\Local-Drama-Studio
+cd 项目根目录
 
 # 1) 环境/模型/服务总览
 scripts\doctor.ps1
@@ -123,7 +123,7 @@ curl.exe -s http://127.0.0.1:50000/health
 
 | 现象 | 检查 | 处理 |
 |---|---|---|
-| 50000 未监听 | `D:\AI\CosyVoice-Runtime\logs\server*.log` | `scripts\cosyvoice_server.ps1 -Action start -Model sft` |
+| 50000 未监听 | `CosyVoice-Runtime\logs\server*.log` | `scripts\cosyvoice_server.ps1 -Action start -Model sft` |
 | `status=loading` | 模型加载 9–28 s | 等待；`doctor` 重试 |
 | `status=error` | 日志里的 `model load failed` | 模型目录/依赖 |
 | 想用中文女但没声 | 当前可能跑的是 0.5B zero-shot | 切 `-Model sft`；见下 |

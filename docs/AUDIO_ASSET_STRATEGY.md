@@ -210,7 +210,7 @@ SNR（语音段 RMS − 静音段 RMS）
 
 ## 9. 实测：已有的自录 prompt（2026-11-04）
 
-文件：`D:\AI\CosyVoice-Runtime/assets\my_voice_5s.wav`（**原文件未改动**，复制到
+文件：`CosyVoice-Runtime/assets\my_voice_5s.wav`（**原文件未改动**，复制到
 `assets/audio/prompts/source/my_voice_5s_src.wav` 后处理）。命名写的是 5s，实际 **3.35 s**。
 
 ### 9.1 诊断（`scripts/voice_prompt_check.py check`）
@@ -408,7 +408,7 @@ CosyVoice 服务由本轮启动，已停止（50000 已释放）。
 - **风格**：`broadcast_light`（试听编号 06）；
 - **speed**：0.90（0.5B 偏慢，0.82 会把一句拉到 7.2 s）。
 
-### 12.2 落地方式：**不修改 `D:\AI\CosyVoice-Runtime`**
+### 12.2 落地方式：**不修改 `CosyVoice-Runtime`**
 
 项目的不变量要求该目录只读，因此所有选择都写在项目侧：
 

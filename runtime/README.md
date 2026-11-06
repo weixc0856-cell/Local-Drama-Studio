@@ -18,4 +18,4 @@ runtime/
 scripts\setup.ps1 -WithComfyUI
 ```
 
-不要在这里放业务代码、模型权重或短剧产物。模型统一在 `D:\AI\models`。
+不要在这里放业务代码、模型权重或短剧产物。模型统一在 `models`。

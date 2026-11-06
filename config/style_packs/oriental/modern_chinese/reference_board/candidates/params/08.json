@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "an empty riverbank with reeds and stones. modern Chinese aesthetic. refined digital painting with traditional motifs. composition: generous negative space, symmetry with offset focal point, layered depth. lighting: soft ambient, low contrast, neutral temperature, medium contrast. materials: silk, lacquer, stone, ink wash accents. camera: slow physical dolly forward, 35mm lens, deep depth of field. restrained azurite and cinnabar accents. visible negative space. traditional architectural motifs. reference board sample, no characters. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 5108,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/oriental_modern_chinese/08"
+}

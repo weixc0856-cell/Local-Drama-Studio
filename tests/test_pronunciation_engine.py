@@ -205,7 +205,7 @@ def test_tts_sends_acoustic_text_to_voxcpm(
         if request.url.path == "/health":
             return httpx.Response(200, json={
                 "status": "ready", "model_class": "VoxCPM2",
-                "model_dir": "D:/AI/models/voxcpm2", "speakers": [],
+                "model_dir": "models/voxcpm2", "speakers": [],
                 "modes": ["zero_shot"],
             })
         return httpx.Response(404)
