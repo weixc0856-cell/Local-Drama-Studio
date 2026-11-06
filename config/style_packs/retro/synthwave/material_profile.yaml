@@ -1,0 +1,9 @@
+schema_version: '1.0'
+materials:
+- chrome
+- neon tube
+- glossy plastic
+- film grain
+texture_cues:
+- grid geometry
+- neon colour separation

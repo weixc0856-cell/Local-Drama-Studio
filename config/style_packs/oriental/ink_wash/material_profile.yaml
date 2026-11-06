@@ -1,0 +1,9 @@
+schema_version: '1.0'
+materials:
+- rice paper fibre
+- wet ink
+- dry brush
+texture_cues:
+- brushwork
+- negative space
+- paper grain

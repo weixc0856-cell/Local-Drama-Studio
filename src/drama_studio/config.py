@@ -62,7 +62,7 @@ class ZeroShotSettings(BaseModel):
     prompt_audio: str = "assets/audio/prompts/my_voice_clean_v1.wav"
     prompt_text: str = ""
     speed: float | None = None
-    runtime: str = "cosyvoice2"   # which runtime must be up on 50000
+    runtime: str = "voxcpm2"      # which runtime must be up on 50000
 
 
 class TTSSettings(BaseModel):

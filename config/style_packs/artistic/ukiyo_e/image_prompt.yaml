@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: Japanese ukiyo-e woodblock print
+medium: woodblock colour, flat pigment, washi paper
+materials:
+- washi paper
+- woodblock ink
+- flat pigment
+composition:
+- flat decorative layout
+- clear outline
+- strong silhouette
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- flat woodblock colour areas
+- clear dark outlines
+- visible washi paper texture

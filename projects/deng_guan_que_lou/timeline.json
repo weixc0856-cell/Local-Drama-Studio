@@ -1,0 +1,91 @@
+{
+  "project_id": "deng_guan_que_lou",
+  "sample_rate": 48000,
+  "entries": [
+    {
+      "shot_id": "S01",
+      "start_ms": 0,
+      "end_ms": 6000,
+      "narration_ids": [
+        "N001"
+      ],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S02",
+      "start_ms": 6000,
+      "end_ms": 11000,
+      "narration_ids": [
+        "N002"
+      ],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S03",
+      "start_ms": 11000,
+      "end_ms": 16000,
+      "narration_ids": [],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S04",
+      "start_ms": 16000,
+      "end_ms": 22000,
+      "narration_ids": [
+        "N003"
+      ],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S05",
+      "start_ms": 22000,
+      "end_ms": 29000,
+      "narration_ids": [
+        "N004"
+      ],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S06",
+      "start_ms": 29000,
+      "end_ms": 35000,
+      "narration_ids": [
+        "N005"
+      ],
+      "visual_asset": null,
+      "transition_in": "match_cut",
+      "transition_out": "match_cut"
+    },
+    {
+      "shot_id": "S07",
+      "start_ms": 35000,
+      "end_ms": 42000,
+      "narration_ids": [
+        "N006"
+      ],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    },
+    {
+      "shot_id": "S08",
+      "start_ms": 42000,
+      "end_ms": 47000,
+      "narration_ids": [],
+      "visual_asset": null,
+      "transition_in": "cut",
+      "transition_out": "cut"
+    }
+  ],
+  "total_ms": 47000
+}

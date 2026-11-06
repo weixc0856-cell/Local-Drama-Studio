@@ -28,10 +28,10 @@ llm:
   temperature: 0.2
   max_repair_attempts: 2
 
-# CosyVoice runtime already exists at D:\AI\CosyVoice-Runtime (CPU, port 50000).
+# Local TTS service on 50000. Target backend: VoxCPM2 (D:\AI\VoxCPM-Runtime, 48 kHz).
 tts:
   base_url: "http://127.0.0.1:50000"
-  sample_rate: 48000   # final mix sample rate; CosyVoice outputs 24k/22.05k
+  sample_rate: 48000   # final mix sample rate; VoxCPM2 already outputs 48 kHz
   # Default TTS mode/voice live in config/audio.yaml (single source).
 
 ffmpeg:

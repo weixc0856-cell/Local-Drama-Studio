@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- wind in leaves
+- hair sway
+- cloud drift
+secondary_motions:
+- water shimmer
+secondary_limit: 2

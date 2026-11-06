@@ -1,0 +1,25 @@
+project_id: deng_guan_que_lou
+art_direction:
+  style: cinematic_chinese_animation
+  period: tang_dynasty_inspired
+  aspect_ratio: '9:16'
+  lighting: golden_hour
+  palette:
+  - warm_gold
+  - muted_amber
+  - mountain_blue
+  - river_silver
+protagonist:
+  identity: ancient_chinese_poet
+  clothing: tang_dynasty_robe
+  color: muted_cream
+  hair: traditional_topknot
+environment:
+  architecture: ancient_wooden_tower
+  landscape: vast_mountains_and_yellow_river
+  weather: gentle_wind
+  atmosphere: cinematic_haze
+camera_language:
+  movement: slow_and_deliberate
+  depth: layered
+  transitions: motivated_cuts

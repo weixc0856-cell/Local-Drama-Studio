@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: surrealist dreamscape
+medium: painterly impossible space, dream logic
+materials:
+- smooth paint
+- sand
+- still water
+composition:
+- impossible scale relationship
+- floating objects
+- non-euclidean space
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- objects floating without support
+- impossible scale relationships
+- calm dreamlike light

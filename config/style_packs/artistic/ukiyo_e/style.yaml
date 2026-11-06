@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.ukiyo_e
+name: 浮世绘
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 木版套色、平涂色块与清晰轮廓。
+layers:
+- identity
+- execution
+- consistency

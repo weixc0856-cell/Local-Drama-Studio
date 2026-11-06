@@ -85,7 +85,7 @@ export default {
                 <dt>版本</dt><dd class="mono">${esc(health.version)}</dd>
                 <dt>LLM</dt><dd class="mono">${esc(env.llm_model || '—')}</dd>
                 <dt>ComfyUI</dt><dd class="mono">${esc(env.comfyui_url || '—')}</dd>
-                <dt>CosyVoice 默认模式</dt><dd class="mono">${esc(env.tts_mode || '—')} · ${esc(env.tts_default_speaker || '—')}</dd>
+                <dt>VoxCPM2 默认模式</dt><dd class="mono">${esc(env.tts_mode || '—')} · 48 kHz · CPU</dd>
                 <dt>GPU / XPU</dt><dd>${gpu.name
                   ? `${esc(gpu.name)} · ${esc(gpu.vram_free_gib)} / ${esc(gpu.vram_total_gib)} GiB`
                   : esc(gpu.detail || 'UNKNOWN')}</dd>
@@ -101,7 +101,7 @@ export default {
               <div class="note">产物状态：每次请求从 <span class="mono">assets/</span>、<span class="mono">experiments/</span>、
                 <span class="mono">literary_intelligence/</span> 的真实文件派生，不写回。</div>
               <div class="note">任务日志：<span class="mono">logs/workspace/tasks/</span>；缩略图缓存：<span class="mono">logs/workspace/thumbs/</span>。</div>
-              <div class="note">LLM 只使用 8080；ComfyUI 8188；CosyVoice 50000。工作台不创建第二个端口。</div>
+              <div class="note">LLM 只使用 8080；ComfyUI 8188；VoxCPM2 50000。工作台不创建第二个端口。</div>
             </div>
           </div>
 

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: pop art comic print
+medium: halftone dots, bold black outlines, flat ink colour
+materials:
+- newsprint
+- halftone screen
+- flat ink
+composition:
+- graphic panel layout
+- repeated motifs
+- exaggerated subject scale
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- thick black contour lines
+- flat unmodulated colour blocks
+- visible halftone dot pattern

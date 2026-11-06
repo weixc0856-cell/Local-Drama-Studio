@@ -31,13 +31,13 @@ PAIRS = [
     ("明天", "ming", "ng"), ("民族", "min", "n"),
 ]
 TEXT = "，".join(word for word, _, _ in PAIRS) + "。"
-WHISPER = Path(r"D:\AI\CosyVoice-Runtime\venv\Scripts\python.exe")
+WHISPER = Path(r"D:\AI\VoxCPM-Runtime\venv\Scripts\python.exe")
 PROMPT_TEXT = "希望你以后能够做的比我还好呦。"
 
 
 def whisper(path: Path, out_dir: Path) -> str:
     out_dir.mkdir(parents=True, exist_ok=True)
-    subprocess.run([str(WHISPER), "-m", "whisper", str(path), "--model", "small",
+    subprocess.run([str(WHISPER), "-X", "utf8", "-m", "whisper", str(path), "--model", "small",
                     "--language", "zh", "--output_format", "txt",
                     "--output_dir", str(out_dir), "--fp16", "False"],
                    check=True, capture_output=True)
@@ -61,7 +61,25 @@ def final_of(syllable: str) -> str | None:
     return None
 
 
+class MissingDependencyError(RuntimeError):
+    """Raised when the ASR toolchain is not installed; never fail silently."""
+
+
+def require_whisper() -> None:
+    if not WHISPER.is_file():
+        raise MissingDependencyError(
+            f"Whisper 解释器不存在：{WHISPER}\n"
+            "请确认 VoxCPM 运行时已安装：D:/AI/VoxCPM-Runtime")
+    probe = subprocess.run([str(WHISPER), "-c", "import whisper"],
+                           capture_output=True, text=True)
+    if probe.returncode != 0:
+        raise MissingDependencyError(
+            "VoxCPM 运行时未安装 openai-whisper。\n"
+            f"请执行：{WHISPER} -m pip install openai-whisper")
+
+
 def main(argv: list[str] | None = None) -> int:
+    require_whisper()
     parser = argparse.ArgumentParser(description="probe -n / -ng by voice")
     parser.add_argument("--out", default="experiments/audio_probe/ng")
     parser.add_argument("--prompt", default="assets/audio/prompts/my_voice_clean_v1.wav")
@@ -87,14 +105,7 @@ def main(argv: list[str] | None = None) -> int:
                             base=DEFAULT_BASE)
         voices["clone_original"] = result.path
 
-    import httpx
-    with httpx.Client(timeout=600.0, trust_env=False) as client:
-        response = client.post(DEFAULT_BASE + "/tts", json={
-            "text": TEXT, "speaker": "中文男", "speed": args.speed, "text_frontend": True})
-        response.raise_for_status()
-        sft = out / "sft_male.wav"
-        sft.write_bytes(response.content)
-        voices["sft_male"] = sft
+    # SFT 预置音色已退休（2026-11-06）：VoxCPM2 只有参考音克隆，不再有 sft_male 这一路。
 
     report = {"text": TEXT, "pairs": [{"word": w, "final": f} for w, _, f in PAIRS],
               "speed": args.speed, "voices": {}}

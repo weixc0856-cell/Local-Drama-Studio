@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: red
+  hex: '#E02B20'
+- name: yellow
+  hex: '#FFD400'
+- name: blue
+  hex: '#0057B8'
+- name: black
+  hex: '#111111'
+- name: white
+  hex: '#FFFFFF'
+saturation_range:
+- 0.4
+- 0.9
+edge_density_range:
+- 0.05
+- 0.2
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

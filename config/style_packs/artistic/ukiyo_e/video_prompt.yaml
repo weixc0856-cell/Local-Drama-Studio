@@ -1,0 +1,14 @@
+schema_version: '1.0'
+motion_vocabulary:
+- wave motion
+- cloud band drift
+- layer parallax
+secondary_limit: 2
+preserve:
+- flat colour fields
+- clear contours
+- washi texture
+avoid:
+- photoreal depth of field
+- soft gradients
+- 3D volume

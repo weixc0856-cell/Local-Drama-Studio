@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.y2k
+name: Y2K 千禧
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 金属、镭射、透明 PVC 与未来科技质感。
+layers:
+- identity
+- execution
+- consistency

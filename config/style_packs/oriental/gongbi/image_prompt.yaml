@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: Chinese gongbi fine-line painting
+medium: silk ground, iron-wire contours, mineral pigments
+materials:
+- silk
+- mineral pigment
+- fine ink line
+composition:
+- precise decorative layout
+- balanced negative space
+- clear hierarchical detail
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- crisp iron-wire outlines
+- flat mineral pigment layers
+- visible silk ground

@@ -2,7 +2,7 @@
 
 > 日期：2026-11-03
 > 前置：`docs/PROJECT_AUDIT.md`（Phase A）
-> 状态：设计已定稿并按下述契约实现。实现完成后回填实测结果见 `docs/WORKSPACE_REPORT.md`
+> 状态：设计已定稿并按下述契约实现。实现完成后回填实测结果（原 `WORKSPACE_REPORT.md` 已删除，见 Git 历史）
 > 约束：本地单用户、只读优先、真实数据、不新建第二套环境
 
 ---

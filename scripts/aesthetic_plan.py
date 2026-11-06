@@ -45,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--axes", default=None, help="JSON {shot_id: composition|lighting|color}")
     parser.add_argument("--out", required=True, help="aesthetic_plan.json path")
     parser.add_argument("--snapshot-root", default=None, help="default: <plan dir>/snapshots")
-    parser.add_argument("--workflow", default="workflows/r0_flux_t2i_api.json")
+    parser.add_argument("--workflow", default="workflows/flux3_t2i_api.json")
     parser.add_argument("--seed-base", type=int, default=8100)
     parser.add_argument("--width", type=int, default=576)
     parser.add_argument("--height", type=int, default=1024)

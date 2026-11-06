@@ -22,7 +22,7 @@
 | ComfyUI-GGUF | GGUF 模型加载 | commit `6ea2651`，gguf 0.19.0 | Apache-2.0 | `PASS_VERIFIED` |
 | PyTorch | XPU 推理 | 2.15.0+xpu | BSD-3-Clause | `PASS_VERIFIED` |
 | torchvision / torchaudio | 配套 | 0.29.2+xpu / 2.11.1+xpu | BSD-3-Clause | `PASS_VERIFIED` |
-| FLUX.2 Klein 4B | 静帧/参考图编辑 | GGUF Q4_K_M，2.60 GB | Apache-2.0（HF 模型卡） | `PASS_VERIFIED` |
+| FLUX.3 Klein distilled | 静帧 | GGUF Q4_K_M，3.67 GB；16 步 / CFG 1.0 | FLUX Kommunity License（年营收 < 500 万美元免费商用） | `PASS_LIMITED` |
 | Qwen3-4B 文本编码器 | FLUX 提示词编码 | `qwen_3_4b.safetensors`，8.04 GB | Apache-2.0 | `PASS_VERIFIED` |
 | FLUX.2 VAE | FLUX 解码 | `flux2-vae.safetensors`，336 MB | Apache-2.0（同仓库） | `PASS_VERIFIED` |
 | Wan2.2 TI2V 5B | 图生视频/文生视频 | GGUF Q4_K_M，3.43 GB | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |

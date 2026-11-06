@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: azurite
+  hex: '#2E5E75'
+- name: malachite
+  hex: '#4E7A5E'
+- name: cinnabar
+  hex: '#9A3B32'
+- name: ochre
+  hex: '#8C5A3B'
+- name: dai
+  hex: '#3A3F4B'
+saturation_range:
+- 0.05
+- 0.3
+edge_density_range:
+- 0.04
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

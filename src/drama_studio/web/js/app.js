@@ -105,7 +105,7 @@ function pill(service) {
     NOT_RUN: 'dot-unknown', UNKNOWN: 'dot-unknown',
   };
   const dot = map[service.status] || 'dot-unknown';
-  const short = { comfyui: 'ComfyUI', llm: 'LLM', tts: 'CosyVoice' }[service.id] || service.name;
+  const short = { comfyui: 'ComfyUI', llm: 'LLM', tts: 'VoxCPM2' }[service.id] || service.name;
   return `<span class="env-pill" title="${esc(service.detail || '')}">
     <span class="dot ${dot}"></span>${esc(short)}</span>`;
 }

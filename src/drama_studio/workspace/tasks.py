@@ -1826,7 +1826,7 @@ TASK_KINDS: dict[str, TaskKind] = {
     "tts.synthesize": TaskKind(
         key="tts.synthesize",
         label="配音合成",
-        description="按本期 narration.json 逐句调用 CosyVoice，写入本期 audio/ 与 audio_manifest.json。",
+        description="按本期 narration.json 逐句调用 VoxCPM2，写入本期 audio/ 与 audio_manifest.json。",
         cost="分钟级（CPU）",
         safety="只写本期 audio/ 与 audio_manifest.json；已有有效 manifest 时复用，--force 才重合成",
         params_model=TTSParams,

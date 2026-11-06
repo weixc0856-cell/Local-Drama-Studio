@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.collage
+name: 拼贴艺术
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 剪贴、撕纸边、照片碎片与印刷纹理的层叠构图。
+layers:
+- identity
+- execution
+- consistency

@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- floating objects
+- space morph
+- time reversal
+secondary_motions:
+- cloud drift
+secondary_limit: 2

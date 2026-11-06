@@ -2,9 +2,11 @@
 
 > 文档状态：Phase B 配置文档（2026-11-04）
 > 原则：**实际配置、推荐默认值、实验参数、尚未验证的参数分开写**。推荐值不是已生效值；不要把推荐值直接写进生产配置。
-> 相关：[PRODUCTION_PIPELINE_GUIDE.md](PRODUCTION_PIPELINE_GUIDE.md)、[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)、[TECH_STACK.md](TECH_STACK.md)
+> 相关：[PRODUCTION_PIPELINE_GUIDE.md](PRODUCTION_PIPELINE_GUIDE.md)、PROJECT_OVERVIEW.md（已删除，见 Git 历史）、[TECH_STACK.md](TECH_STACK.md)
 
 ---
+
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
 
 ## 1. 配置分层
 
@@ -26,15 +28,14 @@
 
 | 角色 | 模型 | 文件 | 大小（字节） | 节点 |
 |---|---|---|---|---|
-| 图像 | FLUX.2 klein 4B Q4_K_M | `D:\AI\models\flux-2-klein-4b-Q4_K_M.gguf` | 2,604,311,104 | `UnetLoaderGGUF` |
+| 图像 | FLUX.3 Klein distilled Q4_K_M | `D:\AI\models\diffusion_models\flux3\flux-3-image-klein-Q4_K_M.gguf` | 3,666,908,064 | `UnetLoaderGGUF` |
 | 图像文本编码器 | Qwen3-4B | `D:\AI\models\text_encoders\qwen_3_4b.safetensors` | 8,044,982,048 | `CLIPLoader(type=flux2, device=cpu)` |
 | 图像 VAE | FLUX.2 VAE | `D:\AI\models\vae\flux2-vae.safetensors` | 336,211,292 | `VAELoader` |
 | 视频 | Wan2.2 TI2V 5B Q4_K_M | `D:\AI\models\Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3,433,116,000 | `UnetLoaderGGUF` |
 | 视频文本编码器 | UMT5-XXL fp8 | `D:\AI\models\text_encoders\umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 6,735,906,897 | `CLIPLoader(type=wan, device=cpu)` |
 | 视频 VAE | Wan2.2 VAE | `D:\AI\models\vae\wan2.2_vae.safetensors` | 1,409,400,960 | `VAELoader` |
 | 文本 | Qwen3-30B-A3B-Instruct-2507 Q4_K_M | `D:\AI\models\Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | ~18.56 GB | llama.cpp 8080 |
-| TTS SFT | CosyVoice-300M-SFT | `D:\AI\CosyVoice-Runtime\pretrained_models\CosyVoice-300M-SFT` | 目录 | `inference_sft` |
-| TTS zero-shot | CosyVoice2-0.5B | `D:\AI\CosyVoice-Runtime\pretrained_models\CosyVoice2-0.5B` | 目录 | `inference_zero_shot` |
+| TTS | VoxCPM2（2B） | `D:\AI\modelsoxcpm2`（模型）+ `D:\AI\VoxCPM-Runtime`（服务） | 目录 | HTTP 50000，CPU，48 kHz |
 
 **硬约束**：
 
@@ -51,7 +52,7 @@
 
 | 参数 | 值 | 说明 |
 |---|---|---|
-| workflow | `workflows/r0_flux_t2i_api.json` | API 格式 |
+| workflow | `workflows/flux3_t2i_api.json` | API 格式 |
 | width × height | 576 × 1024 | 9:16 竖屏 |
 | steps | 4 | FLUX.2 klein 的验证值 |
 | cfg | 1.0 | `CFGGuider(1.0)` |
@@ -168,7 +169,7 @@
 | 改风格留版本 | 新版本/新生产 | `_style_lock.revision` + `history` 保留旧 sha；旧 build 目录不覆盖 |
 | 跨镜头一致性 | 质量门 | 只有相邻 LAB/亮度连续性（`PRD-STYLE-007` 仍 `NOT_IMPLEMENTED`） |
 
-> 详见 [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) §4 与 [audit/IMPLEMENTATION_STATUS.md](audit/IMPLEMENTATION_STATUS.md) §2.23。
+> 详见 PROJECT_OVERVIEW.md（已删除，见 Git 历史） §4 与 audit/IMPLEMENTATION_STATUS.md（已删除，见 Git 历史） §2.23。
 
 工作台 `styles` 新增可选 `preset_id`，用于把 DB 风格映射到 `config/styles.yaml` 的
 `ink_wash` / `court_green_fine_line`。期数创建/改风格时把它写入
@@ -184,10 +185,10 @@ preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` �
 
 | 项 | PRD 要求 | 当前实现 | 状态 |
 |---|---|---|---|
-| 默认模式 | **CosyVoice2-0.5B zero-shot** | `config/audio.yaml` `tts.mode: zero_shot`，真实任务加载 0.5B | `PASS_VERIFIED` |
-| 默认音色 | zero-shot 参考音 | `zero_shot.prompt_audio` 已配置并真实使用；`config/voices.yaml` 的 `narrator_self` 提供显式档案 | `PASS_VERIFIED` |
-| SFT | 仅显式可选，不得默认 | 显式 `--tts-mode sft` + `-Model sft` 可用并已验证 | 已实现 |
-| zero-shot 模型 | 只允许 CosyVoice2-0.5B | `/health` 校验 `model_class=CosyVoice2` + `model_dir` 含 `CosyVoice2-0.5B` | 已实现 |
+| 默认模式 | **VoxCPM2 参考音克隆（zero_shot）** | `config/audio.yaml` `tts.mode: zero_shot`；真实任务加载 VoxCPM2 | `PASS_VERIFIED`（技术） |
+| 默认音色 | 参考音克隆 | `zero_shot.prompt_audio` 已配置并真实使用；`config/voices.yaml` 的 `narrator_self` 提供显式档案 | `PASS_VERIFIED`（盲听 7/7 优于 CosyVoice2-0.5B） |
+| SFT | 已退休（2026-11-06） | `--tts-mode sft` / `-Model sft` 直接报错；VoxCPM2 无预置音色 | 已实现 |
+| zero-shot 模型 | 只允许 VoxCPM2 | `/health` 校验 `model_class=VoxCPM2` + `model_dir` 含 `voxcpm2` | 已实现 |
 | 模式选择 | UI/CLI/任务显式 | CLI `--tts-mode`；任务 `tts_mode`；narration 可选；无 `enabled` 静默开关 | 已实现 |
 | 产物记录 | mode/model/voice | manifest 记录 `tts_mode/model_class/model_dir/speaker/speaker_id/runtime/prompt`；多音色另有 `voice_cast` 与逐行字段 | 已实现 |
 | 禁止回退 | 0.5B 失败不得回退 300M | SFT↔zero-shot 双向错配均报错 | 已实现 |
@@ -202,7 +203,7 @@ preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` �
 | `tts.zero_shot.prompt_audio` | `assets/audio/prompts/my_voice_clean_v1.wav` | `tts.py` | 仅显式 zero-shot |
 | `tts.zero_shot.prompt_text` | `希望你以后能够做的比我还好呦。` | `tts.py` | 必须逐字一致 |
 | `tts.zero_shot.speed` | `0.90` | `tts.py` | zero-shot 默认 |
-| `tts.zero_shot.runtime` | `cosyvoice2` | 文档/校验说明 | 实际模型由 `/health` 校验 |
+| `tts.zero_shot.runtime` | `voxcpm2` | 文档/校验说明 | 实际模型由 `/health` 校验 |
 | `tts.sample_rate` | `48000` | `tts.py` | 最终统一采样率 |
 | `tts.speakers.narrator` | `中文男` | `_default_speaker` 的兜底 | 不再优先于 `default_speaker` |
 | `tts.speakers.female_01` | `中文女` | 记录 | SFT |
@@ -213,26 +214,21 @@ preset id，而不是 DB 风格 id。旧库在 `WorkspaceStore.init_schema()` �
 
 > `settings.tts.mode` 已从 `config/settings.yaml` 与 `TTSSettings` 删除；不要恢复第二份开关。
 
-### 6.3 SFT vs zero-shot 的真实模型映射（已实现校验）
+### 6.3 运行时映射（2026-11-06 起）
 
 ```text
-SFT（显式可选）
-  scripts\cosyvoice_server.ps1 -Action start -Model sft
-  -> start_cosyvoice_sft.bat
-  -> COSY_MODEL_CLASS=CosyVoice
-  -> pretrained_models\CosyVoice-300M-SFT
-  -> api_server._synthesize_sft() -> inference_sft()
-  -> speakers: 中文男 / 中文女 / ...
+zero-shot（唯一模式）
+  scripts\cosyvoice_server.ps1 -Action start
+  -> D:\AI\VoxCPM-Runtime\start_voxcpm.bat
+  -> api_server.py（FastAPI，端口 50000，CPU）
+  -> 权重 D:\AI\modelsoxcpm2（model.safetensors + audiovae.pth）
+  -> POST /tts 或 /tts/upload -> model.generate(reference_wav_path=...)
+  -> 48 kHz WAV；响应头 X-Audio-Seconds / X-Synth-Seconds / X-Sample-Rate
 
-zero-shot（默认）
-  scripts\cosyvoice_server.ps1 -Action start -Model cosyvoice2
-  -> start_cosyvoice.bat
-  -> COSY_MODEL_CLASS=CosyVoice2
-  -> pretrained_models\CosyVoice2-0.5B
-  -> api_server._synthesize() -> inference_zero_shot()
+SFT：已退休。旧命令 -Model sft 会被脚本拒绝或由项目侧报错。
 ```
 
-同一端口 50000，互斥。`/health` 返回 `model_class/model_dir/speakers/modes`，应记录到产物/日志。
+`/health` 返回 `model_class=VoxCPM2`、`model_dir`、`sample_rate=48000`；应记录到产物/日志。
 
 ### 6.2.1 Voice Profile（`config/voices.yaml`，显式启用）
 

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: soft Japanese animated film background
+medium: hand-painted animation background, pastel palette
+materials:
+- gouache background
+- soft paper texture
+- natural light
+composition:
+- layered environment
+- rich atmospheric perspective
+- open sky
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- soft pastel sky
+- gentle light with visible atmosphere
+- hand-painted background shapes

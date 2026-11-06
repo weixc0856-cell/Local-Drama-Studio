@@ -28,28 +28,50 @@ def _root(tmp_path: Path) -> Path:
         'paths: {}\ntts:\n  base_url: "http://tts.test"\n  sample_rate: 48000\n',
         encoding="utf-8",
     )
+    prompt = tmp_path / "assets" / "prompt.wav"
+    prompt.parent.mkdir(parents=True, exist_ok=True)
+    prompt.write_bytes(_wav_bytes(seconds=1.0))
     (tmp_path / "config" / "audio.yaml").write_text(
-        'tts:\n  mode: sft\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+        'tts:\n  mode: zero_shot\n  zero_shot:\n'
+        '    prompt_audio: "assets/prompt.wav"\n    prompt_text: "测试参考文本"\n',
+        encoding="utf-8",
     )
     return tmp_path
 
 
-def _transport(calls: dict[str, int]) -> httpx.MockTransport:
-    wav = _wav_bytes()
+def _client(health: dict | None = None) -> httpx.Client:
+    payload = health or {
+        "status": "ready",
+        "model_class": "VoxCPM2",
+        "model_dir": "D:/AI/models/voxcpm2",
+        "speakers": [],
+        "modes": ["zero_shot"],
+    }
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            calls["health"] = calls.get("health", 0) + 1
-            return httpx.Response(200, json={"status": "ready", "model_class": "CosyVoice", "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT", "speakers": ["测试音色"], "modes": ["sft", "zero_shot"]})
-        if request.url.path == "/tts":
-            calls["tts"] = calls.get("tts", 0) + 1
-            return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
+            return httpx.Response(200, json=payload)
         return httpx.Response(404)
 
-    return httpx.MockTransport(handler)
+    return httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
 
 
-def _narration(root: Path, lines: list[str]) -> Path:
+@pytest.fixture()
+def zero_shot_calls(monkeypatch: pytest.MonkeyPatch) -> list[dict]:
+    """Record what would be sent to /tts/upload; the HTTP shape is zeroshot's own test."""
+    calls: list[dict] = []
+
+    def fake(text, *, prompt_wav, prompt_text, out_wav, speed, base, timeout):
+        calls.append({"text": text, "prompt_wav": str(prompt_wav),
+                      "prompt_text": prompt_text, "speed": speed})
+        Path(out_wav).write_bytes(_wav_bytes())
+        return SimpleNamespace(synth_seconds=0.1)
+
+    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake)
+    return calls
+
+
+def _narration(root: Path, lines: list) -> Path:
     path = root / "episode" / "narration.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
@@ -59,11 +81,11 @@ def _narration(root: Path, lines: list[str]) -> Path:
     return path
 
 
-def test_synthesize_writes_48k_manifest_and_reuses(tmp_path: Path) -> None:
+def test_synthesize_writes_48k_manifest_and_reuses(
+        tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     root = _root(tmp_path)
     narration = _narration(root, ["白日依山尽", "长风过野原"])
-    calls: dict[str, int] = {}
-    client = httpx.Client(transport=_transport(calls), base_url="http://tts.test")
+    client = _client()
 
     result = synthesize_narration(
         narration,
@@ -74,15 +96,17 @@ def test_synthesize_writes_48k_manifest_and_reuses(tmp_path: Path) -> None:
     )
     assert result.line_count == 2
     assert result.reused is False
-    assert calls["tts"] == 2
+    assert len(zero_shot_calls) == 2
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
-    assert manifest["speaker"] == "测试音色"
-    assert manifest["speaker_id"] == "测试音色"
-    assert manifest["tts_mode"] == "sft"
-    assert manifest["model_class"] == "CosyVoice"
-    assert "CosyVoice-300M-SFT" in manifest["model_dir"]
-    assert result.tts_mode == "sft"
+    assert manifest["speaker"] == "zero_shot:prompt"
+    assert manifest["speaker_id"] is None
+    assert manifest["tts_mode"] == "zero_shot"
+    assert manifest["model_class"] == "VoxCPM2"
+    assert "voxcpm2" in manifest["model_dir"]
+    assert manifest["prompt"]["text"] == "测试参考文本"
+    assert result.tts_mode == "zero_shot"
     assert manifest["narration_sha256"]
+    assert [call["prompt_text"] for call in zero_shot_calls] == ["测试参考文本"] * 2
     for line in manifest["lines"]:
         assert line["file"].startswith("episode/audio/")
         with wave.open(str(root / line["file"]), "rb") as fh:
@@ -97,7 +121,7 @@ def test_synthesize_writes_48k_manifest_and_reuses(tmp_path: Path) -> None:
         http_client=client,
     )
     assert again.reused is True
-    assert calls["tts"] == 2
+    assert len(zero_shot_calls) == 2
 
     forced = synthesize_narration(
         narration,
@@ -108,52 +132,42 @@ def test_synthesize_writes_48k_manifest_and_reuses(tmp_path: Path) -> None:
         force=True,
     )
     assert forced.reused is False
-    assert calls["tts"] == 4
+    assert len(zero_shot_calls) == 4
 
 
-def test_changed_narration_resynthesizes(tmp_path: Path) -> None:
+def test_changed_narration_resynthesizes(tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     root = _root(tmp_path)
     narration = _narration(root, ["白日依山尽"])
-    calls: dict[str, int] = {}
-    client = httpx.Client(transport=_transport(calls), base_url="http://tts.test")
-    synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+    client = _client()
+    synthesize_narration(narration, root / "audio", root / "audio_manifest.json",
+                         root=root, http_client=client)
     _narration(root, ["长风过野原"])
-    result = synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+    result = synthesize_narration(narration, root / "audio", root / "audio_manifest.json",
+                                  root=root, http_client=client)
     assert result.reused is False
-    assert calls["tts"] == 2
+    assert len(zero_shot_calls) == 2
 
 
 def test_unready_service_fails(tmp_path: Path) -> None:
     root = _root(tmp_path)
     narration = _narration(root, ["白日依山尽"])
-    client = httpx.Client(
-        transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"status": "loading"})),
-        base_url="http://tts.test",
-    )
+    client = _client({"status": "loading"})
     with pytest.raises(TTSError, match="未就绪"):
-        synthesize_narration(narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client)
+        synthesize_narration(narration, root / "audio", root / "audio_manifest.json",
+                             root=root, http_client=client)
 
 
-def test_tts_text_and_subtitle_text_are_separate(tmp_path: Path) -> None:
+def test_tts_text_and_subtitle_text_are_separate(
+        tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     """The spoken layer may differ from the displayed subtitle (simplified vs traditional)."""
     root = _root(tmp_path)
     narration = _narration(
         root, [{"text": "艳艳随波千万里", "subtitle_text": "灩灩隨波千萬里"}]
     )
-    bodies: list[dict] = []
-    wav = _wav_bytes()
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready", "model_class": "CosyVoice", "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice-300M-SFT", "speakers": ["测试音色"], "modes": ["sft", "zero_shot"]})
-        bodies.append(json.loads(request.content))
-        return httpx.Response(200, content=wav, headers={"X-Synth-Seconds": "0.1"})
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
     result = synthesize_narration(
-        narration, root / "audio", root / "audio_manifest.json", root=root, http_client=client
+        narration, root / "audio", root / "audio_manifest.json", root=root, http_client=_client()
     )
-    assert bodies[0]["text"] == "艳艳随波——千万里"
+    assert zero_shot_calls[0]["text"] == "艳艳随波——千万里"
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
     assert manifest["lines"][0]["text"] == "艳艳随波千万里"
     assert manifest["lines"][0]["breath_text"] == "艳艳随波——千万里"
@@ -162,12 +176,10 @@ def test_tts_text_and_subtitle_text_are_separate(tmp_path: Path) -> None:
 
 def test_zero_shot_needs_a_prompt_text(tmp_path):
     """Explicit cloning without a transcript must fail loudly, not silently."""
-    from drama_studio.voice.tts import TTSError, synthesize_narration
-
     root = _root(tmp_path)
     (root / "config" / "audio.yaml").write_text(
         'tts:\n  mode: zero_shot\n  zero_shot:\n    prompt_text: ""\n'
-        '    prompt_audio: "prompt.wav"\n',
+        '    prompt_audio: "assets/prompt.wav"\n',
         encoding="utf-8")
     narration = _narration(root, ["白日依山尽"])
     with pytest.raises(TTSError, match="prompt_text"):
@@ -176,103 +188,64 @@ def test_zero_shot_needs_a_prompt_text(tmp_path):
                              root=root, force=True)
 
 
-def test_sft_rejects_a_zero_shot_runtime(tmp_path: Path) -> None:
+def test_sft_mode_is_retired(tmp_path: Path) -> None:
+    """SFT preset voices are gone; asking for one must say so, not fail vaguely."""
+    root = _root(tmp_path)
+    (root / "config" / "audio.yaml").write_text(
+        'tts:\n  mode: sft\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8")
+    narration = _narration(root, ["白日依山尽"])
+    with pytest.raises(TTSError, match="已退休"):
+        synthesize_narration(narration, root / "episode" / "audio",
+                             root / "episode" / "audio_manifest.json",
+                             root=root, force=True, http_client=_client())
+
+
+def test_zero_shot_rejects_a_foreign_runtime(tmp_path: Path) -> None:
     """The loaded model is verified, not assumed from the configured mode."""
     root = _root(tmp_path)
     narration = _narration(root, ["白日依山尽"])
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice2",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
-                "speakers": [], "modes": ["zero_shot"],
-            })
-        return httpx.Response(500)
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
-    with pytest.raises(TTSError, match="请求 SFT"):
+    client = _client({
+        "status": "ready", "model_class": "CosyVoice2",
+        "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
+        "speakers": [], "modes": ["zero_shot"],
+    })
+    with pytest.raises(TTSError, match="请求 zero-shot"):
         synthesize_narration(narration, root / "episode" / "audio",
                              root / "episode" / "audio_manifest.json",
                              root=root, force=True, http_client=client)
 
 
-def test_zero_shot_is_explicit_and_recorded(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_zero_shot_is_explicit_and_recorded(
+        tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     root = _root(tmp_path)
-    prompt = root / "assets" / "prompt.wav"
-    prompt.parent.mkdir(parents=True, exist_ok=True)
-    prompt.write_bytes(_wav_bytes())
-    (root / "config" / "audio.yaml").write_text(
-        'tts:\n  mode: sft\n'
-        '  zero_shot:\n    prompt_audio: "assets/prompt.wav"\n'
-        '    prompt_text: "测试参考文本"\n    speed: 0.9\n',
-        encoding="utf-8")
     narration = _narration(root, ["白日依山尽"])
-
-    def fake_zero_shot(text, *, prompt_wav, prompt_text, out_wav, speed, base, timeout):
-        out_wav.write_bytes(_wav_bytes())
-        return SimpleNamespace(synth_seconds=0.1)
-
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice2",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
-                "speakers": [], "modes": ["zero_shot"],
-            })
-        return httpx.Response(404)
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
-        root=root, force=True, http_client=client, tts_mode="zero_shot")
+        root=root, force=True, http_client=_client(), tts_mode="zero_shot")
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
     assert result.tts_mode == "zero_shot"
     assert manifest["tts_mode"] == "zero_shot"
-    assert manifest["model_class"] == "CosyVoice2"
-    assert "CosyVoice2-0.5B" in manifest["model_dir"]
+    assert manifest["model_class"] == "VoxCPM2"
+    assert "voxcpm2" in manifest["model_dir"]
     assert manifest["speaker_id"] is None
     assert manifest["prompt"]["sha256"]
     assert manifest["prompt"]["text"] == "测试参考文本"
 
 
-def test_config_mode_zero_shot_is_the_default(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_config_mode_zero_shot_is_the_default(
+        tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     """No explicit tts_mode: config/audio.yaml drives the default."""
     root = _root(tmp_path)
-    prompt = root / "assets" / "prompt.wav"
-    prompt.parent.mkdir(parents=True, exist_ok=True)
-    prompt.write_bytes(_wav_bytes())
-    (root / "config" / "audio.yaml").write_text(
-        'tts:\n  mode: zero_shot\n  zero_shot:\n    prompt_audio: "assets/prompt.wav"\n    prompt_text: "测试参考文本"\n    speed: 0.9\n',
-        encoding="utf-8")
     narration = _narration(root, ["白日依山尽"])
-
-    def fake_zero_shot(text, *, prompt_wav, prompt_text, out_wav, speed, base, timeout):
-        out_wav.write_bytes(_wav_bytes())
-        return SimpleNamespace(synth_seconds=0.1)
-
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.path == "/health":
-            return httpx.Response(200, json={
-                "status": "ready", "model_class": "CosyVoice2",
-                "model_dir": "D:/AI/CosyVoice-Runtime/pretrained_models/CosyVoice2-0.5B",
-                "speakers": [], "modes": ["zero_shot"],
-            })
-        return httpx.Response(404)
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
-        root=root, force=True, http_client=client)
+        root=root, force=True, http_client=_client())
     assert result.tts_mode == "zero_shot"
     assert json.loads(result.manifest.read_text(encoding="utf-8"))["tts_mode"] == "zero_shot"
 
 
-def test_header_is_spoken_before_the_body(tmp_path: Path) -> None:
+def test_header_is_spoken_before_the_body(
+        tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     """The title is its own segment; the body lines must start after it."""
     from drama_studio.voice.tts import header_offset_seconds
 
@@ -284,15 +257,13 @@ def test_header_is_spoken_before_the_body(tmp_path: Path) -> None:
         "header": {"text": "登鹳雀楼。唐，王之涣。", "pause_ms": 1100},
         "lines": ["白日依山尽，黄河入海流。"],
     }, ensure_ascii=False), encoding="utf-8")
-    calls: dict[str, int] = {}
-    client = httpx.Client(transport=_transport(calls), base_url="http://tts.test")
 
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
-        root=root, http_client=client, force=True)
+        root=root, http_client=_client(), force=True)
 
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
-    assert calls["tts"] == 2, "header + one body line"
+    assert len(zero_shot_calls) == 2, "header + one body line"
     assert manifest["header"]["text"] == "登鹳雀楼。唐，王之涣。"
     assert manifest["header"]["pause_ms"] == 1100
     ledger = manifest["ledger"]

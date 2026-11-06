@@ -1,0 +1,9 @@
+schema_version: '1.0'
+primary_motions:
+- grid advancing
+- neon pulse
+- light band sweep
+secondary_motions:
+- cloud drift
+- scan line flicker
+secondary_limit: 2

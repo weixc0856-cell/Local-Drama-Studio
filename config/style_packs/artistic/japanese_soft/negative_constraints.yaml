@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- heavy contrast
+- photoreal skin
+- dark palette
+note: For validator and human checklist only; prompts use positive anchors.

@@ -17,7 +17,7 @@ from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from .script_engine import ProductionScript
 
-FLUX_WORKFLOW = "workflows/r0_flux_t2i_api.json"
+FLUX_WORKFLOW = "workflows/flux3_t2i_api.json"
 WAN_I2V_WORKFLOW = "workflows/r0_wan_i2v_api.json"
 
 
@@ -54,7 +54,7 @@ def build_jobs(
     seed_base: int = 7100,
     width: int = 576,
     height: int = 1024,
-    steps: int = 4,
+    steps: int = 16,
     cfg: float = 1.0,
 ) -> dict[str, Any]:
     """Write r1_batch-compatible jobs and per-shot parameter files."""
@@ -194,7 +194,7 @@ def build_aesthetic_jobs(
     seed_base: int = 8100,
     width: int = 576,
     height: int = 1024,
-    steps: int = 4,
+    steps: int = 16,
     cfg: float = 1.0,
 ) -> dict[str, Any]:
     """Freeze one A/B variant into a snapshot and write r1_batch-compatible jobs.
@@ -276,7 +276,7 @@ def build_aesthetic_jobs(
         "negative_note": (
             "workflow 引用了 {{negative_prompt}}"
             if negative_supported
-            else "当前 FLUX.2 工作流将负向条件 ConditioningZeroOut 且 CFG=1.0；负向提示词仅记录，不作为控制"
+            else "FLUX.3 工作流使用空负向条件且 CFG=1.0；负向提示词仅记录，不作为控制"
         ),
         "generation": {"seed_base": seed_base, "width": width, "height": height,
                        "steps": steps, "cfg": cfg},

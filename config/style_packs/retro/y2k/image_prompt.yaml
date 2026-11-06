@@ -1,0 +1,23 @@
+schema_version: '1.0'
+identity: Y2K chrome futurism
+medium: liquid metal, holographic film, transparent PVC, lens flare
+materials:
+- mirror chrome
+- iridescent film
+- clear plastic
+- pearl finish
+composition:
+- floating product space
+- streamlined geometry
+- macro detail
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- mirror chrome surfaces with sharp highlights
+- iridescent holographic film
+- transparent PVC with visible refraction

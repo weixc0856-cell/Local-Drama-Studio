@@ -1,0 +1,13 @@
+schema_version: '1.0'
+motion_vocabulary:
+- grid advancing
+- neon pulse
+- light band sweep
+secondary_limit: 2
+preserve:
+- grid geometry
+- neon colour separation
+avoid:
+- daylight realism
+- warm earth palette
+- hand-drawn texture

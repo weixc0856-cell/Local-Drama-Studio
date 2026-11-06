@@ -1,0 +1,22 @@
+schema_version: '1.0'
+identity: traditional Chinese ink wash painting
+medium: raw xuan paper, diluted ink, dry brush
+materials:
+- rice paper fibre
+- wet ink
+- dry brush
+composition:
+- large negative space
+- layered distance
+- asymmetrical balance
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- visible xuan paper grain
+- brush strokes dissolving into blank paper
+- large unpainted areas

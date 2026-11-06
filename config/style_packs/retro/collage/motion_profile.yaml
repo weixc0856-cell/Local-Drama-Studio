@@ -1,0 +1,9 @@
+schema_version: '1.0'
+primary_motions:
+- paper layer parallax
+- edge tearing
+- fragment reassembly
+secondary_motions:
+- paper flutter
+- print grain shift
+secondary_limit: 2

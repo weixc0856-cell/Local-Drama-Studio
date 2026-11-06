@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.impressionism
+name: 印象派
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 瞬间光线、松散笔触与空气感。
+layers:
+- identity
+- execution
+- consistency

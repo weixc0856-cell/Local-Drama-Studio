@@ -1,0 +1,20 @@
+schema_version: '1.0'
+identity: impressionist painting
+medium: broken brushwork, light-dappled colour
+materials:
+- oil on canvas
+- short visible strokes
+composition:
+- outdoor air and light
+- soft dissolving forms
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- short broken brush strokes
+- colours shifting with light
+- forms dissolving at the edges

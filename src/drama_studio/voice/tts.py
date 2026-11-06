@@ -1,4 +1,4 @@
-"""Parameterized narration TTS against the local CosyVoice HTTP service.
+"""Parameterized narration TTS against the local VoxCPM2 HTTP service (port 50000).
 
 The module is shared by ``scripts/r3_tts.py`` and the workspace task registry.
 It never assumes an episode directory: narration, output directory and manifest
@@ -41,11 +41,14 @@ from .zeroshot import synthesize as zeroshot_synthesize
 
 DEFAULT_TIMEOUT = 300.0
 
+# "sft" stays in TTS_MODES so old configs/manifests still parse; it is retired at runtime.
 TTS_MODES = ("sft", "zero_shot")
-SFT_MODEL_CLASS = "CosyVoice"
-SFT_MODEL_DIR_MARKER = "CosyVoice-300M-SFT"
-ZERO_SHOT_MODEL_CLASS = "CosyVoice2"
-ZERO_SHOT_MODEL_DIR_MARKER = "CosyVoice2-0.5B"
+ZERO_SHOT_MODEL_CLASS = "VoxCPM2"
+ZERO_SHOT_MODEL_DIR_MARKER = "voxcpm2"
+SFT_RETIRED = (
+    "SFT 预置音色已退休（2026-11-06）：50000 现在只跑 VoxCPM2，没有 speaker 概念；"
+    "请改用 zero_shot + 参考音，或把 voice profile 的 tts_mode 改成 zero_shot"
+)
 
 
 class TTSError(RuntimeError):
@@ -62,7 +65,7 @@ class TTSResult:
     reused: bool
     mode: str = "narration"
     pronunciation_report: Path | None = None
-    tts_mode: str = "sft"
+    tts_mode: str = "zero_shot"
     model_class: str = ""
     model_dir: str = ""
     speaker_id: str | None = None
@@ -365,7 +368,7 @@ def header_offset_seconds(manifest: dict[str, Any] | Path) -> float:
 
 
 def _normalize_tts_mode(value: str | None) -> str:
-    mode = str(value or "sft").strip().lower()
+    mode = str(value or "zero_shot").strip().lower()
     if mode not in TTS_MODES:
         raise TTSError(f"未知的 TTS 模式 {mode!r}；可选 {list(TTS_MODES)}")
     return mode
@@ -384,41 +387,24 @@ def _validate_runtime(health: dict[str, Any], tts_mode: str, speaker: str) -> tu
     model_dir = str(health.get("model_dir") or "").strip()
     if not model_class or not model_dir:
         raise TTSError(
-            "CosyVoice /health 未返回 model_class/model_dir，无法确认实际运行时模型；"
-            "请使用 scripts/cosyvoice_server.ps1 启动并检查服务版本"
+            "TTS /health 未返回 model_class/model_dir，无法确认实际运行时模型；"
+            "请用 scripts/cosyvoice_server.ps1 启动 VoxCPM2 并检查服务版本"
         )
     if tts_mode == "sft":
-        if model_class != SFT_MODEL_CLASS or SFT_MODEL_DIR_MARKER not in model_dir:
-            raise TTSError(
-                f"请求 SFT，但 50000 当前加载的是 {model_class} @ {model_dir}；"
-                f"请启动 CosyVoice-300M-SFT（-Model sft）"
-            )
-        speakers = [str(item) for item in (health.get("speakers") or [])]
-        if not speakers:
-            raise TTSError("当前 SFT 运行时没有返回预置音色列表，无法确认 speaker")
-        if speaker not in speakers:
-            raise TTSError(
-                f"当前 SFT 运行时没有预置音色 {speaker!r}；可用：{speakers}"
-            )
-    else:
-        if model_class != ZERO_SHOT_MODEL_CLASS or ZERO_SHOT_MODEL_DIR_MARKER not in model_dir:
-            raise TTSError(
-                f"请求 zero-shot，但 50000 当前加载的是 {model_class} @ {model_dir}；"
-                f"请启动 CosyVoice2-0.5B（-Model cosyvoice2）"
-            )
+        raise TTSError(SFT_RETIRED)
+    if model_class != ZERO_SHOT_MODEL_CLASS or ZERO_SHOT_MODEL_DIR_MARKER not in model_dir:
+        raise TTSError(
+            f"请求 zero-shot，但 50000 当前加载的是 {model_class} @ {model_dir}；"
+            f"请启动 VoxCPM2（D:/AI/VoxCPM-Runtime/start_voxcpm.bat）"
+        )
     return model_class, model_dir
 
 
 def _validate_runtime_cast(health: dict[str, Any], tts_mode: str,
                            casts: list[ResolvedVoice]) -> tuple[str, str]:
-    speakers = sorted({str(cast.speaker) for cast in casts
-                       if cast.tts_mode == "sft" and cast.speaker})
     if tts_mode == "sft":
-        if not speakers:
-            raise TTSError("SFT 模式没有可用的 speaker")
-        for speaker in speakers:
-            model_class, model_dir = _validate_runtime(health, tts_mode, speaker)
-        return model_class, model_dir
+        raise TTSError(SFT_RETIRED)
+    return _validate_runtime(health, tts_mode, "")
     return _validate_runtime(health, tts_mode, "")
 
 
@@ -458,7 +444,7 @@ def synthesize_narration(
 
     # Explicit argument > narration.json > config/audio.yaml. There is no
     # "enabled" switch: a zero-shot run must ask for zero_shot by name.
-    configured_tts_mode = _normalize_tts_mode(str(tts_cfg.get("mode") or "sft"))
+    configured_tts_mode = _normalize_tts_mode(str(tts_cfg.get("mode") or "zero_shot"))
     requested_tts_mode = tts_mode if tts_mode is not None else (
         speaker_mode if speaker_mode is not None else narration.get("tts_mode")
     )
@@ -632,9 +618,9 @@ def synthesize_narration(
         try:
             health = client.get("/health").json()
         except (httpx.HTTPError, ValueError) as exc:
-            raise TTSError(f"CosyVoice 不可用: {exc}") from exc
+            raise TTSError(f"TTS 运行时不可用: {exc}") from exc
         if health.get("status") != "ready":
-            raise TTSError(f"CosyVoice 未就绪: {health}")
+            raise TTSError(f"TTS 运行时未就绪: {health}")
         if use_cast:
             model_class, model_dir = _validate_runtime_cast(
                 health, chosen_tts_mode, [default_cast, header_cast, *line_casts])  # type: ignore[list-item]
@@ -782,7 +768,7 @@ def synthesize_narration(
             "api_language_field": False,
             "tts_mode": chosen_tts_mode,
             "voice_profiles": list(voice_profiles),
-            "note": "tts_mode 是显式选择；SFT 只接受 CosyVoice-300M-SFT，zero-shot 只接受 CosyVoice2-0.5B；voice_cast 记录逐行音色",
+            "note": "tts_mode 是显式选择；SFT 已退休，50000 只接受 VoxCPM2 zero-shot；voice_cast 记录逐行音色",
         },
         "pronunciation": {
             "report": _as_rel(report_path, root),

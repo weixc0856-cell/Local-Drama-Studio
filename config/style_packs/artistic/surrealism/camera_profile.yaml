@@ -1,0 +1,7 @@
+schema_version: '1.0'
+allowed_moves:
+- orbit
+- dolly_in
+- crane
+preferred_lens_mm: 24
+dof_strategy: deep
