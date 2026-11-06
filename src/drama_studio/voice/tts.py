@@ -395,7 +395,7 @@ def _validate_runtime(health: dict[str, Any], tts_mode: str, speaker: str) -> tu
     if model_class != ZERO_SHOT_MODEL_CLASS or ZERO_SHOT_MODEL_DIR_MARKER not in model_dir:
         raise TTSError(
             f"请求 zero-shot，但 50000 当前加载的是 {model_class} @ {model_dir}；"
-            f"请启动 VoxCPM2（VoxCPM-Runtime\start_voxcpm.bat）"
+            f"请启动 VoxCPM2（VoxCPM-Runtime/start_voxcpm.bat）"
         )
     return model_class, model_dir
 
