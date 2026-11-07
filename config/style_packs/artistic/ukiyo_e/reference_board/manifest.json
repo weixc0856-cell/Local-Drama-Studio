@@ -1,0 +1,20 @@
+{
+  "style": "artistic.ukiyo_e",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a rocky inlet with small waves at dawn",
+    "a rural road through rice fields with a low ridge on the horizon",
+    "a wooden bridge in heavy rain",
+    "a waterfall between steep cliffs",
+    "a full moon over a pine ridge",
+    "a flock of cranes above reeds",
+    "a snow-covered temple gate",
+    "a riverside teahouse with paper lanterns at dusk",
+    "a plum branch against a pale sky",
+    "a rocky shore with wind-bent pines",
+    "a castle on a hill above mist",
+    "a fishing village of thatched huts at dawn"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

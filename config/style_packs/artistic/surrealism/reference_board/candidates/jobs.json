@@ -1,0 +1,74 @@
+[
+  {
+    "id": "01",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/01.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/01"
+  },
+  {
+    "id": "02",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/02.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/02"
+  },
+  {
+    "id": "03",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/03.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/03"
+  },
+  {
+    "id": "04",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/04.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/04"
+  },
+  {
+    "id": "05",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/05.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/05"
+  },
+  {
+    "id": "06",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/06.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/06"
+  },
+  {
+    "id": "07",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/07.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/07"
+  },
+  {
+    "id": "08",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/08.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/08"
+  },
+  {
+    "id": "09",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/09.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/09"
+  },
+  {
+    "id": "10",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/10.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/10"
+  },
+  {
+    "id": "11",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/11.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/11"
+  },
+  {
+    "id": "12",
+    "workflow": "workflows/flux3_t2i_api.json",
+    "params": "config/style_packs/artistic/surrealism/reference_board/candidates/params/12.json",
+    "out": "config/style_packs/artistic/surrealism/reference_board/candidates/12"
+  }
+]

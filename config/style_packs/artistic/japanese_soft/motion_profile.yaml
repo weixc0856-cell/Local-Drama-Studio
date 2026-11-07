@@ -1,8 +1,9 @@
 schema_version: '1.0'
 primary_motions:
-- wind in leaves
-- hair sway
 - cloud drift
+- light shimmer
+- rain streak
+- wind in grass
 secondary_motions:
 - water shimmer
 secondary_limit: 2

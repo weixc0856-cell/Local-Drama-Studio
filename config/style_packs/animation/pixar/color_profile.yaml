@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: warm amber
+  hex: '#E8B36A'
+- name: sky cyan
+  hex: '#7FB3C8'
+- name: coral
+  hex: '#D97A5A'
+- name: sage
+  hex: '#9CB07A'
+- name: cream
+  hex: '#F2E8D5'
+saturation_range:
+- 0.15
+- 0.45
+edge_density_range:
+- 0.04
+- 0.18
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

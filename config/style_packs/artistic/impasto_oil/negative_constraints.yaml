@@ -1,6 +1,13 @@
 schema_version: '1.0'
 forbidden:
-- flat digital shading
-- clean vector edges
-- photo texture
+- smooth airbrush
+- digital gradient
+- photoreal
+- 3d render
+- flat vector
+- readable text
+- decorative frame
+- neon colors
+- mosaic of square paint tiles
+- uniform thick paint everywhere
 note: For validator and human checklist only; prompts use positive anchors.

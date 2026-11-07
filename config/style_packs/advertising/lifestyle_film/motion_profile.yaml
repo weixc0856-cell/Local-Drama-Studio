@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- curtain sway
+- steam drift
+secondary_motions:
+- leaf shadow shift
+secondary_limit: 2

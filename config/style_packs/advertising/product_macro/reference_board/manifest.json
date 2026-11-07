@@ -1,0 +1,20 @@
+{
+  "style": "advertising.product_macro",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a watch movement in macro",
+    "a single earbud in macro",
+    "a perfume cap with water droplets",
+    "a lipstick bullet in macro",
+    "a glass of iced drink with condensation",
+    "a camera lens edge in macro",
+    "a cream jar with a swirl",
+    "a brushed metal bottle in macro",
+    "a sneaker sole in macro",
+    "a piece of dark chocolate in macro",
+    "coffee beans in macro",
+    "a phone edge in macro"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

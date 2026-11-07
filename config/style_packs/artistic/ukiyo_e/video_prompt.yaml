@@ -5,10 +5,18 @@ motion_vocabulary:
 - layer parallax
 secondary_limit: 2
 preserve:
-- flat colour fields
-- clear contours
+- flat colour
+- keyblock line
 - washi texture
 avoid:
-- photoreal depth of field
-- soft gradients
-- 3D volume
+- 3d shading
+- photoreal
+- gradient mesh
+- readable text or cartouche
+- modern city
+- western frame
+- neon colors
+- soft focus
+- reproduction of a famous print
+- modern iron bridge
+- motor boat

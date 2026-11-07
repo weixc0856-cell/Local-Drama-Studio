@@ -1,0 +1,12 @@
+schema_version: '1.0'
+materials:
+- soft clay-like surface
+- fabric fuzz
+- brushed metal
+- painted wood
+- dust motes
+texture_cues:
+- subsurface scattering
+- fabric fuzz
+- soft rounded shapes
+- cinematic light

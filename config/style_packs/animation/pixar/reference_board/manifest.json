@@ -1,0 +1,20 @@
+{
+  "style": "animation.pixar",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a stylized 3D toy robot sitting on a wooden shelf",
+    "a cozy 3D workshop with warm lamps and floating dust",
+    "a stylized 3D teapot with exaggerated curves on a windowsill",
+    "a small 3D camper van in a stylized forest",
+    "a 3D stack of books with a glowing lamp",
+    "a stylized 3D cafe interior with rounded furniture",
+    "a 3D red bicycle leaning on a sunny wall",
+    "a stylized 3D garden with oversized flowers",
+    "a 3D radio and a cup on a bedside table",
+    "a stylized 3D lighthouse on a rounded cliff",
+    "a 3D toy train on a curved track",
+    "a stylized 3D kitchen with copper pots"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

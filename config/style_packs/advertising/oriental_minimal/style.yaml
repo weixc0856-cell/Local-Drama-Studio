@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.oriental_minimal
+name: 东方留白极简
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 宣纸、灰调与大面积虚空：一件器物、一道柔光、一块留给文案的空白。
+layers:
+- identity
+- execution
+- consistency

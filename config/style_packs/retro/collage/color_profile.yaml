@@ -11,11 +11,11 @@ anchors:
 - name: olive
   hex: '#6B7A3A'
 saturation_range:
-- 0.1
-- 0.6
+- 0.08
+- 0.5
 edge_density_range:
-- 0.06
-- 0.25
+- 0.08
+- 0.28
 value_range:
 - 0.1
 - 0.95

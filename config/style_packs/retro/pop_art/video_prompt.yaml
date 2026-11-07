@@ -5,9 +5,16 @@ motion_vocabulary:
 - panel transition
 secondary_limit: 2
 preserve:
-- bold outlines
-- flat colour fields
+- thick contour
+- flat colour
+- halftone dots
 avoid:
-- photographic depth of field
-- soft airbrush shading
-- texture noise
+- readable text or speech bubble
+- soft gradient
+- 3d render
+- photoreal
+- thin outlines
+- muted palette
+- dark grunge
+- mixed halftone scales
+- perfectly registered digital colour

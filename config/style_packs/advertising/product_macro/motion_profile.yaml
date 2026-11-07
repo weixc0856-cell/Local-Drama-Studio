@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- droplet slide
+- reflection sweep
+secondary_motions:
+- mist drift
+secondary_limit: 2

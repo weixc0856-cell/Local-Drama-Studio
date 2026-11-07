@@ -11,11 +11,11 @@ anchors:
 - name: fresh green
   hex: '#9DBF8E'
 saturation_range:
-- 0.1
-- 0.45
+- 0.08
+- 0.4
 edge_density_range:
 - 0.03
-- 0.15
+- 0.13
 value_range:
 - 0.1
 - 0.95

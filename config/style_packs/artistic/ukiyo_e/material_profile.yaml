@@ -4,6 +4,6 @@ materials:
 - woodblock ink
 - flat pigment
 texture_cues:
-- flat colour fields
-- clear contours
+- flat colour
+- keyblock line
 - washi texture

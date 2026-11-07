@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: animation.pixar
+name: 皮克斯式 3D
+group: animation
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 风格化三维写实：夸张形体、物理级材质、次表面散射与电影级柔光。
+layers:
+- identity
+- execution
+- consistency

@@ -1,0 +1,20 @@
+{
+  "style": "advertising.acid_pop",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a sneaker silhouette on acid yellow",
+    "a soda can on hot pink",
+    "headphones on cyan",
+    "a skateboard on a checkerboard",
+    "an energy drink can on acid green",
+    "sunglasses on hot pink",
+    "a boombox silhouette on cyan",
+    "a roller skate on yellow",
+    "wrapped candy on pink",
+    "a phone case on a checkerboard",
+    "a cap silhouette on cyan",
+    "a cassette on acid yellow"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

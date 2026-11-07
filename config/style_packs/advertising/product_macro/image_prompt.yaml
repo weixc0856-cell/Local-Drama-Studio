@@ -1,0 +1,27 @@
+schema_version: '1.0'
+identity: high-end product macro photography
+medium: macro studio photograph, water droplets, brushed metal, precise reflections
+materials:
+- brushed metal
+- glass
+- water droplets
+- matte plastic
+- fabric
+composition:
+- single product filling the frame
+- macro detail with shallow depth
+- one controlled highlight
+- blank copy zone, no text
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- macro detail with real microtexture
+- one controlled specular highlight
+- soft contact shadow under the product
+- a blank copy zone
+- no text and no plastic look

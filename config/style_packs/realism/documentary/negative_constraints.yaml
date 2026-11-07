@@ -1,0 +1,15 @@
+schema_version: '1.0'
+forbidden:
+- painting
+- illustration
+- 3d render
+- cgi
+- digital smooth
+- airbrushed
+- oversaturated
+- plastic texture
+- fake reflections
+- hdr
+- studio lighting
+- readable text
+note: For validator and human checklist only; prompts use positive anchors.

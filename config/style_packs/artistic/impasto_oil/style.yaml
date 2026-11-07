@@ -4,7 +4,7 @@ name: 油画厚涂
 group: artistic
 version: 1.0.0
 status: SPEC_DRAFT
-summary: 颜料堆叠、刮刀笔触与画布肌理。
+summary: 调色刀堆起的厚颜料：可见脊线、帆布纹理与五色限定的强体积。
 layers:
 - identity
 - execution

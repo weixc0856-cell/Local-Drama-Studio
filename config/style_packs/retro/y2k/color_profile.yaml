@@ -2,20 +2,20 @@ schema_version: '1.0'
 anchors:
 - name: silver
   hex: '#C0C6CF'
-- name: hot pink
-  hex: '#FF69B4'
+- name: pearl white
+  hex: '#F2F0EA'
 - name: ice blue
-  hex: '#A8E6FF'
-- name: lime
-  hex: '#C6FF00'
-- name: pearl
-  hex: '#F5F0FA'
+  hex: '#8FD3E8'
+- name: lilac
+  hex: '#C7B8E8'
+- name: chrome shadow
+  hex: '#5B6472'
 saturation_range:
-- 0.2
-- 0.7
+- 0.02
+- 0.3
 edge_density_range:
-- 0.03
-- 0.15
+- 0.04
+- 0.18
 value_range:
 - 0.1
 - 0.95

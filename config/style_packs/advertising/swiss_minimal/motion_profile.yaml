@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- minimal object rotation
+- shadow shift
+secondary_motions:
+- paper grain
+secondary_limit: 2

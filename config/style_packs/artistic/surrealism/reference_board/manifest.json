@@ -1,0 +1,20 @@
+{
+  "style": "artistic.surrealism",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a lone wooden door standing in an empty desert",
+    "a stone pocket watch sagging over a bare branch",
+    "a green apple with a clean cut revealing clockwork gears inside",
+    "an umbrella and a sewing machine on a long table in a plain room",
+    "a giant smooth stone sphere resting on a beach at low tide",
+    "a staircase climbing into still water",
+    "a lead-grey cloud resting heavily on a plain",
+    "a mirror lake reflecting a sky that does not match the one above",
+    "a floating island with one house and a long shadow",
+    "a glass plant growing from a stone floor",
+    "a street whose asphalt rolls up like a carpet at the far end",
+    "a long arcade with stretched shadows and an empty chair"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

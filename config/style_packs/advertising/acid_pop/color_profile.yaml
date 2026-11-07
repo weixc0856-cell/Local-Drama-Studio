@@ -1,0 +1,32 @@
+schema_version: '1.0'
+anchors:
+- name: acid yellow
+  hex: '#E8FF00'
+- name: hot pink
+  hex: '#FF2E88'
+- name: cyan
+  hex: '#00E5FF'
+- name: black
+  hex: '#111111'
+- name: white
+  hex: '#FFFFFF'
+- name: printed orange
+  hex: '#D9822B'
+- name: printed green
+  hex: '#6E9B4A'
+- name: printed violet
+  hex: '#7A5AA6'
+- name: printed teal
+  hex: '#2F8F92'
+- name: printed rose
+  hex: '#C94B7A'
+saturation_range:
+- 0.4
+- 0.85
+edge_density_range:
+- 0.05
+- 0.2
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

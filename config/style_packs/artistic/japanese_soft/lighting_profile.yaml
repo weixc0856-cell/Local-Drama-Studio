@@ -1,4 +1,5 @@
 schema_version: '1.0'
-key: bright summer daylight, soft shadows
-temperature: warm
-contrast: low
+key: dramatic twilight or clear afternoon, strong backlight, god rays and soft lens
+  bloom
+temperature: cool
+contrast: medium

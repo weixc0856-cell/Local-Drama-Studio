@@ -1,0 +1,29 @@
+schema_version: '1.0'
+identity: Pixar-style stylized 3D render, physically based materials
+medium: stylized 3D animation still, subsurface scattering, cinematic lighting
+materials:
+- soft clay-like surface
+- fabric fuzz
+- brushed metal
+- painted wood
+- dust motes
+composition:
+- one stylized 3D scene with exaggerated proportions
+- one clear focal object with a friendly silhouette
+- cinematic camera with shallow depth of field
+- soft ambient light and floating dust
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- stylized 3D with exaggerated rounded shapes
+- 'physically based materials: fabric fuzz, brushed metal, soft clay'
+- subsurface scattering in thin edges
+- cinematic soft light with volumetric dust
+- shallow depth of field and a friendly silhouette
+- no characters, no text and no logos

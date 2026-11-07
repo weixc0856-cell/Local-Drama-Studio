@@ -1,0 +1,8 @@
+schema_version: '1.0'
+forbidden:
+- photoreal
+- sharp edges
+- readable text
+- logo
+- dark palette
+note: For validator and human checklist only; prompts use positive anchors.

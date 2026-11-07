@@ -1,14 +1,16 @@
 schema_version: '1.0'
-identity: Japanese ukiyo-e woodblock print
-medium: woodblock colour, flat pigment, washi paper
+identity: Japanese ukiyo-e woodblock print, Edo period manner
+medium: multi-block woodblock print, flat pigment on washi paper, visible grain
 materials:
 - washi paper
 - woodblock ink
 - flat pigment
 composition:
-- flat decorative layout
-- clear outline
-- strong silhouette
+- strong silhouette and diagonal composition
+- flat colour areas contained by a clear keyblock outline
+- large flat sky or water band
+- asymmetric cropped view
+- clean full-bleed edges with no decorative border
 prompt_order:
 - subject
 - medium
@@ -17,6 +19,10 @@ prompt_order:
 - material
 - camera
 positive_anchors:
-- flat woodblock colour areas
-- clear dark outlines
-- visible washi paper texture
+- flat woodblock colour areas with even fill
+- clear dark keyblock outlines around every shape
+- visible washi paper grain and slight ink bleed
+- strong silhouette and diagonal composition
+- limited indigo, vermilion, ochre and rice palette
+- original composition, not a reproduction of a famous print
+- no realistic shading and no cartouche

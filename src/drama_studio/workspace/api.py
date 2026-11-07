@@ -38,6 +38,10 @@ app = FastAPI(
     lifespan=_lifespan,
 )
 
+from .film_api import router as _film_router  # noqa: E402
+
+app.include_router(_film_router)
+
 
 # ---------------------------------------------------------------- models
 

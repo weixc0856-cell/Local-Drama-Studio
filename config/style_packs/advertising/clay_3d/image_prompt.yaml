@@ -1,0 +1,27 @@
+schema_version: '1.0'
+identity: stylized 3D clay advertising, soft rounded shapes
+medium: 3D clay render, matte clay, soft subsurface scattering, candy colours
+materials:
+- matte clay
+- soft plastic
+- fabric
+- paper
+composition:
+- a single compact set with one main object
+- rounded bevels and chunky proportions
+- isometric or shallow perspective
+- blank copy zone, no text
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- matte clay with rounded bevels
+- candy colour palette
+- soft studio shadow
+- one miniature set
+- a blank copy zone
+- no text or logo

@@ -1,0 +1,20 @@
+{
+  "style": "retro.pop_art",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a single red apple with a thick black outline",
+    "a plain red soda can on a flat yellow field",
+    "a telephone receiver floating on blue",
+    "a banana on a flat blue background",
+    "a pair of sunglasses on yellow",
+    "a flower with halftone petals",
+    "a cassette tape on a flat red field",
+    "a diner coffee cup on blue",
+    "a lightning bolt on yellow",
+    "a heart with halftone dots",
+    "a sneaker on a flat graphic background",
+    "a stack of pancakes on a plate"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

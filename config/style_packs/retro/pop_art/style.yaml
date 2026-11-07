@@ -4,7 +4,7 @@ name: 波普艺术
 group: retro
 version: 1.0.0
 status: SPEC_DRAFT
-summary: 漫画网点、粗黑轮廓与大色块的商业图像语言。
+summary: 丝网印刷式波普：粗黑轮廓、平涂原色、可见半调网点。
 layers:
 - identity
 - execution

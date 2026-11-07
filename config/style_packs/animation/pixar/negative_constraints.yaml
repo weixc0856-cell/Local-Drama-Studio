@@ -1,0 +1,11 @@
+schema_version: '1.0'
+forbidden:
+- photoreal human
+- flat 2d
+- anime
+- painting
+- plastic toy look
+- harsh contrast
+- readable text
+- logo
+note: For validator and human checklist only; prompts use positive anchors.
