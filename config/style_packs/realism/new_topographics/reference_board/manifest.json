@@ -1,0 +1,20 @@
+{
+  "style": "realism.new_topographics",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "an empty gas station under flat overcast light",
+    "a parking lot with a single light pole",
+    "a roadside motel with a blank sign",
+    "a suburban intersection with power lines",
+    "a concrete drainage channel in dry grass",
+    "a self-storage building under a white sky",
+    "a strip mall facade with empty parking",
+    "a highway overpass over dry scrub",
+    "a laundromat window at dusk with no people",
+    "a warehouse loading dock",
+    "a row of identical houses under flat light",
+    "a dead-end road with a chain-link fence"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

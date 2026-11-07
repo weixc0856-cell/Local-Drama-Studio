@@ -3,7 +3,7 @@
 面向抖音和小红书的**本地影视化内容生产系统**：把诗词、古典故事与意象，按导演分镜的方式制作成有画面、有声音、有剪辑节奏的竖屏短片。
 
 > **唯一需求入口：[docs/PRD.md](docs/PRD.md)（SSOT）。** 治理文档：[PRD_CHANGELOG](docs/PRD_CHANGELOG.md)、[REQUIREMENT_TRACEABILITY](docs/REQUIREMENT_TRACEABILITY.md)、[DECISIONS](docs/DECISIONS.md)。
-> 方法论：[FILM_PRODUCTION_GUIDE](docs/FILM_PRODUCTION_GUIDE.md)（Script-to-Film 十阶段）、[VISUAL_STYLE_ENGINE](docs/VISUAL_STYLE_ENGINE.md)（12 套风格包）。
+> 方法论：[FILM_PRODUCTION_GUIDE](docs/FILM_PRODUCTION_GUIDE.md)（Script-to-Film 十阶段）、[VISUAL_STYLE_ENGINE](docs/VISUAL_STYLE_ENGINE.md)（21 套风格包）。
 
 ## 当前技术栈（2026-11-06）
 
@@ -33,11 +33,11 @@ ComfyUI 只是生成引擎，不是项目本体；业务状态、调度、质量
 | 路径 | 内容 |
 |---|---|
 | `src/drama_studio/film/` | Script-to-Film：严格 Schema、分镜规划、连续性、时间轴、提示词、任务生成、配音、合成 |
-| `src/drama_studio/style_engine/` | 视觉风格引擎：12 套 Style Pack 的注册表、提示词编译器、一致性检查 |
+| `src/drama_studio/style_engine/` | 视觉风格引擎：21 套 Style Pack 的注册表、提示词编译器、一致性检查 |
 | `src/drama_studio/production.py` | FLUX/Wan 任务与参数（生成引擎适配） |
 | `src/drama_studio/voice/` | VoxCPM2 调用、发音层、多轨音频 |
 | `src/drama_studio/workspace/` | 本地工作台（SQLite + FastAPI，端口 8765） |
-| `config/style_packs/` | 12 套风格包（retro 4 / oriental 3 / artistic 5） |
+| `config/style_packs/` | 21 套风格包（retro 4 / oriental 3 / artistic 5） |
 | `config/models.yaml` | 模型契约（含精确大小） |
 | `workflows/` | API 格式工作流（`flux3_t2i_api.json`、Wan I2V） |
 | `projects/deng_guan_que_lou/` | Script-to-Film 示例项目（8 镜 / 47 s） |
@@ -89,7 +89,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 | VoxCPM2 旁白 | `PASS_VERIFIED`（技术；盲听 7/7 优于旧模型） |
 | Wan2.2 TI2V 5B | `PASS_VERIFIED`（历史实测；121 帧约 60–70 分钟/镜） |
 | Script-to-Film 制作层 | `IMPLEMENTED_NOT_VERIFIED`（模块、CLI、示例项目、测试已落地，尚无完整成片） |
-| 12 套风格包 | `SPEC_DRAFT`（引擎与校验已实现；参考板与样片待审） |
+| 21 套风格包 | `SPEC_DRAFT`（引擎与校验已实现；参考板与样片待审） |
 | MiniMax H3 | `NOT_RUN`（仅完成代码与硬件分析） |
 
 ## 环境边界
@@ -106,7 +106,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 |---|---|
 | [docs/PRD.md](docs/PRD.md) | 唯一 SSOT |
 | [docs/FILM_PRODUCTION_GUIDE.md](docs/FILM_PRODUCTION_GUIDE.md) | Script-to-Film 制作指南 |
-| [docs/VISUAL_STYLE_ENGINE.md](docs/VISUAL_STYLE_ENGINE.md) | 12 套风格包与一致性 |
+| [docs/VISUAL_STYLE_ENGINE.md](docs/VISUAL_STYLE_ENGINE.md) | 21 套风格包与一致性 |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 目标架构与协议 |
 | [docs/TECH_STACK.md](docs/TECH_STACK.md) | 冻结技术栈 |
 | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) | 硬件、端口、环境 |

@@ -4,9 +4,17 @@ motion_vocabulary:
 - light across ridges
 secondary_limit: 2
 preserve:
-- paint relief
-- visible knife strokes
+- raised impasto ridges
+- knife planes
+- canvas weave
 avoid:
-- flat digital shading
-- clean vector edges
-- photo texture
+- smooth airbrush
+- digital gradient
+- photoreal
+- 3d render
+- flat vector
+- readable text
+- decorative frame
+- neon colors
+- mosaic of square paint tiles
+- uniform thick paint everywhere

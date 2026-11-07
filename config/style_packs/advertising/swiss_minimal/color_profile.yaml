@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: paper white
+  hex: '#F4F4F0'
+- name: ink black
+  hex: '#111111'
+- name: signal red
+  hex: '#D0342C'
+- name: warm grey
+  hex: '#B8B8B2'
+- name: steel blue
+  hex: '#2E5E9E'
+saturation_range:
+- 0.02
+- 0.3
+edge_density_range:
+- 0.03
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

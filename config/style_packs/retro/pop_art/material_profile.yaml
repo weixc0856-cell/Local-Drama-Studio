@@ -4,5 +4,6 @@ materials:
 - halftone screen
 - flat ink
 texture_cues:
-- bold outlines
-- flat colour fields
+- thick contour
+- flat colour
+- halftone dots

@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a cut-out window framing a printed landscape. layered vintage paper collage. cut paper, torn edges, halftone photo fragments, screen-print ink. composition: asymmetric layered composition with overlapping fragments, deliberate empty paper gaps, a single layout with clear paper layers, one large focal fragment with smaller supporting scraps, photographed objects are flattened into print with scratches, creases and halftone dots, flat scan-like view with small local shadows, clean full-bleed edges with no frame. lighting: flat even light with small shadows between paper layers, neutral temperature, medium contrast. materials: paper fibre, torn edges, halftone print, aged photograph. camera: locked-off camera, 50mm lens, layered depth of field. every element reads as a cut paper piece. torn fibrous edges and visible print grain. scraps overlap with small cast shadows between layers. limited ink palette of cream, black, vermilion, cobalt and olive. deliberate bare paper gaps. objects carry scratches, creases or halftone so they belong to the paper. no digital glow and no smooth gradients. reference board sample, no characters, no readable text, torn paper edges and print grain, landscape postcards only, no readable handwriting or stamps. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 7109,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/retro_collage/09"
+}

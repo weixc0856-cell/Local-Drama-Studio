@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: concrete grey
+  hex: '#B9B7AE'
+- name: asphalt
+  hex: '#6F7470'
+- name: dry grass
+  hex: '#8C8F86'
+- name: window dark
+  hex: '#4A4E4D'
+- name: dust ochre
+  hex: '#C4B49A'
+saturation_range:
+- 0.02
+- 0.26
+edge_density_range:
+- 0.04
+- 0.18
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

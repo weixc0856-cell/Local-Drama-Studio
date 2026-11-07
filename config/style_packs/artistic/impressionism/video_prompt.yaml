@@ -5,9 +5,18 @@ motion_vocabulary:
 - leaf shadow
 secondary_limit: 2
 preserve:
-- broken brushwork
-- light atmosphere
+- broken strokes
+- colour vibration
+- soft edges
 avoid:
-- sharp outlines
-- flat colour fields
-- photo realism
+- smooth blending
+- photoreal detail
+- hard outlines
+- digital gradient
+- readable text
+- decorative frame
+- 3d render
+- neon colors
+- uniform brushstroke size
+- evenly distributed detail
+- noisy speckle

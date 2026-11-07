@@ -1,0 +1,28 @@
+schema_version: '1.0'
+identity: contemporary oriental minimal advertising, ink-grey palette
+medium: matte paper, soft plaster, ink wash texture, generous void
+materials:
+- rice paper
+- plaster
+- ink
+- stone
+- tea
+composition:
+- one product on a vast empty field
+- asymmetric placement
+- soft ink-grey gradient
+- blank copy zone, no text
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- one product in a vast empty field
+- ink-grey and rice-paper palette
+- soft window light and a long quiet shadow
+- asymmetric placement
+- a blank copy zone
+- no text and no ornament

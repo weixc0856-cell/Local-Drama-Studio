@@ -1,8 +1,12 @@
 schema_version: '1.0'
 materials:
-- gouache background
-- soft paper texture
-- natural light
+- painted sky
+- detailed cumulus
+- wet asphalt
+- glass reflection
+- light bloom
 texture_cues:
-- character design
-- soft light
+- luminous sky
+- detailed clouds
+- reflected light
+- clean linework

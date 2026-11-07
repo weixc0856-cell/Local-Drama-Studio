@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: rice
+  hex: '#EFE9DC'
+- name: ink
+  hex: '#2E3134'
+- name: celadon
+  hex: '#9DB3AE'
+- name: ochre
+  hex: '#A9714F'
+- name: mist
+  hex: '#D8D5CB'
+saturation_range:
+- 0.01
+- 0.15
+edge_density_range:
+- 0.03
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

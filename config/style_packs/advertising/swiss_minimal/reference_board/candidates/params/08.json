@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a small speaker on a pale background. Swiss international style advertising layout. studio photograph and clean vector grid, matte paper, Helvetica-like sans. composition: strict grid with generous negative space reserved for copy, one product as the only subject, asymmetric but grid-aligned, large calm background field, blank copy zone, no written text. lighting: even studio light with a soft contact shadow, neutral temperature, medium contrast. materials: matte paper, photographic print, screen ink, studio light. camera: locked-off camera, 50mm lens, deep depth of field. strict grid and generous negative space. one product on a calm field. matte paper and a precise contact shadow. a blank copy zone reserved. no readable text and no ornament. clean advertising still, no readable text, generous copy space, matte paper, plain speaker with no brand text or logo. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 7608,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/advertising_swiss_minimal/08"
+}

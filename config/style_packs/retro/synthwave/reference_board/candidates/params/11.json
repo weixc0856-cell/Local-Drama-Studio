@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a chrome ring half out of frame on a grid plane. 1980s synthwave retro-futurism. neon light, chrome surfaces, grid horizon, scan lines. composition: one continuous uncut scene, one sky treatment only, defined by the subject, when a grid appears it recedes to a vanishing point, one foreground element named by the subject, deep navy sky and neon haze, VHS artifacts: RGB separation, scan lines, slight barrel distortion and grain, clean full-bleed edges with no frame. lighting: neon key light, magenta and cyan rim, deep navy shadow, cool temperature, high contrast. materials: chrome, neon tube, glossy plastic, film grain. camera: locked-off camera, 24mm lens, deep depth of field. a single uncut photograph filling the frame. magenta and cyan neon light sources. a grid receding to one central vanishing point. chrome reflections with sharp specular highlights. scan lines and slight VHS grain. deep navy sky with a banded sun only where chosen. one sky treatment appropriate to the subject. off-center horizon or no grid at all. RGB separation, scan lines and VHS grain. one clear subject named by the prompt. no text and no signage. reference board sample, no characters, no text or signage, neon glow and grid perspective. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 7311,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/retro_synthwave/11"
+}

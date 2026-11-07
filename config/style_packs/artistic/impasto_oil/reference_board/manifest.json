@@ -1,0 +1,20 @@
+{
+  "style": "artistic.impasto_oil",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "three ripe pears on a linen cloth",
+    "a single sunlit lemon on a dark table",
+    "a field of wheat under a heavy sky",
+    "a coastal cliff with breaking waves",
+    "a bouquet of wildflowers in a ceramic jug",
+    "a sliced loaf of bread on a wooden board",
+    "a mountain lake at dusk",
+    "an old wooden door in a stone wall",
+    "a bowl of red fruit on a blue cloth",
+    "a bare winter tree against a low sun",
+    "a fishing boat pulled onto shingle",
+    "a copper kettle on a windowsill"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

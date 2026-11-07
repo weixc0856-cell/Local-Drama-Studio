@@ -1,0 +1,15 @@
+schema_version: '1.0'
+motion_vocabulary:
+- graphic pop-in
+- motif movement
+secondary_limit: 2
+preserve:
+- flat colour
+- thick outline
+- halftone
+avoid:
+- gradient
+- photoreal
+- soft shadow
+- readable text
+- 3d render

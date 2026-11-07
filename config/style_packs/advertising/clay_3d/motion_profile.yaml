@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- gentle bounce
+- dust motes
+secondary_motions:
+- light shimmer
+secondary_limit: 2

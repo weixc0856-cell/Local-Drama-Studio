@@ -1,0 +1,20 @@
+{
+  "style": "realism.documentary",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a weathered fishing trawler on a mudflat at low tide, dawn mist",
+    "a rusted tin roof with rain streaks in a mountain village",
+    "a distant figure with an umbrella on a wet street at dusk",
+    "a cracked concrete wall with peeling paint and moss",
+    "a storm front over a wheat field",
+    "a dark tungsten-lit kitchen with steam",
+    "a muddy stone path after rain",
+    "a corroded metal bridge over a brown river",
+    "a dusty market stall at noon with no people",
+    "a foggy pine forest with wet bark",
+    "a dry riverbed with cracked mud",
+    "fishing nets and buoys on a wet dock"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

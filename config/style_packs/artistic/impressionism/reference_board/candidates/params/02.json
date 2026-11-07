@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a field of poppies under a summer sky. French impressionist oil painting, plein air light. broken brushwork, optical colour mixing, oil on canvas. composition: outdoor scene dissolved by light, no hard outlines, forms soften at the edges, a clear painterly focal point with decisive strokes, background and secondary areas loosely brushed with fewer marks, loose open foreground with cropped asymmetry, clean full-bleed edges with no frame. lighting: changing natural light, dappled shadow, warm highlights and cool violet shadows, warm temperature, medium contrast. materials: oil paint, canvas, short visible strokes. camera: locked-off camera, 50mm lens, medium depth of field. short broken brush strokes of pure colour placed side by side. forms dissolve into light at the edges. warm sunlight with cool violet shadows. painted outdoors with no black outlines. dappled light moving across water and foliage. a focal point painted with decisive strokes against loosely brushed surroundings. brushstroke size and density vary across the image. no smooth gradient blending. reference board sample, no characters, no text, broken brushwork and soft edges. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 6102,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/artistic_impressionism/02"
+}

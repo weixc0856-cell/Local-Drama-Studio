@@ -1,9 +1,8 @@
 schema_version: '1.0'
 primary_motions:
 - mist drift
-- water flow
-- robe sway
+- water ripple
+- bamboo sway
 secondary_motions:
-- tree sway
-- cloud drift
+- leaf shadow shift
 secondary_limit: 2

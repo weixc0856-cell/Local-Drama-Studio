@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: warm sand
+  hex: '#D9B98C'
+- name: soft green
+  hex: '#8FA37E'
+- name: dusk blue
+  hex: '#5C7184'
+- name: cream
+  hex: '#F1E9DA'
+- name: brick
+  hex: '#A45A45'
+saturation_range:
+- 0.08
+- 0.65
+edge_density_range:
+- 0.03
+- 0.16
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

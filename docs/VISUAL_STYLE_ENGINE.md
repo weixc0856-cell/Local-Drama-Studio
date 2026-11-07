@@ -1,7 +1,7 @@
 # 视觉风格引擎（Visual Style Engine）
 
 > 状态：`DECISION` / 2026-11-06 立项。
-> 定位：12 种风格不是 12 组提示词，而是 12 套可独立加载的视觉生产规范。
+> 定位：21 种风格不是 21 组提示词，而是 21 套可独立加载的视觉生产规范。
 > 与 `FILM_PRODUCTION_GUIDE.md` 的关系：本文定义「风格」如何约束图像与视频；后者定义「镜头」如何组织成作品。
 
 ## 1. 三层架构
@@ -45,7 +45,7 @@ config/style_packs/<group>/<name>/
 
 | id | 名称 | 核心 |
 |---|---|---|
-| `oriental.modern_chinese` | 国风新中式 | 传统元素 + 现代设计、青朱赭黛 |
+| `oriental.modern_chinese` | 当代新中式 | 苏州博物馆式几何抽象、哑光写实材质、单焦点 + 40% 留白（见 `NEO_CHINESE_DIRECTION.md`） |
 | `oriental.gongbi` | 工笔国风 | 铁线描、矿物颜料、绢本 |
 | `oriental.ink_wash` | 水墨风 | 墨分五色、宣纸、留白 |
 
@@ -53,11 +53,30 @@ config/style_packs/<group>/<name>/
 
 | id | 名称 | 核心 |
 |---|---|---|
-| `artistic.japanese_soft` | 日系小清新 | 明亮、清透、治愈、生活感 |
-| `artistic.surrealism` | 超现实主义 | 梦境、尺度错位、非欧空间 |
+| `artistic.japanese_soft` | 日系电影感（新海诚式） | 剧场版动画背景、巨云、镜头光晕、精密日常场景（见 `SHINKAI_STYLE_NOTES.md`） |
+| `artistic.surrealism` | 超现实主义 | 写实梦境：异质并置、软化、悬浮、尺度错位（见 `SURREALISM_STYLE_NOTES.md`） |
 | `artistic.impasto_oil` | 油画厚涂 | 颜料堆叠、刮刀笔触、画布肌理 |
 | `artistic.impressionism` | 印象派 | 瞬间光线、松散笔触、空气感 |
 | `artistic.ukiyo_e` | 浮世绘 | 木版套色、平涂、清晰轮廓 |
+
+### 现实主义（realism）
+
+| id | 名称 | 核心 |
+|---|---|---|
+| `realism.documentary` | 纪实摄影 | 自然光、胶片颗粒、决定性瞬间、未修饰的粗粝真实 |
+| `realism.new_topographics` | 新地形学 | 冷静客观的日常人造景观、平光、肉眼色温 |
+
+### 动画与商业（animation / advertising）
+
+| id | 名称 | 核心 |
+|---|---|---|
+| `animation.pixar` | 皮克斯式 3D | 风格化三维写实：夸张形体、PBR 材质、次表面散射、电影柔光 |
+| `advertising.swiss_minimal` | 瑞士国际主义 | 严格网格、巨幅留白、无衬线秩序 |
+| `advertising.product_macro` | 商业静物微距 | 微观质感、受控高光、接触阴影 |
+| `advertising.acid_pop` | 高饱和酸性波普 | 酸色撞色、几何色块、重复图案 |
+| `advertising.lifestyle_film` | 电影级生活纪实 | 黄金时刻、胶片颗粒、生活互动 |
+| `advertising.clay_3d` | 3D 黏土 | 圆润倒角、糖果色、柔软阴影 |
+| `advertising.oriental_minimal` | 东方留白极简 | 宣纸灰调、单件器物、大面积虚空 |
 
 ## 4. 双模型约束：风格必须同时作用于 FLUX 与 Wan
 
@@ -100,6 +119,17 @@ Composition → Camera → Lighting → Motion → Continuity → Positive ancho
 | 动态 | 运动方式（可用短视频或序列帧） |
 
 参考素材的版权分三种场景分别确认：内部研究、模型输入、公开发布。三者不自动互相授权。
+
+生成与复核（参考图只留在本机，不进 Git）：
+
+```powershell
+.venv/Scripts/python.exe scripts/gen_reference_board.py --style oriental.modern_chinese --limit 12
+.venv/Scripts/python.exe scripts/r1_batch.py --jobs config/style_packs/oriental/modern_chinese/reference_board/candidates/jobs.json --timeout 7200
+.venv/Scripts/python.exe scripts/board_contact_sheet.py --style oriental.modern_chinese
+.venv/Scripts/drama.exe style check-image --style oriental.modern_chinese --image <png>
+```
+
+`board_contact_sheet.py` 取每个候选目录里**最新**的 PNG，避免重渲后新旧版本混排。人工复核记录写到 `reference_board/review-<date>.md`；未通过前 manifest 保持 `PENDING_REVIEW`。
 
 ## 7. 一致性检查
 
@@ -160,4 +190,4 @@ CLIP/嵌入相似度只作筛选，不作为“复刻了工笔/水墨”的证�
 | 项目绑定 | 单主风格 + 冻结；混合需显式声明 |
 | 扩展 | 新增第 13 种风格不改核心引擎 |
 
-**12 种风格不是 12 个滤镜，而是 12 套完整的视觉生产规范。**
+**21 种风格不是 21 个滤镜，而是 21 套完整的视觉生产规范。**

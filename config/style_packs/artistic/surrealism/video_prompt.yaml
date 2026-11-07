@@ -1,13 +1,25 @@
 schema_version: '1.0'
 motion_vocabulary:
+- slow melting
 - floating objects
-- space morph
-- time reversal
+- shadow shift
 secondary_limit: 2
 preserve:
-- dream logic
-- scale paradox
+- precise edges
+- smooth photographic finish
+- long shadows
+- quiet foreground
 avoid:
-- ordinary realism
-- cluttered detail
-- flat lighting
+- abstract gesture
+- cartoon
+- glowing magic
+- 3d render
+- horror gore
+- readable text
+- decorative frame
+- busy detail
+- neon colors
+- character close-up
+- humanoid figures
+- extra floating objects
+- flying whale above a city

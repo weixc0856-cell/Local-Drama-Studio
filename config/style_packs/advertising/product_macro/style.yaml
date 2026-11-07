@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.product_macro
+name: 商业静物微距
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 产品微距：真实微观质感、受控高光、接触阴影与留白版式。
+layers:
+- identity
+- execution
+- consistency
