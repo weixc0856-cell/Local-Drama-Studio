@@ -1,0 +1,11 @@
+schema_version: '1.0'
+materials:
+- brushed metal
+- glass
+- water droplets
+- matte plastic
+- fabric
+texture_cues:
+- microtexture
+- contact shadow
+- controlled highlights

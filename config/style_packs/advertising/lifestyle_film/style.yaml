@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.lifestyle_film
+name: 电影级生活纪实
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 黄金时刻与胶片颗粒的生活广告：真实互动、产品退为细节、留白放文案。
+layers:
+- identity
+- execution
+- consistency

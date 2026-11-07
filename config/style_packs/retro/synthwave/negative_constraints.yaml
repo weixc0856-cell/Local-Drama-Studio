@@ -1,6 +1,16 @@
 schema_version: '1.0'
 forbidden:
-- daylight realism
-- warm earth palette
-- hand-drawn texture
+- readable text or signage
+- photoreal daylight
+- pastel palette
+- cluttered composition
+- western city
+- 3d game render
+- soft focus
+- sunset in every image
+- centered symmetric composition in every image
+- diptych
+- split screen
+- two panels
+- stacked frames
 note: For validator and human checklist only; prompts use positive anchors.

@@ -1,0 +1,12 @@
+schema_version: '1.0'
+forbidden:
+- painting
+- illustration
+- 3d render
+- cgi
+- dramatic sunset
+- oversaturated
+- heroic angle
+- readable text
+- crowds
+note: For validator and human checklist only; prompts use positive anchors.

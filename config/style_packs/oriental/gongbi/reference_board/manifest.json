@@ -1,6 +1,6 @@
 {
   "style": "oriental.gongbi",
-  "status": "PENDING_REVIEW",
+  "status": "ACCEPTED",
   "subjects": [
     "distant mountain ranges above a wide river",
     "a lone traditional Chinese fishing boat with a woven awning on a misty river",
@@ -16,5 +16,11 @@
     "bare winter branches at a quiet pond with wide open water beside them"
   ],
   "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
-  "license": "generated locally with FLUX.3; reference images are not redistributed"
+  "license": "generated locally with FLUX.3; reference images are not redistributed",
+  "review": {
+    "date": "2026-11-06",
+    "reviewer": "project owner",
+    "result": "ACCEPTED",
+    "note": "见 review-2026-11-06.md；06 的写实月面在正式关键帧中需改为烘月"
+  }
 }

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: coral
+  hex: '#F08A6A'
+- name: mint
+  hex: '#8FD3B6'
+- name: butter
+  hex: '#F5D67A'
+- name: sky
+  hex: '#8FC7E8'
+- name: cream
+  hex: '#F7EFE3'
+saturation_range:
+- 0.15
+- 0.45
+edge_density_range:
+- 0.03
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

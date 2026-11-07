@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "an empty gas station under flat overcast light. contemporary documentary photograph, new topographics, deadpan. large-format color photograph, flat daylight, precise detail. composition: a man-made structure in a flat ordinary landscape, deadpan framing, level horizon, subject off-center, no dramatic light and no heroic angle, wide empty sky, parking lot or roadside verge, clean full-bleed edges with no frame. lighting: flat overcast or plain daylight, no golden hour drama, neutral temperature, low contrast. materials: concrete, asphalt, weathered metal, glass, dry grass. camera: locked-off camera, 50mm lens, deep depth of field. a deadpan view of an ordinary man-made place. flat daylight with true-to-eye color. concrete, asphalt, metal and dry grass with honest texture. the horizon is level and the subject sits off-center. no drama, no golden hour and no retouching. large-format clarity with natural depth. deadpan documentary photograph, flat light, no readable text, no people. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 5101,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/realism_new_topographics/01"
+}

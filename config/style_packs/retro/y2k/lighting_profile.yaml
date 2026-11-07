@@ -1,4 +1,4 @@
 schema_version: '1.0'
-key: hard specular highlights, coloured bounce
+key: bright studio light, strong specular highlights, soft lens flare
 temperature: cool
-contrast: high
+contrast: medium

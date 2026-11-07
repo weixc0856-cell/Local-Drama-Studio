@@ -1,0 +1,20 @@
+{
+  "style": "retro.y2k",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a chrome bubble chair in a white void",
+    "a translucent inflatable chair",
+    "a bondi-blue translucent disc floating over a pastel gradient",
+    "a transparent flip phone with a small antenna on a pearl surface",
+    "a holographic CD reflecting pastel light",
+    "a lime-green translucent sneaker on a clean pedestal",
+    "a translucent laptop on a white background",
+    "a chrome heart pendant floating",
+    "a clear plastic bubble holding liquid",
+    "a mirrored sphere on a pastel floor",
+    "an electric-purple inflatable sofa in an empty studio",
+    "a transparent hair clip with holographic film"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: river grey
+  hex: '#6E7B74'
+- name: worn timber
+  hex: '#8A6F55'
+- name: dust white
+  hex: '#C9C2B2'
+- name: storm slate
+  hex: '#3E4A4F'
+- name: rusted red
+  hex: '#A34A32'
+saturation_range:
+- 0.02
+- 0.4
+edge_density_range:
+- 0.04
+- 0.2
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

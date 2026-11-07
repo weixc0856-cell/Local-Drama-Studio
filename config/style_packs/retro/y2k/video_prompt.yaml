@@ -1,13 +1,20 @@
 schema_version: '1.0'
 motion_vocabulary:
-- metal rotation
+- chrome rotation
 - reflection sweep
 - liquid morph
 secondary_limit: 2
 preserve:
-- specular reflections
-- transparent material refraction
+- chrome reflection
+- transparent refraction
+- pearl sheen
 avoid:
-- matte paper texture
-- earth tones
-- hand-painted brushwork
+- photoreal person
+- readable text
+- 3d game render
+- dark grunge
+- neon cyberpunk
+- flat vector
+- busy background
+- modern flat smartphone
+- all-white studio in every image

@@ -1,6 +1,12 @@
 schema_version: '1.0'
 forbidden:
-- photographic depth of field
-- soft airbrush shading
-- texture noise
+- readable text or speech bubble
+- soft gradient
+- 3d render
+- photoreal
+- thin outlines
+- muted palette
+- dark grunge
+- mixed halftone scales
+- perfectly registered digital colour
 note: For validator and human checklist only; prompts use positive anchors.

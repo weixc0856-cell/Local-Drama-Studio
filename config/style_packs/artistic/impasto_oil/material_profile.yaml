@@ -3,6 +3,8 @@ materials:
 - oil paint
 - canvas
 - palette knife
+- linseed sheen
 texture_cues:
-- paint relief
-- visible knife strokes
+- raised impasto ridges
+- knife planes
+- canvas weave

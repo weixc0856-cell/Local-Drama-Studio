@@ -1,0 +1,20 @@
+{
+  "style": "retro.collage",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a torn vintage train photograph over plain torn paper",
+    "a paper-cut mountain range above a halftone sky",
+    "a torn travel poster of a seaside resort",
+    "a paper bird flying over a printed city map",
+    "layered paper flowers with magazine clippings",
+    "a paper cassette tape on sheet music",
+    "a torn botanical print with a paper leaf",
+    "a paper boat on a printed wave",
+    "a cut-out window framing a printed landscape",
+    "a stack of old landscape postcards with torn edges",
+    "a blank paper clock face with no numerals",
+    "a paper camera with a plain lens on a halftone background"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

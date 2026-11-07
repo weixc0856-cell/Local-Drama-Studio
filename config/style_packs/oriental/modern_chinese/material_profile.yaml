@@ -1,9 +1,13 @@
 schema_version: '1.0'
 materials:
-- silk
-- lacquer
-- stone
-- ink wash accents
+- white plaster
+- dark grey stone
+- glass
+- dark timber
+- bamboo
+- still water
 texture_cues:
-- negative space
-- traditional motifs
+- matte surfaces
+- muted palette
+- quiet negative space
+- thin geometric lines

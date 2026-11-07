@@ -1,0 +1,10 @@
+schema_version: '1.0'
+materials:
+- 35mm film
+- weathered surfaces
+- dust and mist
+- worn cloth
+texture_cues:
+- film grain
+- natural imperfections
+- weathered texture

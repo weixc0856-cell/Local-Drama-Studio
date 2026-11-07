@@ -5,9 +5,16 @@ motion_vocabulary:
 - fragment reassembly
 secondary_limit: 2
 preserve:
-- torn paper edges
-- visible print texture
+- paper fibre
+- torn edges
+- halftone grain
 avoid:
-- photoreal depth of field
-- smooth digital gradients
-- 3D rendering
+- digital gloss
+- 3d render
+- smooth gradient
+- readable text
+- neon colors
+- photoreal scene
+- clean vector edges
+- glossy 3d product photography
+- uniform layout in every image

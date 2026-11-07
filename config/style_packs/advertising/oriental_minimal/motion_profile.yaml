@@ -1,0 +1,7 @@
+schema_version: '1.0'
+primary_motions:
+- mist drift
+- tea steam
+secondary_motions:
+- paper grain
+secondary_limit: 2

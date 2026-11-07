@@ -1,13 +1,34 @@
 schema_version: '1.0'
 motion_vocabulary:
-- wind in leaves
-- hair sway
 - cloud drift
+- light shimmer
+- rain streak
+- wind in grass
 secondary_limit: 2
 preserve:
-- character design
-- soft light
+- luminous sky
+- detailed clouds
+- reflected light
+- clean linework
 avoid:
-- heavy contrast
+- flat cel shading
+- chibi characters
+- readable text or signage
+- neon cyberpunk
 - photoreal skin
-- dark palette
+- 3d render
+- dull grey sky
+- western city
+- hdr clipping
+- character close-up
+- broken wires
+- knotted cables
+- repeated centered cumulus tower
+- multi-panel image
+- contact sheet
+- grid of images
+- split image
+- diptych
+- triptych
+- multiple frames
+- collage

@@ -1,14 +1,23 @@
 schema_version: '1.0'
-identity: soft Japanese animated film background
-medium: hand-painted animation background, pastel palette
+identity: luminous Japanese animated film background, Makoto Shinkai style, theatrical
+  feature
+medium: hand-painted anime background with photographic detail, luminous gradient
+  sky
 materials:
-- gouache background
-- soft paper texture
-- natural light
+- painted sky
+- detailed cumulus
+- wet asphalt
+- glass reflection
+- light bloom
 composition:
-- layered environment
-- rich atmospheric perspective
-- open sky
+- a single scene at one shot scale
+- one clear focal point
+- a single cloud form in one sky
+- a single time of day across the frame
+- 'everyday Japanese setting: train crossing, station bench, riverside levee, utility
+  poles, vending machine'
+- layered depth with a reflective foreground where it belongs
+- clean edges with no text and no signage
 prompt_order:
 - subject
 - medium
@@ -17,6 +26,10 @@ prompt_order:
 - material
 - camera
 positive_anchors:
-- soft pastel sky
-- gentle light with visible atmosphere
-- hand-painted background shapes
+- luminous sky with one clear light direction
+- one cloud form with rim light and deep blue shadow, painted once across the sky
+- god rays only where the light justifies them
+- utility poles and wires are straight, evenly spaced and continuous
+- 'a clear focal point: a raindrop, a bench, a puddle reflection, or a wide sky'
+- painterly detail with clean shapes, no photo texture
+- no characters and no readable text

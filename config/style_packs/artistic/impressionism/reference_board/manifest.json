@@ -1,0 +1,20 @@
+{
+  "style": "artistic.impressionism",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a riverbank with poplars in afternoon light",
+    "a field of poppies under a summer sky",
+    "a garden path with dappled shadows",
+    "a rowing boat on a still pond",
+    "an empty cafe terrace in late sun",
+    "a haystack in evening light",
+    "a stone bridge over a river with reflections",
+    "a seaside cliff in morning haze",
+    "a lily pond with floating leaves",
+    "a village street in autumn light",
+    "a laundry line in a green garden",
+    "a snow-covered path at dusk"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

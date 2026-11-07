@@ -1,0 +1,27 @@
+schema_version: '1.0'
+identity: Swiss international style advertising layout
+medium: studio photograph and clean vector grid, matte paper, Helvetica-like sans
+materials:
+- matte paper
+- photographic print
+- screen ink
+- studio light
+composition:
+- strict grid with generous negative space reserved for copy
+- one product as the only subject
+- asymmetric but grid-aligned
+- large calm background field
+- blank copy zone, no written text
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- strict grid and generous negative space
+- one product on a calm field
+- matte paper and a precise contact shadow
+- a blank copy zone reserved
+- no readable text and no ornament

@@ -1,0 +1,20 @@
+{
+  "style": "artistic.japanese_soft",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "raindrops on a chain-link fence at blue hour",
+    "a puddle reflecting a bicycle wheel and a slice of sky",
+    "a clear umbrella covered in raindrops against a dusk sky",
+    "an empty station bench under a small canopy at noon",
+    "a rural T-junction with a convex traffic mirror and power lines",
+    "a lowered railway crossing barrier in wind, no train",
+    "a vending machine glowing at blue hour on a quiet street",
+    "a rice field under a clear noon sky with thin cirrus",
+    "a riverside levee with layered altocumulus and a distant town",
+    "a seaside road under broken wind-torn clouds",
+    "a hilltop view of a town at blue hour with first lights",
+    "a summer field with a single wind-bent tree and clear sky"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

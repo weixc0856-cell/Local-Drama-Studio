@@ -1,0 +1,9 @@
+schema_version: '1.0'
+materials:
+- flat ink
+- paper
+- screen print
+texture_cues:
+- flat colour
+- thick outline
+- halftone

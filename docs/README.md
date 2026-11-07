@@ -31,6 +31,12 @@
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | 服务、显存、生成、配音、字幕、任务故障树 |
 | [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) | 架构、契约、任务注册表、API、扩展方式 |
 | [FRONTEND_DESIGN.md](FRONTEND_DESIGN.md) | 工作台设计：技术栈、导航、SQLite schema、API 契约 |
+| [STYLE_BOARD_STATUS.md](STYLE_BOARD_STATUS.md) | 12 套风格参考板的生产台账：定义、渲染、检查与评审状态 |
+| [SURREALISM_STYLE_NOTES.md](SURREALISM_STYLE_NOTES.md) | 写实梦境派超现实：并置、软化、悬浮、尺度错位与冷静写实 |
+| [SHINKAI_STYLE_NOTES.md](SHINKAI_STYLE_NOTES.md) | 新海诚式日系电影感的视觉要点：实景打底、镜头光晕、巨云与日常反射 |
+| [NEO_CHINESE_DIRECTION.md](NEO_CHINESE_DIRECTION.md) | 新中式方向：几何抽象、哑光写实、40% 留白；苏州博物馆/聂隐娘/东方极简三条参考系 |
+| [SONG_AESTHETIC_STUDY.md](SONG_AESTHETIC_STUDY.md) | 宋氏美学研究：平淡天真、三远/边角、留白、淡彩与宋瓷色，及对 `oriental.modern_chinese` 的映射 |
+| [FRONTEND_PLAN.md](FRONTEND_PLAN.md) | 浅色影视工作站方案：视觉令牌、6 模块 IA、P0/P1 页面、API 与实施阶段；F0+F1 已实现 |
 
 ## 内容、质量与资产
 

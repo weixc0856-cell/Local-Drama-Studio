@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.acid_pop
+name: 高饱和酸性波普
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 酸黄、荧光粉与几何色块的版面冲击：单一剪影、重复图案、留白放字。
+layers:
+- identity
+- execution
+- consistency

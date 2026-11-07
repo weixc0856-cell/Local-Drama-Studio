@@ -1,6 +1,31 @@
 schema_version: '1.0'
 forbidden:
-- neon colour
-- 3D plastic surfaces
-- heavy photoreal texture
+- 3d render gloss
+- cg plastic surfaces
+- hdr
+- lens flare
+- saturated tourist colors
+- red columns
+- blue glazed roof tiles
+- flying eaves
+- carved brackets
+- lanterns
+- cloud motifs
+- decorative border
+- corner ornaments
+- calligraphy on walls
+- tourist souvenir pavilion
+- miniature model look
+- tilt-shift
+- fisheye
+- floating structures
+- intersecting walls
+- warped perspective
+- duplicated frames
+- impossible geometry
+- broken roof edges
+- thick black steel fascia
+- dense square lattice
+- repeated circular openings
+- rock standing alone on bare concrete
 note: For validator and human checklist only; prompts use positive anchors.

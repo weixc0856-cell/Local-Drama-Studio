@@ -1,0 +1,15 @@
+schema_version: '1.0'
+motion_vocabulary:
+- mist drift
+- tea steam
+secondary_limit: 2
+preserve:
+- paper texture
+- ink wash
+- negative space
+avoid:
+- ornament
+- red lanterns
+- gold
+- readable text
+- 3d render gloss
