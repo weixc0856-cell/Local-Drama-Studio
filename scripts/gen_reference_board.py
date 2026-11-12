@@ -14,7 +14,7 @@ from pathlib import Path
 
 from drama_studio.config import find_project_root
 from drama_studio.paths import style_boards_root
-from drama_studio.style_engine import compile_image_prompt, get_pack, packs_root
+from drama_studio.domain.style import compile_image_prompt, get_pack, packs_root
 
 SUBJECTS = [
     "distant mountain ranges above a wide river",

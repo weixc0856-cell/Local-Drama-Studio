@@ -260,9 +260,9 @@ def _motion_fixture(tmp_path: Path) -> tuple[Path, Path, ProductionScript, Path]
 
 
 def test_build_motion_plan_aligns_audio_and_caps_transitions(tmp_path: Path) -> None:
-    from drama_studio.motion.spec import load_plan
+    from drama_studio.domain.motion.spec import load_plan
     from drama_studio.production import build_motion_plan
-    from drama_studio.style_presets import load_style_presets
+    from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
     preset = load_style_presets(project_root).get("court_green_fine_line")
@@ -344,9 +344,9 @@ def test_motion_plan_carries_plates_from_the_regions_file(tmp_path: Path) -> Non
     """
     import hashlib
 
-    from drama_studio.motion.spec import load_plan
+    from drama_studio.domain.motion.spec import load_plan
     from drama_studio.production import build_motion_plan
-    from drama_studio.style_presets import load_style_presets
+    from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
     preset = load_style_presets(project_root).get("court_green_fine_line")
@@ -411,9 +411,9 @@ def test_motion_plan_carries_plates_from_the_regions_file(tmp_path: Path) -> Non
 
 def test_header_extends_the_first_shot(tmp_path: Path) -> None:
     """The title is audio, so the first shot must cover it rather than trim it."""
-    from drama_studio.motion.spec import load_plan
+    from drama_studio.domain.motion.spec import load_plan
     from drama_studio.production import build_motion_plan
-    from drama_studio.style_presets import load_style_presets
+    from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
     preset = load_style_presets(project_root).get("court_green_fine_line")
@@ -438,7 +438,7 @@ def test_header_extends_the_first_shot(tmp_path: Path) -> None:
 
 def test_motion_plan_requires_a_static_report_unless_explicitly_skipped(tmp_path: Path) -> None:
     from drama_studio.production import ProductionError, build_motion_plan
-    from drama_studio.style_presets import load_style_presets
+    from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
     preset = load_style_presets(project_root).get("court_green_fine_line")

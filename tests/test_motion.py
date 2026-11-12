@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from drama_studio.motion.camera import camera_chain
-from drama_studio.motion.spec import (
+from drama_studio.domain.motion.camera import camera_chain
+from drama_studio.domain.motion.spec import (
     CameraOverride,
     LocalMotionSpec,
     MaskSpec,
@@ -17,7 +17,7 @@ from drama_studio.motion.spec import (
     resolve_camera,
 )
 from drama_studio.motion.transition import make_masks
-from drama_studio.style_presets import load_style_presets
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
 

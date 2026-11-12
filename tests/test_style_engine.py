@@ -8,7 +8,7 @@ import pytest
 from PIL import Image
 
 from drama_studio.config import find_project_root
-from drama_studio.style_engine import (
+from drama_studio.domain.style import (
     check_image,
     check_sequence,
     compile_image_prompt,

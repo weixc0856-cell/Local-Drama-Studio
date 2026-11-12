@@ -50,7 +50,7 @@ from PIL import Image
 from s2_build import H, W, black_frames, build_scroll, make_texture, rel, sample_frames, sha256
 from drama_studio.config import find_project_root
 from drama_studio.quality import check_video
-from drama_studio.style_presets import load_style_presets
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = find_project_root()
 

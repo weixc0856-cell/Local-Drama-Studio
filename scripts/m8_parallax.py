@@ -675,7 +675,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
 def render_production(data: dict) -> dict:
     """Variant A: the existing production 2D push, called unchanged."""
     from drama_studio.motion.render import render_plan
-    from drama_studio.motion.spec import CameraOverride, MotionPlan, ShotSpec
+    from drama_studio.domain.motion.spec import CameraOverride, MotionPlan, ShotSpec
 
     plan_obj = MotionPlan(
         style_id=data["style_id"],

@@ -4,7 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from drama_studio.motion.plates import enforce_policy
-from drama_studio.motion.spec import (
+from drama_studio.domain.motion.spec import (
     Box,
     PlateAnchor,
     PlateProvenance,
@@ -255,7 +255,7 @@ def test_policy_checks_alpha_only_for_inner_planes():
 
 
 def test_parallax_spec_requires_moves_when_allowed():
-    from drama_studio.style_presets import ParallaxSpec
+    from drama_studio.domain.style.presets import ParallaxSpec
     with pytest.raises(ValidationError, match="必须声明 camera_moves"):
         ParallaxSpec(allowed=True)
     assert ParallaxSpec(allowed=True, camera_moves=["slow_push_in"]).allowed

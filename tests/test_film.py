@@ -25,7 +25,7 @@ from drama_studio.film import (
     has_errors,
     plan_storyboard,
 )
-from drama_studio.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign
+from drama_studio.domain.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign
 
 
 def _bible() -> VisualBible:
@@ -210,7 +210,7 @@ def test_character_flag_controls_keyframe_prompt() -> None:
 
 
 def test_continuity_flags_same_shot_size_and_camera_vector_jump() -> None:
-    from drama_studio.film.schemas import (
+    from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec, Storyboard,
     )
 

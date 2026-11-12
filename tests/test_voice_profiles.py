@@ -10,7 +10,7 @@ import httpx
 import pytest
 import yaml
 
-from drama_studio.voice.profiles import (
+from drama_studio.domain.voice.profiles import (
     VoiceProfileError,
     load_library,
     resolve_voice,

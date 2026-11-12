@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from drama_studio.models import Shot, ShotStatus, Storyboard
+from drama_studio.domain.contracts import Shot, ShotStatus, Storyboard
 
 
 def _shot(index: int, **overrides):

@@ -15,7 +15,7 @@ from drama_studio.film.assemble import prepare
 from drama_studio.film.audio import standard_manifest, write_manifest
 from drama_studio.film.jobs import build_keyframe_jobs, build_wan_jobs
 from drama_studio.film.project import load_project
-from drama_studio.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign, VisualBible
+from drama_studio.domain.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign, VisualBible
 from drama_studio.film.segments import build_audio_manifest, build_segments
 from drama_studio.film.timeline import build_edit_timeline
 
@@ -159,7 +159,7 @@ def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.Mon
     assert manifest["lines"][0]["file"] == "projects/p1/assets/audio/N001.wav"
     assert manifest["lines"][0]["duration_seconds"] == pytest.approx(1.25)
 
-    from drama_studio.film.schemas import NarrationSegment
+    from drama_studio.domain.film.schemas import NarrationSegment
     from drama_studio.film.voice import render_text
     directed = NarrationSegment(id="N009", text="白日依山尽。", emotion="open", delivery="gentle")
     assert render_text(directed) == "白日依山尽"

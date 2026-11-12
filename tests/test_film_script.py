@@ -74,7 +74,7 @@ def test_init_project_writes_a_valid_contract(tmp_path: Path) -> None:
 
 
 def test_beats_stay_inside_style_camera_moves(tmp_path: Path) -> None:
-    from drama_studio.style_engine import get_pack
+    from drama_studio.domain.style import get_pack
 
     _install_pack(tmp_path)
     pack = get_pack(tmp_path, "oriental.ink_wash")
@@ -89,7 +89,7 @@ def test_beats_stay_inside_style_camera_moves(tmp_path: Path) -> None:
 
 def test_video_prompt_does_not_use_ambiguous_crane() -> None:
     from drama_studio.film.prompts import CINEMATIC_VIDEO, build_video_prompt, motion_phrase
-    from drama_studio.film.schemas import (
+    from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec,
     )
 

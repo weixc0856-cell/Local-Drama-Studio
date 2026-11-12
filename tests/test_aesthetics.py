@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from drama_studio.aesthetics import (
+from drama_studio.domain.aesthetics import (
     build_variants,
     compile_prompt,
     design_for_quality,
@@ -17,7 +17,7 @@ from drama_studio.aesthetics import (
 )
 from drama_studio.quality import check_aesthetic_risk, check_color_continuity
 from drama_studio.script_engine import ProductionScript
-from drama_studio.style_presets import load_style_presets
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -113,7 +113,7 @@ def test_unknown_color_key_is_rejected_by_compiler() -> None:
     shot = plan.shots[0]
     broken = shot.variants[0].design.model_copy(deep=True)
     broken.color.dominant = "不存在的颜色"
-    from drama_studio.aesthetics import ShotVariant
+    from drama_studio.domain.aesthetics import ShotVariant
 
     variant = ShotVariant(
         variant_id="A", label="x", rationale="x", changed_axis="composition", design=broken
@@ -240,7 +240,7 @@ def test_dynamic_aesthetic_report_writes_and_flags_nothing(tmp_path: Path) -> No
 def test_plan_rejects_mixed_continuity_groups() -> None:
     from pydantic import ValidationError
 
-    from drama_studio.aesthetics import AestheticPlan
+    from drama_studio.domain.aesthetics import AestheticPlan
 
     preset = load_style_presets(ROOT).get("ink_wash")
     script = _script("ink_wash", ["远山与江面"])

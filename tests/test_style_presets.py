@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from drama_studio.config import find_project_root
-from drama_studio.style_presets import (
+from drama_studio.domain.style.presets import (
     STYLE_ENTITY_FIELDS,
     load_style_presets,
 )

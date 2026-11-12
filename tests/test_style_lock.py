@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.style_lock import (
+from drama_studio.domain.style.lock import (
     StyleLockError,
     assert_style_request,
     locked_style_id,

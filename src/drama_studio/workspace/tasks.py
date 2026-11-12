@@ -1067,7 +1067,7 @@ def _story_prereqs(params: StoryCheckParams, store: WorkspaceStore) -> list[str]
 def _story_argv(params: StoryCheckParams, task_id: str) -> list[str]:
     script, characters, shots, voices, out = _story_paths(params, _STORE_REF[0])
     argv = [
-        sys.executable, "-m", "drama_studio.bible",
+        sys.executable, "-m", "drama_studio.domain.bible",
         "--script", _rel(script),
         "--characters", _rel(characters),
         "--shots", _rel(shots),

@@ -16,8 +16,8 @@ from drama_studio.motion.local import (
     water_displacement,
     water_vertical_displacement,
 )
-from drama_studio.motion.spec import LocalMotionSpec, MaskSpec
-from drama_studio.style_presets import load_style_presets
+from drama_studio.domain.motion.spec import LocalMotionSpec, MaskSpec
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
 WATER = dict(

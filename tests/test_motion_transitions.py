@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from drama_studio.motion.spec import MotionPlan, ShotSpec, TransitionSpec
+from drama_studio.domain.motion.spec import MotionPlan, ShotSpec, TransitionSpec
 from drama_studio.motion.transition import (
     assemble_sequence,
     make_masks,

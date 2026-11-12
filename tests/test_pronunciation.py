@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.voice.pronunciation import annotate, line_layers, load_lexicon
+from drama_studio.domain.voice.pronunciation import annotate, line_layers, load_lexicon
 
 ROOT = Path(__file__).resolve().parents[1]
 

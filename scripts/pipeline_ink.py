@@ -42,7 +42,7 @@ from s2_build import (  # noqa: E402 - shared experiment helpers, not a framewor
     sha256,
 )
 from drama_studio.config import find_project_root
-from drama_studio.style_presets import load_style_presets  # noqa: E402
+from drama_studio.domain.style.presets import load_style_presets  # noqa: E402
 
 ROOT = find_project_root()
 W, H, FPS = 1080, 1920, 24

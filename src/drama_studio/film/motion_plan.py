@@ -44,7 +44,7 @@ def build_motion_plan(
     Returns ``(plan, skipped)``. ``plan`` is ``None`` when the style has no
     motion preset or when every shot is already a generated clip.
     """
-    from drama_studio.motion.spec import (
+    from drama_studio.domain.motion.spec import (
         CameraOverride, LocalMotionSpec, MaskSpec, MotionPlan, ShotSpec,
     )
 

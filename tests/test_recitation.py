@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from drama_studio.voice.recitation import RecitationError, mode_spec, plan_line
+from drama_studio.domain.voice.recitation import RecitationError, mode_spec, plan_line
 from drama_studio.voice.tts import synthesize_narration
 
 

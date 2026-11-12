@@ -54,7 +54,7 @@ def _manifest(*ids: str) -> dict:
 
 
 def _storyboard():
-    from drama_studio.film.schemas import (
+    from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec, Storyboard,
     )
 
