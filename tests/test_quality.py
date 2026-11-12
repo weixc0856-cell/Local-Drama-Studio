@@ -7,7 +7,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from drama_studio.quality import check_audio, check_build, check_image, check_video
+from drama_studio.application.quality import check_audio, check_build, check_image, check_video
 
 
 def _noise(path: Path, size: tuple[int, int] = (64, 64)) -> None:

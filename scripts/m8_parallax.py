@@ -50,14 +50,15 @@ from PIL import Image, ImageChops, ImageFilter, ImageStat
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-OUT = ROOT / "experiments" / "m8_parallax"
+from drama_studio.paths import output_root, output_path
+OUT = output_path("experiments/m8_parallax")
 PLAN = OUT / "plan" / "layers.json"
 LAYERS = OUT / "layers"
 RENDERS = OUT / "renders"
 
 W, H, FPS = 1080, 1920, 24
 DURATION = 6.0
-SOURCE = ROOT / "experiments/m7_final/ink/work/images/shot_001/out.png"
+SOURCE = output_path("experiments/m7_final/ink/work/images/shot_001/out.png")
 ASSET_PATH = OUT.parent / "m8_plates" / "assets" / "fg_reeds.png"
 STYLE_ID = "ink_wash"
 
@@ -533,7 +534,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
         # The target shape: background with only the boat repainted (small,
         # uniform hole), the boat as its own plane, and an independent
         # foreground asset. The tree stays inside the background on purpose.
-        plate_path = ROOT / "experiments/m8_plates/plates/plate_boat.png"
+        plate_path = output_path("experiments/m8_plates/plates/plate_boat.png")
         if not plate_path.is_file():
             raise FileNotFoundError(f"{plate_path} — run scripts/m8_plates.py build --region boat")
         plate = Image.open(plate_path).convert("RGBA")
@@ -545,7 +546,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
         overlay_asset = Image.open(ASSET_PATH).convert("RGBA")
         overlay_box = tuple(data.get("overlay_box", [0.24, 0.58, 0.57, 1.02]))
 
-    from drama_studio.motion.local import mesh_warp, water_displacement, reflection_displacement
+    from drama_studio.application.motion.local import mesh_warp, water_displacement, reflection_displacement
 
     band = (0.495, 0.955)
     water_cfg = {
@@ -622,7 +623,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
 
     video = out_dir / f"{variant.lower()}.mp4"
     texture = out_dir / "texture_raw_paper.png"
-    from drama_studio.motion.texture import make_texture
+    from drama_studio.application.motion.texture import make_texture
     make_texture("raw_paper", texture)
 
     cmd = [
@@ -673,8 +674,8 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
 
 def render_production(data: dict) -> dict:
     """Variant A: the existing production 2D push, called unchanged."""
-    from drama_studio.motion.render import render_plan
-    from drama_studio.motion.spec import CameraOverride, MotionPlan, ShotSpec
+    from drama_studio.application.motion.render import render_plan
+    from drama_studio.domain.motion.spec import CameraOverride, MotionPlan, ShotSpec
 
     plan_obj = MotionPlan(
         style_id=data["style_id"],
@@ -994,7 +995,7 @@ def metrics(data: dict, curve: dict) -> dict:
     # Resampling floor: C warps the whole background frame through Pillow's
     # mesh, which resamples every pixel even where the displacement is zero.
     # Measuring that control separates the ripple from plain resampling.
-    from drama_studio.motion.local import mesh_warp
+    from drama_studio.application.motion.local import mesh_warp
     floors = {}
     for label in ("mid", "last"):
         b_img = Image.open(frames_dir / f"B_{label}.png").convert("RGB")

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import yaml
 
-from drama_studio.bible import check_story_bibles, load_character_bible, load_shot_bible
+from drama_studio.domain.bible import check_story_bibles, load_character_bible, load_shot_bible
 
 
 def _script(path: Path, shots: int = 2, style: str = "ink_wash") -> Path:

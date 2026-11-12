@@ -15,8 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from drama_studio.production import ProductionError, build_video_jobs
-from drama_studio.script_engine import ProductionScript
+from drama_studio.application.production import ProductionError, build_video_jobs
+from drama_studio.application.script_engine import ProductionScript
 
 
 def main() -> int:

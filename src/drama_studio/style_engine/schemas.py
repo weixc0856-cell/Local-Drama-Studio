@@ -1,115 +1,16 @@
-"""Strict schemas for a Visual Style Pack."""
+"""Compatibility shim: re-points to ``drama_studio.domain.style.schemas``.
 
-from __future__ import annotations
+The module object is replaced, so private names and module-level state stay
+shared with the implementation while the migration is in progress. New code
+must import from the layer path.
+"""
 
-from pydantic import BaseModel, Field
+import importlib
+import sys
 
-
-class StyleIdentity(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    id: str
-    name: str
-    group: str
-    version: str
-    status: str = "SPEC_DRAFT"
-    summary: str
-    layers: list[str] = Field(default_factory=lambda: ["identity", "execution", "consistency"])
-
-
-class ImagePrompt(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    identity: str
-    medium: str
-    materials: list[str]
-    composition: list[str]
-    prompt_order: list[str]
-    positive_anchors: list[str]
-
-
-class VideoPrompt(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    motion_vocabulary: list[str]
-    secondary_limit: int = 2
-    preserve: list[str]
-    avoid: list[str]
-
-
-class CameraProfile(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    allowed_moves: list[str]
-    preferred_lens_mm: int
-    dof_strategy: str
-
-
-class MotionProfile(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    primary_motions: list[str]
-    secondary_motions: list[str]
-    secondary_limit: int = 2
-
-
-class LightingProfile(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    key: str
-    temperature: str
-    contrast: str
-
-
-class ColorAnchor(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    name: str
-    hex: str
-
-
-class ColorProfile(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    anchors: list[ColorAnchor]
-    saturation_range: list[float]
-    edge_density_range: list[float]
-    value_range: list[float]
-    note: str = ""
-
-
-class MaterialProfile(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    materials: list[str]
-    texture_cues: list[str]
-
-
-class NegativeConstraints(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    schema_version: str = "1.0"
-    forbidden: list[str]
-    note: str = ""
-
-
-class StylePack(BaseModel):
-    model_config = {"extra": "forbid"}
-
-    identity: StyleIdentity
-    image: ImagePrompt
-    video: VideoPrompt
-    camera: CameraProfile
-    motion: MotionProfile
-    lighting: LightingProfile
-    color: ColorProfile
-    material: MaterialProfile
-    negative: NegativeConstraints
+_impl = importlib.import_module("drama_studio.domain.style.schemas")
+_parent_name, _, _leaf = __name__.rpartition(".")
+_parent = sys.modules.get(_parent_name)
+if _parent is not None:
+    setattr(_parent, _leaf, _impl)
+sys.modules[__name__] = _impl

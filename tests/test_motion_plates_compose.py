@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from PIL import Image
 
-from drama_studio.motion.plates import (
+from drama_studio.application.motion.plates import (
     CameraState,
     LoadedPlate,
     background_pan,
@@ -15,7 +15,7 @@ from drama_studio.motion.plates import (
     plate_scale,
     sample,
 )
-from drama_studio.motion.spec import CameraSpec, PlateAnchor, PlateSpec
+from drama_studio.domain.motion.spec import CameraSpec, PlateAnchor, PlateSpec
 
 HASH = "0" * 64
 

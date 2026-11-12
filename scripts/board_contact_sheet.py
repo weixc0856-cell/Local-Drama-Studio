@@ -15,7 +15,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 from drama_studio.config import find_project_root
-from drama_studio.style_engine import get_pack, packs_root
+from drama_studio.domain.style import get_pack, packs_root
 
 
 def latest_images(candidates: Path, limit: int) -> list[tuple[str, Path]]:

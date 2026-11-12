@@ -10,14 +10,14 @@ from types import SimpleNamespace
 import pytest
 import yaml
 
-from drama_studio.film import plan_storyboard
-from drama_studio.film.assemble import prepare
-from drama_studio.film.audio import standard_manifest, write_manifest
-from drama_studio.film.jobs import build_keyframe_jobs, build_wan_jobs
-from drama_studio.film.project import load_project
-from drama_studio.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign, VisualBible
-from drama_studio.film.segments import build_audio_manifest, build_segments
-from drama_studio.film.timeline import build_edit_timeline
+from drama_studio.application.film import plan_storyboard
+from drama_studio.application.film.assemble import prepare
+from drama_studio.application.film.audio import standard_manifest, write_manifest
+from drama_studio.application.film.jobs import build_keyframe_jobs, build_wan_jobs
+from drama_studio.application.film.project import load_project
+from drama_studio.domain.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign, VisualBible
+from drama_studio.application.film.segments import build_audio_manifest, build_segments
+from drama_studio.application.film.timeline import build_edit_timeline
 
 
 def _wav(path: Path, seconds: float = 1.0, rate: int = 48000) -> Path:
@@ -139,7 +139,7 @@ def test_wan_jobs_pick_73_for_short_shots(tmp_path: Path) -> None:
 
 
 def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from drama_studio.film import voice
+    from drama_studio.application.film import voice
 
     _project(tmp_path, 2)
     loaded = load_project(tmp_path, "p1")
@@ -159,8 +159,8 @@ def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.Mon
     assert manifest["lines"][0]["file"] == "projects/p1/assets/audio/N001.wav"
     assert manifest["lines"][0]["duration_seconds"] == pytest.approx(1.25)
 
-    from drama_studio.film.schemas import NarrationSegment
-    from drama_studio.film.voice import render_text
+    from drama_studio.domain.film.schemas import NarrationSegment
+    from drama_studio.application.film.voice import render_text
     directed = NarrationSegment(id="N009", text="白日依山尽。", emotion="open", delivery="gentle")
     assert render_text(directed) == "白日依山尽"
 
@@ -170,7 +170,7 @@ def test_audio_first_timeline_extends_short_shots(tmp_path: Path) -> None:
     _audio_manifest(directory, [7.0, 1.0])
     loaded = load_project(tmp_path, "p1")
     manifest = json.loads((directory / "assets" / "audio" / "audio_manifest.json").read_text(encoding="utf-8"))
-    from drama_studio.film.config import ProductionSettings
+    from drama_studio.application.film.config import ProductionSettings
 
     timeline = build_edit_timeline(loaded.storyboard, manifest, settings=ProductionSettings())
     first = timeline.entries[0]
@@ -203,7 +203,7 @@ def test_segments_refuse_unencoded_wan_frames(tmp_path: Path) -> None:
         _png(directory / "shots" / "S01" / f"S01_{index:05d}_.png")
     loaded = load_project(tmp_path, "p1")
     prepared = prepare(loaded, tmp_path)
-    from drama_studio.film.assets import resolve_asset
+    from drama_studio.application.film.assets import resolve_asset
 
     assert resolve_asset(directory, "S01").kind == "image_sequence"
     with pytest.raises(Exception, match="film clips"):

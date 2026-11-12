@@ -10,15 +10,15 @@ import httpx
 import pytest
 from pydantic import ValidationError
 
-from drama_studio.voice.pronunciation import (
+from drama_studio.domain.voice.pronunciation import (
     Entry,
     build_report,
     line_layers,
     load_lexicon,
     rewrite_acoustic,
 )
-from drama_studio.voice.recitation import mode_spec, plan_line
-from drama_studio.voice.tts import synthesize_narration
+from drama_studio.domain.voice.recitation import mode_spec, plan_line
+from drama_studio.application.voice.tts import synthesize_narration
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -199,7 +199,7 @@ def test_tts_sends_acoustic_text_to_voxcpm(
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake)
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":

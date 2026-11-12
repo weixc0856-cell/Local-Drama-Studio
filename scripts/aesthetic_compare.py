@@ -23,10 +23,10 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-from drama_studio.aesthetics import design_for_quality, load_plan
+from drama_studio.domain.aesthetics import design_for_quality, load_plan
 from drama_studio.config import find_project_root
-from drama_studio.quality import check_aesthetic_risk, check_image
-from drama_studio.style_presets import load_style_presets
+from drama_studio.application.quality import check_aesthetic_risk, check_image
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = find_project_root()
 THUMB = (360, 640)

@@ -24,7 +24,7 @@ dev = [
 ]
 
 [project.scripts]
-drama = "drama_studio.cli:app"
+drama = "drama_studio.interfaces.cli:app"
 
 [build-system]
 requires = ["hatchling"]

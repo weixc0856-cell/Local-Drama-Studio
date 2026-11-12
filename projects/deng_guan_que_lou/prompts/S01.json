@@ -1,6 +1,0 @@
-{
-  "shot_id": "S01",
-  "keyframe_prompt": "scene SC01, no people, empty landscape. traditional Chinese ink wash painting. raw xuan paper, diluted ink, dry brush. composition: large negative space, layered distance, asymmetrical balance. lighting: atmospheric, low contrast, neutral temperature, low contrast. materials: rice paper fibre, wet ink, dry brush. camera: crane move through the space, 35mm lens, deep depth of field. foreground: cloud bands drifting. midground: mountain ridges. background: setting sun, yellow river valley. visible xuan paper grain. brush strokes dissolving into blank paper. large unpainted areas. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "video_prompt": "crane move through the space. primary motion: camera_descent. style motion: ink diffusion, mist drift, water flow. preserve: brushwork, negative space, paper grain. lighting: atmospheric, low contrast, consistent direction. secondary motion: cloud_drift. foreground: cloud bands drifting. background: setting sun, yellow river valley. smooth continuous motion, physically plausible, no abrupt changes, preserve composition and structure, no new characters, no scene transformation",
-  "style_id": "oriental.ink_wash"
-}

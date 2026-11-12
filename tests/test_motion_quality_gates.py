@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from PIL import Image, ImageDraw
 
-from drama_studio.motion.render import render_plan
-from drama_studio.motion.spec import (
+from drama_studio.application.motion.render import render_plan
+from drama_studio.domain.motion.spec import (
     CameraOverride,
     LocalMotionSpec,
     MaskSpec,
@@ -16,15 +16,15 @@ from drama_studio.motion.spec import (
     ShotSpec,
     resolve_camera,
 )
-from drama_studio.motion.camera import camera_chain, camera_post, camera_pre, intermediate_size
-from drama_studio.quality import (
+from drama_studio.domain.motion.camera import camera_chain, camera_post, camera_pre, intermediate_size
+from drama_studio.application.quality import (
     FAIL,
     PASS,
     camera_box_at,
     check_rigid_protection,
     check_temporal_continuity,
 )
-from drama_studio.style_presets import load_style_presets
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -145,7 +145,7 @@ def test_camera_box_mapping_expands_with_push_in() -> None:
 
 
 def test_workspace_params_expose_motion_quality() -> None:
-    from drama_studio.workspace.tasks import MotionRenderParams, QualityParams
+    from drama_studio.application.operations.tasks import MotionRenderParams, QualityParams
 
     quality = QualityParams(episode_id="ep", motion_manifest="motion_manifest.json")
     assert quality.motion_manifest == "motion_manifest.json"

@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a rural T-junction with a convex traffic mirror and power lines. luminous Japanese animated film background, Makoto Shinkai style, theatrical feature. hand-painted anime background with photographic detail, luminous gradient sky. composition: a single scene at one shot scale, one clear focal point, a single cloud form in one sky, a single time of day across the frame, everyday Japanese setting: train crossing, station bench, riverside levee, utility poles, vending machine, layered depth with a reflective foreground where it belongs, clean edges with no text and no signage. lighting: dramatic twilight or clear afternoon, strong backlight, god rays and soft lens bloom, cool temperature, medium contrast. materials: painted sky, detailed cumulus, wet asphalt, glass reflection, light bloom. camera: locked-off camera, 24mm lens, deep depth of field. luminous sky with one clear light direction. one cloud form with rim light and deep blue shadow, painted once across the sky. god rays only where the light justifies them. utility poles and wires are straight, evenly spaced and continuous. a clear focal point: a raindrop, a bench, a puddle reflection, or a wide sky. painterly detail with clean shapes, no photo texture. no characters and no readable text. reference board sample, no characters, no text or signage, clean painted edges, one clear focal point at one shot scale, medium shot, noon light, clear sky, poles straight and evenly spaced, no text on the mirror. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 6905,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/artistic_japanese_soft/05"
-}

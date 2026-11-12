@@ -19,6 +19,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from drama_studio.paths import output_root, output_path
 
 def run(cmd: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -138,13 +139,13 @@ def main() -> int:
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
 
-    project = ROOT / "projects" / args.project
-    build = (ROOT / args.build).resolve() if not Path(args.build).is_absolute() else Path(args.build)
+    project = output_path("projects") / args.project
+    build = output_path(args.build).resolve() if not Path(args.build).is_absolute() else Path(args.build)
     manifest_path = build / "build_manifest.json"
     if not manifest_path.is_file():
         raise SystemExit(f"missing {manifest_path}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    final = ROOT / manifest["outputs"]["final"]
+    final = output_path(manifest["outputs"]["final"])
     quality = json.loads((build / "quality_report.json").read_text(encoding="utf-8"))
     timeline = json.loads((build / "film_timeline.json").read_text(encoding="utf-8"))
     chain_path = project / "shots" / "S01" / "chain_manifest.json"

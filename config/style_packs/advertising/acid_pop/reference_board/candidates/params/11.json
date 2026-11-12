@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a cap silhouette on cyan. acid pop advertising, high-saturation Memphis layout. flat vector colour blocks, type-free layout, halftone accents. composition: one bold product silhouette, oversized geometric colour blocks, repeated motif or checkerboard, blank copy zone, no readable text. lighting: flat graphic light, neutral temperature, high contrast. materials: flat ink, paper, screen print. camera: locked-off camera, 50mm lens, flat depth of field. flat acid colour blocks. one bold silhouette. repeated graphic motif. a blank copy zone. no text. acid pop advertising, no readable text, flat colour, blank copy zone. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 7611,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/advertising_acid_pop/11"
-}

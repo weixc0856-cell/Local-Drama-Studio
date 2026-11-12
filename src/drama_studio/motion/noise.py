@@ -1,26 +1,16 @@
-"""Deterministic value noise.
+"""Compatibility shim: re-points to ``drama_studio.domain.motion.noise``.
 
-Pillow's ``Image.effect_noise`` is not seedable, so two builds with the same
-recorded parameters could differ. This tiny generator is seeded by an integer
-and has no dependency beyond ``math``; the result is reproducible on any machine
-(floating-point sine is stable for the ranges used here).
+The module object is replaced, so private names and module-level state stay
+shared with the implementation while the migration is in progress. New code
+must import from the layer path.
 """
 
-from __future__ import annotations
+import importlib
+import sys
 
-import math
-
-from PIL import Image
-
-
-def noise_image(size: tuple[int, int], seed: int = 0, sigma: float = 40.0) -> Image.Image:
-    width, height = max(1, size[0]), max(1, size[1])
-    image = Image.new("L", (width, height), 128)
-    pixel = image.load()
-    base = float(seed % 100000) * 37.719
-    for y in range(height):
-        for x in range(width):
-            value = math.sin(x * 12.9898 + y * 78.233 + base) * 43758.5453
-            fraction = value - math.floor(value)
-            pixel[x, y] = max(0, min(255, int(round(128.0 + (fraction - 0.5) * 2.0 * sigma))))
-    return image
+_impl = importlib.import_module("drama_studio.domain.motion.noise")
+_parent_name, _, _leaf = __name__.rpartition(".")
+_parent = sys.modules.get(_parent_name)
+if _parent is not None:
+    setattr(_parent, _leaf, _impl)
+sys.modules[__name__] = _impl

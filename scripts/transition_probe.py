@@ -23,8 +23,8 @@ from pathlib import Path
 from PIL import Image
 
 from drama_studio.config import find_project_root
-from drama_studio.motion.spec import TransitionSpec
-from drama_studio.motion.transition import make_masks, render_transition
+from drama_studio.domain.motion.spec import TransitionSpec
+from drama_studio.application.motion.transition import make_masks, render_transition
 
 ROOT = find_project_root()
 W, H, FPS = 1080, 1920, 24

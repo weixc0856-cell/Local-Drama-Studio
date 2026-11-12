@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.film import (
+from drama_studio.application.film import (
     CameraMove,
     CameraSpec,
     ContinuitySpec,
@@ -25,7 +25,7 @@ from drama_studio.film import (
     has_errors,
     plan_storyboard,
 )
-from drama_studio.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign
+from drama_studio.domain.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign
 
 
 def _bible() -> VisualBible:
@@ -176,7 +176,7 @@ def test_layers_require_at_least_one_depth() -> None:
 
 
 def test_keyframe_and_video_prompts_follow_the_guide() -> None:
-    from drama_studio.film import build_keyframe_prompt, build_video_prompt
+    from drama_studio.application.film import build_keyframe_prompt, build_video_prompt
 
     board = plan_storyboard("p1", _beats(1), _bible())
     shot = board.shots[0]
@@ -192,14 +192,14 @@ def test_keyframe_and_video_prompts_follow_the_guide() -> None:
 
 
 def test_secondary_motion_is_capped_at_two() -> None:
-    from drama_studio.film import MotionSpec
+    from drama_studio.application.film import MotionSpec
 
     with pytest.raises(ValueError):
         MotionSpec(primary="camera_forward", secondary=["a", "b", "c"])
 
 
 def test_character_flag_controls_keyframe_prompt() -> None:
-    from drama_studio.film import build_keyframe_prompt
+    from drama_studio.application.film import build_keyframe_prompt
 
     beats = _beats(1)
     beats[0]["character_in_frame"] = False
@@ -210,7 +210,7 @@ def test_character_flag_controls_keyframe_prompt() -> None:
 
 
 def test_continuity_flags_same_shot_size_and_camera_vector_jump() -> None:
-    from drama_studio.film.schemas import (
+    from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec, Storyboard,
     )
 

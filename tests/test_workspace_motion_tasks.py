@@ -21,7 +21,7 @@ def test_motion_and_audio_tasks_wire_the_production_cli(workspace) -> None:
 
     plan = workspace.tasks.MotionPlanParams(episode_id=episode_id, style="ink_wash")
     plan_argv = workspace.tasks._motion_plan_argv(plan, "task_test")
-    assert plan_argv[:3] == [sys.executable, "-m", "drama_studio.production"]
+    assert plan_argv[:3] == [sys.executable, "-m", "drama_studio.application.production"]
     assert "--motion-plan" in plan_argv
     assert plan_argv[plan_argv.index("--style") + 1] == "ink_wash"
     assert "--align-audio" in plan_argv
@@ -38,7 +38,7 @@ def test_motion_and_audio_tasks_wire_the_production_cli(workspace) -> None:
 
     audio = workspace.tasks.AudioQAParams(episode_id=episode_id)
     audio_argv = workspace.tasks._audio_qa_argv(audio, "task_test")
-    assert audio_argv[1:] == ["-m", "drama_studio.quality", "--audio-manifest", "artifacts/ep1/audio_manifest.json"]
+    assert audio_argv[1:] == ["-m", "drama_studio.application.quality", "--audio-manifest", "artifacts/ep1/audio_manifest.json"]
 
     aesthetic = workspace.tasks.AestheticPlanParams(episode_id=episode_id, style="ink_wash")
     aesthetic_argv = workspace.tasks._aesthetic_plan_argv(aesthetic, "task_test")
@@ -65,7 +65,7 @@ def test_style_consistency_task_wires_two_shot_gate(workspace) -> None:
     workspace.tasks.TaskRunner(workspace.store)
     params = workspace.tasks.StyleConsistencyParams(episode_id=episode_id)
     argv = workspace.tasks._style_consistency_argv(params, "task_test")
-    assert argv[1:3] == ["-m", "drama_studio.style_consistency"]
+    assert argv[1:3] == ["-m", "drama_studio.application.style_consistency"]
     assert argv[argv.index("--style") + 1] == "ink_wash"
     assert argv.count("--shot") == 2
     assert "artifacts/ep1/style_consistency_report.json" in argv

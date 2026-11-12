@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from drama_studio.style_consistency import StyleConsistencyError, check_style_consistency
+from drama_studio.application.style_consistency import StyleConsistencyError, check_style_consistency
 
 
 def _solid(path: Path, color: tuple[int, int, int], size=(320, 320)) -> Path:

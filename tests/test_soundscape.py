@@ -11,7 +11,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from drama_studio.voice.soundscape import (  # noqa: E402
+from drama_studio.application.voice.soundscape import (  # noqa: E402
     EARLY_TAPS_MS,
     SoundscapeSettings,
     load_settings,

@@ -20,8 +20,8 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = ROOT / "experiments" / "ink_dream"
-SHINKAI = ROOT / "experiments" / "shinkai_scene"
+BASE = output_path("experiments/ink_dream")
+SHINKAI = output_path("experiments/shinkai_scene")
 LOG = BASE / "run_ink_film.log"
 
 

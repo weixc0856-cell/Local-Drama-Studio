@@ -10,8 +10,8 @@ Outputs (experiments/r3b/renders/):
   final_9x16.mp4 (soft subs), final_9x16_burned.mp4 (burned, optional),
   build_manifest.json
 
-Timeline and subtitle times come from drama_studio.voice.timeline.
-Subtitle font role comes from config/fonts.yaml via drama_studio.fonts.
+Timeline and subtitle times come from drama_studio.application.voice.timeline.
+Subtitle font role comes from config/fonts.yaml via drama_studio.infrastructure.fonts.
 No new dependencies: pysubs2 is already in the project venv.
 """
 
@@ -26,8 +26,9 @@ from pathlib import Path
 
 import pysubs2
 
-from drama_studio.fonts import FontConfigurationError, load_font_config
-from drama_studio.voice.timeline import (
+from drama_studio.infrastructure.fonts import FontConfigurationError, load_font_config
+from drama_studio.paths import is_repo_path, output_root
+from drama_studio.application.voice.timeline import (
     build_timeline,
     leading_silence_for,
     make_srt,
@@ -35,6 +36,7 @@ from drama_studio.voice.timeline import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+WS = output_root()  # generated artifacts live outside the repo
 FPS = 24
 W, H = 1080, 1920
 GAP_MS = 800
@@ -56,15 +58,25 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def resolve_artifact(value: str | Path) -> Path:
+    """A manifest path is either generated (workspace) or a declared input (repo)."""
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    return (ROOT if is_repo_path(str(value)) else WS) / path
+
+
 def relpath(path: Path) -> str:
-    try:
-        return str(path.relative_to(ROOT))
-    except ValueError:
-        return str(path)
+    for base in (WS, ROOT):
+        try:
+            return str(path.relative_to(base))
+        except ValueError:
+            continue
+    return str(path)
 
 
 def build_segment(seg: dict, out: Path, *, render_duration: float | None = None) -> None:
-    src = ROOT / seg["source"]
+    src = resolve_artifact(seg["source"])
     if not src.is_file():
         raise FileNotFoundError(src)
     dur = float(render_duration if render_duration is not None else seg["duration"])
@@ -110,9 +122,9 @@ def main() -> int:
                         help="crossfade seconds on dissolve cuts (0 disables)")
     args = parser.parse_args()
 
-    segments = json.loads((ROOT / args.segments).read_text(encoding="utf-8"))
-    audio = json.loads((ROOT / args.audio).read_text(encoding="utf-8"))
-    out_dir = (ROOT / args.out).resolve()
+    segments = json.loads(resolve_artifact(args.segments).read_text(encoding="utf-8"))
+    audio = json.loads(resolve_artifact(args.audio).read_text(encoding="utf-8"))
+    out_dir = resolve_artifact(args.out).resolve()
     if (out_dir / "final_9x16.mp4").exists() and not args.allow_overwrite:
         raise SystemExit(
             f"refusing to overwrite existing render in {out_dir}; "
@@ -232,18 +244,18 @@ def main() -> int:
          "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-r", str(FPS), str(video_faded)])
 
     # Audio: explicit multi-track timeline, or the legacy narration-only mix.
-    from drama_studio.voice.soundscape import load_settings as load_soundscape
-    from drama_studio.voice.soundscape import master as master_soundscape
+    from drama_studio.application.voice.soundscape import load_settings as load_soundscape
+    from drama_studio.application.voice.soundscape import master as master_soundscape
 
     soundscape = load_soundscape(ROOT)
     mixed = out_dir / "mixed.wav"
     mix_target = out_dir / "mixed_pre.wav" if soundscape.enabled else mixed
     audio_timeline_report = None
     if args.audio_timeline:
-        from drama_studio.voice.mix import MixError, mix_timeline
+        from drama_studio.application.voice.mix import MixError, mix_timeline
 
         timeline_arg = Path(args.audio_timeline)
-        timeline_arg = timeline_arg if timeline_arg.is_absolute() else (ROOT / timeline_arg)
+        timeline_arg = timeline_arg if timeline_arg.is_absolute() else resolve_artifact(timeline_arg)
         if args.bgm_id:
             effective = json.loads(timeline_arg.read_text(encoding="utf-8"))
             seen = 0
@@ -260,7 +272,7 @@ def main() -> int:
             )
         if args.audio_assets:
             assets_arg = Path(args.audio_assets)
-            assets_arg = assets_arg if assets_arg.is_absolute() else (ROOT / assets_arg)
+            assets_arg = assets_arg if assets_arg.is_absolute() else resolve_artifact(assets_arg)
         else:
             candidate = ROOT / "assets" / "audio" / "manifest.json"
             assets_arg = candidate if candidate.is_file() else None

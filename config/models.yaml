@@ -18,7 +18,7 @@ models:
       unet_gguf: 3666908064
       text_encoder: 4858559240
       vae: 336211292
-    notes: "FLUX.3 Klein distilled: 16 steps, CFG 1.0, er_sde/simple. Qwen3-VL-4B encoder runs on CPU. The official 9B prompt upsampler is unusable on this machine; production uses the local Qwen caption stage (docs/MODEL_UPGRADE_POC.md)."
+    notes: "FLUX.3 Klein distilled: 16 steps, CFG 1.0, er_sde/simple. Qwen3-VL-4B encoder runs on CPU. The official 9B prompt upsampler is unusable on this machine; production uses the local Qwen caption stage (docs/DECISIONS.md (ADR-016))."
 
   wan_2_2_ti2v_5b:
     role: video

@@ -21,8 +21,13 @@ jobs:
           pip install -e . pytest
       - name: Generate test assets
         run: python scripts/make_ir.py --out assets/audio/ir/synthetic_hall_0.9s.wav
+      - name: Repo hygiene (no artifacts in the checkout)
+        env:
+          DRAMA_OUTPUT_ROOT: ${{ runner.temp }}/drama-output
+        run: python scripts/check_repo_hygiene.py
       - name: Test
         env:
+          DRAMA_OUTPUT_ROOT: ${{ runner.temp }}/drama-output
           DRAMA_MODELS_ROOT: ${{ github.workspace }}/runtime/models
           DRAMA_AI_HOME: ${{ github.workspace }}/runtime
         run: python -m pytest -q

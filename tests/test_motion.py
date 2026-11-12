@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from drama_studio.motion.camera import camera_chain
-from drama_studio.motion.spec import (
+from drama_studio.domain.motion.camera import camera_chain
+from drama_studio.domain.motion.spec import (
     CameraOverride,
     LocalMotionSpec,
     MaskSpec,
@@ -16,8 +16,8 @@ from drama_studio.motion.spec import (
     TransitionSpec,
     resolve_camera,
 )
-from drama_studio.motion.transition import make_masks
-from drama_studio.style_presets import load_style_presets
+from drama_studio.application.motion.transition import make_masks
+from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -128,7 +128,7 @@ def test_transition_masks_are_deterministic_and_monotonic(tmp_path: Path) -> Non
 def test_local_policy_supplies_missing_amplitude_and_frequency(tmp_path: Path) -> None:
     from PIL import Image
 
-    from drama_studio.motion.local import prepare_layers
+    from drama_studio.application.motion.local import prepare_layers
 
     ink = load_style_presets(ROOT).get("ink_wash")
     spec = LocalMotionSpec(

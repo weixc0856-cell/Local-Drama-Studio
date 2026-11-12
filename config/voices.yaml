@@ -41,7 +41,7 @@ profiles:
     speed: 1.0
     status: TECHNICALLY_VALIDATED
     commercial_allowed: null
-    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    license_evidence: "docs/AUDIO_AND_LICENSING.md"
     notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；权重/音色/生成音频商用授权未核验。"
 
   - profile_id: sft_female_01
@@ -51,7 +51,7 @@ profiles:
     speed: 1.0
     status: TECHNICALLY_VALIDATED
     commercial_allowed: null
-    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    license_evidence: "docs/AUDIO_AND_LICENSING.md"
     notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；商用授权未核验。"
 
   - profile_id: announcer_sun_daolin

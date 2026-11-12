@@ -23,7 +23,7 @@ THEMES = [
 
 
 def first_png(run_id: str) -> Path:
-    run_dir = ROOT / "experiments" / "r1" / "runs" / run_id
+    run_dir = output_path("experiments/r1/runs") / run_id
     meta = run_dir / "job.json"
     if meta.is_file():
         data = json.loads(meta.read_text(encoding="utf-8"))
@@ -93,7 +93,7 @@ def main() -> int:
             sheet.paste(cell(path), (c * CELL[0], y))
             draw.text((c * CELL[0] + 6, y + CELL[1] - 16), label, fill=(200, 210, 216))
 
-    out = ROOT / "assets" / "visual_style" / "consistency_comparison.png"
+    out = output_path("assets/visual_style/consistency_comparison.png")
     out.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(out, quality=92)
     (out.with_suffix(".json")).write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")

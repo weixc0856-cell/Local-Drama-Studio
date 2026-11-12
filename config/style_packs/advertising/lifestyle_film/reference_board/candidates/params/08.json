@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "hands chopping vegetables in warm light. cinematic lifestyle advertising photography. 35mm film look, golden hour, shallow depth, natural grain. composition: a candid human moment with faces out of frame, the product sits in the scene as a quiet detail, warm negative space for copy, no staged studio look. lighting: golden hour or soft window light, warm temperature, medium contrast. materials: film grain, natural fabric, warm light, wood and stone. camera: locked-off camera, 50mm lens, shallow depth of field. a candid human moment with faces out of frame. golden hour or soft window light. film grain and honest texture. the product as a quiet detail. negative space for copy. no text. cinematic lifestyle photograph, faces out of frame, no readable text, film grain. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 5108,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/advertising_lifestyle_film/08"
-}

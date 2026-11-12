@@ -1,4 +1,4 @@
-from drama_studio.doctor import FAIL, NOT_RUN, PASS_LIMITED, PASS_VERIFIED, Check, summarize
+from drama_studio.application.doctor import FAIL, NOT_RUN, PASS_LIMITED, PASS_VERIFIED, Check, summarize
 
 
 def test_summarize_counts_and_required_failure() -> None:

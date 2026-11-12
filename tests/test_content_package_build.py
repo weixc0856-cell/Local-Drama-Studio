@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from drama_studio.content_package import build_content_package
+from drama_studio.application.content_package import build_content_package
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "literary_intelligence" / "tests" / "fixtures" / "corpus_short"

@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from drama_studio.film.upscale import UpscaleError, available_backends, upscale_clip  # noqa: E402
+from drama_studio.application.film.upscale import UpscaleError, available_backends, upscale_clip  # noqa: E402
 
 
 def probe(path: Path) -> dict:

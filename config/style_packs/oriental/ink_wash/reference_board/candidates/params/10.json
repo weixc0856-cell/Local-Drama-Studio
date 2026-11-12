@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "bamboo grove in thin mist. traditional Chinese ink wash painting. raw xuan paper, diluted ink, dry brush. composition: large negative space, layered distance, asymmetrical balance. lighting: atmospheric, low contrast, neutral temperature, low contrast. materials: rice paper fibre, wet ink, dry brush. camera: locked-off camera, 35mm lens, deep depth of field. visible xuan paper grain. brush strokes dissolving into blank paper. large unpainted areas. reference board sample, no characters. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 5110,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/oriental_ink_wash/10"
-}

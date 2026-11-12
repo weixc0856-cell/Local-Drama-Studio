@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.fonts import FontConfigurationError, load_font_config
+from drama_studio.infrastructure.fonts import FontConfigurationError, load_font_config
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "assets/fonts/font_manifest.json"

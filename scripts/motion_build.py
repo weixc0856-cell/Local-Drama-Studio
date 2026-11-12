@@ -1,6 +1,6 @@
 r"""Render per-shot camera/local-motion clips and an optional transition sequence.
 
-Input is a motion plan JSON (see ``drama_studio.motion.spec``). Style behaviour
+Input is a motion plan JSON (see ``drama_studio.domain.motion.spec``). Style behaviour
 comes from ``config/styles.yaml``; the plan only carries content (still, duration,
 motion hint, authored local-motion regions, transitions).
 
@@ -19,8 +19,8 @@ import sys
 from pathlib import Path
 
 from drama_studio.config import find_project_root
-from drama_studio.motion.render import render_plan
-from drama_studio.motion.spec import load_plan
+from drama_studio.application.motion.render import render_plan
+from drama_studio.domain.motion.spec import load_plan
 
 ROOT = find_project_root()
 

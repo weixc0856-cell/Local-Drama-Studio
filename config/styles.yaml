@@ -48,7 +48,7 @@ styles:
     reference_assets: []
     aspect_ratio: "9:16"
     applicable_content_types: [山水, 长卷, 建筑, 花鸟, 空镜]
-    source_files: [docs/VISUAL_STYLE_SPEC.md]
+    source_files: [docs/VISUAL_STYLE.md]
 
     material:
       kind: silk
@@ -219,7 +219,7 @@ styles:
     reference_assets: []
     aspect_ratio: "9:16"
     applicable_content_types: [山水, 云雾, 水面, 花鸟, 空镜]
-    source_files: [docs/VISUAL_STYLE_SPEC.md]
+    source_files: [docs/VISUAL_STYLE.md]
 
     material:
       kind: raw_paper
@@ -397,7 +397,7 @@ styles:
     - 雨后
     - 空镜
     source_files:
-    - docs/VISUAL_STYLE_SPEC.md
+    - docs/VISUAL_STYLE.md
     material:
       kind: paper
       prompt: 数字动画背景美术，干净线稿与柔和赛璐璐光影，细节丰富
@@ -623,7 +623,7 @@ styles:
     - 夏日
     - 空镜
     source_files:
-    - docs/VISUAL_STYLE_SPEC.md
+    - docs/VISUAL_STYLE.md
     material:
       kind: paper
       prompt: 手绘水粉/水彩背景，纸张与笔触颗粒可见，温润不反光

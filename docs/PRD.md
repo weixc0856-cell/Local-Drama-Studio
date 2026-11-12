@@ -9,7 +9,14 @@
 > 2. TTS 为 **VoxCPM2**（端口 50000，48 kHz，CPU，参考音克隆）；CosyVoice 的 SFT 与 300M 能力全部退役，`tts_mode=sft` 直接报错。
 > 3. 视频线仍为 **Wan2.2 TI2V 5B**；MiniMax H3 为 `NOT_RUN`（已完成代码与硬件分析，未做实测）。
 > 4. **视觉风格与动画流程将整体重构**：现有 4 套风格配置不再作为产品方向；新风格系统设计中（规划 12 种），旧风格验证结论不自动迁移。
-> 5. 可复现证据以 `config/models.yaml`、`docs/DECISIONS.md`、`docs/MODEL_UPGRADE_POC.md` 与真实产物为准。
+> 5. 可复现证据以 `config/models.yaml`、`docs/DECISIONS.md`、`docs/ARCHIVE.md` 与真实产物为准。
+
+> **2026-11-12 结构更新（不改变需求编号）**：
+> 1. 产出物迁出仓库：`DRAMA_OUTPUT_ROOT`（默认 `D:\DramaStudio`）承载 projects / experiments / style_boards / logs / workspace.db；仓库只保留代码、配置、文档与小型 manifest（ADR-022）。
+> 2. 源码按 DDD 分层：`domain/`、`application/`、`infrastructure/`、`interfaces/`、`web/`（ADR-023）。
+> 3. Git 历史已移除媒体文件并 force-push（ADR-024）。
+> 4. 文档收敛为 14 份当前文档，31 份历史文档归档到产出根，索引见 `docs/ARCHIVE.md`（ADR-025）。
+> 5. Style Pack 现有 23 套（不是规划中的 12 套）；参考板 23/23 完成、客观检查全过，人工审美评审 `PENDING_REVIEW`。
 
 ## 0. 文档规则与状态词典
 
@@ -18,11 +25,11 @@
 | 内容 | 唯一权威 |
 |---|---|
 | 产品定位、范围、流程、验收、需求编号 | 本文件 |
-| 技术选型与版本 | `docs/TECH_STACK.md` |
-| 实际系统架构与数据流 | `docs/ARCHITECTURE.md` |
+| 技术选型与版本 | `docs/ENVIRONMENT.md` |
+| 实际系统架构与数据流 | `docs/REPO_LAYOUT.md` |
 | 环境、端口、硬件事实 | `docs/ENVIRONMENT.md` |
 | 设计决策历史 | `docs/DECISIONS.md` |
-| 技术证据 | 本文件 §21、`docs/MODEL_UPGRADE_POC.md`、真实产物与日志；已移除的历史报告从 Git 历史取 |
+| 技术证据 | 本文件 §21、`docs/ARCHIVE.md`、真实产物与日志；已移除的历史报告从 Git 历史取 |
 
 **唯一 PRD**：仓库当前只有 `docs/PRD.md` 一个 PRD。若未来出现第二个 PRD 文件，以本文件为准，另一个必须标记为历史或被删除；不得并行维护两套需求。
 
@@ -87,8 +94,8 @@ Local-Drama-Studio 是**生产系统**；具体作品（诗词、人物、神话
 
 完整需求、验收标准、Phase A 审计映射与当前状态见：
 
-- [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md) — 需求追踪矩阵
-- [PRD_CHANGELOG.md](PRD_CHANGELOG.md) — 2026-11-04 变更记录与冲突修正
+- [REQUIREMENT_TRACEABILITY.md](ARCHIVE.md) — 需求追踪矩阵
+- [PRD_CHANGELOG.md](ARCHIVE.md) — 2026-11-04 变更记录与冲突修正
 
 核心需求摘要（完整矩阵以追踪文件为准）：
 
@@ -361,14 +368,14 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 
 新方向：
 
-1. 风格系统整体重构，**12 种新风格**已落为 Style Pack（`config/style_packs/`）：retro 4、oriental 3、artistic 5；当前均为 `SPEC_DRAFT`，需参考板与真实样片后才能升级。引擎见 `docs/VISUAL_STYLE_ENGINE.md`。
-2. 新风格契约面向 FLUX.3 的提示词特性：自然语言描述、不把十六进制色值写入 caption、留白用单块正向描述、比例与画布术语不进入 caption（见 `docs/MODEL_UPGRADE_POC.md` §9–§10）。
+1. 风格系统整体重构，**12 种新风格**已落为 Style Pack（`config/style_packs/`）：retro 4、oriental 3、artistic 5；当前均为 `SPEC_DRAFT`，需参考板与真实样片后才能升级。引擎见 `docs/VISUAL_STYLE.md`。
+2. 新风格契约面向 FLUX.3 的提示词特性：自然语言描述、不把十六进制色值写入 caption、留白用单块正向描述、比例与画布术语不进入 caption（见 `docs/ARCHIVE.md` §9–§10）。
 3. 动画流程同步重构；`src/drama_studio/motion/` 与 `config/styles.yaml` 的 motion policy 在替换完成前继续作为现行实现。
 4. 旧风格的全部验证结论（M7 技术样片、P1 一致性等）只对旧配置有效，**不自动迁移**到新风格系统。
 
 ### 9.1 风格实体
 
-每个风格至少包含：名称、视觉语言、色板、光线、镜头语言、构图、人物设计、环境设计、正向/负向提示词、参考资产、画幅、适用内容类型、来源文件。风格配置还可在配置层声明动画与合成要求（见 `docs/VISUAL_STYLE_SPEC.md` §4）。
+每个风格至少包含：名称、视觉语言、色板、光线、镜头语言、构图、人物设计、环境设计、正向/负向提示词、参考资产、画幅、适用内容类型、来源文件。风格配置还可在配置层声明动画与合成要求（见 `docs/VISUAL_STYLE.md` §4）。
 
 ### 9.2 要求
 
@@ -431,7 +438,7 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 
 ### 10.4 当前状态（2026-11-06）
 
-- FLUX.3 文生图：`PASS_LIMITED`（本机 5/5 成功、576×1024、无 OOM；长提示词下的风格门禁未通过，见 `docs/MODEL_UPGRADE_POC.md` §7–§10）。
+- FLUX.3 文生图：`PASS_LIMITED`（本机 5/5 成功、576×1024、无 OOM；长提示词下的风格门禁未通过，见 `docs/ARCHIVE.md` §7–§10）。
 - FLUX.2：已退役，仅保留历史报告。
 - Wan T2V/I2V：`PASS_VERIFIED`（历史实测）；精确主体位移 `PARTIAL`（一次方向错误）。
 - 工作台 `comfy.batch`：`PASS_VERIFIED`（历史 4/4 任务成功）。
@@ -718,7 +725,7 @@ v1.x 明确不做：
 | 人物跨镜头一致性 | `NOT_RUN` | 未做人物测试 |
 | 文案/分镜生成（LLM→ProductionScript） | `PASS_VERIFIED` | 真实 30B 生成 4 镜头/4 行；2 次尝试保留 raw；Schema 校验通过 |
 | 风格驱动生成 | `PASS_VERIFIED` | 期数 style_snapshot 拼入 4 个 FLUX prompt；图片与 params 可追溯 |
-| 双核心风格规范与配置（S1，旧体系） | `PASS_STATIC`（历史） | `docs/VISUAL_STYLE_SPEC.md` + `config/styles.yaml` + `style_presets.py` + 测试；2026-11-06 起待重构，新系统 `NOT_RUN` |
+| 双核心风格规范与配置（S1，旧体系） | `PASS_STATIC`（历史） | `docs/VISUAL_STYLE.md` + `config/styles.yaml` + `style_presets.py` + 测试；2026-11-06 起待重构，新系统 `NOT_RUN` |
 | 青绿工笔技术验证（S2-工笔） | `PARTIAL` | `experiments/s2a/renders/build-20261103-210443/`：20 s / 1080×1920 / 24 fps；技术检查通过，人工审美 PENDING |
 | 写意水墨技术验证（S2-水墨） | `PARTIAL` | `experiments/s2b/renders/build-20261103-210408/`：20 s / 1080×1920 / 24 fps；技术检查通过，人工审美 PENDING |
 | 双管线静态质量门 | `PARTIAL` | `scripts/static_quality.py`；IA4/A1 均过客观检查，山石纹理重复记录为 `PARTIAL` |
@@ -791,7 +798,7 @@ v1.x 明确不做：
 
 > 原则：先修基线与数据契约，再补完整闭环；不在缺陷未修复时叠加新功能。
 >
-> **注意**：§22 保留历史实施批次与旧状态标签（`PASS_STATIC`/`NOT_RUN` 等），只作背景；当前需求状态以 §0.4 与 [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md) 为准。TTS 默认已在 2026-11-06 改为 VoxCPM2 参考音克隆，旧 P1-1“TTS 参数化”与旧 0.5B 默认不再代表当前策略。
+> **注意**：§22 保留历史实施批次与旧状态标签（`PASS_STATIC`/`NOT_RUN` 等），只作背景；当前需求状态以 §0.4 与 [REQUIREMENT_TRACEABILITY.md](ARCHIVE.md) 为准。TTS 默认已在 2026-11-06 改为 VoxCPM2 参考音克隆，旧 P1-1“TTS 参数化”与旧 0.5B 默认不再代表当前策略。
 >
 > **风格与动画：** S1–S3 批次属于旧风格体系；2026-11-06 起风格系统与动画流程整体重构，本节仅作历史背景，新系统的状态在重构完成后另行验收。
 
@@ -834,7 +841,7 @@ v1.x 明确不做：
 
 | 序 | 工作 | 验收 | 状态 |
 |---|---|---|---|
-| S1 | 两种风格写入正式规范与配置边界 | `docs/VISUAL_STYLE_SPEC.md`；`config/styles.yaml` 严格校验；不自动写入数据库 | `PASS_STATIC` |
+| S1 | 两种风格写入正式规范与配置边界 | `docs/VISUAL_STYLE.md`；`config/styles.yaml` 严格校验；不自动写入数据库 | `PASS_STATIC` |
 | S2-工笔 | 工笔 15-30 秒长卷动态验证 | 绢本质感、青绿设色、线条细节、横移平稳、无拉伸/结构破坏；产物与证据入库 | `PARTIAL`（技术通过，人工待审） |
 | S2-水墨 | 水墨 15-30 秒动态验证 | 墨色层次、宣纸质感、留白、自然渗染、局部动态不变形；产物与证据入库 | `PARTIAL`（技术通过，人工待审） |
 | S2.1 | 双管线静态质量门 | 两套独立缺陷检查表；`static_quality.json` 有客观指标与人工结论 | `PARTIAL`（山石纹理重复） |
@@ -852,7 +859,7 @@ v1.x 明确不做：
 
 ## 23. 需求追踪与状态汇总
 
-完整矩阵（需求、验收、Phase A 审计映射、证据、差距、下一步）见 [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md)。变更记录见 [PRD_CHANGELOG.md](PRD_CHANGELOG.md)。
+完整矩阵（需求、验收、Phase A 审计映射、证据、差距、下一步）见 [REQUIREMENT_TRACEABILITY.md](ARCHIVE.md)。变更记录见 [PRD_CHANGELOG.md](ARCHIVE.md)。
 
 当前状态汇总（2026-11-06）：
 

@@ -21,7 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from drama_studio.voice.zeroshot import DEFAULT_BASE, synthesize  # noqa: E402
+from drama_studio.paths import output_root, output_path
+from drama_studio.application.voice.zeroshot import DEFAULT_BASE, synthesize  # noqa: E402
 
 # Disyllabic words, not isolated syllables: on a bare syllable Whisper normalises
 # to the commonest character (森 -> 生), which measures its prior rather than the
@@ -93,7 +94,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--speed", type=float, default=0.82)
     args = parser.parse_args(argv)
 
-    out = (ROOT / args.out).resolve()
+    out = output_path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     voices: dict[str, Path] = {}
 

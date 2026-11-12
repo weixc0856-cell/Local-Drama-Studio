@@ -10,13 +10,13 @@ import httpx
 import pytest
 import yaml
 
-from drama_studio.voice.profiles import (
+from drama_studio.domain.voice.profiles import (
     VoiceProfileError,
     load_library,
     resolve_voice,
     validate_one_backend,
 )
-from drama_studio.voice.tts import TTSError, synthesize_narration
+from drama_studio.application.voice.tts import TTSError, synthesize_narration
 
 
 def _wav_bytes(seconds: float = 0.2, rate: int = 22050) -> bytes:
@@ -134,7 +134,7 @@ def test_zero_shot_cast_is_per_line_and_reused(tmp_path: Path, monkeypatch: pyte
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
     client = _zero_shot_client()
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
@@ -166,7 +166,7 @@ def test_one_profile_default_covers_all_lines(tmp_path: Path, monkeypatch: pytes
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
         root=root, http_client=_zero_shot_client(), force=True, voice_profile="voice_b")
@@ -238,7 +238,7 @@ def test_changing_a_line_profile_invalidates_the_manifest(
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
     client = _zero_shot_client()
     synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
@@ -284,7 +284,7 @@ def test_voice_cast_sidecar_maps_index_and_line_id(
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
         root=root, http_client=_zero_shot_client(), force=True,
@@ -317,7 +317,7 @@ def test_header_can_use_a_separate_profile(
         out_wav.write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
     result = synthesize_narration(
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
         root=root, http_client=_zero_shot_client(), force=True,

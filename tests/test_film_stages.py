@@ -11,12 +11,12 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from drama_studio.film.assets import resolve_asset
-from drama_studio.film.clips import encode_frames, fit_clip, probe_duration
-from drama_studio.film.config import ProductionSettings
-from drama_studio.film.status import film_status, record_review, write_state
-from drama_studio.film.timeline import build_edit_timeline
-from drama_studio.film.motion_plan import build_motion_plan
+from drama_studio.application.film.assets import resolve_asset
+from drama_studio.application.film.clips import encode_frames, fit_clip, probe_duration
+from drama_studio.application.film.config import ProductionSettings
+from drama_studio.application.film.status import film_status, record_review, write_state
+from drama_studio.application.film.timeline import build_edit_timeline
+from drama_studio.application.film.motion_plan import build_motion_plan
 
 FFMPEG = shutil.which("ffmpeg")
 
@@ -54,7 +54,7 @@ def _manifest(*ids: str) -> dict:
 
 
 def _storyboard():
-    from drama_studio.film.schemas import (
+    from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec, Storyboard,
     )
 
@@ -137,7 +137,7 @@ def test_motion_plan_reports_unknown_style(tmp_path: Path) -> None:
 
 
 def test_status_derives_from_files_and_reviews(tmp_path: Path) -> None:
-    from drama_studio.film.project import FilmProject
+    from drama_studio.application.film.project import FilmProject
 
     board = _storyboard()
     directory = tmp_path / "projects" / "p1"
@@ -172,7 +172,7 @@ def test_status_derives_from_files_and_reviews(tmp_path: Path) -> None:
 
 
 def test_assemble_dry_run_writes_contracts(tmp_path: Path) -> None:
-    from drama_studio.film.assemble import assemble
+    from drama_studio.application.film.assemble import assemble
 
     board = _storyboard()
     directory = tmp_path / "projects" / "p1"
@@ -194,7 +194,7 @@ def test_assemble_dry_run_writes_contracts(tmp_path: Path) -> None:
     for shot in board.shots:
         _png(directory / "assets" / "keyframes" / shot.shot_id / f"{shot.shot_id}_00001_.png")
 
-    from drama_studio.film.project import load_project
+    from drama_studio.application.film.project import load_project
 
     loaded = load_project(tmp_path, "p1")
     result = assemble(loaded, tmp_path, with_motion=False, dry_run=True,
@@ -209,8 +209,8 @@ def test_assemble_dry_run_writes_contracts(tmp_path: Path) -> None:
 
 
 def test_audio_timeline_ducking_is_valid() -> None:
-    from drama_studio.film.segments import build_audio_timeline
-    from drama_studio.voice.audio_timeline import AudioTimeline
+    from drama_studio.application.film.segments import build_audio_timeline
+    from drama_studio.application.voice.audio_timeline import AudioTimeline
 
     board = _storyboard()
     manifest = {
@@ -232,7 +232,7 @@ def test_audio_timeline_ducking_is_valid() -> None:
 
 
 def test_r3_timeline_matches_film_events() -> None:
-    from drama_studio.voice.timeline import build_timeline as build_voice_timeline
+    from drama_studio.application.voice.timeline import build_timeline as build_voice_timeline
 
     board = _storyboard()
     manifest = {
@@ -254,7 +254,7 @@ def test_r3_timeline_matches_film_events() -> None:
         for index, line in enumerate(manifest["lines"], start=1)
     ]
     # Rebuild the gaps exactly as apply_line_timing would.
-    from drama_studio.film.timeline import apply_line_timing
+    from drama_studio.application.film.timeline import apply_line_timing
 
     timed = apply_line_timing(manifest, timeline)["lines"]
     r3_segments = [
@@ -273,7 +273,7 @@ def test_r3_timeline_matches_film_events() -> None:
 
 
 def test_subtitle_wraps_without_changing_speech() -> None:
-    from drama_studio.film.audio import wrap_subtitle
+    from drama_studio.application.film.audio import wrap_subtitle
 
     text = "予观夫巴陵胜状，在洞庭一湖，衔远山，吞长江，浩浩汤汤，横无际涯。"
     wrapped = wrap_subtitle(text, max_chars=12)
@@ -282,7 +282,7 @@ def test_subtitle_wraps_without_changing_speech() -> None:
 
 
 def test_upscale_backends_report_lanczos_and_missing_ncnn() -> None:
-    from drama_studio.film.upscale import available_backends
+    from drama_studio.application.film.upscale import available_backends
 
     backends = available_backends()
     assert backends["lanczos"]["available"] is True
@@ -291,7 +291,7 @@ def test_upscale_backends_report_lanczos_and_missing_ncnn() -> None:
 
 
 def test_wan_qc_cuts_top_band_artifact(tmp_path: Path) -> None:
-    from drama_studio.film.wan_qc import select_clean_prefix
+    from drama_studio.application.film.wan_qc import select_clean_prefix
 
     frames = []
     for index in range(12):
@@ -309,7 +309,7 @@ def test_wan_qc_cuts_top_band_artifact(tmp_path: Path) -> None:
 
 
 def test_wan_qc_cuts_bright_blob(tmp_path: Path) -> None:
-    from drama_studio.film.wan_qc import select_clean_prefix
+    from drama_studio.application.film.wan_qc import select_clean_prefix
 
     frames = []
     for index in range(12):

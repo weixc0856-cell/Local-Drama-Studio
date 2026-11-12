@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from drama_studio.voice.timeline import build_timeline, leading_silence_for
+from drama_studio.application.voice.timeline import build_timeline, leading_silence_for
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "literary_intelligence" / "tests" / "fixtures" / "corpus_short"
