@@ -2,7 +2,7 @@
 
 R0 exposes diagnostics only. Pipeline commands (create / script / assets /
 images / videos / audio / render / run / resume) are specified in
-docs/ARCHITECTURE.md and are added stage by stage, only after the previous
+docs/REPO_LAYOUT.md and are added stage by stage, only after the previous
 stage is verified on this machine.
 """
 
@@ -149,7 +149,7 @@ app.add_typer(film_app, name="film")
 
 
 # --------------------------------------------------------------------------
-# Visual Style Engine (docs/VISUAL_STYLE_ENGINE.md)
+# Visual Style Engine (docs/VISUAL_STYLE.md)
 # --------------------------------------------------------------------------
 
 style_app = typer.Typer(no_args_is_help=True, add_completion=False, help="视觉风格引擎")

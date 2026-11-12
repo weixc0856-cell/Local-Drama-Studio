@@ -1,7 +1,7 @@
 """Two core visual style presets.
 
 ``config/styles.yaml`` is the canonical definition of the product's two core
-aesthetics (see ``docs/VISUAL_STYLE_SPEC.md``). Works choose a style by id; the
+aesthetics (see ``docs/VISUAL_STYLE.md``). Works choose a style by id; the
 pipeline never branches on a style name in code.
 
 This module validates the presets and exposes them as plain data. It never

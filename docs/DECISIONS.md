@@ -226,7 +226,7 @@
 
 - 产品只建设两种核心视觉配置：`court_green_fine_line`（宋代院体青绿工笔）与 `ink_wash`（东方写意水墨）。
 - 两种风格共享同一套生产系统；差异通过 `config/styles.yaml` 的配置项表达，不在代码中按风格分支。
-- 规范落在 `docs/VISUAL_STYLE_SPEC.md`；配置由 `src/drama_studio/style_presets.py` 严格校验，并可导出为工作台 `styles` 实体。
+- 规范落在 `docs/VISUAL_STYLE.md`；配置由 `src/drama_studio/style_presets.py` 严格校验，并可导出为工作台 `styles` 实体。
 - 预设不自动写入 `projects/workspace.db`；数据库只存用户创建的事实。
 - 动画以确定性合成为主（长卷横移、水墨遮罩、墨迹渗染、纸纹、线描显现），Wan 仅做局部动态补充。
 - 不新增风格模型、LoRA、插件系统或动画框架。
@@ -236,7 +236,7 @@
 - 风格数量不再作为产品发展方向；新增第三种风格必须另立阶段并重新说明资源。
 - S1（规范与配置）为 `PASS_STATIC`；两种风格的真实生成、动画与完整链路仍为 `NOT_RUN`，不得写成已验证。
 - 历史 R1/R3 视觉资产继续作为证据保留，但不自动等同于任一核心风格的验证结果。
-- `docs/CONTENT_SPEC.md` 的 R1 色板被明确为 `ink_wash` 的近似方向；冲突时以 `VISUAL_STYLE_SPEC.md` 为准。
+- `docs/CONTENT_SPEC.md` 的 R1 色板被明确为 `ink_wash` 的近似方向；冲突时以 [VISUAL_STYLE.md](VISUAL_STYLE.md) 为准。
 
 ---
 
@@ -337,3 +337,56 @@
 - 新增风格只增加 Pack 并注册，不修改核心引擎。
 
 **后果**：`style_engine/` 新增注册表、编译器与一致性检查；`film/` 的提示词编译可指定风格包；旧 `config/styles.yaml` 保留到动画重构完成，不再扩展。
+
+## ADR-022 产出物与开发管线分离（双根目录）
+
+**背景**：项目渲染、参考板候选图、日志与实验产物曾散落在仓库目录内，只靠 `.gitignore` 挡住；工作区体积 4.5 GB，克隆与检索成本高，也容易误提交。
+
+**决策**：
+
+- `repo_root()` 只放代码、配置、文档、测试、工作流与小文本清单。
+- `output_root()`（`DRAMA_OUTPUT_ROOT`，默认 `D:/DramaStudio`）承载 projects、experiments、style_boards、logs、literary runs 与工作区 DB。
+- `drama_studio.paths` 是唯一解析入口；`config_root()` 让工作区根也能找到仓库配置。
+- `scripts/check_repo_hygiene.py` 在 CI 中拒绝被跟踪媒体、>512 KiB 文件与仓库内的产出根。
+
+**后果**：示例项目与渲染只在产出根；仓库不再跟踪 `projects/`、`experiments/`、参考板图片。迁移脚本 `scripts/migrate_outputs.py` 可复现。
+
+---
+
+## ADR-023 DDD 分层与兼容 shim
+
+**背景**：领域规则、用例、HTTP/SQLite/FFmpeg 适配器混在 17 个扁平模块与 5 个子包里，依赖方向不受控。
+
+**决策**：
+
+- `domain/`（纯规则）、`application/`（用例）、`infrastructure/`（适配器）、`interfaces/`（CLI/HTTP）、`web/`（静态 UI），共享内核 `paths.py`、`config.py`。
+- 迁移期间旧路径保留兼容 shim（模块对象替换）；新代码必须使用分层路径。
+- `tests/test_layering.py` 守门：domain 不得依赖外层，application 不得依赖 interfaces。
+- 为打破 domain→application 循环，`image_metrics` 下沉到 `domain/style/metrics.py`。
+
+**后果**：`scripts/restructure_ddd.py` 记录全部映射；shim 清理是后续独立任务。
+
+---
+
+## ADR-024 Git 历史只保留开发管线
+
+**背景**：远程历史包含约 97 MB 媒体（R2/R2b 片段、R3b 成片、关键帧与 contact sheet），克隆体积远大于代码。
+
+**决策**：用 `git-filter-repo` 从全部历史移除媒体/二进制（>1 MiB 与媒体扩展名），`--force` 推送所有分支；重写前备份为 bundle。
+
+**后果**：`.git` 从约 103 MB 降到 1.9 MB；所有 commit hash 改变，其他克隆必须重新拉取；媒体只存在于产出根。
+
+---
+
+## ADR-025 文档集收敛与归档
+
+**背景**：`docs/` 有 41 个文件，多份 Phase B 指南互相重叠且包含已失效的 FLUX.2 / CosyVoice 数据。
+
+**决策**：
+
+- 规格集保留编号文档（PRD、ENVIRONMENT、CONTENT_SPEC、PRODUCTION_GUIDE、PLATFORM_PUBLISHING、AUDIO_AND_LICENSING、QUALITY_AND_METRICS、ROADMAP、VISUAL_STYLE）。
+- 操作类合并为 `GUIDE.md`；影视化保留 `FILM_PRODUCTION_GUIDE.md`；仓库结构见 `REPO_LAYOUT.md`。
+- 历史报告、旧设计稿、一次性审计与已合并的来源文档移到产出根归档，仓库只留 `docs/ARCHIVE.md` 索引。
+- 归档文件不进 Git、不进远程。
+
+**后果**：文档数量从 41 降到约 15；所有合并文档以当前栈（FLUX.3 / VoxCPM2 / Wan 5B / 双根目录）为准，历史数据仅作归档。

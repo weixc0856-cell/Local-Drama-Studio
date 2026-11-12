@@ -1,280 +1,150 @@
-# 环境说明
+# 02 · 环境与技术栈
 
-> 核实日期：2026-11-02。以下"已核实"项均由本机命令实际执行得到，不是推断。
+> 状态：`DECISION` / 2026-11-12 由 `ENVIRONMENT.md` 与 `TECH_STACK.md` 合并。
+> 以下"已核实"项均由本机命令实际执行得到，不是推断；冻结不等于所有组件都通过生产验证。
+> 原始文档归档在 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
 
-> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
+## 1. 冻结原则
 
-## 1. 已核实硬件与系统
+1. 不继续扩大技术栈；新增组件必须有明确业务需求、技术依据和实际验证。
+2. 不升级 PyTorch / ComfyUI / 工作流节点，除非重新跑对应阶段验收。
+3. 模型权重不进 Git，统一放在 `models`。
+4. 根 `.venv` 不安装 torch；生成环境独立在 `runtime/ComfyUI/.venv`。
+5. 新增依赖必须说明必要性；v1.0 后仅因工作台新增 `fastapi` / `uvicorn`（ADR-014）。
 
-| 项目 | 实测值 | 证据来源 |
-|---|---|---|
-| CPU | 13th Gen Intel Core i7-13700K，16C / 24T | `Get-CimInstance Win32_Processor` |
-| 内存 | 63.7 GiB（68,393,086,976 B） | `Get-CimInstance Win32_ComputerSystem` |
-| 独显 | Intel Arc A750 Graphics，驱动 **32.0.101.9150** | `Get-CimInstance Win32_VideoController` |
-| 核显 | Intel UHD Graphics 770，驱动 32.0.101.7092 | 同上 |
-| 系统 | Windows 11 Pro 10.0.26300 | `win32` 平台 |
-| WSL | 已安装 Ubuntu（当前未用于本项目） | `wsl --status` |
-| 项目盘 D: | 剩余 428.2 GiB | `shutil.disk_usage` |
-| 系统盘 C: | 剩余 396.2 GiB | 同上 |
+## 2. 已核实硬件与系统
 
-注意：`Win32_VideoController.AdapterRAM` 是 32 位字段，对 A750 显示为 4 GiB，**不能作为显存依据**。显存容量必须以 `torch.xpu.get_device_properties()` 或 ComfyUI `/system_stats` 的实测为准。
+| 项 | 实测值 |
+|---|---|
+| CPU | 13th Gen Intel Core i7-13700K，16C / 24T |
+| 内存 | 63.7 GiB |
+| 独显 | Intel Arc A750 8 GB，驱动 32.0.101.9150 |
+| 核显 | Intel UHD Graphics 770 |
+| 系统 | Windows 11 Pro 10.0.26300 |
+| 推理后端 | PyTorch XPU（无 CUDA） |
 
-## 2. 已核实软件
+注意：`Win32_VideoController.AdapterRAM` 对 A750 显示 4 GiB（32 位字段），不能作为显存依据；以 `torch.xpu.get_device_properties()` 或 ComfyUI `/system_stats` 为准。
 
-| 工具 | 版本 | 路径 |
-|---|---|---|
-| Python（系统） | 3.12.10 | `用户目录\AppData\Local\Programs\Python\Python312\python.exe` |
-| uv | 0.10.8 | `用户目录\.local\bin\uv.exe` |
-| FFmpeg / ffprobe | 8.1-full_build（gyan.dev） | WinGet 安装目录 |
-| Git | 2.53.0.windows.2 | — |
-| 项目 `.venv` | Python 3.12.10 | `项目根目录\.venv` |
+## 3. 核心栈
 
-FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV）、`libplacebo`，满足字幕烧录、H.264 合成与硬件解码需求。
-
-## 3. 已有 AI 运行时（本地 AI 服务）
-
-### 3.1 llama.cpp 服务
-
-- 入口：`本地 AI 服务\start_server.bat`（交互式，单选菜单）
-- 后端：SYCL（`bin-sycl\`，b12024）/ Vulkan（`bin\`）
-- 接口：OpenAI 兼容 `http://127.0.0.1:8080/v1`（`start_server.bat` 与项目实例共用这一个端口）
-- 模型：`Qwen3-30B-A3B`、`Qwen3-Coder-30B-A3B`、`Qwen3VL-30B-A3B`、`Qwen3-8B`、`Qwen3.5-4B`、`DeepSeek-R1-8B`
-- **2026-11-03 决策（ADR-013）：本地 LLM 只用 8080 一个端口**。项目运行期间由项目的实例占用；定时任务 `OpportunityRadarDaily` 检测到 8080 被占用时延后，等项目实例释放后再启动，结束后停止自己启动的实例。
-- **2026-11-03 核验（项目默认实例）**：`8080` 提供 `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf`，CPU-only（`-ngl 0`），`-c 65536`（**64K 上下文，已验证可用**），别名 `Qwen3-30B-A3B-Instruct-2507,default`。不占显存，约 19 GB 内存。`config/settings.yaml` 的 `llm.model` / `llm.model_path` / `llm.context_size` 记录这一事实。
-- **服务生命周期**：8080 同一时间只允许一个 llama-server。项目用 `scripts\llm_server.ps1 -Action start|stop|status` 管理；调用结束必须 `stop`，空闲时端口必须为空。`literary_intelligence/run_li15.py` 在服务未启动时自动启动，并只停止自己启动的实例。
-
-### 3.2 VoxCPM2（TTS）
-
-- 目录：`VoxCPM-Runtime`（CosyVoice-Runtime 已于 2026-11-06 删除）
-- 独立 Python 3.12 venv，CPU 推理，端口 **50000**，输出 **48 kHz**
-- 唯一模式：参考音克隆（`zero_shot`）；SFT 预置音色已退休
-- 启动：`scripts\cosyvoice_server.ps1 -Action start` → `start_voxcpm.bat`
-- ASR QA：同一 venv 内安装 `openai-whisper`，供 `scripts/tts_qa.py` 调用
-- 实测：加载约 25–30 秒到 `ready`；单句 RTF ≈ 9–12（CPU）
-
-### 3.3 模型仓库
-
-`models`（顶层文件不能移动，原因见 §5）：
-
-| 文件 | 大小 | 状态 |
-|---|---|---|
-| `Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3.43 GB | ✅ 已有 |
-| `flux-2-klein-4b-Q4_K_M.gguf` | 2.60 GB | ✅ 已有 |
-| `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | 18.56 GB | ✅ 已有 |
-| `Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf` | 18.56 GB | ✅ 已有 |
-| `Qwen3VL-30B-A3B-Instruct-Q4_K_M.gguf` | 18.56 GB | ✅ 已有 |
-| `Qwen3-8B-Q4_K_M.gguf` | 5.03 GB | ✅ 已有 |
-| `Qwen3.5-4B_Q4_k_m.gguf` | 2.71 GB | ✅ 已有 |
-| `DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf` | 4.92 GB | ✅ 已有 |
-| `mmproj-Qwen3VL-30B-A3B-Instruct-F16.gguf` | 1.08 GB | ✅ 已有 |
-
-## 3.5 环境变量（路径不入库）
-
-本机路径不写进仓库，统一由 `.env`（已 gitignore）提供；模板见 `.env.example`。
-
-| 变量 | 用途 | 必需 |
-|---|---|---|
-| `DRAMA_ROOT` | 显式指定项目根（可选） | 否 |
-| `DRAMA_MODELS_ROOT` | 模型仓库（FLUX/Wan/LLM 权重） | 是 |
-| `DRAMA_AI_HOME` | 本地 AI 服务目录（llama.cpp、VoxCPM-Runtime） | 是 |
-| `VOXCPM_RUNTIME` | TTS 运行时目录；缺省为 `<DRAMA_AI_HOME>/VoxCPM-Runtime` | 否 |
-
-`config/*.yaml` 使用 `${DRAMA_MODELS_ROOT}` 占位；`scripts/sync_comfyui_paths.py`（或 `setup.ps1`）在写入 ComfyUI 的 `extra_model_paths.yaml` 时展开，因为 ComfyUI 本身不读环境变量。
-
----
-
-## 4. 双虚拟环境边界
-
-| 环境 | 路径 | Python | 允许安装 | 禁止 |
+| 组件 | 职责 | 版本 | 许可证 | 状态 |
 |---|---|---|---|---|
-| 调度环境 | `项目根目录\.venv` | 3.12 | typer / rich / pydantic / pyyaml / httpx / websockets / pysubs2 / pillow / pytest | torch、comfyui、模型推理依赖 |
-| 生成环境 | `项目根目录\runtime\ComfyUI\.venv` | 3.12 | PyTorch XPU、ComfyUI requirements、ComfyUI-GGUF | 业务代码依赖 |
-| TTS 环境 | `VoxCPM-Runtime
-env` | 3.12 | voxcpm 2.0.3 + openai-whisper | 本项目不向其安装项目依赖 |
-| 系统 Python | `C:\...\Python312` | 3.12 | 不使用 | 不安装任何项目依赖 |
+| Python（调度） | 编排 | 3.12.10 | PSF-2.0 | `PASS_VERIFIED` |
+| uv | 环境/依赖锁定 | 0.10.8 | Apache-2.0 / MIT | `PASS_VERIFIED` |
+| ComfyUI | 生成引擎 | 0.43.0（`bb878b9`） | **GPL-3.0** | `PASS_VERIFIED` |
+| ComfyUI-GGUF | GGUF 加载 | `6ea2651` / gguf 0.19.0 | Apache-2.0 | `PASS_VERIFIED` |
+| PyTorch | XPU 推理 | 2.15.0+xpu | BSD-3-Clause | `PASS_VERIFIED` |
+| FLUX.3 Klein distilled | 静帧 | GGUF Q4_K_M，3.67 GB；16 步 / CFG 1.0 | FLUX Kommunity License | `PASS_LIMITED` |
+| FLUX 文本编码器 | 提示词编码 | `qwen3vl_4b_int8_convrot.safetensors`，4.86 GB | 随 BFL 仓库；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
+| FLUX.2 VAE | 解码 | `flux2-vae.safetensors`，336 MB | Apache-2.0 | `PASS_VERIFIED` |
+| Wan2.2 TI2V 5B | 图生/文生视频 | GGUF Q4_K_M，3.43 GB；20 步 / CFG 5 / shift 8 | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
+| UMT5-XXL 编码器 | Wan 提示词 | `umt5_xxl_fp8_e4m3fn_scaled`，6.73 GB | 随 Comfy-Org 重打包；底层 UMT5 待复核 | `PASS_VERIFIED` |
+| Wan2.2 VAE | 解码 | `wan2.2_vae.safetensors`，1.41 GB | Apache-2.0 | `PASS_VERIFIED` |
+| VoxCPM2 | 中文旁白（zero-shot 克隆） | 2B 运行时，48 kHz，CPU | Apache-2.0（代码与权重） | 技术 `PASS_VERIFIED`；商用授权 `UNVERIFIED` |
+| FFmpeg / ffprobe | 剪辑/混音/字幕/放大 | 8.1 full build | **GPLv3 构建** | `PASS_VERIFIED` |
+| llama.cpp（本地 AI 服务） | 剧本/分镜 | SYCL b12024 | MIT（llama.cpp）；模型按模型卡 | `PASS_VERIFIED` |
 
-创建方式：
+调度依赖：`pydantic`、`typer`、`rich`、`pyyaml`、`httpx`、`websockets`、`pysubs2`、`pypinyin`、`pillow`、`fastapi`、`uvicorn`。工作台实测 FastAPI 0.162.0 / Uvicorn 0.54.0；不引入 node、torch 或数据库服务。
 
-```powershell
-uv sync --python 3.12                      # 调度环境
-scripts\setup.ps1 -WithComfyUI             # 生成环境（独立 venv）
-```
+字体：思源宋体 CN 2.003R / 思源黑体 CN 2.005R（SIL OFL 1.1），只保留 Regular/Medium/Bold；OTF 不进 Git，由 `scripts/fetch_fonts.py` 重建并校验。字幕已接入思源黑体；标题/诗词角色仍为 `preview_only`。
 
-2026-11-02 实际安装并核实：
+## 4. AI 运行时就绪状态
 
-| 组件 | 版本 |
+### 4.1 llama.cpp（8080）
+
+- 入口：`本地 AI 服务\start_server.bat`（交互式）；后端 SYCL（`bin-sycl`）/ Vulkan（`bin`）。
+- OpenAI 兼容：`http://127.0.0.1:8080/v1`；**只允许一个实例**（ADR-013）。
+- 项目默认：`Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf`，CPU-only（`-ngl 0`），`-c 65536`（64K，已验证），别名 `Qwen3-30B-A3B-Instruct-2507`；不占显存，约 19 GB 内存。
+- 生命周期：`scripts\llm_server.ps1 -Action start|stop|status`；调用结束必须停止，空闲时端口为空。`literary_intelligence/run_li15.py` 只停止自己启动的实例。
+- 定时任务 `OpportunityRadarDaily` 检测到 8080 占用时延后，不另开端口、不 kill 别人的进程。
+
+### 4.2 VoxCPM2（50000）
+
+- 目录：`VoxCPM-Runtime`（独立 Python 3.12 venv，CPU）。
+- 唯一模式：参考音克隆（`zero_shot`）；SFT 预置音色已退休。
+- 启动：`scripts\cosyvoice_server.ps1 -Action start`（脚本名保留历史叫法）；加载约 25–30 秒；单句 RTF ≈ 9–12。
+- ASR QA：同一 venv 的 `openai-whisper`，供 `scripts/tts_qa.py` 调用。
+
+### 4.3 ComfyUI（8188）
+
+- 生成环境：`runtime/ComfyUI/.venv`；`scripts\start.ps1` 等待 `/system_stats`，`scripts\stop.ps1` 只杀本项目进程树。
+- 模型经 `runtime/ComfyUI/extra_model_paths.yaml` 映射到 `D:/AI/models`：`diffusion_models` 同时暴露顶层与 `diffusion_models/` 子目录，`text_encoders`、`vae` 各自映射。
+- 模型切换不需要重启；`/free` 通常是 no-op（自动卸载）。
+
+## 5. 模型目录
+
+权重统一在 `models`（本机 `D:/AI/models`），不进入 Git。两个扩散 GGUF 必须在**顶层**，因为 `本地 AI 服务\start_server.bat` 只扫描顶层 `*.gguf`。
+
+| 文件/目录 | 用途 |
 |---|---|
-| torch | 2.15.0+xpu |
-| torchvision | 0.29.2+xpu |
-| torchaudio | 2.11.1+xpu |
-| ComfyUI | 0.43.0（commit `bb878b9ee35274e67931634ba9e8c338f8c06035`） |
-| ComfyUI-GGUF | 随仓库 HEAD，`gguf==0.19.0` |
+| `diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf` | 图像 |
+| `text_encoders/qwen3vl_4b_int8_convrot.safetensors` | 图像编码器 |
+| `vae/flux2-vae.safetensors` | 图像 VAE |
+| `Wan2.2-TI2V-5B-Q4_K_M.gguf` | 视频（顶层） |
+| `text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors` | Wan 编码器 |
+| `vae/wan2.2_vae.safetensors` | Wan VAE |
+| `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | 本地 LLM（顶层） |
 
-`doctor` 的 `PyTorch XPU` 行会重新探测，以实际输出为准。
+`config/models.yaml` 记录精确字节数；`doctor` 拒绝缺失或大小不符的文件。
 
-## 5. 模型目录与 ComfyUI 映射
+## 6. 环境变量
 
-### 硬约束
+本机路径不写进仓库，由 `.env`（已 gitignore）提供；模板见 `.env.example`。
 
-`本地 AI 服务\start_server.bat` 第 40 行只扫描 `%MODELS_DIR%\*.gguf`（顶层），因此：
-
-- **不能**把 `flux-2-klein-4b-Q4_K_M.gguf`、`Wan2.2-TI2V-5B-Q4_K_M.gguf` 移入子目录；
-- 新增的编码器/VAE 放在子目录，ComfyUI 同时映射顶层与子目录。
-
-### 目标布局
-
-```text
-models\
-├─ flux-2-klein-4b-Q4_K_M.gguf              # 已有，保持在顶层
-├─ Wan2.2-TI2V-5B-Q4_K_M.gguf               # 已有，保持在顶层
-├─ Qwen3-*.gguf                              # 已有
-├─ text_encoders\
-│  ├─ qwen_3_4b.safetensors                 # FLUX.2 klein 配套（待下载）
-│  └─ umt5_xxl_fp8_e4m3fn_scaled.safetensors# Wan2.2 配套（待下载）
-└─ vae\
-   ├─ flux2-vae.safetensors                 # FLUX.2 VAE（待下载，不是 FLUX.1 的）
-   └─ wan2.2_vae.safetensors                # Wan2.2 VAE（待下载）
-```
-
-### ComfyUI 映射
-
-`config/comfyui_extra_model_paths.yaml` 会被 `setup.ps1` 复制到 `runtime/ComfyUI/extra_model_paths.yaml`：
-
-```yaml
-ai_shared:
-  base_path: models
-  diffusion_models: |
-    .
-    diffusion_models
-  unet_gguf: |
-    .
-    diffusion_models
-  text_encoders: text_encoders
-  vae: vae
-```
-
-同时映射 `diffusion_models` 与 `unet_gguf`，兼容不同版本的 ComfyUI-GGUF 读取目录名。
-
-### 待下载配套文件
-
-| 用途 | 文件名 | 目标目录 | 备注 |
-|---|---|---|---|
-| FLUX.2 文本编码器 | `qwen_3_4b.safetensors` | `text_encoders\` | 必须是 **4B**，不能用 Qwen3-8B 代替 |
-| FLUX.2 VAE | `flux2-vae.safetensors` | `vae\` | 不能用 FLUX.1 VAE |
-| Wan2.2 文本编码器 | `umt5_xxl_fp8_e4m3fn_scaled.safetensors` | `text_encoders\` | — |
-| Wan2.2 VAE | `wan2.2_vae.safetensors` | `vae\` | TI2V-5B 专用 |
-
-来源以 ComfyUI 官方 FLUX.2 klein / Wan2.2 教程给出的仓库为准；HuggingFace 访问受限时可设 `HF_ENDPOINT=https://hf-mirror.com`。**下载完成不等于推理成功**，必须走 R0-C/R0-D。
-
-`config/models.yaml` 为每个文件记录了**精确字节数**；`doctor` 会拒绝缺失或未下载完的文件（例如把 2.4 GB 的 partial 文件误判为可用）。如果实际下载的文件名或大小不同，修改配置，不要改文件名去凑配置。
-
-## 6. 端口分配
-
-| 端口 | 服务 | 当前状态 | 说明 |
-|---|---|---|---|
-| 8188 | ComfyUI | 运行中（R0 验证时） | `scripts/start.ps1` 启动 |
-| 8080 | 本地 LLM（llama.cpp，唯一端口） | 由当前使用者占用，用完即停 | `Qwen3-30B-A3B-Instruct-2507`；项目实例为 CPU-only `-ngl 0`，64K（`-c 65536`）；定时任务让路 |
-| 8081 | 已废弃 | 不再使用 | 原项目 LLM 端口；ADR-013 后统一到 8080 |
-| 50000 | VoxCPM2 | 未监听 | `scripts\cosyvoice_server.ps1 -Action start` |
-
-## 7. 显存预算（R0 实测）
-
-| 场景 | 权重 | 实测显存峰值 | 结论 |
-|---|---|---|---|
-| FLUX.2 klein 4B Q4 @512×512 | 2.60 GB | **2.61 GiB** | 文本编码器放 CPU；出图约 95-100 s/张 |
-| Wan2.2 TI2V 5B Q4 @512×512×33 | 3.43 GB | **5.11 GiB**（I2V） | UMT5 自动放 CPU；20 步约 9-10 分钟 |
-| 空闲（Wan 结束后） | — | 7.75 GiB 空闲 | ComfyUI 自动卸载模型 |
-| 空闲（FLUX 结束后） | — | 5.16 GiB 空闲 | 约 2.6 GB 留在缓存，仍可加载 Wan |
-| Qwen3-30B-A3B（LLM） | 18.56 GB | 不占显存（CPU-only） | 8080 项目实例为 `-ngl 0`，占约 19 GB 内存；GPU 模式与 ComfyUI **不可共存** |
-| VoxCPM2 | — | 未在 R0 测试 | CPU 推理，不占显存 |
-
-补充实测结论：
-
-### R1 补充实测（FLUX 16:9 / 参考图编辑）
-
-| 场景 | 耗时 | 峰值显存 | 结论 |
-|---|---|---|---|
-| FLUX 768×432 文生图 | 70-102 s | 2.60-2.84 GiB | 16:9 可直接生成 |
-| FLUX 768×432 参考图编辑 | 72-83 s | 2.79-2.84 GiB | `ReferenceLatent + VAEEncode` 可用 |
-| R1 批量 11 个任务 | — | — | 0 失败、0 重试 |
-
-### R2-A 补充实测（Wan I2V，1024×576，20 步）
-
-| 规格 | 实测耗时 | 峰值显存 | 结论 |
-|---|---|---|---|
-| 73 帧 / 3.04 s | 40.2-43.0 min | 5.42-6.12 GiB | 默认规格，4/4 关键帧稳定 |
-| 121 帧 / 5.04 s | 65.8-69.2 min | 4.90-5.04 GiB | 可用但不稳；A4 花林出现绿色漂移 |
-
-- 无 OOM；瓶颈是墙钟时间，不是显存。
-- 90 秒影片全用 Wan 约 20 小时；4-6 个 Wan 镜头 + 静帧推拉约 4-5 小时。
-- 长镜头必须人工检查首尾帧颜色，平均帧差/闪烁指标捕捉不到渐进漂移。
-
-### R2-B 补充实测（4 个英雄镜头，1024×576 / 73 帧 / 20 步）
-
-| 镜头 | 耗时 | 峰值显存 | 结论 |
-|---|---|---|---|
-| H1 江面月光 | 32.6 min | 5.66 GiB | 近静态，推近不可测 |
-| H2 花林月照 | 38.5 min | 5.51 GiB | 推近明确，可用的英雄镜头 |
-| H3 孤舟向远山 | 46.4 min | 5.50 GiB | 船体位移 24.6 px，但方向错误（靠近镜头） |
-| H4 晨曦江岸 | 39.6 min | 5.52 GiB | 近静态，光线变化偏冷 |
-
-总计 2.62 小时 / 4 个 3 秒镜头。精确主体位移不作为 Wan 的可靠能力。
-
-### R3 补充实测（竖屏 / 完整成片）
-
-| 环节 | 实测 |
+| 变量 | 用途 |
 |---|---|
-| FLUX 576×1024 | 22-53 s/张，峰值 2.63-3.53 GiB |
-| Wan 576×1024 / 73 帧 | 36.4 min，峰值 5.48 GiB |
-| 38.04 s 成片（5 静帧 + 1 Wan + 7 句配音 + 字幕） | 端到端 43.8 min |
-| 输出 | 1080×1920 / 24fps / H.264 + AAC，FFmpeg Lanczos 放大 |
+| `DRAMA_MODELS_ROOT` | 模型仓库（默认 `D:/AI/models`） |
+| `DRAMA_AI_HOME` | 本地 AI 服务目录（`D:/AI`） |
+| `DRAMA_OUTPUT_ROOT` | 产出根（默认 `D:/DramaStudio`） |
+| `VOXCPM_RUNTIME` | `D:/AI/VoxCPM-Runtime` |
+| `DRAMA_ROOT` | 可选，显式项目根 |
 
-竖屏 576×1024 的宽高均为 32 的倍数，可直接用于 `Wan22ImageToVideoLatent`。
+## 7. 端口
 
-**Wan 视频的分辨率约束**：`Wan22ImageToVideoLatent` 的 width/height 必须能被 32 整除。
-R1 关键帧是 768×432（432/32=13.5），不能直接作为 I2V 输入；R2 必须先缩放到
-**1024×576**（16:9，32 的倍数）或 832×480，再生成视频。
-
-- Wan 在 10 步时末帧出现彩虹伪影，20 步正常；生产默认 20 步。
-- 长片段（73/121 帧）与非方形分辨率尚未实测，R2 第一项任务就是补这组数据。
-- 以上数字来自 `logs/r0/R0-C-*`、`logs/r0/R0-D-*`、`logs/r0/R0-E-*` 的 `run.json`。
-
-## 8. 明确不要动的东西
-
-- `本地 AI 服务\start_server.bat` 及其 `.bak-*` 备份
-- `本地 AI 服务\bin-sycl\`、`bin\`、`bin-old\`
-- `models\` 顶层的任何 `.gguf`
-- `VoxCPM-Runtime
-env\`（含 ASR 依赖）
-- 其他项目的虚拟环境与依赖
-- 系统 Python 的 site-packages
-- 8080 上不属于本项目的进程
-
-## 9. 已知风险
-
-| 风险 | 影响 | 应对 |
+| 服务 | 端口 | 规则 |
 |---|---|---|
-| XPU 后端缺少 GGUF 反量化算子 | ComfyUI-GGUF 报错或退回 CPU | R0-C/D 实测；失败则记录，不盲目换整套环境 |
-| Wan VAE 解码 OOM | 512×512 也可能失败 | 降低帧数 / 分块解码 / `--lowvram`，逐项验证 |
-| Qwen3-4B 编码器体积大 | 加载慢、挤占显存 | ComfyUI 自动 offload；必要时 GGUF 量化编码器 |
-| ComfyUI / 节点 API 变动 | 工作流字段失效 | 锁定 commit；工作流与版本一起登记 |
-| 驱动过旧 | XPU 不可用 | 驱动 32.0.101.9150 已较新；不满足时再升级 |
-| HuggingFace 访问受限 | 配套文件下载失败 | `HF_ENDPOINT` 镜像；校验 sha256 |
-| 8080 被定时任务占用 | 项目实例无法绑定，请求可能被错误实例接走 | 定时任务必须先检测 8080 并延后；任务结束后停止自己启动的实例 |
-| Windows 控制台编码 | 中文乱码 | CLI 非 TTY 时强制 UTF-8；脚本带 BOM |
+| ComfyUI | 8188 | 单实例；启动前探测 |
+| 本地 LLM | 8080 | 单端口；谁启动谁停止；定时任务让路 |
+| VoxCPM2 | 50000 | 单实例 |
+| 工作台 | 8765 | 不是 LLM 端口 |
 
-## 10. 环境复现命令
+本地探测绕过系统代理：Python `httpx(..., trust_env=False)`；PowerShell 用 `curl.exe`。
+
+## 8. 显存与实测
+
+| 场景 | 峰值 VRAM | 时间 |
+|---|---|---|
+| FLUX 512×512 / 4 步 | 2.61 GiB | 99.5 s |
+| FLUX 576×1024 | ~2.8–3.0 GiB | 22–53 s/张 |
+| Wan 1024×576 / 73 帧 | ≤6.12 GiB | 40–43 min |
+| Wan 576×1024 / 73 帧 | 5.48 GiB | 36.4 min |
+| Wan safe8g 448×768 / 49 帧 | ~5 GiB | 8–14 min/段 |
+| 38 s 成片全链路 | — | 43.8 min |
+
+GPU 是独占资源：LLM / FLUX / Wan 一次只跑一个生成任务；8080 的 CPU 实例不占 VRAM 但占约 19 GB 内存。文本编码器在 CPU 上跑（Qwen3-VL-4B 约 7.67 GB；UMT5 6.4 GB 自动 offload）。Wan **必须 20 步**；10 步出现彩虹伪影。
+
+## 9. 明确不要动的东西
+
+- `本地 AI 服务\start_server.bat`、`bin-*`、`VoxCPM-Runtime`。
+- 根 `.venv` 里不得安装 torch；不要把生成环境与调度环境合并。
+- 不要移动 `models` 顶层的扩散 GGUF。
+- 不要在 ComfyUI 生成时启动 GPU 模式的 LLM；不要同时跑 FLUX 与 Wan。
+- 不要提交模型权重、OTF、参考图、渲染产物（见 [REPO_LAYOUT.md](REPO_LAYOUT.md)）。
+
+## 10. 已知风险
+
+- A750 8 GB 是天花板：全 Wan 多镜头不可行；建筑/人物运动不稳定。
+- FLUX.3 Klein 许可要求内容过滤与 AI 标注，且年营收 < 500 万美元免费商用。
+- ComfyUI（GPL-3.0）与 FFmpeg（GPLv3 构建）若打包分发需做合规评估。
+- Windows 编码：非 TTY stdout 需 UTF-8（CLI 已处理）；PowerShell 脚本必须 UTF-8 with BOM。
+
+## 11. 复现命令
 
 ```powershell
-# 调度环境
 uv sync --python 3.12
-.venv\Scripts\python.exe -m pytest
-
-# 诊断
-scripts\doctor.ps1
-
-# 生成引擎
 scripts\setup.ps1 -WithComfyUI
-scripts\start.ps1
-scripts\stop.ps1
+.venv\Scripts\python.exe scripts\fetch_fonts.py --check
+scripts\doctor.ps1
+.venv\Scripts\python.exe -m pytest
+.venv\Scripts\python.exe scripts\check_repo_hygiene.py
 ```

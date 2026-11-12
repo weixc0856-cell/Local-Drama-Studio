@@ -159,7 +159,7 @@
 | R3 内容质量 | `PASS_VERIFIED`（单篇） | 人工抽帧/看片 |
 | 单篇成本 | `PASS_VERIFIED` | 43.8 min |
 | 人物一致性 | `NOT_RUN` | — |
-| 双核心风格规范与配置 | `PASS_STATIC` | `docs/VISUAL_STYLE_SPEC.md` + `config/styles.yaml` |
+| 双核心风格规范与配置 | `PASS_STATIC` | `docs/VISUAL_STYLE.md` + `config/styles.yaml` |
 | 工笔/水墨生成与动画质量 | `PARTIAL` | S2 与首批管线样片技术检查通过；静态门 `PARTIAL`（山石纹理重复）；人工审美 PENDING；见 `docs/PIPELINE_AB_VALIDATION.md` |
 | 多篇批处理 | `NOT_RUN` | — |
 | 平台数据 | `NOT_RUN` | — |
