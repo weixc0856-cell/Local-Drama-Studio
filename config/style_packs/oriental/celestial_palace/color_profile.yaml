@@ -1,0 +1,24 @@
+schema_version: '1.0'
+anchors:
+- name: cloud grey
+  hex: '#C8CBC6'
+- name: rock green-grey
+  hex: '#55645F'
+- name: distant ridge
+  hex: '#7E8C88'
+- name: aged gold
+  hex: '#B08A45'
+- name: vermilion lacquer
+  hex: '#8E3B2E'
+- name: mist white
+  hex: '#E0E2DC'
+saturation_range:
+- 0.05
+- 0.35
+edge_density_range:
+- 0.03
+- 0.18
+value_range:
+- 0.12
+- 0.92
+note: Hex values are for validation only; they never enter a prompt.

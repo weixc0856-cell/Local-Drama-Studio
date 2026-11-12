@@ -145,7 +145,7 @@ def build_keyframe_prompt(shot: ShotSpec, bible: VisualBible) -> str:
         parts.append("no people, empty landscape")
     if shot.keyframe_note:
         parts.append(shot.keyframe_note)
-    parts.append("portrait 9:16 full-frame composition, no letterbox, no black bars")
+    parts.append("landscape 16:9 full-frame composition, no letterbox, no black bars")
     parts.append("no text, no watermark, no lettering")
     return ". ".join(parts)
 

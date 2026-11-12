@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 from drama_studio.domain.motion.noise import noise_image
 
-W, H = 1080, 1920
+from drama_studio.domain.motion.spec import H, W
 
 
 def make_texture(kind: str, path: Path, seed: int = 7, size: tuple[int, int] = (W, H)) -> dict:

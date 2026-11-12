@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS projects (
   positioning TEXT NOT NULL DEFAULT '',
   default_style_id TEXT,
   default_voice TEXT NOT NULL DEFAULT '',
-  aspect_ratio TEXT NOT NULL DEFAULT '9:16',
+  aspect_ratio TEXT NOT NULL DEFAULT '16:9',
   target_platforms TEXT NOT NULL DEFAULT '[]',
   origin TEXT NOT NULL DEFAULT 'user',
   created_at TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS styles (
   positive_prompt TEXT NOT NULL DEFAULT '',
   negative_prompt TEXT NOT NULL DEFAULT '',
   reference_assets TEXT NOT NULL DEFAULT '[]',
-  aspect_ratio TEXT NOT NULL DEFAULT '9:16',
+  aspect_ratio TEXT NOT NULL DEFAULT '16:9',
   applicable_content_types TEXT NOT NULL DEFAULT '[]',
   source_files TEXT NOT NULL DEFAULT '[]',
   preset_id TEXT,
@@ -309,7 +309,7 @@ class WorkspaceStore:
         if payload.get("target_platforms") in ("", None):
             payload["target_platforms"] = []
         if not payload.get("aspect_ratio"):
-            payload["aspect_ratio"] = "9:16"
+            payload["aspect_ratio"] = "16:9"
         payload = _encode("projects", payload)
         with self.connect() as conn:
             conn.execute(
@@ -477,7 +477,7 @@ class WorkspaceStore:
             if payload.get(key) in ("", None):
                 payload[key] = {} if key == "color_palette" else []
         if not payload.get("aspect_ratio"):
-            payload["aspect_ratio"] = "9:16"
+            payload["aspect_ratio"] = "16:9"
         payload = _encode("styles", payload)
         ts = now_iso()
         with self.connect() as conn:

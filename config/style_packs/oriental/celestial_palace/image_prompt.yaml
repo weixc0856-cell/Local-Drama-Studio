@@ -1,0 +1,30 @@
+schema_version: '1.0'
+identity: cinematic photoreal concept art, live-action plate quality, not a 3D render
+medium: photorealistic cinematic still, physically based lighting, deep atmospheric haze
+materials:
+- weathered granite with wet moss
+- dense cloud sea and drifting mist
+- aged gold leaf along roof ridges
+- vermilion lacquer on worn beams
+- dark glazed roof tiles
+composition:
+- foreground cloud or cliff edge framing the frame
+- midground cloud sea with clear depth layering
+- only one corner of the palace shows through the clouds
+- enormous landscape scale dwarfing the architecture
+- never a complete symmetrical palace
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- cinematic photoreal still with real atmospheric depth
+- only a corner of the palace is visible through drifting cloud
+- weathered granite, wet moss and aged gold leaf
+- one small warm accent against a cold grey-green world
+- volumetric light shafts breaking through cloud gaps
+- believable structural weight, nothing floating unsupported

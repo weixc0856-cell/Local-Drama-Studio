@@ -144,7 +144,7 @@ def build_content_package(
                 "estimated_duration_seconds": duration,
             }
         )
-        prompt = f"{text}；东方意境，竖屏 9:16 电影感构图，柔和自然光，细腻质感，无文字，无水印"
+        prompt = f"{text}；东方意境，横屏 16:9 电影感构图，柔和自然光，细腻质感，无文字，无水印"
         scene_plan.append(
             {
                 "scene_id": f"scene_{index:03d}",

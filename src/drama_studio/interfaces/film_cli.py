@@ -466,7 +466,7 @@ def film_upscale(
     force: Annotated[bool, typer.Option("--force", help="覆盖已有 _sr.mp4")] = False,
     check: Annotated[bool, typer.Option("--check", help="只检测可用后端")] = False,
 ) -> None:
-    """可选的学习型超分：低清 Wan 片段 → 1080x1920；默认 r3_build Lanczos。"""
+    """可选的学习型超分：低清 Wan 片段 → 1920x1080；默认 r3_build Lanczos。"""
     from drama_studio.application.film.upscale import UpscaleError, available_backends, upscale_wan_clips
 
     if check:

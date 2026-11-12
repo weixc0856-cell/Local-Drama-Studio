@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.surreal_palace
+name: 超现实仙宫
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 写实渲染却物理不可能的空间：悬浮石构、倒置山体、镜面之海、环形天光；材质真实，重力不成立。不是赛博特效，不是游戏截图。
+layers:
+- identity
+- execution
+- consistency

@@ -129,7 +129,7 @@ def test_camera_chain_is_split_without_changing_the_full_chain() -> None:
                     motion="slow push-in")
     camera = resolve_camera(shot, ink, (576, 1024))
     assert camera_chain(camera) == f"{camera_pre(camera)},{camera_post(camera)}"
-    assert intermediate_size(camera, (576, 1024)) == (2160, 3840)
+    assert intermediate_size(camera, (576, 1024)) == (1216, 2160)
 
 
 def test_camera_box_mapping_expands_with_push_in() -> None:
@@ -171,11 +171,11 @@ def test_square_source_keeps_the_source_aspect_for_layers(tmp_path: Path) -> Non
     manifest = json.loads(Path(result["manifest"]).read_text(encoding="utf-8"))
     shot = manifest["shots"][0]
     first = Path(shot["layers"][0]["info"]["frames_dir"]) / "f_0000.png"
-    assert Image.open(first).size == (540, 540)
+    assert Image.open(first).size == (960, 960)
     argv = shot["argv"]
     graph = argv[argv.index("-filter_complex") + 1]
-    assert "scale=1920:1920" in graph
-    assert "crop=1080:1920" in graph
+    assert "scale=1080:1080" in graph
+    assert "crop=1920:1080" in graph
 
 
 def test_render_composites_layers_before_the_camera(tmp_path: Path) -> None:
@@ -200,5 +200,5 @@ def test_render_composites_layers_before_the_camera(tmp_path: Path) -> None:
     manifest = json.loads(Path(result["manifest"]).read_text(encoding="utf-8"))
     argv = manifest["shots"][0]["argv"]
     graph = argv[argv.index("-filter_complex") + 1]
-    assert graph.index("scale=2160:3840") < graph.index("overlay")
+    assert graph.index("scale=3840:2160") < graph.index("overlay")
     assert graph.index("overlay") < graph.index("zoompan")

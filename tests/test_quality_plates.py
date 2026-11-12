@@ -39,13 +39,13 @@ def test_placed_alpha_uses_the_anchor():
     asset = Image.new("RGBA", (100, 100), (0, 0, 0, 255))
     alpha = _placed_alpha(asset, {"x0": 0.25, "y0": 0.25, "x1": 0.35, "y1": 0.35},
                           camera_window(1.0, (0.5, 0.48)))
-    assert alpha.size == (1080, 1920)
-    assert alpha.getpixel((300, 500)) == 255      # inside the anchor
-    assert alpha.getpixel((900, 1600)) == 0       # far outside
+    assert alpha.size == (1920, 1080)
+    assert alpha.getpixel((550, 320)) == 255      # inside the anchor
+    assert alpha.getpixel((1600, 900)) == 0       # far outside
 
 
 # ------------------------------------------------------------------- repair
-def textured(size=(1080, 1920), flat_box=None):
+def textured(size=(1920, 1080), flat_box=None):
     """A plate with high-frequency paint everywhere, optionally flat in a box."""
     image = Image.effect_noise(size, 90).convert("RGB")
     if flat_box:
@@ -57,7 +57,7 @@ def textured(size=(1080, 1920), flat_box=None):
 
 
 def write_shot(tmp_path, *, repair_box, exposure_of_repair, flat_inside):
-    hole = Image.new("L", (1080, 1920), 0)
+    hole = Image.new("L", (1920, 1080), 0)
     hole.paste(255, repair_box)
     hole_path = tmp_path / "hole.png"
     hole.save(hole_path)
@@ -68,7 +68,7 @@ def write_shot(tmp_path, *, repair_box, exposure_of_repair, flat_inside):
 
     # A mover that leaves `exposure_of_repair` of the repair uncovered: a small
     # opaque block that covers the rest.
-    mover = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
+    mover = Image.new("RGBA", (1920, 1080), (0, 0, 0, 0))
     covered = int((repair_box[2] - repair_box[0]) * (1 - exposure_of_repair))
     mover.paste((0, 0, 0, 255), (repair_box[0], repair_box[1],
                                  repair_box[0] + covered, repair_box[3]))
@@ -91,7 +91,7 @@ def write_shot(tmp_path, *, repair_box, exposure_of_repair, flat_inside):
     }
 
 
-REPAIR_BOX = (300, 800, 700, 1200)
+REPAIR_BOX = (530, 450, 1240, 675)
 
 
 def test_flat_repair_that_is_barely_exposed_passes(tmp_path):
@@ -139,10 +139,10 @@ def test_background_without_repair_is_a_no_op(tmp_path):
 # ------------------------------------------------------------------- bounds
 def test_bounds_pass_for_a_window_inside_the_plate(tmp_path):
     path = tmp_path / "bg.png"
-    Image.new("RGB", (1600, 1024), (200, 200, 200)).save(path)
+    Image.new("RGB", (3200, 1600), (200, 200, 200)).save(path)
     shot = {
         "id": "shot_001", "duration_seconds": 4.0,
-        "camera": dict(CAMERA, move="scroll_pan", pan_start_px=870.0, pan_end_px=1050.0),
+        "camera": dict(CAMERA, move="scroll_pan", pan_start_px=60.0, pan_end_px=200.0),
         "plates": [{"id": "bg", "source": "generated_background", "path": str(path),
                     "sha256": "0" * 64, "z_order": 0, "depth_alpha": 1.0,
                     "coverage": "full_frame"}],
@@ -154,11 +154,11 @@ def test_bounds_pass_for_a_window_inside_the_plate(tmp_path):
 
 def test_bounds_fail_when_the_pan_walks_off_the_plate(tmp_path):
     path = tmp_path / "bg.png"
-    Image.new("RGB", (1600, 1024), (200, 200, 200)).save(path)
+    Image.new("RGB", (3200, 1600), (200, 200, 200)).save(path)
     shot = {
         "id": "shot_001", "duration_seconds": 4.0,
         # travel far past the plate's right edge
-        "camera": dict(CAMERA, move="scroll_pan", pan_start_px=2400.0, pan_end_px=3200.0),
+        "camera": dict(CAMERA, move="scroll_pan", pan_start_px=900.0, pan_end_px=1200.0),
         "plates": [{"id": "bg", "source": "generated_background", "path": str(path),
                     "sha256": "0" * 64, "z_order": 0, "depth_alpha": 1.0,
                     "coverage": "full_frame"}],

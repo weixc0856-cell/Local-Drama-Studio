@@ -1,0 +1,8 @@
+schema_version: '1.0'
+allowed_moves:
+- dolly_in
+- dolly_out
+- crane
+- static
+preferred_lens_mm: 21
+dof_strategy: deep

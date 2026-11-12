@@ -426,10 +426,17 @@ def check_aesthetic_risk(
     if placement_error > 0.22:
         flag("placement", "warn", f"主体重心离设计位置约 {placement_error:.2f}（归一化）",
              target=list(target), centroid=centroid)
+    # Advisory only. whitespace_fraction counts luma >= 240, which the paper of
+    # the silk (绢底 #E3D6BE, luma 214) and xuan (生宣 #EDE4D3, luma 231) styles
+    # never reaches: on those styles the number is structurally 0.0 regardless
+    # of how airy the painting is (measured 2026-11-12 on the 滕王阁 pilot).
+    # 留白 is a 虚实 rhythm, not an area budget — judge it in human review;
+    # crowding/sparse edge density is the metric that actually carries signal.
     ws = design["composition"]["whitespace_ratio"]
     if abs(metrics["whitespace_fraction"] - ws) > 0.15:
-        flag("whitespace", "warn",
-             f"留白 {metrics['whitespace_fraction']:.2f} 与设计 {ws:.2f} 相差超过 0.15")
+        flag("whitespace", "info",
+             f"留白 {metrics['whitespace_fraction']:.2f} 与设计 {ws:.2f} 相差超过 0.15"
+             "（绢本/生宣上该指标恒为 0，仅供参考）")
     if metrics["edge_density"] > 0.22:
         flag("crowding", "warn", f"边缘密度 {metrics['edge_density']:.3f} 偏高，可能拥挤")
     if metrics["edge_density"] < 0.012:
@@ -1653,7 +1660,7 @@ def check_build(manifest_path: Path, *, root: Path | None = None) -> dict[str, A
     if final is None or not final.is_file():
         checks["final"] = _result(False, path=str(final), error="manifest has no existing final")
     else:
-        checks["final"] = check_video(final, expected_width=1080, expected_height=1920)
+        checks["final"] = check_video(final, expected_width=1920, expected_height=1080)
         if outputs.get("final_sha256"):
             checks["final"]["sha256_ok"] = _sha256(final) == outputs["final_sha256"]
 
@@ -1666,7 +1673,7 @@ def check_build(manifest_path: Path, *, root: Path | None = None) -> dict[str, A
         # media type instead of assuming every segment is an image.
         if segment.get("type") == "video":
             # A Wan/source clip may be 576x1024 or 1080x1920; the final file
-            # above is the one that must be exactly 1080x1920.
+            # above is the one that must be exactly 1920x1080.
             images.append(check_video(resolve(source)))
         else:
             images.append(check_image(resolve(source)))

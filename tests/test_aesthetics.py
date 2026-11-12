@@ -98,7 +98,7 @@ def test_prompt_order_and_negative_capability() -> None:
         "subject", "composition", "environment", "lighting", "color", "style", "material"
     ]
     assert compiled.prompt.startswith(compiled.sections["subject"])
-    assert "竖屏9:16构图" in compiled.prompt
+    assert "横屏16:9构图" in compiled.prompt
     assert "宋代院体青绿工笔" in compiled.prompt
     assert compiled.negative_supported is False
     assert compiled.negative_prompt

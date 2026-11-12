@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.celestial_palace
+name: 写实仙宫
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 电影级写实质感的云中宫阙：真实山体与云海、只露一角的金顶朱栏、云隙体积光；既不是三维渲染也不是古画。
+layers:
+- identity
+- execution
+- consistency
