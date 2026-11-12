@@ -109,7 +109,17 @@ PowerShell scripts are UTF-8 **with BOM**; keep the BOM or PowerShell 5.1 garble
 - Keep seed, prompt, model hash and workflow hash with every asset. Rebuilds write a new `renders/build-<time>/` and never overwrite history.
 - Do not upgrade ComfyUI/nodes or replace model files without re-running the relevant R0 checks; record versions in `logs/r0/engine-versions.txt`.
 - **Wan:** resolution divisible by 32; 20 steps; 73 frames default (121 has colour drift); default profile `safe8g` 448×768/49 frames; do not rely on Wan for scripted subject movement or building/character shots.
+- **Aspect rule:** **16:9 landscape is the default delivery aspect** (ADR-026).
+  Delivery 1920×1080; FLUX keyframes 1344×768; Wan landscape 1024×576 (exact 16:9, /32,
+  **VRAM unverified on the A750**). `W, H` in `domain/motion/spec.py` is the single
+  frame constant — do not hardcode 1080×1920 again. A 9:16 project must declare
+  `production.width/height` explicitly or `assemble` / `motion.plan` will refuse it.
+  Declared sizes live in `config/generation.yaml` under `production:`.
 - **Style rule:** styles are config, never code branches. Do not add style models/LoRAs or make preset auto-seeding. Run `static_quality.py` before animating; `motion.plan` requires per-shot `static_quality.json` unless `--skip-static-gate` is explicit.
+- **One work, one style:** a poem / essay / picture set / film uses exactly **one**
+  Style Pack. Never mix styles inside a set to express an emotional turn (ADR-028) —
+  express it with framing, shot size, light, weather, density and colour temperature
+  inside that one style. Two visual languages means two separate works.
 - **Voice rule:** only `APPROVED` profiles in `config/voices.yaml` may enter production TTS; `zero_shot` only (SFT retired); per-line provenance goes to `audio_manifest.json.voice_cast`. `chant` is unsupported and refused.
 - **Audio rule:** BGM/SFX come from `assets/audio/manifest.json`; only `VERIFIED`/`APPROVED` assets with a matching hash may enter a production mix. Never rip film/anime soundtracks.
 - **Story rule:** `character_bible.yaml` / `shot_bible.yaml` + `story.check` validate references/coverage/style; they never claim same-face identity.

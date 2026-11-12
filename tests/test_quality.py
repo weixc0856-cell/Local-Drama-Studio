@@ -73,7 +73,7 @@ def test_check_build_writes_report(tmp_path: Path) -> None:
     build = root / "build-test"
     build.mkdir()
     final = build / "final.mp4"
-    _mp4(final, size=(1080, 1920), seconds=0.4)
+    _mp4(final, size=(1920, 1080), seconds=0.4)
     image = build / "scene.png"
     _noise(image)
     mixed = build / "mixed.wav"
@@ -95,8 +95,8 @@ def test_check_build_writes_report(tmp_path: Path) -> None:
     result = check_build(manifest, root=root)
     assert result["status"] == "PASS"
     assert (build / "quality_report.json").is_file()
-    assert result["final"]["width"] == 1080
-    assert result["final"]["height"] == 1920
+    assert result["final"]["width"] == 1920
+    assert result["final"]["height"] == 1080
 
 
 def test_check_build_accepts_a_source_video_smaller_than_the_final(tmp_path: Path) -> None:
@@ -104,7 +104,7 @@ def test_check_build_accepts_a_source_video_smaller_than_the_final(tmp_path: Pat
     build = root / "build-video"
     build.mkdir()
     final = build / "final.mp4"
-    _mp4(final, size=(1080, 1920), seconds=0.4)
+    _mp4(final, size=(1920, 1080), seconds=0.4)
     clip = build / "wan_source.mp4"
     _mp4(clip, size=(576, 1024), seconds=0.4)
     mixed = build / "mixed.wav"

@@ -43,3 +43,23 @@ limits:
 
 # Verified constraints for Wan 2.2: width/height divisible by 16, frame count
 # 4n+1. FLUX.2 klein: 4 steps, CFG 1.0, euler/simple, no negative prompt.
+
+# Production defaults (decision 2026-11-12: 16:9 landscape is the default
+# delivery aspect for all content). 1344x768 is exact 16:9 and divisible by 32,
+# so the same size is valid for FLUX keyframes and, at lower cost, for Wan.
+production:
+  aspect_ratio: "16:9"
+  image:
+    width: 1344
+    height: 768
+    steps: 16
+    cfg: 1.0
+  # Wan landscape at exact 16:9 with /32 dimensions. VRAM on the 8 GB A750 is
+  # NOT measured yet at this size — treat as UNVERIFIED until a run is logged.
+  video:
+    width: 1024
+    height: 576
+    frames: 49
+    fps: 24
+    steps: 20
+    cfg: 5.0

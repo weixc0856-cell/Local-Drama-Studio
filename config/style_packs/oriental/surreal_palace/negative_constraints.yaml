@@ -1,0 +1,12 @@
+schema_version: '1.0'
+forbidden:
+- plastic CG sheen
+- video game screenshot look
+- HDR oversaturation
+- cartoon shading
+- toon outline
+- flat illustration
+- cluttered detail everywhere
+- visible text
+- watermark
+note: Floating and inverted architecture is intentional here and must NOT be suppressed.

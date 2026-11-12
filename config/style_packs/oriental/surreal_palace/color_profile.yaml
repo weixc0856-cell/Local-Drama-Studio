@@ -1,0 +1,24 @@
+schema_version: '1.0'
+anchors:
+- name: cold cyan grey
+  hex: '#A9B6B8'
+- name: deep ultramarine
+  hex: '#2F4560'
+- name: mist white
+  hex: '#DCE2E0'
+- name: aged gold
+  hex: '#B08A45'
+- name: vermilion
+  hex: '#8E3B2E'
+- name: shadow blue
+  hex: '#1D2A38'
+saturation_range:
+- 0.05
+- 0.40
+edge_density_range:
+- 0.03
+- 0.20
+value_range:
+- 0.10
+- 0.90
+note: Hex values are for validation only; they never enter a prompt.

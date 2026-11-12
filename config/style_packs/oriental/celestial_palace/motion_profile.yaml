@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- cloud drift
+- mist drift
+- light shaft sweep
+secondary_motions:
+- banner sway
+secondary_limit: 2

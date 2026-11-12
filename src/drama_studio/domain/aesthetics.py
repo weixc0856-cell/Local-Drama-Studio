@@ -648,7 +648,7 @@ def compile_prompt(
         f"场景：{shot_set.scene_subject}",
     ] if part)
     composition = "；".join(part for part in [
-        "竖屏9:16构图",
+        "横屏16:9构图",
         f"{SHOT_SIZE_ZH[comp.shot_size]}，{VIEWPOINT_ZH[comp.viewpoint]}",
         f"主体位于{POSITION_ZH[comp.subject_position]}",
         f"构图策略：{strategies}",

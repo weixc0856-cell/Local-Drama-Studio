@@ -93,7 +93,7 @@ def _progress(directory: Path) -> dict[str, Any]:
             "final": final,
         },
         "title": meta.get("title", directory.name),
-        "aspect_ratio": meta.get("aspect_ratio", "9:16"),
+        "aspect_ratio": meta.get("aspect_ratio", "16:9"),
         "target_duration_seconds": meta.get("target_duration_seconds"),
         "style_id": (meta.get("visual") or {}).get("style_id"),
         "cover": str(cover.relative_to(directory.parent.parent)).replace("\\", "/") if cover else None,

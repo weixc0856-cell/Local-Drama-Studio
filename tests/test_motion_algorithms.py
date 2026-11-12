@@ -16,7 +16,7 @@ from drama_studio.application.motion.local import (
     water_displacement,
     water_vertical_displacement,
 )
-from drama_studio.domain.motion.spec import LocalMotionSpec, MaskSpec
+from drama_studio.domain.motion.spec import W, LocalMotionSpec, MaskSpec
 from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,7 +98,11 @@ def test_water_vertical_amplitude_decays_monotonically_toward_the_far_edge() -> 
 
 def test_water_displacement_has_no_high_frequency_component() -> None:
     # a smooth field: adjacent x samples move by well under the amplitude
-    values = [water_displacement(i / 60.0, 0.7, 0.4, **WATER)[0] for i in range(61)]
+    # sample one point per ~18 px of frame width, so the smoothness check is
+    # resolution-independent instead of tied to the old 1080-wide frame
+    samples = max(2, round(W / 18))
+    values = [water_displacement(i / (samples - 1), 0.7, 0.4, **WATER)[0]
+              for i in range(samples)]
     steps = [abs(b - a) for a, b in zip(values, values[1:])]
     assert max(steps) < WATER["amplitude"] * 0.25
     assert len(values) == len(set(round(v, 9) for v in values))

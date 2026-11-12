@@ -46,7 +46,7 @@ def test_presets_carry_required_visual_contract() -> None:
         assert preset.negative_prompt
         assert preset.color_palette
         assert all(color.startswith("#") and len(color) == 7 for color in preset.color_palette.values())
-        assert preset.aspect_ratio == "9:16"
+        assert preset.aspect_ratio == "16:9"
         assert preset.applicable_content_types
         assert preset.source_files and all((ROOT / rel).is_file() for rel in preset.source_files)
         for rel in preset.reference_assets:

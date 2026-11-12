@@ -1,7 +1,7 @@
 """Optional learned super-resolution stage for Wan clips.
 
 The pipeline already separates low-resolution temporal generation from final
-1080x1920 assembly: Wan runs at 448x768 (or 576x1024) and r3_build upscales with
+1920x1080 assembly: Wan runs at 448x768 (or 576x1024) and r3_build upscales with
 Lanczos. Lanczos is a resampler, not a texture reconstructor. A learned SR stage
 can add detail, but it is opt-in because this repo has no SR model or weights,
 and adding PyTorch to the root venv is forbidden.
@@ -27,7 +27,7 @@ from typing import Literal
 
 Backend = Literal["lanczos", "realesrgan-ncnn"]
 
-W, H = 1080, 1920
+W, H = 1920, 1080
 
 
 class UpscaleError(RuntimeError):

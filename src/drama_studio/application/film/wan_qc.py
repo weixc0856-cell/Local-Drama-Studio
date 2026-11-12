@@ -42,7 +42,7 @@ def _band_dark(path: Path, frac: float = BAND_FRAC) -> tuple[float, float]:
 
     Wan artifacts often enter from a frame edge before the global black fraction
     moves. A 0.7% top band is invisible to a whole-frame threshold but visible
-    once the clip is enlarged to 1080x1920.
+    once the clip is enlarged to 1920x1080.
     """
     with Image.open(path) as raw:
         image = raw.convert("L")

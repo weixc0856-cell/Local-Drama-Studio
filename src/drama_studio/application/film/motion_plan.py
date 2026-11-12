@@ -53,8 +53,8 @@ def build_motion_plan(
         return None, {"reason": "motion disabled in project.json"}
     if preset is None:
         return None, {"reason": f"no motion preset for style {style_id!r}"}
-    if (settings.width, settings.height) != (1080, 1920):
-        return None, {"reason": f"motion renderer is fixed at 1080x1920, project uses {settings.width}x{settings.height}"}
+    if (settings.width, settings.height) != (1920, 1080):
+        return None, {"reason": f"motion renderer is fixed at 1920x1080, project uses {settings.width}x{settings.height}"}
 
     entries = {entry.shot_id: entry for entry in timeline.entries}
     shots = []

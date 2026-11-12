@@ -27,7 +27,7 @@ from drama_studio.application.film.assets import ShotAsset, resolve_asset, resol
 from drama_studio.domain.film.schemas import EditTimeline, Storyboard
 
 ExtendPolicy = Literal["hold_last", "slow", "trim"]
-W, H = 1080, 1920
+from drama_studio.domain.motion.spec import H, W
 CLIP_MANIFEST = "clip_manifest.json"
 
 

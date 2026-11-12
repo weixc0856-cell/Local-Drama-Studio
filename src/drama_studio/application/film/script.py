@@ -195,7 +195,7 @@ def build_bible(project_id: str, title: str, text: str, pack: Any | None) -> Vis
         art_direction=ArtDirection(
             style=style,
             period="中国古代",
-            aspect_ratio="9:16",
+            aspect_ratio="16:9",
             lighting=lighting,
             palette=palette,
         ),
@@ -339,7 +339,7 @@ def init_project(
         "title": title,
         "author": author,
         "dynasty": dynasty,
-        "aspect_ratio": "9:16",
+        "aspect_ratio": "16:9",
         "target_duration_seconds": target_duration_seconds,
         "language": language,
         "created_at": date.today().isoformat(),

@@ -56,7 +56,7 @@ class ProjectCreate(Strict):
     positioning: str = ""
     default_style_id: str | None = None
     default_voice: str = ""
-    aspect_ratio: str = "9:16"
+    aspect_ratio: str = "16:9"
     target_platforms: list[str] = Field(default_factory=list)
 
 
@@ -101,7 +101,7 @@ class StylePayload(Strict):
     positive_prompt: str = ""
     negative_prompt: str = ""
     reference_assets: list[str] = Field(default_factory=list)
-    aspect_ratio: str = "9:16"
+    aspect_ratio: str = "16:9"
     applicable_content_types: list[str] = Field(default_factory=list)
     source_files: list[str] = Field(default_factory=list)
 

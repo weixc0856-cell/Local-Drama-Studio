@@ -1,0 +1,12 @@
+schema_version: '1.0'
+materials:
+- weathered granite
+- wet moss
+- aged gold leaf
+- vermilion lacquer
+- dark glazed tile
+texture_cues:
+- granite grain
+- wet rock sheen
+- cloud volume
+- weathered gold

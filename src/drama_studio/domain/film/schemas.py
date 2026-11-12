@@ -127,7 +127,7 @@ class ArtDirection(BaseModel):
 
     style: str = Field(min_length=1)
     period: str | None = None
-    aspect_ratio: str = "9:16"
+    aspect_ratio: str = "16:9"
     lighting: str = Field(min_length=1)
     palette: list[str] = Field(default_factory=list)
 

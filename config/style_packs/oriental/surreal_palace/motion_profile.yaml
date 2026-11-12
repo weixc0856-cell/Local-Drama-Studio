@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- cloud drift
+- water stillness
+- ring rotation
+secondary_motions:
+- mist drift
+secondary_limit: 2

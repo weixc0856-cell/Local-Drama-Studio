@@ -1,0 +1,29 @@
+schema_version: '1.0'
+identity: cinematic photoreal render of a physically impossible space, believable materials, impossible gravity
+medium: photorealistic cinematic still with physically correct light and texture, surreal architecture
+materials:
+- floating granite masses with wet moss
+- mirror-still water with a perfect inverted world
+- lapis and jade inlay catching low sun
+- aged gold leaf on impossible ridges
+- thin rings of light and carved stone circles
+composition:
+- one impossible structure reading clearly as architecture
+- strong vertical or mirrored symmetry, deliberately not natural
+- deep cloud void below or above the structure
+- enormous scale, a single small human or none at all
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- photoreal materials with impossible gravity
+- weathered granite and wet moss, believable weight and wear
+- mirror-still water reflecting an identical inverted world
+- one huge carved stone ring or a ring of light
+- cold blue-grey world with a single small warm accent
+- quiet, vast, slightly unsettling stillness

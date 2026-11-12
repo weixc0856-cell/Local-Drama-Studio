@@ -1,0 +1,13 @@
+schema_version: '1.0'
+forbidden:
+- plastic CG sheen
+- video game screenshot look
+- HDR oversaturation
+- floating unsupported architecture
+- complete symmetrical megastructure
+- cartoon shading
+- toon outline
+- flat illustration
+- visible brush strokes
+- paper texture
+note: For validator and human checklist only; prompts use positive anchors.

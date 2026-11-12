@@ -16,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from drama_studio.domain.style.presets import CameraMove, Easing, LocalMotionType, StylePreset
 
-W, H, FPS = 1080, 1920, 24
+W, H, FPS = 1920, 1080, 24
 
 
 class Box(BaseModel):

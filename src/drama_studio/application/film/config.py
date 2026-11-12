@@ -1,7 +1,7 @@
 """Film production settings read from ``project.json``.
 
 Defaults are deliberately conservative: 24 fps matches Wan and the R3 motion
-renderer, 1080x1920 is the vertical delivery size, and every shot must carry
+renderer, 1920x1080 is the landscape delivery size, and every shot must carry
 motion unless the project explicitly disables it.
 """
 
@@ -73,16 +73,16 @@ class EnhancementSettings(BaseModel):
     tile_size: int = Field(default=128, ge=0, le=1024)
     temporal_backend: Literal["none", "hqdn3d"] = "none"
     denoise: bool = False
-    output_width: int = Field(default=1080, ge=256, le=2160)
-    output_height: int = Field(default=1920, ge=256, le=3840)
+    output_width: int = Field(default=1920, ge=256, le=3840)
+    output_height: int = Field(default=1080, ge=256, le=3840)
     fallback: Literal["explicit_manual_approval"] = "explicit_manual_approval"
 
 
 class ProductionSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    width: int = Field(default=1080, ge=256, le=2160)
-    height: int = Field(default=1920, ge=256, le=3840)
+    width: int = Field(default=1920, ge=256, le=3840)
+    height: int = Field(default=1080, ge=256, le=3840)
     fps: int = Field(default=24, ge=12, le=60)
     content_type: Literal["poetry", "narration", "mixed"] = "poetry"
     leading_silence_ms: int = Field(default=300, ge=0, le=5000)

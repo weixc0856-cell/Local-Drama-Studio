@@ -51,7 +51,7 @@ def compile_image_prompt(
     parts.extend(pack.image.positive_anchors)
     if extra_note:
         parts.append(extra_note)
-    parts.append("portrait 9:16 full-frame composition, no letterbox, no black bars")
+    parts.append("landscape 16:9 full-frame composition, no letterbox, no black bars")
     parts.append("unmarked surfaces, no lettering, no watermark")
     prompt = ". ".join(part.rstrip(".") for part in parts if part)
     if "#" in prompt:

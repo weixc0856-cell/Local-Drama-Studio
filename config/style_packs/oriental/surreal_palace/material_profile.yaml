@@ -1,0 +1,12 @@
+schema_version: '1.0'
+materials:
+- floating granite
+- wet moss
+- mirror water
+- lapis and jade inlay
+- aged gold leaf
+texture_cues:
+- granite grain
+- water mirror
+- carved stone rings
+- weathered gold

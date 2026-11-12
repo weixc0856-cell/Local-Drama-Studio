@@ -55,16 +55,16 @@ def test_pan_has_no_room_on_exact_9x16_still() -> None:
 
 def test_pan_speed_comes_from_the_style_config() -> None:
     court = load_style_presets(ROOT).get("court_green_fine_line")
-    camera = resolve_camera(_shot("scroll pan", duration=4.0), court, (1024, 1024))
+    camera = resolve_camera(_shot("scroll pan", duration=4.0), court, (2560, 1024))
     assert camera.move == "scroll_pan"
-    assert camera.pan_range_px == 840
+    assert camera.pan_range_px == 780
     assert camera.pan_end_px - camera.pan_start_px == pytest.approx(120, abs=1)
-    assert "crop=1080:1920" in camera_chain(camera)
+    assert "crop=1920:1080" in camera_chain(camera)
 
 
 def test_disallowed_move_falls_back_and_records_why() -> None:
     court = load_style_presets(ROOT).get("court_green_fine_line")
-    camera = resolve_camera(_shot("layered parallax"), court, (1024, 1024))
+    camera = resolve_camera(_shot("layered parallax"), court, (2560, 1024))
     assert camera.move == court.motion.camera.default
     assert camera.requested_move == "layered_parallax"
     assert camera.fallback_reason is not None

@@ -38,7 +38,7 @@ from drama_studio.application.voice.timeline import (
 ROOT = Path(__file__).resolve().parents[1]
 WS = output_root()  # generated artifacts live outside the repo
 FPS = 24
-W, H = 1080, 1920
+W, H = 1920, 1080
 GAP_MS = 800
 DEFAULT_CONTENT_TYPE = "narration"
 
@@ -84,7 +84,7 @@ def build_segment(seg: dict, out: Path, *, render_duration: float | None = None)
     if seg["type"] == "image":
         frames = max(1, round(dur * FPS))
         vf = (
-            f"scale=2160:3840:force_original_aspect_ratio=increase,crop=2160:3840,"
+            f"scale=3840:2160:force_original_aspect_ratio=increase,crop=3840:2160,"
             f"zoompan=z='min(zoom+0.0006,1.06)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
             f"d={frames}:s={W}x{H}:fps={FPS},format=yuv420p"
         )

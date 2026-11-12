@@ -64,9 +64,9 @@ def prepare(
     directory = project_dir(root, project.project_id)
     meta = _load_meta(directory)
     settings = settings or load_production(meta)
-    if (settings.width, settings.height) != (1080, 1920):
+    if (settings.width, settings.height) != (1920, 1080):
         raise AssembleError(
-            f"r3_build is fixed at 1080x1920; project asks for {settings.width}x{settings.height}")
+            f"r3_build is fixed at 1920x1080; project asks for {settings.width}x{settings.height}")
     if settings.fps != 24:
         raise AssembleError(f"r3_build is fixed at 24 fps; project asks for {settings.fps}")
 
@@ -124,7 +124,7 @@ def _r3_command(
 def _motion_current(directory: Path, plan, *, root: Path, timeline) -> dict[str, str] | None:
     """Reuse motion clips that are newer than their source still and the right length.
 
-    Re-rendering eight 6-second 1080x1920 clips on every assemble costs minutes
+    Re-rendering eight 6-second 1920x1080 clips on every assemble costs minutes
     and produces an identical file; a stale source still or a changed timeline
     duration forces a re-render.
     """

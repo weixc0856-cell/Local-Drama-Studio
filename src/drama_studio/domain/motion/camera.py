@@ -7,7 +7,7 @@ The chain is split into two halves:
 
 * ``camera_pre`` scales the still to an intermediate canvas that keeps the
   source aspect ratio. Local-motion layers are composited on that canvas.
-* ``camera_post`` crops / zooms that composed canvas to 1080x1920.
+* ``camera_post`` crops / zooms that composed canvas to 1920x1080.
 
 Splitting the chain is what keeps authored masks locked to the content: a
 mask and its subject go through the same crop/zoom instead of the mask being
@@ -44,7 +44,7 @@ def camera_pre(spec: CameraSpec, fps: int = 24) -> str:
 
 
 def camera_post(spec: CameraSpec, fps: int = 24) -> str:
-    """Crop / zoom the composed intermediate canvas to 1080x1920."""
+    """Crop / zoom the composed intermediate canvas to 1920x1080."""
     duration = spec.duration_seconds
     if spec.move in ("scroll_pan", "slow_lateral_track"):
         return f"crop={W}:{H}:x='{pan_expr(spec)}':y=0"
