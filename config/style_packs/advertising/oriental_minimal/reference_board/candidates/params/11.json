@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a folded fan on paper. contemporary oriental minimal advertising, ink-grey palette. matte paper, soft plaster, ink wash texture, generous void. composition: one product on a vast empty field, asymmetric placement, soft ink-grey gradient, blank copy zone, no text. lighting: soft diffused window light with a long quiet shadow, cool temperature, low contrast. materials: rice paper, plaster, ink, stone, tea. camera: locked-off camera, 50mm lens, deep depth of field. one product in a vast empty field. ink-grey and rice-paper palette. soft window light and a long quiet shadow. asymmetric placement. a blank copy zone. no text and no ornament. oriental minimal advertising, no text, no ornament, vast negative space. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 7611,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/advertising_oriental_minimal/11"
+}

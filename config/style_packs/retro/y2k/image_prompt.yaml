@@ -1,0 +1,34 @@
+schema_version: '1.0'
+identity: Y2K chrome futurism, early 2000s product aesthetic
+medium: liquid metal, holographic film, transparent PVC, lens flare
+materials:
+- mirror chrome
+- iridescent film
+- clear plastic
+- pearl finish
+composition:
+- one floating product in empty space
+- a single clean staging
+- 'some objects are tinted translucent plastic: bondi blue, lime green or electric
+  purple'
+- streamlined rounded geometry
+- 'rare Y2K graphic accent: a four-point star or a frosted UI corner, no readable
+  text'
+- macro detail with shallow depth
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- mirror chrome surfaces with sharp highlights
+- iridescent holographic film shifting colour
+- transparent PVC with visible refraction
+- pearl and silver palette on a clean background
+- soft lens flare and studio reflection
+- a tinted translucent variant in bondi blue, lime green or electric purple
+- one four-point star or frosted UI corner, no readable text
+- no text and no characters

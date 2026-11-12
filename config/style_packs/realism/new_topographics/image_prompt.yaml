@@ -1,0 +1,29 @@
+schema_version: '1.0'
+identity: contemporary documentary photograph, new topographics, deadpan
+medium: large-format color photograph, flat daylight, precise detail
+materials:
+- concrete
+- asphalt
+- weathered metal
+- glass
+- dry grass
+composition:
+- a man-made structure in a flat ordinary landscape
+- deadpan framing, level horizon, subject off-center
+- no dramatic light and no heroic angle
+- wide empty sky, parking lot or roadside verge
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- a deadpan view of an ordinary man-made place
+- flat daylight with true-to-eye color
+- concrete, asphalt, metal and dry grass with honest texture
+- the horizon is level and the subject sits off-center
+- no drama, no golden hour and no retouching
+- large-format clarity with natural depth

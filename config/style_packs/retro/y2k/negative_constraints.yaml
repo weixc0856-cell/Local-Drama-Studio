@@ -1,0 +1,12 @@
+schema_version: '1.0'
+forbidden:
+- photoreal person
+- readable text
+- 3d game render
+- dark grunge
+- neon cyberpunk
+- flat vector
+- busy background
+- modern flat smartphone
+- all-white studio in every image
+note: For validator and human checklist only; prompts use positive anchors.

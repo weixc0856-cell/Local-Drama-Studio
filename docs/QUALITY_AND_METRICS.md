@@ -5,18 +5,25 @@
 
 ## 1. 状态词典
 
-能力状态以 `docs/PRD.md` §0.2 为唯一来源：`PASS_VERIFIED` / `PASS_STATIC` / `PARTIAL` / `NOT_RUN` / `BLOCKED` / `DEPRECATED`。
+需求状态以 `docs/PRD.md` §0.2 为唯一来源：`PASS_VERIFIED` / `IMPLEMENTED_NOT_VERIFIED` / `PARTIAL` / `NOT_IMPLEMENTED` / `BLOCKED` / `OPEN_QUESTION`。
 
-补充的运行/诊断状态（不用于能力矩阵）：
+历史证据标签（只用于旧报告/阶段表，不用于需求矩阵）：
+
+| 旧标签 | 映射 |
+|---|---|
+| `PASS_STATIC` | `IMPLEMENTED_NOT_VERIFIED` |
+| `NOT_RUN` | `NOT_IMPLEMENTED` |
+| `DEPRECATED` | 历史能力 |
+| `PASS_LIMITED` | 仅 `doctor` 诊断标签 |
+
+补充的运行/诊断状态（不用于需求矩阵）：
 
 | 状态 | 用途 |
 |---|---|
-| `PASS_LIMITED` | `doctor` 的局部诊断结论（已执行但有明确限制） |
-| `DECISION` | 只做了设计决策，尚未运行验证 |
 | `FAILED` | 运行期失败（任务、步骤、校验） |
 | `UNKNOWN` | 无法探测（禁止猜成在线/正常） |
 
-禁止把 `DECISION`、`NOT_RUN` 或 `BLOCKED` 写成 `PASS_VERIFIED`。
+禁止把 `NOT_IMPLEMENTED`、`BLOCKED` 或 `OPEN_QUESTION` 写成 `PASS_VERIFIED`。
 
 ## 2. 技术质量门
 
@@ -156,7 +163,7 @@
 | 工笔/水墨生成与动画质量 | `PARTIAL` | S2 与首批管线样片技术检查通过；静态门 `PARTIAL`（山石纹理重复）；人工审美 PENDING；见 `docs/PIPELINE_AB_VALIDATION.md` |
 | 多篇批处理 | `NOT_RUN` | — |
 | 平台数据 | `NOT_RUN` | — |
-| 女声/字体/BGM/音效选型 | `PARTIAL`（字体/字幕完成；女声已入 P1 成片；排版待审；BGM/音效未完成） | R3-D |
+| 女声/字体/BGM/音效选型 | `PARTIAL`（字体/字幕完成；`narrator_self` 为唯一生产音色；BGM 2 条已登记并完成技术混音；SFX/环境音未完成） | R3-D |
 | P1 技术质量检查 | `PASS_VERIFIED` | 4/4 图片非空非黑；成片 14.0 s / 1080×1920 / 解码 0 / 哈希一致；音频 48 kHz 单声道，max -1.5 dB | P1 |
 | 平台增长/转化 | `NOT_RUN` | — |
 

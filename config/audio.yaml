@@ -1,7 +1,16 @@
 tts:
-  mode: sft                 # must match CosyVoice startup script
+  # 默认合成模式：zero_shot（参考音克隆）。唯一后端 VoxCPM2（服务端口 50000）。
+  # SFT 预置音色已退休（2026-11-06）：字段保留只为解析旧配置，运行时不再接受 speaker。
+  mode: zero_shot
+  default_speaker: "中文女"     # 已退休：仅旧配置兼容，不发给运行时
+  zero_shot:
+    # 只有显式选择 zero_shot 时才会使用；必须与参考音逐字一致。
+    prompt_audio: "assets/audio/prompts/my_voice_clean_v2.wav"
+    prompt_text: "清晨的山谷里，风穿过竹林，远处传来水声。"
+    speed: 1.0
+    runtime: voxcpm2          # 50000 上的唯一运行时；旧 CosyVoice2-0.5B 已停用
   sample_rate: 48000        # resample all tracks to 48 kHz for FFmpeg
-  speakers:                 # voice_id -> CosyVoice SFT preset speaker
+  speakers:                 # 已退休：voice_id -> 旧 SFT 音色，仅作历史映射
     male_01: "中文男"
     male_02: "中文男"
     female_01: "中文女"
@@ -20,7 +29,7 @@ loudness:
   true_peak_db: -1.5
 
 # 诵读模式：只控制速度、停顿与分句，不改变任何汉字。
-# CosyVoice-300M-SFT 的 /tts 只接收 text / speaker / speed；没有音素、拼音、
+# VoxCPM2 的 /tts 只接收 text / 参考音 / prompt_text / speed；没有音素、拼音、
 # 音高或时长接口。因此 chant（真正吟唱）明确标记为不支持，不得用普通朗诵冒充。
 narration_modes:
   narration:
@@ -51,4 +60,36 @@ narration_modes:
     metrical_pause_ms: 0
   chant:
     supported: false
-    reason: CosyVoice-300M-SFT 无音高、旋律与时长控制接口；真正吟唱需要另行验证歌声模型
+    reason: VoxCPM2 无音高、旋律与时长控制接口；真正吟唱需要另行验证歌声模型
+
+# 声景母带：只作用于拼接后的整段对白（不是逐句），默认关闭。
+# 开启前必须有 IR 与（可选的）环境音/垫乐，且这些资产要在许可清单内。
+soundscape:
+  enabled: true               # 06 = broadcast_light；响度由本模块两遍法独占
+  reverb:
+    # convolution 是本意（afir + 脉冲响应），但本机 FFmpeg 8.1-full_build 的 afir
+    # 对所有输入形式都输出数字静音，已实测记录 → 默认用早期反射模型。
+    method: early_reflections
+  ir:
+    path: "assets/audio/ir/synthetic_hall_0.9s.wav"
+    dry: 0.85
+    wet: 0.18
+  voice_dynamics:
+    enabled: false            # 开启后可达 -16 LUFS；关闭时约 -18.3（声门压缩比不足）
+    threshold_db: -20.0
+    ratio: 2.5
+  voice_style: broadcast_light   # natural | broadcast_light（06）| broadcast_strong（07）
+  voice_eq:
+    highpass_hz: 80
+    deess:
+      - {hz: 6500, gain: -2.0}
+      - {hz: 8000, gain: -3.0}
+  ambience:
+    track: ""                 # 没有可商用素材时留空
+    gain_db: -24.0
+  bgm:
+    track: ""                 # 授权落实前必须留空
+    gain_db: -26.0
+  ducking:
+    enabled: true
+    bgm: {threshold: 0.05, ratio: 4.0}

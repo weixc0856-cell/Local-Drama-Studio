@@ -1,0 +1,16 @@
+schema_version: '1.0'
+materials:
+- weathered grey stone
+- cracked earth
+- coarse dark linen
+- rusted iron
+- dry thatch
+- moss and charred wood
+- subdued jade and embroidery
+texture_cues:
+- stylized stone pitting and cracks
+- coarse fabric weave
+- rust and wear
+- soot and moss
+- clean PBR highlights for animation
+- ink bleed on paper

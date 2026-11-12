@@ -1,0 +1,20 @@
+{
+  "style": "advertising.oriental_minimal",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a tea canister on a vast rice-paper field",
+    "a porcelain cup with steam",
+    "an incense holder with a thin smoke line",
+    "a ceramic vase on plaster",
+    "a rice-paper lamp",
+    "a bamboo tray with one cup",
+    "an ink stone and a brush",
+    "a linen pouch on stone",
+    "a wooden comb on paper",
+    "a teapot on a low stone slab",
+    "a folded fan on paper",
+    "a stone bowl with water"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

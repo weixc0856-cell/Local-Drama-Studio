@@ -1,0 +1,20 @@
+schema_version: '1.0'
+motion_vocabulary:
+- chrome rotation
+- reflection sweep
+- liquid morph
+secondary_limit: 2
+preserve:
+- chrome reflection
+- transparent refraction
+- pearl sheen
+avoid:
+- photoreal person
+- readable text
+- 3d game render
+- dark grunge
+- neon cyberpunk
+- flat vector
+- busy background
+- modern flat smartphone
+- all-white studio in every image

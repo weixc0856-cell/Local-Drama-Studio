@@ -16,7 +16,7 @@
 | 5b | 静帧生成 | 4-6 张竖屏关键帧 | FLUX + `comfy.batch`（按 snapshot jobs） | `PARTIAL`（A/B 8 张实图） |
 | 6 | 动态镜头 | 镜头运动 + 局部微动 + 转场；Wan 只作局部补充 | `motion.plan` → `motion.render`（FFmpeg 确定性合成）；Wan I2V 可选 | `PARTIAL`（两风格技术链走通；人工看片 PENDING） |
 | 7 | 旁白/朗诵 | 逐句 TTS；标准朗诵/古典吟诵；发音核验 | CosyVoice + `tts.synthesize`（模式/分句/停顿）；`pronunciation_report.json` + `scripts/tts_qa.py` | `PARTIAL`（波形/ASR 通过；发音人工复核 PENDING） |
-| 8 | 音乐/音效 | BGM、环境声 | 未实现 | `NOT_RUN` / 待选型（R3-D） |
+| 8 | 音乐/音效 | BGM、环境声、ducking | `audio_timeline` + `assets/audio` | `PASS_VERIFIED`（BGM 技术混音）；SFX/环境音 `IMPLEMENTED_NOT_VERIFIED` |
 | 9 | 字幕 | SRT/ASS、时间轴、本地字体 | `r3_build.py` + `config/fonts.yaml` | `PASS_VERIFIED`（P1 4 行） |
 | 10 | 合成 | 1080×1920、混音、字幕 | FFmpeg | `PASS_VERIFIED`（P1 14 s + R3 38 s） |
 | 11 | 质量检查 | 技术 + 音频 + 美学风险 + 内容 + 成本 | `quality.check` / `static_quality --aesthetic` / `quality --aesthetic-motion` / `tts_qa.py` + 人工 | 技术 `PASS_VERIFIED`；美学/音频 `PARTIAL`；人工 H3 `NOT_RUN` |
@@ -24,7 +24,7 @@
 | 13 | 人工审核/发布 | 人看片、手动发布 | 人工 | `PARTIAL` |
 | 14 | 数据记录 | 播放/完播/互动/涨粉 | 未实现 | `NOT_RUN` |
 
-> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；女声已本地合成/试听并固化韵律方案，但未进入正式成片；BGM、音效与商用授权未完成。必须在下一篇完整样片之前完成。R3 的「中文男」只验证了技术链路，不是最终声音方案。
+> **R3-D 前置**：字体候选已完成来源、许可、覆盖和预览验证，字幕已接入正式构建，排版仍待人工审查；SFT「中文女」已进入 P1 与 81.373 s 工笔；zero-shot 仅 2 行 E2E；**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选**；BGM 改用 Wikimedia Commons 公有领域/CC BY 古典与木吉他录音（`bgm_mozart_k330_piano` / `bgm_green_leaves_guitar` / `bgm_grieg_morning` 等），Keynata 5 条被否决；不抽取电影原声；SFX/环境音与商用授权仍未完成。R3-B 的「中文男」只是历史基线。
 >
 > **S3-B.2 字体**：`scripts/r3_build.py` 已通过 `config/fonts.yaml` + `src/drama_studio/fonts.py` 使用 `Source Han Sans CN` 字幕，正式构建会校验 OTF SHA-256 并用 `fontselect` 日志拒绝静默 fallback。标题/诗词/现代解说角色仍为 `preview_only`；R3-B 历史成片仍使用 Microsoft YaHei，未覆盖。
 
@@ -85,6 +85,32 @@ ProductionScript
 - A/B 除一个维度外逐字段相同；不是“两套完全不同的提示词”。
 - 自动指标只给风险提示；人工看片前保持 `PENDING_HUMAN_REVIEW`。
 - FLUX 负向条件被清零且 CFG=1.0，负向提示词不作为控制；以正向约束为主。
+
+## 2.7 影视化链路接入（2026-11-07）
+
+```text
+任意文本
+  → film init / film script        （分句、旁白、视觉圣经、导演节拍）
+  → film prompts / keyframes       （FLUX 关键帧任务）
+  → film wan-jobs → comfy.batch    （Wan I2V，PNG 帧）
+  → film clips                     （PNG 帧 → 镜头 MP4，按时间轴补齐）
+  → film motion                    （静帧 → 确定性运镜/纹理，非静帧）
+  → film timeline                  （旁白真实时长决定镜头边界）
+  → film assemble                  （segments + audio → r3_build）
+  → film qc / quality.check_build  （技术 + 媒体 + 字幕流）
+  → film status / approve          （H2/H3 人工结论）
+```
+
+规则：
+
+- 旁白是时间基准；镜头不足时延长镜头，不压缩语速。
+- Wan 产物是帧序列，不是视频；必须经过 `film clips`。
+- 静帧必须带运动（确定性运镜或 Ken Burns），长静帧不得进入成片。
+- 字幕、混音和画面共享同一套毫秒边界；`assemble` 会校验三者起点一致。
+- TTS 前必须清洗导演备注：括号/方括号/拉丁词不得进入朗读文本。
+- 8 GB 显存使用 `safe8g`：448×768、49/65 帧；长镜头用 `film wan-chain` 末帧续接。
+- 同景别、反推向和换场切点使用 0.5 s `xfade`；持续环境声轨贯穿全片。
+- 成片只写新的 `renders/build-<time>/`，不覆盖历史；`quality.check_build` 是唯一技术门。
 
 ## 3. 当前单篇流程（R3 实测）
 
@@ -180,7 +206,7 @@ R3 单篇 38.04 秒：
 | TTS 12 行 / 26.93 s（recitation, CPU） | 103 s |
 | 8 张 576×1024 FLUX（4 步 / CFG 1.0） | 143.2 s；稳态 16.1 s/张；峰值 3.04 GiB |
 
-全部 CPU + FFmpeg/Pillow；未占用 GPU。完整证据见 [`MOTION_VOICE_UPGRADE_REPORT.md`](MOTION_VOICE_UPGRADE_REPORT.md)。
+全部 CPU + FFmpeg/Pillow；未占用 GPU。完整证据见 `MOTION_VOICE_UPGRADE_REPORT.md`（已删除，见 Git 历史）。
 
 ## 7. 夜间批次（提案，`NOT_RUN`）
 

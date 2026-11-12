@@ -1,0 +1,10 @@
+schema_version: '1.0'
+primary_motions:
+- strand hair drifting
+- silk sleeve and robe hem swaying
+- light motes and dust drifting
+- volumetric mist drifting
+secondary_motions:
+- cloth flutter
+- leaf and snow fall
+secondary_limit: 2

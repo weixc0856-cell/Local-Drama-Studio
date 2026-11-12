@@ -1,0 +1,12 @@
+schema_version: '1.0'
+materials:
+- smooth oil paint
+- sand
+- stone
+- still water
+- cloud
+texture_cues:
+- precise edges
+- smooth photographic finish
+- long shadows
+- quiet foreground

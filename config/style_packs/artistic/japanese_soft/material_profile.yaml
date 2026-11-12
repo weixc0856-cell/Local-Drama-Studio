@@ -1,0 +1,12 @@
+schema_version: '1.0'
+materials:
+- painted sky
+- detailed cumulus
+- wet asphalt
+- glass reflection
+- light bloom
+texture_cues:
+- luminous sky
+- detailed clouds
+- reflected light
+- clean linework

@@ -2,6 +2,8 @@
 
 > 核实日期：2026-11-02。以下"已核实"项均由本机命令实际执行得到，不是推断。
 
+> **2026-11-06 运行时变更：** 图像线由 FLUX.2 Klein 切换为 FLUX.3 Klein（ADR-016）；TTS 由 CosyVoice2-0.5B 切换为 VoxCPM2（端口 50000 不变，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。历史报告中的 CosyVoice / FLUX.2 描述是当时的事实，不再代表当前栈。
+
 ## 1. 已核实硬件与系统
 
 | 项目 | 实测值 | 证据来源 |
@@ -21,19 +23,19 @@
 
 | 工具 | 版本 | 路径 |
 |---|---|---|
-| Python（系统） | 3.12.10 | `C:\Users\99236\AppData\Local\Programs\Python\Python312\python.exe` |
-| uv | 0.10.8 | `C:\Users\99236\.local\bin\uv.exe` |
+| Python（系统） | 3.12.10 | `用户目录\AppData\Local\Programs\Python\Python312\python.exe` |
+| uv | 0.10.8 | `用户目录\.local\bin\uv.exe` |
 | FFmpeg / ffprobe | 8.1-full_build（gyan.dev） | WinGet 安装目录 |
 | Git | 2.53.0.windows.2 | — |
-| 项目 `.venv` | Python 3.12.10 | `D:\Local-Drama-Studio\.venv` |
+| 项目 `.venv` | Python 3.12.10 | `项目根目录\.venv` |
 
 FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV）、`libplacebo`，满足字幕烧录、H.264 合成与硬件解码需求。
 
-## 3. 已有 AI 运行时（D:\AI）
+## 3. 已有 AI 运行时（本地 AI 服务）
 
 ### 3.1 llama.cpp 服务
 
-- 入口：`D:\AI\start_server.bat`（交互式，单选菜单）
+- 入口：`本地 AI 服务\start_server.bat`（交互式，单选菜单）
 - 后端：SYCL（`bin-sycl\`，b12024）/ Vulkan（`bin\`）
 - 接口：OpenAI 兼容 `http://127.0.0.1:8080/v1`（`start_server.bat` 与项目实例共用这一个端口）
 - 模型：`Qwen3-30B-A3B`、`Qwen3-Coder-30B-A3B`、`Qwen3VL-30B-A3B`、`Qwen3-8B`、`Qwen3.5-4B`、`DeepSeek-R1-8B`
@@ -41,18 +43,18 @@ FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV�
 - **2026-11-03 核验（项目默认实例）**：`8080` 提供 `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf`，CPU-only（`-ngl 0`），`-c 65536`（**64K 上下文，已验证可用**），别名 `Qwen3-30B-A3B-Instruct-2507,default`。不占显存，约 19 GB 内存。`config/settings.yaml` 的 `llm.model` / `llm.model_path` / `llm.context_size` 记录这一事实。
 - **服务生命周期**：8080 同一时间只允许一个 llama-server。项目用 `scripts\llm_server.ps1 -Action start|stop|status` 管理；调用结束必须 `stop`，空闲时端口必须为空。`literary_intelligence/run_li15.py` 在服务未启动时自动启动，并只停止自己启动的实例。
 
-### 3.2 CosyVoice
+### 3.2 VoxCPM2（TTS）
 
-- 目录：`D:\AI\CosyVoice-Runtime`
-- 独立 Python 3.10 venv，CPU 推理，端口 **50000**
-- 两种模式共用端口，同一时刻只能启动一个：
-  - `start_cosyvoice.bat` → CosyVoice2-0.5B，zero-shot 克隆，24 kHz
-  - `start_cosyvoice_sft.bat` → CosyVoice-300M-SFT，预置音色，22.05 kHz
-- 2026-11-02 实测：服务未启动（50000 未监听）。
+- 目录：`VoxCPM-Runtime`（CosyVoice-Runtime 已于 2026-11-06 删除）
+- 独立 Python 3.12 venv，CPU 推理，端口 **50000**，输出 **48 kHz**
+- 唯一模式：参考音克隆（`zero_shot`）；SFT 预置音色已退休
+- 启动：`scripts\cosyvoice_server.ps1 -Action start` → `start_voxcpm.bat`
+- ASR QA：同一 venv 内安装 `openai-whisper`，供 `scripts/tts_qa.py` 调用
+- 实测：加载约 25–30 秒到 `ready`；单句 RTF ≈ 9–12（CPU）
 
 ### 3.3 模型仓库
 
-`D:\AI\models`（顶层文件不能移动，原因见 §5）：
+`models`（顶层文件不能移动，原因见 §5）：
 
 | 文件 | 大小 | 状态 |
 |---|---|---|
@@ -66,13 +68,29 @@ FFmpeg 8.1 构建包含 `libass`、`libx264`、`libx265`、`libvpl`（Intel QSV�
 | `DeepSeek-R1-Distill-Llama-8B-Q4_K_M.gguf` | 4.92 GB | ✅ 已有 |
 | `mmproj-Qwen3VL-30B-A3B-Instruct-F16.gguf` | 1.08 GB | ✅ 已有 |
 
+## 3.5 环境变量（路径不入库）
+
+本机路径不写进仓库，统一由 `.env`（已 gitignore）提供；模板见 `.env.example`。
+
+| 变量 | 用途 | 必需 |
+|---|---|---|
+| `DRAMA_ROOT` | 显式指定项目根（可选） | 否 |
+| `DRAMA_MODELS_ROOT` | 模型仓库（FLUX/Wan/LLM 权重） | 是 |
+| `DRAMA_AI_HOME` | 本地 AI 服务目录（llama.cpp、VoxCPM-Runtime） | 是 |
+| `VOXCPM_RUNTIME` | TTS 运行时目录；缺省为 `<DRAMA_AI_HOME>/VoxCPM-Runtime` | 否 |
+
+`config/*.yaml` 使用 `${DRAMA_MODELS_ROOT}` 占位；`scripts/sync_comfyui_paths.py`（或 `setup.ps1`）在写入 ComfyUI 的 `extra_model_paths.yaml` 时展开，因为 ComfyUI 本身不读环境变量。
+
+---
+
 ## 4. 双虚拟环境边界
 
 | 环境 | 路径 | Python | 允许安装 | 禁止 |
 |---|---|---|---|---|
-| 调度环境 | `D:\Local-Drama-Studio\.venv` | 3.12 | typer / rich / pydantic / pyyaml / httpx / websockets / pysubs2 / pillow / pytest | torch、comfyui、模型推理依赖 |
-| 生成环境 | `D:\Local-Drama-Studio\runtime\ComfyUI\.venv` | 3.12 | PyTorch XPU、ComfyUI requirements、ComfyUI-GGUF | 业务代码依赖 |
-| 现有 TTS 环境 | `D:\AI\CosyVoice-Runtime\venv` | 3.10 | 保持不变 | 本项目不向其安装任何东西 |
+| 调度环境 | `项目根目录\.venv` | 3.12 | typer / rich / pydantic / pyyaml / httpx / websockets / pysubs2 / pillow / pytest | torch、comfyui、模型推理依赖 |
+| 生成环境 | `项目根目录\runtime\ComfyUI\.venv` | 3.12 | PyTorch XPU、ComfyUI requirements、ComfyUI-GGUF | 业务代码依赖 |
+| TTS 环境 | `VoxCPM-Runtime
+env` | 3.12 | voxcpm 2.0.3 + openai-whisper | 本项目不向其安装项目依赖 |
 | 系统 Python | `C:\...\Python312` | 3.12 | 不使用 | 不安装任何项目依赖 |
 
 创建方式：
@@ -98,7 +116,7 @@ scripts\setup.ps1 -WithComfyUI             # 生成环境（独立 venv）
 
 ### 硬约束
 
-`D:\AI\start_server.bat` 第 40 行只扫描 `%MODELS_DIR%\*.gguf`（顶层），因此：
+`本地 AI 服务\start_server.bat` 第 40 行只扫描 `%MODELS_DIR%\*.gguf`（顶层），因此：
 
 - **不能**把 `flux-2-klein-4b-Q4_K_M.gguf`、`Wan2.2-TI2V-5B-Q4_K_M.gguf` 移入子目录；
 - 新增的编码器/VAE 放在子目录，ComfyUI 同时映射顶层与子目录。
@@ -106,7 +124,7 @@ scripts\setup.ps1 -WithComfyUI             # 生成环境（独立 venv）
 ### 目标布局
 
 ```text
-D:\AI\models\
+models\
 ├─ flux-2-klein-4b-Q4_K_M.gguf              # 已有，保持在顶层
 ├─ Wan2.2-TI2V-5B-Q4_K_M.gguf               # 已有，保持在顶层
 ├─ Qwen3-*.gguf                              # 已有
@@ -124,7 +142,7 @@ D:\AI\models\
 
 ```yaml
 ai_shared:
-  base_path: D:/AI/models
+  base_path: models
   diffusion_models: |
     .
     diffusion_models
@@ -157,7 +175,7 @@ ai_shared:
 | 8188 | ComfyUI | 运行中（R0 验证时） | `scripts/start.ps1` 启动 |
 | 8080 | 本地 LLM（llama.cpp，唯一端口） | 由当前使用者占用，用完即停 | `Qwen3-30B-A3B-Instruct-2507`；项目实例为 CPU-only `-ngl 0`，64K（`-c 65536`）；定时任务让路 |
 | 8081 | 已废弃 | 不再使用 | 原项目 LLM 端口；ADR-013 后统一到 8080 |
-| 50000 | CosyVoice | 未监听 | 用 `D:\AI\CosyVoice-Runtime` 启动 |
+| 50000 | VoxCPM2 | 未监听 | `scripts\cosyvoice_server.ps1 -Action start` |
 
 ## 7. 显存预算（R0 实测）
 
@@ -168,7 +186,7 @@ ai_shared:
 | 空闲（Wan 结束后） | — | 7.75 GiB 空闲 | ComfyUI 自动卸载模型 |
 | 空闲（FLUX 结束后） | — | 5.16 GiB 空闲 | 约 2.6 GB 留在缓存，仍可加载 Wan |
 | Qwen3-30B-A3B（LLM） | 18.56 GB | 不占显存（CPU-only） | 8080 项目实例为 `-ngl 0`，占约 19 GB 内存；GPU 模式与 ComfyUI **不可共存** |
-| CosyVoice | — | 未在 R0 测试 | CPU 推理，不占显存 |
+| VoxCPM2 | — | 未在 R0 测试 | CPU 推理，不占显存 |
 
 补充实测结论：
 
@@ -223,11 +241,12 @@ R1 关键帧是 768×432（432/32=13.5），不能直接作为 I2V 输入；R2 �
 
 ## 8. 明确不要动的东西
 
-- `D:\AI\start_server.bat` 及其 `.bak-*` 备份
-- `D:\AI\bin-sycl\`、`bin\`、`bin-old\`
-- `D:\AI\models\` 顶层的任何 `.gguf`
-- `D:\AI\CosyVoice-Runtime\venv\`、`app\` 中的两处本地补丁
-- 其他项目（`D:\CourseStudio`、`D:\Project\*` 等）的虚拟环境与依赖
+- `本地 AI 服务\start_server.bat` 及其 `.bak-*` 备份
+- `本地 AI 服务\bin-sycl\`、`bin\`、`bin-old\`
+- `models\` 顶层的任何 `.gguf`
+- `VoxCPM-Runtime
+env\`（含 ASR 依赖）
+- 其他项目的虚拟环境与依赖
 - 系统 Python 的 site-packages
 - 8080 上不属于本项目的进程
 

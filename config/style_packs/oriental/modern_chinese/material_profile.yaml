@@ -1,0 +1,13 @@
+schema_version: '1.0'
+materials:
+- white plaster
+- dark grey stone
+- glass
+- dark timber
+- bamboo
+- still water
+texture_cues:
+- matte surfaces
+- muted palette
+- quiet negative space
+- thin geometric lines

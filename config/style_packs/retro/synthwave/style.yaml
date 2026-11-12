@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.synthwave
+name: 合成波
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 1980 年代霓虹未来：洋红/青色光、铬面反射、向消失点收敛的网格。
+layers:
+- identity
+- execution
+- consistency

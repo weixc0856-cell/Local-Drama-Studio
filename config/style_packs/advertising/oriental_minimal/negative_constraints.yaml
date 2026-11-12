@@ -1,0 +1,8 @@
+schema_version: '1.0'
+forbidden:
+- ornament
+- red lanterns
+- gold
+- readable text
+- 3d render gloss
+note: For validator and human checklist only; prompts use positive anchors.

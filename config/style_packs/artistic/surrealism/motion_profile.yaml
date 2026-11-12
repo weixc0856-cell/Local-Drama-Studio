@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- slow melting
+- floating objects
+- shadow shift
+secondary_motions:
+- cloud drift
+secondary_limit: 2

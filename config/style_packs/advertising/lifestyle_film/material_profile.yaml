@@ -1,0 +1,10 @@
+schema_version: '1.0'
+materials:
+- film grain
+- natural fabric
+- warm light
+- wood and stone
+texture_cues:
+- film grain
+- warm light
+- natural texture

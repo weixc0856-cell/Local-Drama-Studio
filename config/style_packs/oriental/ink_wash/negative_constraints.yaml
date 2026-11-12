@@ -1,0 +1,6 @@
+schema_version: '1.0'
+forbidden:
+- photoreal smoke
+- 3D volumetric fog
+- crisp CGI edges
+note: For validator and human checklist only; prompts use positive anchors.

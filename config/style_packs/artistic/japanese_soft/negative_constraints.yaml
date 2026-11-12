@@ -1,0 +1,24 @@
+schema_version: '1.0'
+forbidden:
+- flat cel shading
+- chibi characters
+- readable text or signage
+- neon cyberpunk
+- photoreal skin
+- 3d render
+- dull grey sky
+- western city
+- hdr clipping
+- character close-up
+- broken wires
+- knotted cables
+- repeated centered cumulus tower
+- multi-panel image
+- contact sheet
+- grid of images
+- split image
+- diptych
+- triptych
+- multiple frames
+- collage
+note: For validator and human checklist only; prompts use positive anchors.

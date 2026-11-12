@@ -1,0 +1,40 @@
+schema_version: '1.0'
+identity: contemporary Chinese garden architecture and landscape, quiet and abstracted
+medium: cinematic photograph, matte surfaces, fine film grain, natural color
+materials:
+- white plaster
+- dark grey stone
+- glass
+- dark timber
+- bamboo
+- still water
+composition:
+- one clear focal subject, everything else quiet negative space
+- 'at least forty percent empty: mist, sky, still water or a plain white wall'
+- a single opening type defined by the subject
+- openings are rectangular, vertical slits or frameless glass; round openings are
+  reserved for one designated shot
+- lattice appears only as thin vertical slats, never a dense square grid
+- thin light roof edge with a deep overhang, no thick black fascia
+- stone meets the ground with moss, pebbles or shallow water
+- asymmetric modern composition, no centered symmetry and no decorative frame
+- architecture at human scale or smaller, never a monumental palace
+- clean full-bleed edges with no border and no corner motif
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- a single focal point inside a wide quiet field
+- matte diffuse light with no specular highlights
+- muted Chinese palette settled into off-white, slate grey and pale celadon
+- traditional motifs reduced to plain geometry, never ornament
+- thin roof edges with deep overhangs and no heavy black fascia
+- moss, pebbles or shallow water where stone meets the ground
+- openings vary in shape and are used sparingly
+- human scale is tiny or absent
+- coherent architecture with straight lines, clean joints and one consistent perspective
+- every opening sits flush in the wall plane and every object appears once

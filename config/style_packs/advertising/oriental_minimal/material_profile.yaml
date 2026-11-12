@@ -1,0 +1,11 @@
+schema_version: '1.0'
+materials:
+- rice paper
+- plaster
+- ink
+- stone
+- tea
+texture_cues:
+- paper texture
+- ink wash
+- negative space

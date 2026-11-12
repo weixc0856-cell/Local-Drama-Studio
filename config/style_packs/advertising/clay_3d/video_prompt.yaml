@@ -1,0 +1,15 @@
+schema_version: '1.0'
+motion_vocabulary:
+- gentle bounce
+- dust motes
+secondary_limit: 2
+preserve:
+- clay texture
+- rounded bevels
+- soft shadow
+avoid:
+- photoreal
+- sharp edges
+- readable text
+- logo
+- dark palette

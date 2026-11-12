@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.y2k
+name: Y2K 千禧
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 千禧年铬面未来：液态金属、全息膜、透明 PVC 与镜头光晕。
+layers:
+- identity
+- execution
+- consistency

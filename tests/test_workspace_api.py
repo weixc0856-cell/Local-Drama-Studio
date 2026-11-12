@@ -79,9 +79,24 @@ def test_task_kinds_registry_is_restricted(client: TestClient) -> None:
     assert "doctor.run" in kinds
     assert kinds["tts.synthesize"]["enabled"] is True
     assert kinds["tts.synthesize"]["blocked_reason"] is None
+    assert "tts_mode" in kinds["tts.synthesize"]["params_schema"]["properties"]
+    assert "voice_cast" in kinds["tts.synthesize"]["params_schema"]["properties"]
+    assert "episode_id" in kinds["comfy.batch"]["params_schema"]["properties"]
+    assert "audio_timeline" in kinds["build.rebuild"]["params_schema"]["properties"]
+    assert "audio_timeline" in kinds["audio.qa"]["params_schema"]["properties"]
+    assert kinds["static.check"]["enabled"] is True
+    assert kinds["style.consistency"]["enabled"] is True
+    assert "review" in kinds["style.consistency"]["params_schema"]["properties"]
+    assert "shot_id" in kinds["static.check"]["params_schema"]["properties"]
+    assert kinds["story.check"]["enabled"] is True
+    assert "characters" in kinds["story.check"]["params_schema"]["properties"]
+    assert "shots" in kinds["story.check"]["params_schema"]["properties"]
     assert kinds["package.build"]["enabled"] is True
     assert kinds["script.generate"]["enabled"] is True
     assert kinds["segments.build"]["enabled"] is True
+    assert "allow_partial_clips" in kinds["segments.build"]["params_schema"]["properties"]
+    assert kinds["video.jobs"]["enabled"] is True
+    assert "frames" in kinds["video.jobs"]["params_schema"]["properties"]
     assert kinds["motion.plan"]["enabled"] is True
     assert kinds["motion.render"]["enabled"] is True
     assert kinds["audio.qa"]["enabled"] is True
@@ -119,3 +134,41 @@ def test_extra_params_rejected(client: TestClient) -> None:
     )
     assert response.status_code == 400
     assert response.json()["error"]["code"] == "invalid_params"
+
+
+def test_style_revision_endpoint_versions_the_episode(client: TestClient) -> None:
+    project = client.post("/api/projects", json={"name": "风格版本项目"}).json()
+    ink = client.post("/api/styles", json={
+        "name": "水墨", "preset_id": "ink_wash", "visual_language": "水墨"
+    }).json()
+    court = client.post("/api/styles", json={
+        "name": "青绿", "preset_id": "court_green_fine_line", "visual_language": "工笔"
+    }).json()
+    episode = client.post("/api/episodes", json={
+        "project_id": project["id"], "number": 1, "title": "风格版本期",
+        "track": "video", "style_id": ink["id"],
+    }).json()
+    assert episode["style_snapshot"]["_style_lock"]["revision"] == 1
+
+    updated = client.patch(f"/api/episodes/{episode['id']}", json={"style_id": court["id"]}).json()
+    lock = updated["style_snapshot"]["_style_lock"]
+    assert lock["style_id"] == court["id"]
+    assert lock["preset_id"] == "court_green_fine_line"
+    assert lock["revision"] == 2
+    assert lock["history"][0]["style_id"] == ink["id"]
+
+
+def test_workflow_exposes_real_package_static_aesthetic_motion_nodes(
+        client: TestClient, workspace) -> None:
+    created = make_video_episode(workspace)
+    episode_id = created["episode"]["id"]
+    data = client.get(f"/api/episodes/{episode_id}/workflow").json()
+    nodes = {n["id"]: n for n in data["nodes"]}
+    assert {"source", "package", "script", "storyboard", "static",
+            "aesthetic", "images", "videos", "motion", "voice", "compose"} <= set(nodes)
+    assert nodes["package"]["task_kind"] == "package.build"
+    assert nodes["script"]["task_kind"] == "script.generate"
+    assert nodes["static"]["task_kind"] == "static.check"
+    assert nodes["aesthetic"]["task_kind"] == "aesthetic.plan"
+    assert nodes["motion"]["task_kind"] == "motion.plan"
+    assert "尚未参数化" not in (nodes["voice"].get("task_reason") or "")

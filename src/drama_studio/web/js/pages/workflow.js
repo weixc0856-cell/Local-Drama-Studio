@@ -5,11 +5,11 @@ import {
 import { runTask } from '../forms.js';
 
 const STAGES = [
-  { label: '文本', ids: ['source'] },
+  { label: '文本', ids: ['source', 'package'] },
   { label: '分析', ids: ['analysis'] },
-  { label: '策划', ids: ['script'] },
-  { label: '分镜', ids: ['storyboard'] },
-  { label: '生成', ids: ['images', 'videos'] },
+  { label: '策划', ids: ['script', 'storyboard'] },
+  { label: '质检 / 美学', ids: ['static', 'aesthetic'] },
+  { label: '生成', ids: ['images', 'videos', 'motion'] },
   { label: '声音', ids: ['voice', 'subtitles'] },
   { label: '合成', ids: ['compose'] },
   { label: '输出', ids: ['output'] },

@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.pop_art
+name: 波普艺术
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 丝网印刷式波普：粗黑轮廓、平涂原色、可见半调网点。
+layers:
+- identity
+- execution
+- consistency

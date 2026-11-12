@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.impressionism
+name: 印象派
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 外光下的碎笔触：纯色并置、形体在光线里溶解，紫罗兰阴影。
+layers:
+- identity
+- execution
+- consistency

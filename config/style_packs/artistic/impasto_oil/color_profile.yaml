@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: ochre
+  hex: '#C08A3E'
+- name: deep umber
+  hex: '#5A3E2B'
+- name: sap green
+  hex: '#4F6B3A'
+- name: ivory
+  hex: '#EFE6D2'
+- name: crimson
+  hex: '#8E2F3A'
+saturation_range:
+- 0.12
+- 0.65
+edge_density_range:
+- 0.08
+- 0.25
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

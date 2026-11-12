@@ -1,0 +1,12 @@
+schema_version: '1.0'
+forbidden:
+- digital gloss
+- 3d render
+- smooth gradient
+- readable text
+- neon colors
+- photoreal scene
+- clean vector edges
+- glossy 3d product photography
+- uniform layout in every image
+note: For validator and human checklist only; prompts use positive anchors.

@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.surrealism
+name: 超现实主义
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 写实梦境：精确笔触画出并置、软化、悬浮与尺度错位。
+layers:
+- identity
+- execution
+- consistency

@@ -1,0 +1,20 @@
+schema_version: '1.0'
+motion_vocabulary:
+- graphic pop-in
+- repeated motif movement
+- panel transition
+secondary_limit: 2
+preserve:
+- thick contour
+- flat colour
+- halftone dots
+avoid:
+- readable text or speech bubble
+- soft gradient
+- 3d render
+- photoreal
+- thin outlines
+- muted palette
+- dark grunge
+- mixed halftone scales
+- perfectly registered digital colour

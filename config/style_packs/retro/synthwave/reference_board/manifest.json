@@ -1,0 +1,20 @@
+{
+  "style": "retro.synthwave",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a first-person cockpit view of a neon grid road at night",
+    "a chrome sports car rushing past at ground level with red light trails",
+    "a wireframe moon over a dark grid valley",
+    "a magenta thunderstorm over a neon highway",
+    "a retro computer terminal in a dark room, no grid",
+    "a chrome sphere on a grid floor with an off-center horizon",
+    "a neon motel at the edge of the frame with half the sky empty",
+    "a VHS tape on a table with CRT scan lines, no sunset",
+    "a laser sky over a dark ocean with no sun disk",
+    "a low-angle city skyline under neon haze, no grid",
+    "a chrome ring half out of frame on a grid plane",
+    "a wireframe mountain range under a storm sky, no sunset"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

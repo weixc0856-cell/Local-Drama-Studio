@@ -1,0 +1,26 @@
+schema_version: '1.0'
+anchors:
+- name: charcoal
+  hex: '#1A1A18'
+- name: umber
+  hex: '#3B2F28'
+- name: ash grey
+  hex: '#6E6A63'
+- name: moss green
+  hex: '#4A5A46'
+- name: dried blood
+  hex: '#6B2F2A'
+- name: bone
+  hex: '#C9BFA8'
+- name: jade
+  hex: '#5C7566'
+saturation_range:
+- 0.05
+- 0.28
+edge_density_range:
+- 0.05
+- 0.22
+value_range:
+- 0.05
+- 0.85
+note: Hex values are for validation only; they never enter a prompt.

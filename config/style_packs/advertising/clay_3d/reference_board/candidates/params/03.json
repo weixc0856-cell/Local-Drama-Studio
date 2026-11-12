@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a clay shopping bag. stylized 3D clay advertising, soft rounded shapes. 3D clay render, matte clay, soft subsurface scattering, candy colours. composition: a single compact set with one main object, rounded bevels and chunky proportions, isometric or shallow perspective, blank copy zone, no text. lighting: soft studio light with gentle shadows, warm temperature, low contrast. materials: matte clay, soft plastic, fabric, paper. camera: locked-off camera, 50mm lens, shallow depth of field. matte clay with rounded bevels. candy colour palette. soft studio shadow. one miniature set. a blank copy zone. no text or logo. stylized 3D clay advertising, no text or logo, soft shadow, blank copy zone. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 7503,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/advertising_clay_3d/03"
+}

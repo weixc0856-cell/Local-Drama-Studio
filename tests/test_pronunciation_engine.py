@@ -4,6 +4,7 @@ import io
 import json
 import wave
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
@@ -161,8 +162,11 @@ def _root(tmp_path: Path) -> Path:
         encoding="utf-8",
     )
     (tmp_path / "config" / "audio.yaml").write_text(
-        'tts:\n  speakers:\n    narrator: "测试音色"\n', encoding="utf-8"
+        'tts:\n  mode: zero_shot\n  zero_shot:\n    prompt_audio: "assets/ref.wav"\n'
+        '    prompt_text: "参考音"\n    speed: 0.9\n', encoding="utf-8"
     )
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "assets" / "ref.wav").write_bytes(_wav_bytes())
     (tmp_path / "config" / "pronunciation.yaml").write_text(
         '''schema_version: "2.0"
 capabilities:
@@ -179,22 +183,31 @@ entries:
     return tmp_path
 
 
-def test_tts_sends_acoustic_text_and_language_guard(tmp_path: Path) -> None:
+def test_tts_sends_acoustic_text_to_voxcpm(
+        tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     root = _root(tmp_path)
     narration = root / "episode" / "narration.json"
     narration.parent.mkdir(parents=True, exist_ok=True)
     narration.write_text(json.dumps({
-        "speaker": "测试音色", "speed": 0.9,
+        "speed": 0.9,
         "lines": [{"text": "碣石潇湘", "subtitle_text": "碣石瀟湘"}],
     }, ensure_ascii=False), encoding="utf-8")
-    calls: list[dict] = []
+    seen: list[str] = []
+
+    def fake(text, *, prompt_wav, prompt_text, out_wav, speed, base, timeout):
+        seen.append(text)
+        out_wav.write_bytes(_wav_bytes())
+        return SimpleNamespace(synth_seconds=0.1)
+
+    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake)
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":
-            return httpx.Response(200, json={"status": "ready"})
-        if request.url.path == "/tts":
-            calls.append(json.loads(request.content.decode("utf-8")))
-            return httpx.Response(200, content=_wav_bytes(), headers={"X-Synth-Seconds": "0.1"})
+            return httpx.Response(200, json={
+                "status": "ready", "model_class": "VoxCPM2",
+                "model_dir": "models/voxcpm2", "speakers": [],
+                "modes": ["zero_shot"],
+            })
         return httpx.Response(404)
 
     client = httpx.Client(transport=httpx.MockTransport(handler), base_url="http://tts.test")
@@ -202,16 +215,13 @@ def test_tts_sends_acoustic_text_and_language_guard(tmp_path: Path) -> None:
         narration, root / "episode" / "audio", root / "episode" / "audio_manifest.json",
         root=root, http_client=client, force=True,
     )
-    assert calls
-    assert all(call["language"] == "zh" for call in calls)
-    assert all(call["text_frontend"] is True for call in calls)
-    assert any("节石" in call["text"] and "消湘" in call["text"] for call in calls)
+    assert seen
+    assert "节石消湘" in seen[0]
     manifest = json.loads(result.manifest.read_text(encoding="utf-8"))
     line = manifest["lines"][0]
     assert line["display_text"] == "碣石瀟湘"
     assert line["tts_text"] == "碣石潇湘"
     assert line["acoustic_text"] == "节石消湘"
-    assert manifest["request"]["language"] == "zh"
     report = json.loads((result.manifest.parent / "pronunciation_report.json").read_text(encoding="utf-8"))
     assert report["lines"][0]["acoustic_text"] == "节石消湘"
     assert report["summary"]["display_equals_source"] is True

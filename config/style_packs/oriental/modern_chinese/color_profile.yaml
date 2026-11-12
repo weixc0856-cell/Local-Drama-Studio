@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: moon white
+  hex: '#E9E6DE'
+- name: slate grey
+  hex: '#3F4449'
+- name: sky blue
+  hex: '#9DB3AE'
+- name: bamboo green
+  hex: '#6F8574'
+- name: ink
+  hex: '#2E3134'
+saturation_range:
+- 0.01
+- 0.15
+edge_density_range:
+- 0.05
+- 0.2
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

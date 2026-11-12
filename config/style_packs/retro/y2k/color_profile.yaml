@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: silver
+  hex: '#C0C6CF'
+- name: pearl white
+  hex: '#F2F0EA'
+- name: ice blue
+  hex: '#8FD3E8'
+- name: lilac
+  hex: '#C7B8E8'
+- name: chrome shadow
+  hex: '#5B6472'
+saturation_range:
+- 0.02
+- 0.3
+edge_density_range:
+- 0.04
+- 0.18
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

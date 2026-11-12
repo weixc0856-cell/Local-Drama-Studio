@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: deep blue
+  hex: '#1E4E79'
+- name: cyan
+  hex: '#6FC3D9'
+- name: sunset orange
+  hex: '#F2A65A'
+- name: magenta
+  hex: '#D98BA6'
+- name: cloud white
+  hex: '#F7F3EA'
+saturation_range:
+- 0.1
+- 0.5
+edge_density_range:
+- 0.04
+- 0.15
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

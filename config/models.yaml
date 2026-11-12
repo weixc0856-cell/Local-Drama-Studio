@@ -1,32 +1,33 @@
-# Canonical model store lives outside the repo: D:\AI\models
+# Canonical model store lives outside the repo
 #
-# IMPORTANT: D:\AI\start_server.bat scans only the TOP LEVEL of D:\AI\models
-# for *.gguf. Do not move the two existing diffusion GGUFs into subfolders.
+# IMPORTANT: the local LLM launcher scans only the TOP LEVEL of the model store
+# for *.gguf. Diffusion GGUFs used by ComfyUI live under diffusion_models/ and
+# are exposed through runtime/ComfyUI/extra_model_paths.yaml.
 # New companion files go into text_encoders/ and vae/ subfolders, and ComfyUI
 # sees both layouts through runtime/ComfyUI/extra_model_paths.yaml.
 models:
-  flux_2_klein_4b:
+  flux_3_klein:
     role: image
-    family: flux2-klein
+    family: flux3-klein
     loader_node: UnetLoaderGGUF
     files:
-      unet_gguf: "D:/AI/models/flux-2-klein-4b-Q4_K_M.gguf"
-      text_encoder: "D:/AI/models/text_encoders/qwen_3_4b.safetensors"
-      vae: "D:/AI/models/vae/flux2-vae.safetensors"
+      unet_gguf: "diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf"
+      text_encoder: "text_encoders/qwen3vl_4b_int8_convrot.safetensors"
+      vae: "vae/flux2-vae.safetensors"
     sizes:
-      unet_gguf: 2604311104
-      text_encoder: 8044982048
+      unet_gguf: 3666908064
+      text_encoder: 4858559240
       vae: 336211292
-    notes: "Qwen3-4B encoder only; the 8B encoder is not a valid substitute. Use the FLUX.2 VAE, not FLUX.1."
+    notes: "FLUX.3 Klein distilled: 16 steps, CFG 1.0, er_sde/simple. Qwen3-VL-4B encoder runs on CPU. The official 9B prompt upsampler is unusable on this machine; production uses the local Qwen caption stage (docs/MODEL_UPGRADE_POC.md)."
 
   wan_2_2_ti2v_5b:
     role: video
     family: wan2.2-ti2v-5b
     loader_node: UnetLoaderGGUF
     files:
-      unet_gguf: "D:/AI/models/Wan2.2-TI2V-5B-Q4_K_M.gguf"
-      text_encoder: "D:/AI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
-      vae: "D:/AI/models/vae/wan2.2_vae.safetensors"
+      unet_gguf: "Wan2.2-TI2V-5B-Q4_K_M.gguf"
+      text_encoder: "text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      vae: "vae/wan2.2_vae.safetensors"
     sizes:
       unet_gguf: 3433116000
       text_encoder: 6735906897

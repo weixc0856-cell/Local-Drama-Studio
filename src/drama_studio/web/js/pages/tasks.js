@@ -121,19 +121,82 @@ async function openTaskDrawer(taskId, kinds, refresh) {
   });
 }
 
-function launcherForm(kindKey, kinds, episodes) {
+function launcherForm(kindKey, kinds, episodes, films = []) {
   const kind = kinds[kindKey];
   if (!kind) return '';
   const common = kind.enabled
     ? ''
     : `<div class="error-box mt8">${esc(kind.blocked_reason || '当前不可用')}</div>`;
   let fields = '';
-  if (kindKey === 'build.rebuild') {
+  if (kindKey.startsWith('film.')) {
+    const options = films.map((project) => `<option value="${esc(project.project_id)}">${esc(project.title || project.project_id)}</option>`).join('');
+    fields = `<div class="field"><label>影视项目</label>
+      <select class="input" name="project_id">${options || '<option value="">（没有影视项目）</option>'}</select></div>`;
+    if (kindKey === 'film.keyframes' || kindKey === 'film.wan') {
+      fields += `<div class="form-row">
+        <div class="field"><label>只执行指定 job（可选）</label><input class="input mono" name="only" placeholder="S01,S02"></div>
+        <div class="field"><label>忽略完成记录</label><label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label></div>
+      </div>
+      <div class="field"><label class="row" style="gap:7px"><input type="checkbox" name="confirm"> 我确认会占用 GPU，并遵守单飞</label></div>`;
+    }
+    if (kindKey === 'film.enhance') {
+      fields += `<div class="form-row">
+        <div class="field"><label>镜头（可选）</label><input class="input mono" name="shot" placeholder="S01；留空为全部"></div>
+        <div class="field"><label>后端</label><select class="input" name="backend"><option value="realesrgan-ncnn">realesrgan-ncnn</option></select></div>
+      </div>
+      <label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label>
+      <div class="field"><label class="row" style="gap:7px"><input type="checkbox" name="confirm"> 我确认会占用 GPU，并遵守单飞</label></div>`;
+    }
+    if (kindKey === 'film.static') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="force"> 重跑已有报告</label>`;
+    }
+    if (kindKey === 'film.timeline') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="planned"> 只按分镜时长（忽略真实音频）</label>`;
+    }
+    if (kindKey === 'film.voice') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="force"> 忽略已有 WAV，全部重合成</label>`;
+    }
+    if (kindKey === 'film.clips') {
+      fields += `<div class="form-row">
+        <div class="field"><label>时长策略</label><select class="input" name="policy">
+          <option value="hold_last">hold_last · 末帧 hold（默认）</option>
+          <option value="slow">slow · 慢放</option>
+          <option value="trim">trim · 拒绝延长</option>
+        </select></div>
+        <div class="field"><label>重新编码</label><label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label></div>
+      </div>`;
+    }
+    if (kindKey === 'film.assemble') {
+      fields += `<div class="field"><label>BGM asset_id（可选）</label>
+          <input class="input mono" name="bgm_id" placeholder="例如 bgm_mozart_k330_piano；留空读取 project.json"></div>
+        <div class="form-row">
+          <div class="field"><label>不渲染静帧运动</label><label class="row" style="gap:7px"><input type="checkbox" name="no_motion"> no_motion</label></div>
+          <div class="field"><label>强制重编码镜头</label><label class="row" style="gap:7px"><input type="checkbox" name="force_clips"> force_clips</label></div>
+        </div>
+        <div class="field"><label>构建目录（可选）</label>
+          <input class="input mono" name="out" placeholder="留空写 renders/build-&lt;time&gt;"></div>`;
+    }
+    if (kindKey === 'film.status') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="write"> 写 qc/film_state.json</label>`;
+    }
+    if (kindKey === 'film.qc') {
+      fields += `<div class="field"><label>构建目录（可选）</label>
+        <input class="input mono" name="build" placeholder="留空取最新 renders/build-*"></div>`;
+    }
+  } else if (kindKey === 'build.rebuild') {
     fields = `<div class="field"><label>期数</label>
-      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
+      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>多轨音频时间轴（可选）</label>
+        <input class="input mono" name="audio_timeline" placeholder="例如：work/audio_timeline.json；留空走旧旁白混音"></div>
+      <div class="field"><label>音频资产注册表（可选）</label>
+        <input class="input mono" name="audio_assets" placeholder="留空自动使用 assets/audio/manifest.json"></div>`;
   } else if (kindKey === 'comfy.batch') {
-    fields = `<div class="field"><label>jobs JSON（experiments/ 之下）</label>
+    fields = `<div class="field"><label>jobs JSON（experiments/ 或 projects/ 之下）</label>
       <input class="input mono" name="jobs" placeholder="experiments/r3a/jobs_flux.json"></div>
+      <div class="field"><label>绑定期数（可选，用于风格锁校验）</label>
+        <select class="input" name="episode_id"><option value="">不校验</option>
+          ${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}
+        </select></div>
       <div class="field"><label>仅执行指定 job（可选，逗号分隔）</label>
         <input class="input mono" name="only" placeholder="V1,V2"></div>`;
   } else if (kindKey === 'review.accept' || kindKey === 'review.reject') {
@@ -141,7 +204,7 @@ function launcherForm(kindKey, kinds, episodes) {
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>备注（可选）</label>
         <textarea class="textarea" name="note" style="min-height:56px"></textarea></div>`;
-  } else if (['package.build', 'segments.build', 'quality.check', 'motion.plan', 'motion.render', 'audio.qa',
+  } else if (['package.build', 'video.jobs', 'segments.build', 'quality.check', 'static.check', 'style.consistency', 'motion.plan', 'motion.render', 'audio.qa',
               'aesthetic.plan', 'aesthetic.compare', 'aesthetic.review'].includes(kindKey)) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>`;
@@ -149,18 +212,66 @@ function launcherForm(kindKey, kinds, episodes) {
       fields += `<div class="field"><label>manifest（可选）</label>
         <input class="input mono" name="manifest" placeholder="留空则取最新 build_manifest.json"></div>`;
     }
+    if (kindKey === 'video.jobs') {
+      fields += `<div class="field"><label>只生成指定镜头（可选）</label>
+        <input class="input mono" name="only" placeholder="shot_002,shot_004；留空为所有 type=video"></div>
+        <div class="form-row">
+          <div class="field"><label>frames</label><input class="input" name="frames" type="number" value="73"></div>
+          <div class="field"><label>宽</label><input class="input" name="width" type="number" value="576"></div>
+          <div class="field"><label>高</label><input class="input" name="height" type="number" value="1024"></div>
+        </div>`;
+    }
+    if (kindKey === 'segments.build') {
+      fields += `<div class="field"><label>动态片段目录（可选）</label>
+        <input class="input mono" name="clips_dir" placeholder="含 <shot_id>.mp4；缺片段可回退静帧"></div>
+        <div class="field"><label>片段缺失时</label>
+          <select class="input" name="allow_partial_clips">
+            <option value="">严格：每个镜头都要 mp4</option>
+            <option value="true">允许：缺失镜头回退静帧</option>
+          </select></div>
+        <div class="field"><label>已组装序列（可选）</label>
+        <input class="input mono" name="sequence" placeholder="单个 sequence.mp4；与 clips_dir 二选一"></div>`;
+    }
     if (kindKey === 'motion.plan') {
       fields += `<div class="field"><label>风格预设（可选）</label>
         <input class="input mono" name="style" placeholder="ink_wash / court_green_fine_line；留空读取 production_script.style_id"></div>
         <div class="field"><label>局部运动区域（可选）</label>
-          <input class="input mono" name="regions" placeholder="留空读取 motion_regions.json"></div>`;
+          <input class="input mono" name="regions" placeholder="留空读取 motion_regions.json"></div>
+        <div class="field"><label>静态质量门</label>
+          <select class="input" name="skip_static_gate">
+            <option value="">require · 缺报告即失败（默认）</option>
+            <option value="true">skip · 显式跳过（记录原因）</option>
+          </select></div>`;
+    }
+    if (kindKey === 'style.consistency') {
+      fields += `<div class="form-row">
+        <div class="field"><label>风格 preset（可选）</label><input class="input mono" name="style" placeholder="留空取期数 _style_lock.preset_id"></div>
+        <div class="field"><label>人工审片 JSON（可选）</label><input class="input mono" name="review" placeholder="{aesthetic_status, note}"></div>
+      </div>
+      <div class="field"><label>报告输出（可选）</label><input class="input mono" name="out" placeholder="默认 style_consistency_report.json"></div>`;
+    }
+    if (kindKey === 'static.check') {
+      fields += `<div class="form-row">
+        <div class="field"><label>镜头</label><input class="input mono" name="shot_id" placeholder="shot_001" required></div>
+        <div class="field"><label>风格（可选）</label><input class="input mono" name="style" placeholder="留空读取期数 style_snapshot"></div>
+      </div>
+      <div class="field"><label>图片（可选）</label><input class="input mono" name="image" placeholder="留空取 assets/images/&lt;shot_id&gt;/ 第一张"></div>
+      <div class="form-row">
+        <div class="field"><label>人工清单（可选）</label><input class="input mono" name="manual" placeholder="manual.json"></div>
+        <div class="field"><label>美学 JSON（可选）</label><input class="input mono" name="aesthetic" placeholder="shot_aesthetic.json"></div>
+      </div>
+      <div class="field"><label>报告输出（可选）</label><input class="input mono" name="out" placeholder="默认 work/static/&lt;shot_id&gt;/static_quality.json"></div>`;
     }
     if (kindKey === 'motion.render') {
       fields += `<div class="field"><label>plan（可选）</label>
         <input class="input mono" name="plan" placeholder="留空读取 motion_shots.json"></div>`;
     }
     if (kindKey === 'audio.qa') {
-      fields += `<div class="field"><label>audio_manifest（可选）</label>
+      fields += `<div class="field"><label>多轨时间轴（可选）</label>
+        <input class="input mono" name="audio_timeline" placeholder="填写后检查 audio_timeline.json；留空走逐行音频 QA"></div>
+        <div class="field"><label>音频资产注册表（可选）</label>
+          <input class="input mono" name="audio_assets" placeholder="留空自动使用 assets/audio/manifest.json"></div>
+        <div class="field"><label>audio_manifest（可选）</label>
         <input class="input mono" name="manifest" placeholder="留空读取本期 audio_manifest.json"></div>
         <div class="field"><label>timeline（可选）</label>
           <input class="input mono" name="timeline" placeholder="留空取最新 renders/*/timeline.json"></div>`;
@@ -197,19 +308,45 @@ function launcherForm(kindKey, kinds, episodes) {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="form-row">
-        <div class="field"><label>音色（可选）</label><input class="input" name="speaker" placeholder="例如：中文女"></div>
-        <div class="field"><label>语速</label><input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" value="1.0"></div>
+                <div class="field"><label>音色档案（可选）</label><input class="input mono" name="voice_profile" placeholder="config/voices.yaml 的 profile_id"></div>
+        <div class="field"><label>语速（可选）</label><input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="留空用档案/默认"></div>
       </div>
       <div class="field"><label>max_tokens</label><input class="input" name="max_tokens" type="number" value="2000"></div>`;
+  } else if (kindKey === 'story.check') {
+    fields = `<div class="field"><label>期数</label>
+      <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>ProductionScript（可选）</label>
+        <input class="input mono" name="script" placeholder="默认：本期 production_script.json"></div>
+      <div class="form-row">
+        <div class="field"><label>Character Bible（可选）</label>
+          <input class="input mono" name="characters" placeholder="默认：本期 character_bible.yaml"></div>
+        <div class="field"><label>Shot Bible（可选）</label>
+          <input class="input mono" name="shots" placeholder="默认：本期 shot_bible.yaml"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Voice Library（可选）</label>
+          <input class="input mono" name="voices" placeholder="例如：config/voices.yaml"></div>
+        <div class="field"><label>报告输出（可选）</label>
+          <input class="input mono" name="out" placeholder="默认：本期 story_bible_report.json"></div>
+      </div>`;
   } else if (kindKey === 'tts.synthesize') {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>合成模式</label>
+        <select class="input" name="tts_mode">
+          <option value="">读取 config/audio.yaml（默认 zero_shot）</option>
+                    <option value="zero_shot">zero_shot · 参考音克隆（VoxCPM2）</option>
+        </select></div>
+      <div class="field"><label>音色档案（可选）</label>
+        <input class="input mono" name="voice_profile" placeholder="profile_id；逐行 voice_profile 优先；留空走旧配置"></div>
       <div class="form-row">
-        <div class="field"><label>音色（可选）</label>
-          <input class="input" name="speaker" placeholder="例如：中文女；留空读取 narration.json"></div>
         <div class="field"><label>语速（可选）</label>
           <input class="input" name="speed" type="number" step="0.05" min="0.5" max="2.0" placeholder="1.0"></div>
       </div>
+      <div class="field"><label>音色库路径（可选）</label>
+        <input class="input mono" name="voices" placeholder="默认 config/voices.yaml"></div>
+      <div class="field"><label>Voice Cast 文件（可选）</label>
+        <input class="input mono" name="voice_cast" placeholder="YAML：按行号/line_id 映射 profile"></div>
       <div class="field"><label>诵读模式（可选）</label>
         <select class="input" name="mode">
           <option value="">读取 narration.json</option>
@@ -239,15 +376,18 @@ export default {
     let kindsData;
     let tasksData;
     let episodesData;
+    let filmData;
     try {
-      [kindsData, tasksData, episodesData] = await Promise.all([
+      [kindsData, tasksData, episodesData, filmData] = await Promise.all([
         get('/api/tasks/kinds'),
         get(`/api/tasks${params.episode ? `?episode_id=${encodeURIComponent(params.episode)}` : ''}`),
         get('/api/episodes'),
+        get('/api/film/projects'),
       ]);
     } catch (err) { view.innerHTML = errorBox(err); return; }
     const kinds = Object.fromEntries((kindsData.kinds || []).map((k) => [k.key, k]));
     const episodes = episodesData.episodes || [];
+    const films = filmData.projects || [];
     const status = params.status || '';
     const tasks = (tasksData.tasks || []).filter((t) => !status || t.status === status);
 
@@ -282,7 +422,7 @@ export default {
                 ${(kindsData.kinds || []).map((k) => `<option value="${esc(k.key)}" ${k.enabled ? '' : 'disabled'}>
                   ${esc(k.label)}${k.enabled ? '' : '（不可用）'}</option>`).join('')}
               </select></div>
-            <div id="kind-form">${launcherForm((kindsData.kinds || [])[0]?.key, kinds, episodes)}</div>
+            <div id="kind-form">${launcherForm((kindsData.kinds || [])[0]?.key, kinds, episodes, films)}</div>
           </div>
         </div>
       </div>`;
@@ -298,7 +438,7 @@ export default {
 
     const selectedKind = view.querySelector('#kind-select');
     selectedKind.addEventListener('change', () => {
-      view.querySelector('#kind-form').innerHTML = launcherForm(selectedKind.value, kinds, episodes);
+      view.querySelector('#kind-form').innerHTML = launcherForm(selectedKind.value, kinds, episodes, films);
       bindLaunch();
     });
 
@@ -311,8 +451,8 @@ export default {
         const kind = kinds[kindKey];
         const paramsOut = {};
         form.querySelectorAll('input[name], select[name]').forEach((el) => {
-          if (el.name === 'confirm') {
-            paramsOut.confirm = el.checked;
+          if (el.type === 'checkbox') {
+            paramsOut[el.name] = el.checked;
           } else if (el.value !== '') {
             paramsOut[el.name] = el.type === 'number' ? Number(el.value) : el.value;
           }

@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Iterator
 
 from ..config import find_project_root
+from ..style_lock import attach_lock
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS styles (
   aspect_ratio TEXT NOT NULL DEFAULT '9:16',
   applicable_content_types TEXT NOT NULL DEFAULT '[]',
   source_files TEXT NOT NULL DEFAULT '[]',
+  preset_id TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -125,6 +127,7 @@ STYLE_FIELDS = (
     "aspect_ratio",
     "applicable_content_types",
     "source_files",
+    "preset_id",
 )
 
 PROJECT_FIELDS = (
@@ -203,6 +206,66 @@ class WorkspaceStore:
     def init_schema(self) -> None:
         with self.connect() as conn:
             conn.executescript(SCHEMA)
+            columns = {row["name"] for row in conn.execute("PRAGMA table_info(styles)")}
+            if "preset_id" not in columns:
+                conn.execute("ALTER TABLE styles ADD COLUMN preset_id TEXT")
+        self._migrate_style_locks()
+
+    def _migrate_style_locks(self) -> None:
+        """Attach a lock record to legacy episode snapshots (one-time, additive)."""
+        with self.connect() as conn:
+            # Legacy workspace styles predate the explicit preset_id column.
+            # Infer only unambiguous names; uncertain styles stay unmapped.
+            styles = conn.execute("SELECT id, name, preset_id FROM styles").fetchall()
+            for style in styles:
+                if style["preset_id"]:
+                    continue
+                name = str(style["name"] or "")
+                preset = None
+                if "工笔" in name or "青绿" in name:
+                    preset = "court_green_fine_line"
+                elif "水墨" in name or "写意" in name:
+                    preset = "ink_wash"
+                if preset:
+                    conn.execute("UPDATE styles SET preset_id = ? WHERE id = ?", (preset, style["id"]))
+            rows = conn.execute(
+                "SELECT id, style_id, style_snapshot FROM episodes"
+            ).fetchall()
+            for row in rows:
+                raw = row["style_snapshot"]
+                if not raw:
+                    continue
+                try:
+                    snapshot = json.loads(raw) if isinstance(raw, str) else dict(raw)
+                except (TypeError, json.JSONDecodeError):
+                    continue
+                if not snapshot:
+                    continue
+                preset = conn.execute(
+                    "SELECT preset_id FROM styles WHERE id = ?",
+                    (row["style_id"] or snapshot.get("id"),),
+                ).fetchone()
+                preset_id = (preset["preset_id"] if preset else None) or snapshot.get("preset_id")
+                if "_style_lock" in snapshot:
+                    lock = snapshot.get("_style_lock") or {}
+                    if lock.get("preset_id") or not preset_id:
+                        continue
+                    lock = {**lock, "preset_id": preset_id}
+                    snapshot = {**snapshot, "_style_lock": lock}
+                    conn.execute(
+                        "UPDATE episodes SET style_snapshot = ? WHERE id = ?",
+                        (json.dumps(snapshot, ensure_ascii=False), row["id"]),
+                    )
+                    continue
+                locked = attach_lock(
+                    snapshot,
+                    style_id=row["style_id"] or snapshot.get("id"),
+                    preset_id=preset_id,
+                )
+                conn.execute(
+                    "UPDATE episodes SET style_snapshot = ? WHERE id = ?",
+                    (json.dumps(locked, ensure_ascii=False), row["id"]),
+                )
 
     # ---------------- projects ----------------
 
@@ -318,6 +381,12 @@ class WorkspaceStore:
             if style is None:
                 raise ValueError("风格不存在")
             snapshot = style
+        if snapshot:
+            snapshot = attach_lock(
+                snapshot,
+                style_id=style_id or snapshot.get("id"),
+                preset_id=snapshot.get("preset_id"),
+            )
         ts = now_iso()
         with self.connect() as conn:
             conn.execute(
@@ -342,13 +411,28 @@ class WorkspaceStore:
         return self.get_episode(episode_id) or {}
 
     def update_episode(self, episode_id: str, data: dict[str, Any]) -> dict[str, Any] | None:
+        current = self.get_episode(episode_id)
+        if current is None:
+            return None
         payload = {k: v for k, v in data.items() if k in EPISODE_FIELDS}
         if "style_id" in payload:
             style = self.get_style(payload["style_id"]) if payload["style_id"] else None
             if payload["style_id"] and style is None:
                 raise ValueError("风格不存在")
             if style is not None:
-                payload["style_snapshot"] = style
+                payload["style_snapshot"] = attach_lock(
+                    style,
+                    style_id=payload["style_id"],
+                    preset_id=style.get("preset_id"),
+                    previous=current.get("style_snapshot"),
+                )
+        elif "style_snapshot" in payload and payload["style_snapshot"]:
+            payload["style_snapshot"] = attach_lock(
+                payload["style_snapshot"],
+                style_id=(payload["style_snapshot"] or {}).get("id") or current.get("style_id"),
+                preset_id=(payload["style_snapshot"] or {}).get("preset_id"),
+                previous=current.get("style_snapshot"),
+            )
         if not payload:
             return self.get_episode(episode_id)
         payload = _encode("episodes", payload)
@@ -388,6 +472,7 @@ class WorkspaceStore:
         style_id = (data.get("id") or _new_id("style")).strip()
         payload = {field: data.get(field, "") for field in STYLE_FIELDS}
         payload["name"] = name
+        payload["preset_id"] = str(data.get("preset_id") or "").strip() or None
         for key in ("color_palette", "reference_assets", "applicable_content_types", "source_files"):
             if payload.get(key) in ("", None):
                 payload[key] = {} if key == "color_palette" else []

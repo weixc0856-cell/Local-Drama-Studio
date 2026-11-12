@@ -1,0 +1,10 @@
+schema_version: '1.0'
+materials:
+- chrome
+- neon tube
+- glossy plastic
+- film grain
+texture_cues:
+- neon glow
+- chrome reflection
+- grid perspective

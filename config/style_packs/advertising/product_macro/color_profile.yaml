@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: silver
+  hex: '#C8CDD2'
+- name: black
+  hex: '#141414'
+- name: deep blue
+  hex: '#1B2A3A'
+- name: warm gold
+  hex: '#C8A05A'
+- name: white
+  hex: '#F5F3EE'
+saturation_range:
+- 0.02
+- 0.25
+edge_density_range:
+- 0.05
+- 0.2
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

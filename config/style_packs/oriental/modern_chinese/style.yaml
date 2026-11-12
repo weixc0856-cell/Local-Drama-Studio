@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: oriental.modern_chinese
+name: 当代新中式
+group: oriental
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 苏州博物馆式几何抽象：粉墙黛瓦化为细线，哑光写实材质，单焦点与大面积留白。
+layers:
+- identity
+- execution
+- consistency

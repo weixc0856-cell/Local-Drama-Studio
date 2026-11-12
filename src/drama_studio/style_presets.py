@@ -56,6 +56,7 @@ STYLE_ENTITY_FIELDS = (
     "aspect_ratio",
     "applicable_content_types",
     "source_files",
+    "preset_id",
 )
 
 AbilityStatus = Literal[
@@ -260,10 +261,32 @@ class TextureSpec(BaseModel):
 
 
 class ParallaxSpec(BaseModel):
+    """What a style permits for layered 2.5D shots.
+
+    These are policy, not description: the renderer refuses a layered shot that
+    violates them, so every field here has a consumer. Values are calibrated on
+    the M8 experiments, not invented.
+    """
+
     model_config = ConfigDict(extra="forbid")
 
     allowed: bool = False
     requires: str = ""
+    camera_moves: list[CameraMove] = Field(default_factory=list)
+    max_plates: int = Field(default=3, ge=1, le=6)
+    depth_alpha_min: float = Field(default=0.45, gt=0.0, le=1.0)
+    depth_alpha_max: float = Field(default=0.85, gt=0.0, le=1.0)
+    background_margin: float = Field(
+        default=0.0, ge=0.0, le=0.25,
+        description="fraction of the plate the background window must leave free on each side")
+
+    @model_validator(mode="after")
+    def _consistent(self) -> "ParallaxSpec":
+        if self.depth_alpha_min >= self.depth_alpha_max:
+            raise ValueError("depth_alpha_min must be < depth_alpha_max")
+        if self.allowed and not self.camera_moves:
+            raise ValueError("允许 2.5D 必须声明 camera_moves（否则没有可用的分层镜头类型）")
+        return self
 
 
 class CompositingSpec(BaseModel):
@@ -363,6 +386,7 @@ class StylePreset(BaseModel):
     name_en: str = Field(min_length=1, max_length=120)
     description: str = Field(min_length=1, max_length=400)
     validation_status: AbilityStatus = "NOT_RUN"
+    category: Literal["core", "scene"] = "core"
 
     # Shared with the workspace style entity.
     visual_language: str = Field(min_length=4, max_length=600)
@@ -410,7 +434,31 @@ class StylePreset(BaseModel):
     def as_style_entity(self) -> dict[str, object]:
         """Return exactly the fields accepted by ``WorkspaceStore.create_style``."""
 
-        return {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS}
+        entity = {field: getattr(self, field) for field in STYLE_ENTITY_FIELDS if field != "preset_id"}
+        entity["preset_id"] = self.id
+        return entity
+
+
+class BaselineShot(BaseModel):
+    """One human-selected A/B variant recorded as a production baseline."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    variant: Literal["A", "B"]
+    prompt: str = Field(min_length=1, max_length=8000)
+    prompt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    sections: dict[str, str] = Field(default_factory=dict)
+    rationale: str = Field(min_length=1, max_length=500)
+
+
+class ProductionBaseline(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    decided_at: str = Field(min_length=1, max_length=40)
+    decided_by: str = Field(min_length=1, max_length=80)
+    source_snapshot: str = Field(min_length=1, max_length=500)
+    shots: dict[str, BaselineShot] = Field(min_length=1)
+    note: str = Field(default="", max_length=1000)
 
 
 class StylePresetRegistry(BaseModel):
@@ -418,12 +466,16 @@ class StylePresetRegistry(BaseModel):
 
     schema_version: str = Field(min_length=1)
     styles: dict[str, StylePreset] = Field(min_length=1)
+    production_baselines: dict[str, ProductionBaseline] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def _keys_match_ids(self) -> "StylePresetRegistry":
         for key, preset in self.styles.items():
             if key != preset.id:
                 raise ValueError(f"styles key {key!r} does not match preset id {preset.id!r}")
+        for key in self.production_baselines:
+            if key not in self.styles:
+                raise ValueError(f"production_baselines key {key!r} is not a style id")
         return self
 
     def get(self, style_id: str) -> StylePreset:

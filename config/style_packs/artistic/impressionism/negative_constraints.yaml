@@ -1,0 +1,14 @@
+schema_version: '1.0'
+forbidden:
+- smooth blending
+- photoreal detail
+- hard outlines
+- digital gradient
+- readable text
+- decorative frame
+- 3d render
+- neon colors
+- uniform brushstroke size
+- evenly distributed detail
+- noisy speckle
+note: For validator and human checklist only; prompts use positive anchors.

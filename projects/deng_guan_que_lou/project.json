@@ -1,0 +1,31 @@
+{
+  "project_id": "deng_guan_que_lou",
+  "title": "登鹳雀楼",
+  "aspect_ratio": "9:16",
+  "target_duration_seconds": 47,
+  "language": "zh-CN",
+  "created_at": "2026-11-06",
+  "notes": "Script-to-Film Phase 1 示例项目；镜头语言见 docs/FILM_PRODUCTION_GUIDE.md 2026-11-07 本地研究默认音色为 my80+sun20 混合参考；含第三方表演成分，禁止发布。",
+  "visual": {
+    "style_id": "oriental.ink_wash",
+    "style_version": "1.0.0"
+  },
+  "production": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 24,
+    "content_type": "poetry",
+    "leading_silence_ms": 300,
+    "narration_tail_ms": 500,
+    "min_shot_seconds": 2.0,
+    "no_narration_seconds": 3.0,
+    "max_shot_seconds": 12.0,
+    "tail_seconds": 1.0,
+    "clip_extend_policy": "slow",
+    "motion": {
+      "enabled": true
+    },
+    "ambience_asset_id": "sfx_wind_soft_30s",
+    "ambience_gain_db": -26.0
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "style": "oriental.ink_wash",
+  "status": "REVIEWED",
+  "subjects": [
+    "distant mountain ranges above a wide river",
+    "a lone traditional Chinese fishing boat with a woven awning on a misty river",
+    "a misty valley with layered peaks",
+    "an old pine growing from a cliff rock",
+    "a tall waterfall between cliffs with wide empty sky above",
+    "a full moon over still water and reeds",
+    "a wooden pavilion in light rain",
+    "an empty riverbank with reeds and stones",
+    "lotus leaves floating on a quiet pond",
+    "bamboo grove in thin mist",
+    "snow-covered peaks under pale sky",
+    "bare winter branches at a quiet pond with wide open water beside them"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed",
+  "review": {
+    "date": "2026-11-06",
+    "reviewer": "project owner",
+    "first_pass_rejected": [
+      "02"
+    ],
+    "regenerated": [
+      "02",
+      "05",
+      "12"
+    ],
+    "accepted_candidates": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12"
+    ],
+    "note": "02 采用重绘版；05/12 保留首版，重绘版仅留档。",
+    "final_selection": {
+      "02": "02_00002_.png",
+      "05": "05_00001_.png",
+      "12": "12_00001_.png"
+    }
+  },
+  "selected": {
+    "01": "01_00001_.png",
+    "02": "02_00002_.png",
+    "03": "03_00001_.png",
+    "04": "04_00001_.png",
+    "05": "05_00001_.png",
+    "06": "06_00001_.png",
+    "07": "07_00001_.png",
+    "08": "08_00001_.png",
+    "09": "09_00001_.png",
+    "10": "10_00001_.png",
+    "11": "11_00001_.png",
+    "12": "12_00001_.png"
+  }
+}

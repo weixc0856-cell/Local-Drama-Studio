@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.japanese_soft
+name: 日系电影感（新海诚式）
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 剧场版动画背景：巨大积云、通透暮色、镜头光晕与精密的日本日常场景。
+layers:
+- identity
+- execution
+- consistency

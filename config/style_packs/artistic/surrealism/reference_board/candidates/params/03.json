@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a green apple with a clean cut revealing clockwork gears inside. veristic surrealism, meticulous realism depicting impossible scenes. smooth classical oil painting with photographic finish, dream logic. composition: a plain landscape or room with exactly one impossible event, the event uses one device only: juxtaposition, softening, levitation, scale shift or material inversion, everything else stays ordinary, calm and empty, subject placed off-center with long arcades and extreme perspective, shadows stretch farther than the light allows, meticulous detail presented calmly, never dramatic, clean full-bleed edges with no border. lighting: clear late afternoon sunlight, long shadows, calm sky, neutral temperature, medium contrast. materials: smooth oil paint, sand, stone, still water, cloud. camera: locked-off camera, 24mm lens, deep depth of field. meticulous realistic detail in an impossible scene. only one impossible element; the rest of the image stays ordinary. material realism preserved: metal stays metal and wood stays wood. off-center placement, long arcades and shadows that stretch too far. material inversion: stone, cloud, glass or wax behaving unlike itself. smooth classical brushwork with no visible gesture. deep empty horizon and long cast shadows. no characters, no creatures and no ornament. reference board sample, no characters, no creatures, no text, one impossible element only, calm precise painting, long shadows, only the cut apple reveals clockwork; everything else ordinary. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 5903,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/artistic_surrealism/03"
+}

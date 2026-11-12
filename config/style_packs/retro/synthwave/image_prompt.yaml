@@ -1,0 +1,35 @@
+schema_version: '1.0'
+identity: 1980s synthwave retro-futurism
+medium: neon light, chrome surfaces, grid horizon, scan lines
+materials:
+- chrome
+- neon tube
+- glossy plastic
+- film grain
+composition:
+- one continuous uncut scene
+- one sky treatment only, defined by the subject
+- when a grid appears it recedes to a vanishing point
+- one foreground element named by the subject
+- deep navy sky and neon haze
+- 'VHS artifacts: RGB separation, scan lines, slight barrel distortion and grain'
+- clean full-bleed edges with no frame
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- a single uncut photograph filling the frame
+- magenta and cyan neon light sources
+- a grid receding to one central vanishing point
+- chrome reflections with sharp specular highlights
+- scan lines and slight VHS grain
+- deep navy sky with a banded sun only where chosen
+- one sky treatment appropriate to the subject
+- off-center horizon or no grid at all
+- RGB separation, scan lines and VHS grain
+- one clear subject named by the prompt
+- no text and no signage

@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_cv27_zh_27532467_20261104",
+  "asset_type": "tts_prompt",
+  "status": "PENDING_REVIEW",
+  "approved_for_production": false,
+  "review_status": "PENDING_REVIEW",
+  "selected_role": "alternate",
+  "source": {
+    "provider": "Mozilla Common Voice",
+    "dataset": "Common Voice Scripted Speech 27.0 (2026-09-11) zh-CN",
+    "dataset_version": "cv-corpus-27.0-2026-09-11",
+    "source_url": "https://commonvoice.mozilla.org/zh-CN/datasets",
+    "archive": "cv-corpus-27.0-2026-09-11-zh-CN.tar.gz",
+    "clip": "common_voice_zh-CN_27532467.mp3",
+    "up_votes": 9,
+    "down_votes": 0,
+    "duration_ms": 6696,
+    "age_label": "twenties",
+    "gender_label": "female_feminine",
+    "accent_label": "出生地：44 广东省",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license_status": "CC0_1_0",
+    "terms_note": "Mozilla Common Voice README: CC0; by downloading you agree not to determine speaker identity. No identity inference performed.",
+    "speaker_id_hashed": "sha256:2fd5ca92c716a5a1250ef016223d614471a9704bd27b6f0e1efbcdfa72a6f63f"
+  },
+  "transcript": "穆洛兹还是在电子竞技领域最有影响力和认可度的领导人之一。",
+  "audio": {
+    "path": "assets/audio/prompts/pending/cv27_zh_27532467_20261104.wav",
+    "sha256": "461b884174a27330b91918f284a9297c91aa6e0997e0b37889b8cbf2ea75c6db",
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "pcm_s16le"
+  },
+  "audio_qa": {
+    "verdict": "REVIEW",
+    "note": "SNR below 30 dB on the original clip; cleaned version was worse and rejected. Human listening required."
+  },
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "SELECTED_FOR_REVIEW",
+    "note": "CC0 candidate; not approved for production."
+  }
+}

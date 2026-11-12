@@ -1,0 +1,7 @@
+schema_version: '1.0'
+allowed_moves:
+- static
+- tracking
+- pan
+preferred_lens_mm: 50
+dof_strategy: flat

@@ -6,8 +6,20 @@
 )
 $ErrorActionPreference = 'Stop'
 $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$ServerExe = 'D:\AI\bin-sycl\llama-server.exe'
-$ModelPath = 'D:\AI\models\Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf'
+$EnvFile = Join-Path $ProjectRoot '.env'
+if (Test-Path $EnvFile) {
+  Get-Content -LiteralPath $EnvFile | ForEach-Object {
+    if ($_ -match '^\s*([A-Za-z0-9_]+)\s*=\s*(.+?)\s*$') {
+      $k = $matches[1]; $v = $matches[2].Trim('"').Trim("'")
+      if (-not [Environment]::GetEnvironmentVariable($k)) { [Environment]::SetEnvironmentVariable($k, $v) }
+    }
+  }
+}
+$AiHome = $env:DRAMA_AI_HOME
+$ModelsRoot = $env:DRAMA_MODELS_ROOT
+if (-not $AiHome -or -not $ModelsRoot) { throw 'Set DRAMA_AI_HOME and DRAMA_MODELS_ROOT in .env (see .env.example)' }
+$ServerExe = Join-Path $AiHome 'bin-sycl\llama-server.exe'
+$ModelPath = Join-Path $ModelsRoot 'Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf'
 $Alias = 'Qwen3-30B-A3B-Instruct-2507'
 $LogDir = Join-Path $ProjectRoot 'logs'
 $PidFile = Join-Path $LogDir 'llm-8080.pid'

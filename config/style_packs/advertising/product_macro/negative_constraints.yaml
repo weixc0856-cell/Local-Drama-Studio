@@ -1,0 +1,10 @@
+schema_version: '1.0'
+forbidden:
+- painting
+- illustration
+- 3d render
+- plastic smooth
+- oversaturated
+- readable text
+- clutter
+note: For validator and human checklist only; prompts use positive anchors.

@@ -1,0 +1,22 @@
+schema_version: '1.0'
+anchors:
+- name: dusk blue
+  hex: '#3B4A6B'
+- name: sand
+  hex: '#D8C3A5'
+- name: ember
+  hex: '#C2543B'
+- name: pale sky
+  hex: '#CFE0E8'
+- name: deep teal
+  hex: '#1F4E5F'
+saturation_range:
+- 0.03
+- 0.36
+edge_density_range:
+- 0.03
+- 0.12
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

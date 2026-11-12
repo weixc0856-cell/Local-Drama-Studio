@@ -63,11 +63,12 @@ def relpath(path: Path) -> str:
         return str(path)
 
 
-def build_segment(seg: dict, out: Path) -> None:
+def build_segment(seg: dict, out: Path, *, render_duration: float | None = None) -> None:
     src = ROOT / seg["source"]
     if not src.is_file():
         raise FileNotFoundError(src)
-    dur = float(seg["duration"])
+    dur = float(render_duration if render_duration is not None else seg["duration"])
+    target = float(seg["duration"])
     if seg["type"] == "image":
         frames = max(1, round(dur * FPS))
         vf = (
@@ -79,7 +80,9 @@ def build_segment(seg: dict, out: Path) -> None:
                "-vf", vf, "-t", f"{dur:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
                "-preset", "medium", "-r", str(FPS), str(out)]
     else:
-        vf = f"scale={W}:{H}:flags=lanczos,fps={FPS},format=yuv420p"
+        pad = max(0.0, dur - target)
+        pad_filter = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0 else ""
+        vf = f"{pad_filter}scale={W}:{H}:flags=lanczos,fps={FPS},format=yuv420p"
         cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-vf", vf,
                "-t", f"{dur:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
                "-preset", "medium", "-r", str(FPS), str(out)]
@@ -94,8 +97,17 @@ def main() -> int:
     parser.add_argument("--content-type", choices=("poetry", "narration", "mixed"), default=None)
     parser.add_argument("--leading-ms", type=int, default=None,
                         help="override the content-type leading silence (default: 400/300/350)")
+    parser.add_argument("--audio-timeline", default=None,
+                        help="optional multi-track audio_timeline.json; keeps legacy line mix when absent")
+    parser.add_argument("--audio-assets", default=None,
+                        help="audio asset registry for BGM/SFX (default: assets/audio/manifest.json if present)")
+    parser.add_argument("--bgm-id", default=None,
+                        help="override every BGM track's asset_id in --audio-timeline; "
+                             "writes audio_timeline_effective.json into --out for provenance")
     parser.add_argument("--allow-overwrite", action="store_true",
                         help="allow replacing an existing final_9x16.mp4 in --out")
+    parser.add_argument("--crossfade", type=float, default=0.5,
+                        help="crossfade seconds on dissolve cuts (0 disables)")
     args = parser.parse_args()
 
     segments = json.loads((ROOT / args.segments).read_text(encoding="utf-8"))
@@ -121,12 +133,23 @@ def main() -> int:
     if leading_ms < 0:
         raise SystemExit("--leading-ms must be >= 0")
 
+    # The spoken title is part of the leading silence: it plays first, then the
+    # body starts. Audio owns the clock, so the header extends the lead rather
+    # than being squeezed into a fixed title slot.
+    header = audio.get("header") or None
+    header_offset_ms = 0
+    if header:
+        header_offset_ms = (int(round(float(header["duration_seconds"]) * 1000))
+                            + int(header.get("pause_ms", 0)))
+        leading_ms += header_offset_ms
+
     timeline_segments = []
     for i, line in enumerate(lines, start=1):
         timeline_segments.append({
             "segment_id": f"line_{i:02d}",
             "duration": float(line["duration_seconds"]),
             "pause_after_ms": int(line.get("pause_after_ms", GAP_MS)),
+            "gap_before_ms": int(line.get("gap_before_ms", 0)),
             # Spoken text and on-screen text are allowed to differ (e.g. a
             # simplified TTS script with traditional subtitles).
             "subtitle_text": line.get("subtitle_text") or line["text"],
@@ -152,18 +175,55 @@ def main() -> int:
         f"leading={leading_ms}ms content={content_type} lines={len(lines)}"
     )
 
+    durations = [float(seg["duration"]) for seg in segments]
+    handles: list[float] = []
+    transitions: list[str] = []
+    for index, seg in enumerate(segments):
+        if index + 1 < len(segments):
+            nxt = segments[index + 1]
+            kind = str(nxt.get("transition_in") or "cut")
+            handles.append(args.crossfade if kind == "dissolve" else 0.04)
+            transitions.append(kind)
+        else:
+            handles.append(0.0)
+            transitions.append("end")
+
     seg_files = []
-    for seg in segments:
+    for index, seg in enumerate(segments):
         path = seg_dir / f"{seg['id']}.mp4"
-        print("build segment", seg["id"], seg["type"], seg["duration"])
-        build_segment(seg, path)
+        render_duration = durations[index] + handles[index]
+        print("build segment", seg["id"], seg["type"], seg["duration"],
+              "render", round(render_duration, 3), "next", transitions[index])
+        build_segment(seg, path, render_duration=render_duration)
         seg_files.append(path)
 
-    concat_list = out_dir / "concat.txt"
-    concat_list.write_text("".join(f"file '{p.as_posix()}'\n" for p in seg_files), encoding="utf-8")
     video_raw = out_dir / "video_raw.mp4"
-    run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_list),
-         "-c", "copy", str(video_raw)])
+    use_xfade = args.crossfade > 0 and any(kind == "dissolve" for kind in transitions)
+    if use_xfade and len(seg_files) > 1:
+        inputs: list[str] = []
+        for path in seg_files:
+            inputs += ["-i", str(path)]
+        graph_parts = [f"[{i}:v]settb=AVTB,setpts=PTS-STARTPTS[v{i}]"
+                       for i in range(len(seg_files))]
+        current = "v0"
+        for index in range(1, len(seg_files)):
+            overlap = handles[index - 1]
+            offset = sum(durations[:index])
+            label = f"x{index}"
+            graph_parts.append(
+                f"[{current}][v{index}]xfade=transition=fade:"
+                f"duration={overlap:.3f}:offset={offset:.3f}[{label}]")
+            current = label
+        run(["ffmpeg", "-y", "-v", "error", *inputs,
+             "-filter_complex", ";".join(graph_parts),
+             "-map", f"[{current}]", "-an", "-c:v", "libx264", "-crf", "18",
+             "-preset", "medium", "-pix_fmt", "yuv420p", "-r", str(FPS),
+             "-t", f"{sum(durations):.3f}", str(video_raw)])
+    else:
+        concat_list = out_dir / "concat.txt"
+        concat_list.write_text("".join(f"file '{p.as_posix()}'\n" for p in seg_files), encoding="utf-8")
+        run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_list),
+             "-c", "copy", str(video_raw)])
 
     video_faded = out_dir / "video_faded.mp4"
     fade_out = max(0.0, total - 0.9)
@@ -171,22 +231,82 @@ def main() -> int:
          "-vf", f"fade=t=in:st=0:d=0.6,fade=t=out:st={fade_out:.3f}:d=0.9,format=yuv420p",
          "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-r", str(FPS), str(video_faded)])
 
-    # Audio: delay each line to its start, mix, pad to video duration.
-    inputs: list[str] = []
-    filters: list[str] = []
-    labels: list[str] = []
-    for i, line in enumerate(lines, start=1):
-        inputs += ["-i", str(ROOT / line["file"])]
-        delay = starts_ms[i - 1]
-        filters.append(f"[{i - 1}:a]adelay={delay}|{delay}[a{i}]")
-        labels.append(f"[a{i}]")
-    filters.append(
-        f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0,alimiter=limit=0.95,"
-        f"loudnorm=I=-16:TP=-1.5:LRA=11,apad=whole_dur={total:.3f}[aout]"
-    )
+    # Audio: explicit multi-track timeline, or the legacy narration-only mix.
+    from drama_studio.voice.soundscape import load_settings as load_soundscape
+    from drama_studio.voice.soundscape import master as master_soundscape
+
+    soundscape = load_soundscape(ROOT)
     mixed = out_dir / "mixed.wav"
-    run(["ffmpeg", "-y", "-v", "error", *inputs, "-filter_complex", ";".join(filters),
-         "-map", "[aout]", "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(mixed)])
+    mix_target = out_dir / "mixed_pre.wav" if soundscape.enabled else mixed
+    audio_timeline_report = None
+    if args.audio_timeline:
+        from drama_studio.voice.mix import MixError, mix_timeline
+
+        timeline_arg = Path(args.audio_timeline)
+        timeline_arg = timeline_arg if timeline_arg.is_absolute() else (ROOT / timeline_arg)
+        if args.bgm_id:
+            effective = json.loads(timeline_arg.read_text(encoding="utf-8"))
+            seen = 0
+            for track in effective.get("tracks", []):
+                if track.get("type") == "bgm":
+                    track["asset_id"] = args.bgm_id
+                    seen += 1
+            if not seen:
+                raise SystemExit("--bgm-id given but the timeline has no bgm track")
+            timeline_arg = out_dir / "audio_timeline_effective.json"
+            timeline_arg.write_text(
+                json.dumps(effective, ensure_ascii=False, indent=2) + '\n',
+                encoding="utf-8",
+            )
+        if args.audio_assets:
+            assets_arg = Path(args.audio_assets)
+            assets_arg = assets_arg if assets_arg.is_absolute() else (ROOT / assets_arg)
+        else:
+            candidate = ROOT / "assets" / "audio" / "manifest.json"
+            assets_arg = candidate if candidate.is_file() else None
+        try:
+            audio_timeline_report = mix_timeline(
+                timeline_arg, mix_target, root=ROOT,
+                asset_registry_path=assets_arg,
+                duration_ms=int(round(total * 1000)),
+            )
+        except MixError as exc:
+            raise SystemExit(f"audio timeline mix failed: {exc}") from exc
+    else:
+        inputs: list[str] = []
+        filters: list[str] = []
+        labels: list[str] = []
+        input_index = 0
+        if header:
+            base_leading = max(0, leading_ms - header_offset_ms)
+            inputs += ["-i", str(ROOT / header["file"])]
+            filters.append(f"[{input_index}:a]adelay={base_leading}|{base_leading}[ahdr]")
+            labels.append("[ahdr]")
+            input_index += 1
+        for i, line in enumerate(lines, start=1):
+            inputs += ["-i", str(ROOT / line["file"])]
+            delay = starts_ms[i - 1]
+            filters.append(f"[{input_index}:a]adelay={delay}|{delay}[a{i}]")
+            labels.append(f"[a{i}]")
+            input_index += 1
+        # Loudness is applied exactly once. When the soundscape stage is on, it
+        # owns the loudness pass (two-pass, on the assembled track); otherwise the
+        # build keeps its original single pass, byte for byte.
+        loudness = "" if soundscape.enabled else "loudnorm=I=-16:TP=-1.5:LRA=11,"
+        filters.append(
+            f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0,alimiter=limit=0.95,"
+            f"{loudness}apad=whole_dur={total:.3f}[aout]"
+        )
+        run(["ffmpeg", "-y", "-v", "error", *inputs, "-filter_complex", ";".join(filters),
+             "-map", "[aout]", "-ac", "1", "-ar", "48000", "-c:a", "pcm_s16le", str(mix_target)])
+
+    soundscape_report = None
+    if soundscape.enabled:
+        result = master_soundscape(mix_target, mixed, root=ROOT, settings=soundscape)
+        soundscape_report = {"status": result.status, "note": result.note,
+                             "report": result.report}
+        if result.status != "PASS":
+            raise SystemExit(f"声景母带未通过：{result.status} {result.note}")
 
     # Timeline and SRT share the exact same event data as the audio mix.
     timeline_path = out_dir / "timeline.json"
@@ -275,10 +395,17 @@ def main() -> int:
     manifest = {
         "segments": [{**s, "file": relpath(seg_files[i]), "sha256": sha256(seg_files[i])}
                      for i, s in enumerate(segments)],
+        "audio_timeline": (
+            {k: v for k, v in audio_timeline_report.items() if k != "graph"}
+            if audio_timeline_report else None
+        ),
         "content_type": content_type,
         "leading_silence_ms": leading_ms,
         "total_seconds": total,
         "audio_end_seconds": round(audio_end, 3),
+        "soundscape": soundscape_report,
+        "header": header,
+        "ledger": audio.get("ledger"),
         "voice_end_seconds": round(timeline["voice_end_ms"] / 1000.0, 3),
         "trailing_silence_seconds": round(timeline["trailing_silence_ms"] / 1000.0, 3),
         "line_starts_ms": starts_ms,

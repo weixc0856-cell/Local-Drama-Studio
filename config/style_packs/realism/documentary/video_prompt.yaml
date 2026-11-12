@@ -1,0 +1,23 @@
+schema_version: '1.0'
+motion_vocabulary:
+- wind in cloth
+- dust drift
+- water ripple
+secondary_limit: 2
+preserve:
+- film grain
+- natural imperfections
+- weathered texture
+avoid:
+- painting
+- illustration
+- 3d render
+- cgi
+- digital smooth
+- airbrushed
+- oversaturated
+- plastic texture
+- fake reflections
+- hdr
+- studio lighting
+- readable text

@@ -1,80 +1,84 @@
 # Local-Drama-Studio 文档索引
 
-> 产品基线：v1.0（2026-11-03 冻结）。
-> 规则：产品文档是“方向与规范”；R0-R3 报告是“技术证据”。两者不互相替代。
+> **唯一需求入口：[PRD.md](PRD.md)（Single Source of Truth）。** 产品定位、范围、TTS/视觉决策、需求编号与验收标准以 PRD 为准；其他文档只能解释、执行、验证或记录现状，不得创造或覆盖需求。
+> 配套治理：[PRD_CHANGELOG.md](PRD_CHANGELOG.md)（变更/冲突修正）、[REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md)（需求矩阵）。
+> 状态词典以 `docs/PRD.md` §0.2 为唯一来源；本索引不再维护第二份。
 
-## 产品基线（v1.0）
+> **2026-11-06 运行时变更：** 图像线为 FLUX.3 Klein（ADR-016；GGUF Q4_K_M、16 步、CFG 1.0）；TTS 为 VoxCPM2（端口 50000，48 kHz，CPU，无 SFT 预置音色）；视频线仍为 Wan2.2 TI2V 5B。
+> **2026-11-06 本地清理：** `experiments/`、`projects/` 的媒体文件与旧实验目录已删除；`logs/r0/`、`logs/audit/` 原始日志已删除，旧报告中的 `PASS_VERIFIED` 不再能由日志复核。
+> **2026-11-06 文档整合：** R0–R3、R3-D、M1–M8、管线 A/B 验证、冻结审计与项目阶段审计等历史报告已从工作区移除。需要原文时从 Git 历史取（`git log --diff-filter=D --name-only -- docs/`）。视觉风格与动画流程将整体重构，旧规格只作为设计输入保留。
 
-| # | 文档 | 内容 |
-|---|---|---|
-| 01 | [PRD.md](PRD.md) | 定位、内容范围、范围边界、成功标准、风险 |
-| 02 | [TECH_STACK.md](TECH_STACK.md) | 冻结技术栈、版本、许可证、性能基线 |
-| 03 | [CONTENT_SPEC.md](CONTENT_SPEC.md) | 视觉、人物、场景、声音、字幕、视频规范 |
-| 04 | [PRODUCTION_WORKFLOW.md](PRODUCTION_WORKFLOW.md) | 14 步生产流程、现状、失败降级、成本 |
-| 05 | [PLATFORM_PUBLISHING_SPEC.md](PLATFORM_PUBLISHING_SPEC.md) | 抖音/小红书包装、合规、发布记录 |
-| 06 | [ASSET_AND_LICENSE_REGISTRY.md](ASSET_AND_LICENSE_REGISTRY.md) | 模型/素材/字体/音乐授权台账 |
-| 07 | [QUALITY_AND_METRICS.md](QUALITY_AND_METRICS.md) | 质量门、成本、平台数据、状态词典 |
-| 08 | [ROADMAP.md](ROADMAP.md) | v1.0 冻结、M3-M6、v1.1 候选 |
-| 09 | [VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md) | 双核心视觉风格（青绿工笔 / 写意水墨）、配置边界、动画与合成路线 |
-
-## 技术证据（保留，不合并）
-
-| 阶段 | 文档 |
-|---|---|
-| R0 环境 | [R0_TEST_PLAN.md](R0_TEST_PLAN.md) / [R0_TEST_REPORT.md](R0_TEST_REPORT.md) |
-| R1 视觉资产 | [R1_AUDIT.md](R1_AUDIT.md) / [R1_VISUAL_DESIGN.md](R1_VISUAL_DESIGN.md) / [R1_TEST_PLAN.md](R1_TEST_PLAN.md) / [R1_TEST_REPORT.md](R1_TEST_REPORT.md) |
-| R2-A 性能边界 | [R2_TEST_PLAN.md](R2_TEST_PLAN.md) / [R2_TEST_REPORT.md](R2_TEST_REPORT.md) |
-| R2-B 英雄镜头 | [R2B_TEST_PLAN.md](R2B_TEST_PLAN.md) / [R2B_TEST_REPORT.md](R2B_TEST_REPORT.md) |
-| R3 竖屏成片 | [R3_TEST_PLAN.md](R3_TEST_PLAN.md) / [R3_TEST_REPORT.md](R3_TEST_REPORT.md) |
-| R3-D 字体候选与接入 | [R3D_FONT_SELECTION_REPORT.md](R3D_FONT_SELECTION_REPORT.md) |
-| S2 双核心风格技术验证 | [S2_TEST_REPORT.md](S2_TEST_REPORT.md) |
-| 双视觉管线首批验证 | [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md) |
-| 双管线专项修复（水墨 Motion Mask / 工笔风格） | [PIPELINE_FIX_REPORT.md](PIPELINE_FIX_REPORT.md) |
-| 双管线动态与古诗词声音升级（2026-11-04） | [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md) |
-| 镜头美学设计系统集成（2026-11-04） | [AESTHETIC_DESIGN_REPORT.md](AESTHETIC_DESIGN_REPORT.md) |
-| 视觉事故审计 M0（2026-11-04） | [M0_VISUAL_FAILURE_AUDIT.md](M0_VISUAL_FAILURE_AUDIT.md) |
-| 主体保护机制 M1（2026-11-04） | [M1_REGION_PROTECTION_REPORT.md](M1_REGION_PROTECTION_REPORT.md) |
-| 局部运动算法 M2（2026-11-04） | [M2_MOTION_ALGORITHMS_REPORT.md](M2_MOTION_ALGORITHMS_REPORT.md) |
-| 时间连续性与质量门禁 M3（2026-11-04） | [M3_QUALITY_GATES_REPORT.md](M3_QUALITY_GATES_REPORT.md) |
-| 转场与时序时间轴 M4（2026-11-04） | [M4_TRANSITIONS_REPORT.md](M4_TRANSITIONS_REPORT.md) |
-| Wan 运动遮罩核验 M5（2026-11-04） | [M5_WAN_MOTION_MASK_REPORT.md](M5_WAN_MOTION_MASK_REPORT.md) |
-| 发音校正与音频管线 M6（2026-11-04） | [M6_PRONUNCIATION_REPORT.md](M6_PRONUNCIATION_REPORT.md) |
-| 双风格最终交付 M7（2026-11-04） | [M7_FINAL_DELIVERY_REPORT.md](M7_FINAL_DELIVERY_REPORT.md) |
-
-## 生产工作台（2026-11-03）
+## 核心规范
 
 | 文档 | 内容 |
 |---|---|
-| [PROJECT_AUDIT.md](PROJECT_AUDIT.md) | 历史审计（Phase A，已由 PRD §21 取代） |
-| [FRONTEND_DESIGN.md](FRONTEND_DESIGN.md) | 工作台设计：技术栈、导航、SQLite schema、API 契约、任务状态模型 |
-| [WORKSPACE_REPORT.md](WORKSPACE_REPORT.md) | 历史交付报告（Phase B-F） |
+| [PRD.md](PRD.md) | **唯一 SSOT**：定位、范围、决策、需求编号、验收标准 |
+| [PRD_CHANGELOG.md](PRD_CHANGELOG.md) | PRD 变更记录与冲突修正 |
+| [REQUIREMENT_TRACEABILITY.md](REQUIREMENT_TRACEABILITY.md) | 需求编号、验收与实现映射 |
+| [TECH_STACK.md](TECH_STACK.md) | 冻结技术栈、版本、许可证、性能基线 |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | 目标架构、状态机、ComfyUI 协议、FFmpeg 规范 |
+| [ENVIRONMENT.md](ENVIRONMENT.md) | 硬件、双 venv、模型仓库、端口、实测显存 |
+| [DECISIONS.md](DECISIONS.md) | ADR（含 ADR-016 图像线切换） |
 
-## 设计与参考
+## 生产与开发
 
-- [ARCHITECTURE.md](ARCHITECTURE.md) — 目标架构、状态机、ComfyUI 协议、FFmpeg 规范
-- [ENVIRONMENT.md](ENVIRONMENT.md) — 硬件、双 venv、模型仓库、端口、实测显存
-- [DECISIONS.md](DECISIONS.md) — ADR
-- [CONTENT_PACKS.md](CONTENT_PACKS.md) — 共享层/主题包边界
+| 文档 | 内容 |
+|---|---|
+| [PRODUCTION_WORKFLOW.md](PRODUCTION_WORKFLOW.md) | 14 步生产流程、现状、失败降级、成本 |
+| [PRODUCTION_PIPELINE_GUIDE.md](PRODUCTION_PIPELINE_GUIDE.md) | 生产路径、每阶段输入/输出/命令/恢复 |
+| [PRODUCTION_CONFIG_GUIDE.md](PRODUCTION_CONFIG_GUIDE.md) | FLUX/Wan/TTS/字幕/FFmpeg/质量阈值 |
+| [USER_GUIDE.md](USER_GUIDE.md) | 环境准备到成片、工作台操作、排障 |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | 服务、显存、生成、配音、字幕、任务故障树 |
+| [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) | 架构、契约、任务注册表、API、扩展方式 |
+| [FRONTEND_DESIGN.md](FRONTEND_DESIGN.md) | 工作台设计：技术栈、导航、SQLite schema、API 契约 |
+| [STYLE_BOARD_STATUS.md](STYLE_BOARD_STATUS.md) | 12 套风格参考板的生产台账：定义、渲染、检查与评审状态 |
+| [SURREALISM_STYLE_NOTES.md](SURREALISM_STYLE_NOTES.md) | 写实梦境派超现实：并置、软化、悬浮、尺度错位与冷静写实 |
+| [SHINKAI_STYLE_NOTES.md](SHINKAI_STYLE_NOTES.md) | 新海诚式日系电影感的视觉要点：实景打底、镜头光晕、巨云与日常反射 |
+| [NEO_CHINESE_DIRECTION.md](NEO_CHINESE_DIRECTION.md) | 新中式方向：几何抽象、哑光写实、40% 留白；苏州博物馆/聂隐娘/东方极简三条参考系 |
+| [SONG_AESTHETIC_STUDY.md](SONG_AESTHETIC_STUDY.md) | 宋氏美学研究：平淡天真、三远/边角、留白、淡彩与宋瓷色，及对 `oriental.modern_chinese` 的映射 |
+| [FRONTEND_PLAN.md](FRONTEND_PLAN.md) | 浅色影视工作站方案：视觉令牌、6 模块 IA、P0/P1 页面、API 与实施阶段；F0+F1 已实现 |
 
-## 冻结审计
+## 内容、质量与资产
 
-- [V1_FREEZE_AUDIT.md](V1_FREEZE_AUDIT.md) — 冲突、解决记录、文件清单、Git 摘要
-- [P0_R2B_FREEZE_CHECK.md](P0_R2B_FREEZE_CHECK.md) — R2-B 固化与仓库现状核对
-- [R3_COMMIT_AUDIT.md](R3_COMMIT_AUDIT.md) — R3 提交前审查与边界
-- [V1_COMMIT_AUDIT.md](V1_COMMIT_AUDIT.md) — v1.0 提交前审查与 R3-D 建议
+| 文档 | 内容 |
+|---|---|
+| [CONTENT_SPEC.md](CONTENT_SPEC.md) | 视觉、人物、场景、声音、字幕、视频规范 |
+| [CONTENT_PACKS.md](CONTENT_PACKS.md) | 共享层与主题内容包边界 |
+| [QUALITY_AND_METRICS.md](QUALITY_AND_METRICS.md) | 质量门、成本、平台指标、状态词典引用 |
+| [PLATFORM_PUBLISHING_SPEC.md](PLATFORM_PUBLISHING_SPEC.md) | 抖音/小红书包装、合规、发布记录 |
+| [ASSET_AND_LICENSE_REGISTRY.md](ASSET_AND_LICENSE_REGISTRY.md) | 模型/素材/字体/音乐授权台账 |
+| [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md) | 声音资产来源、音色与 BGM/SFX 策略 |
 
-## 当前下一步
+## 视觉与参考（重构输入）
 
-- 视觉方向已收敛为双核心风格（[VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md)）：S1 规范与配置已落地（`PASS_STATIC`）；S2-工笔/S2-水墨 各产出一段 20 秒片段；管线 A（水墨）完成云气/水面/孤舟/纸纹分层样片，管线 B（工笔）完成 28 秒长卷样片；技术检查通过，静态门 `PARTIAL`（山石纹理重复），人工审美 PENDING。见 [S2_TEST_REPORT.md](S2_TEST_REPORT.md) 与 [PIPELINE_AB_VALIDATION.md](PIPELINE_AB_VALIDATION.md)。S3 完整链路接入为 `PARTIAL`：2026-11-04 两种风格各用 2 镜头走通 `motion.plan → motion.render → segments(sequence) → r3_build → quality`，画质 PASS；人工审美仍 PENDING。见 [MOTION_VOICE_UPGRADE_REPORT.md](MOTION_VOICE_UPGRADE_REPORT.md)。
-- 镜头美学设计已接入：`aesthetic.plan → comfy.batch → aesthetic.compare → aesthetic.review`；4 组镜头共 8 张 A/B 实图，自动指标与联系表已生成，人工审美 `PENDING_HUMAN_REVIEW`。见 [AESTHETIC_DESIGN_REPORT.md](AESTHETIC_DESIGN_REPORT.md)。
-- P1 生产闭环已完成：ContentPackage → 文案/分镜 → 女声 TTS → FLUX → segments → 成片 → quality。下一阶段为 P2（资产台账、BGM/音效、平台包装），S2/S3 不改变 P2 的既定项。
-- R3-D 剩余项是 BGM、音效与商用授权；内容路线仍以真实样片与平台数据为准。
-- R3-D：字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，排版选型仍为 `DECISION`；女声已试听并固化方案但未进入正式成片；BGM、音效与商用授权待完成。见 [ROADMAP.md](ROADMAP.md) 与 [R3D_FONT_SELECTION_REPORT.md](R3D_FONT_SELECTION_REPORT.md)。
+| 文档 | 内容 |
+|---|---|
+| [VISUAL_STYLE_SPEC.md](VISUAL_STYLE_SPEC.md) | 现行双风格规范（青绿工笔 / 写意水墨）；**风格重构后将整体重写** |
+| [REFERENCE_STUDY.md](REFERENCE_STUDY.md) | 两分钟对标片实测拆解 + 东方仙境/水墨梦境 previs 研究（2026-11-06 合并） |
+| [M0_VISUAL_FAILURE_AUDIT.md](M0_VISUAL_FAILURE_AUDIT.md) | 视觉事故审计：旧风格失败模式，是新风格的设计输入 |
 
-## 状态规则
+## 当前阶段
 
-状态词典以 `docs/QUALITY_AND_METRICS.md` 为唯一来源；本索引不再维护第二份。
+| 文档 | 内容 |
+|---|---|
+| [MODEL_UPGRADE_POC.md](MODEL_UPGRADE_POC.md) | 2026-11-06 三模型核验、FLUX.3 落地、VoxCPM2 盲听与 H3 评估 |
+| [FILM_PRODUCTION_GUIDE.md](FILM_PRODUCTION_GUIDE.md) | Script-to-Film 制作指南：十阶段、数据契约、摄影语言、连续性、声音与剪辑、QC、分阶段实施 |
+| [VISUAL_STYLE_ENGINE.md](VISUAL_STYLE_ENGINE.md) | 12 套 Style Pack、双模型约束、提示词编译、参考板、一致性检查与开发优先级 |
+| [PRODUCTION_CAPABILITY.md](PRODUCTION_CAPABILITY.md) | 当前硬件与模型下能稳定做什么、不能做什么；三种生产模式与镜头决策规则 |
+| [PLATFORM_COMFORT_ZONE.md](PLATFORM_COMFORT_ZONE.md) | 抖音/小红书舒适区：规格、内容、模板、合规与不接的活 |
+| [VIDEO_ENHANCEMENT_PLAN.md](VIDEO_ENHANCEMENT_PLAN.md) | 低清时序生成 + 后置增强的分层架构、默认 Lanczos、学习型超分取舍 |
+| [ENHANCEMENT_AB_REPORT.md](ENHANCEMENT_AB_REPORT.md) | S01 的 Lanczos / Real-ESRNet / Real-ESRGAN A/B 与兼容性结论 |
+| [ROADMAP.md](ROADMAP.md) | 阶段路线与后续候选 |
 
-- 产品规划不是已实现功能。
-- 单篇样片不是市场验证。
-- 技术成功不等于内容合格。
+## 子目录
+
+| 目录 | 内容 |
+|---|---|
+| [literary_intelligence/](literary_intelligence/) | 文学智能模块：`L1_SPEC`（规格）、`TOOL_MATRIX`（工具矩阵）、`RISKS`（风险） |
+
+## 文档维护规则
+
+- 产品文档是“方向与规范”，历史报告是“技术证据”，两者不互相替代。
+- 已删除的历史报告不在工作区恢复；需要时从 Git 历史取。
+- 新增报告必须写明执行的日期、机器、命令与产物路径；没有证据的结论标 `NOT_RUN`。
+- 风格与动画重构完成后，`VISUAL_STYLE_SPEC.md` 与 `M0_VISUAL_FAILURE_AUDIT.md` 需要同步重写，避免旧结论继续被引用。

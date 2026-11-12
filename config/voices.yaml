@@ -1,0 +1,79 @@
+schema_version: "1.0"
+default_profile: narrator_blend_my80_sun20
+
+# Reference WAVs are local-only (ignored by Git): restore assets/audio/prompts/*.wav
+# or re-record before using a zero-shot profile on a fresh clone.
+# Voice profiles are opt-in: narration.json must name a profile (globally or
+# per line) for this library to be used. Without one, tts.mode /
+# tts.default_speaker / tts.zero_shot in config/audio.yaml remain authoritative.
+#
+# Only APPROVED profiles may enter a production TTS run. A candidate may be
+# used for auditions only with an explicit non-production command.
+profiles:
+  - profile_id: narrator_blend_my80_sun20
+    display_name: "默认旁白（my_voice_clean_v2）"
+    tts_mode: zero_shot
+    prompt_audio: "assets/audio/prompts/my_voice_clean_v2.wav"
+    prompt_text: "清晨的山谷里，风穿过竹林，远处传来水声。"
+    speed: 1.0
+    status: APPROVED
+    commercial_allowed: true
+    license_evidence: "assets/audio/prompts/VOICE_RIGHTS.md（2026-11-07 用户确认可用）"
+    asset_id: prompt_blend_my80_sun20
+    notes: "2026-11-07 用户指定为默认音色，并确认已检索、可正常使用。"
+
+  - profile_id: narrator_self
+    display_name: "旁白（本人参考音）"
+    tts_mode: zero_shot
+    prompt_audio: "assets/audio/prompts/my_voice_clean_v1.wav"
+    prompt_text: "希望你以后能够做的比我还好呦。"
+    speed: 0.90
+    status: APPROVED
+    commercial_allowed: true
+    license_evidence: "assets/audio/prompts/VOICE_RIGHTS.md"
+    asset_id: prompt_my_voice_clean_v1
+    notes: "项目所有者本人录音；正式生产默认候选。商用范围见 VOICE_RIGHTS.md。"
+
+  - profile_id: sft_male_01
+    display_name: "SFT 中文男（历史成片音色）"
+    tts_mode: sft
+    speaker: "中文男"
+    speed: 1.0
+    status: TECHNICALLY_VALIDATED
+    commercial_allowed: null
+    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；权重/音色/生成音频商用授权未核验。"
+
+  - profile_id: sft_female_01
+    display_name: "SFT 中文女（试听通过）"
+    tts_mode: sft
+    speaker: "中文女"
+    speed: 1.0
+    status: TECHNICALLY_VALIDATED
+    commercial_allowed: null
+    license_evidence: "docs/ASSET_AND_LICENSE_REGISTRY.md"
+    notes: "2026-11-04 决策：正式生产停用，仅保留测试夹具；商用授权未核验。"
+
+  - profile_id: announcer_sun_daolin
+    display_name: "男声参考（孙道临·唐诗）"
+    tts_mode: zero_shot
+    prompt_audio: "assets/audio/prompts/announcers/male_sun_daolin/sun_daolin_tang_quatrains_30s.wav"
+    prompt_text: "遥看瀑布挂前川，飞流直下三千尺，疑是银河落九天。"
+    speed: 1.0
+    status: BLOCKED
+    commercial_allowed: false
+    license_evidence: "assets/audio/prompts/announcers/README.md"
+    asset_id: prompt_announcer_sun_daolin
+    notes: "第三方朗诵录像，表演者/录音权未清；仅试听研究，禁止生产与发布。"
+
+  - profile_id: announcer_ya_kun
+    display_name: "女声参考（雅坤·古典朗诵）"
+    tts_mode: zero_shot
+    prompt_audio: "assets/audio/prompts/announcers/female_ya_kun/ya_kun_spring_river_moonlight_30s.wav"
+    prompt_text: "江天一色无纤尘，皎皎空中孤月轮。江畔何人初见月？江月何年初照人？"
+    speed: 1.0
+    status: BLOCKED
+    commercial_allowed: false
+    license_evidence: "assets/audio/prompts/announcers/README.md"
+    asset_id: prompt_announcer_ya_kun
+    notes: "第三方朗诵录像，表演者/录音权未清；仅试听研究，禁止生产与发布。"

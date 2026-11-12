@@ -1,0 +1,20 @@
+schema_version: '1.0'
+motion_vocabulary:
+- paint stroke emergence
+- light across ridges
+secondary_limit: 2
+preserve:
+- raised impasto ridges
+- knife planes
+- canvas weave
+avoid:
+- smooth airbrush
+- digital gradient
+- photoreal
+- 3d render
+- flat vector
+- readable text
+- decorative frame
+- neon colors
+- mosaic of square paint tiles
+- uniform thick paint everywhere

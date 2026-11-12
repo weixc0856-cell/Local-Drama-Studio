@@ -1,0 +1,12 @@
+schema_version: '1.0'
+forbidden:
+- readable text or speech bubble
+- soft gradient
+- 3d render
+- photoreal
+- thin outlines
+- muted palette
+- dark grunge
+- mixed halftone scales
+- perfectly registered digital colour
+note: For validator and human checklist only; prompts use positive anchors.

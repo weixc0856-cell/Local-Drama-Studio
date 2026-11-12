@@ -1,0 +1,20 @@
+{
+  "style": "oriental.modern_chinese",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a plain white plaster wall with a narrow vertical slit window and one bamboo shadow",
+    "a frameless floor-to-ceiling glass wall opening onto a misty garden",
+    "a still water courtyard with a single circular opening, the only circle in the frame",
+    "a long covered corridor with a thin dark roof and open sides framing water",
+    "a scholar rock set in moss and pebbles beside shallow water",
+    "a low stone bridge over still water with a long horizontal window in the far wall",
+    "a white wall with a long horizontal window and a thin roof edge",
+    "slender bamboo against a white wall with soft leaf shadows",
+    "a waterside terrace opening to a wide river and distant hills through frameless glass",
+    "a tea room with a dark timber table, one celadon cup and a horizontal window onto water",
+    "snow on dark roof tiles and white walls with a vertical slit window",
+    "a white wall with a thin vertical slat screen, no square grid"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

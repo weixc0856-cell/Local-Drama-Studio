@@ -8,7 +8,7 @@
 
 1. 不继续扩大技术栈；新增组件必须有明确业务需求、技术依据和实际验证。
 2. 不升级 PyTorch / ComfyUI / 工作流节点，除非重新跑对应阶段验收。
-3. 模型权重不进 Git，统一放在 `D:\AI\models`。
+3. 模型权重不进 Git，统一放在 `models`。
 4. 根 `.venv` 不安装 torch；生成环境独立在 `runtime/ComfyUI/.venv`。
 5. 所有新增依赖必须说明必要性。v1.0 冻结后仅因本地生产工作台新增 `fastapi` / `uvicorn`（ADR-014）；其余新增依赖仍需先说明业务需求与许可证。
 
@@ -22,17 +22,17 @@
 | ComfyUI-GGUF | GGUF 模型加载 | commit `6ea2651`，gguf 0.19.0 | Apache-2.0 | `PASS_VERIFIED` |
 | PyTorch | XPU 推理 | 2.15.0+xpu | BSD-3-Clause | `PASS_VERIFIED` |
 | torchvision / torchaudio | 配套 | 0.29.2+xpu / 2.11.1+xpu | BSD-3-Clause | `PASS_VERIFIED` |
-| FLUX.2 Klein 4B | 静帧/参考图编辑 | GGUF Q4_K_M，2.60 GB | Apache-2.0（HF 模型卡） | `PASS_VERIFIED` |
+| FLUX.3 Klein distilled | 静帧 | GGUF Q4_K_M，3.67 GB；16 步 / CFG 1.0 | FLUX Kommunity License（年营收 < 500 万美元免费商用） | `PASS_LIMITED` |
 | Qwen3-4B 文本编码器 | FLUX 提示词编码 | `qwen_3_4b.safetensors`，8.04 GB | Apache-2.0 | `PASS_VERIFIED` |
 | FLUX.2 VAE | FLUX 解码 | `flux2-vae.safetensors`，336 MB | Apache-2.0（同仓库） | `PASS_VERIFIED` |
 | Wan2.2 TI2V 5B | 图生视频/文生视频 | GGUF Q4_K_M，3.43 GB | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
 | UMT5-XXL 文本编码器 | Wan 提示词编码 | `umt5_xxl_fp8_e4m3fn_scaled`，6.73 GB | 随 Comfy-Org 重打包；底层 UMT5 待复核 | `PASS_VERIFIED` |
 | Wan2.2 VAE | Wan 解码 | `wan2.2_vae.safetensors`，1.41 GB | Apache-2.0（同仓库） | `PASS_VERIFIED` |
-| CosyVoice | 中文旁白/朗诵 | CosyVoice-300M-SFT，CPU | Apache-2.0（本地 LICENSE）；模型/音色/生成音频商用条款 `UNVERIFIED` | 中文男 `PASS_VERIFIED`（真实成片）；中文女已本地合成/试听并固化韵律方案，未进入正式成片（`PARTIAL`） |
+| CosyVoice | 中文旁白/朗诵 | CosyVoice-300M-SFT，CPU | Apache-2.0（本地 LICENSE）；模型/音色/生成音频商用条款 `UNVERIFIED` | 中文男/中文女均进入真实成片（R3-B、P1、81.373 s）；zero-shot 2 行 E2E，未进正式成片；商用 `UNVERIFIED`。PRD 默认：CosyVoice2-0.5B zero-shot；SFT 仅显式可选。 |
 | FFmpeg / ffprobe | 剪辑、混音、字幕、放大 | 8.1-full_build（gyan） | **GPLv3 构建**（`--enable-gpl --enable-version3`） | `PASS_VERIFIED` |
-| 本地 llama.cpp（D:\AI） | 剧本/分镜/提示词 | SYCL b12024 | MIT（llama.cpp）；模型许可按各模型卡 | `PARTIAL`（8080 在线：`Qwen3-30B-A3B-Instruct-2507`，CPU-only，64K；客户端已实现，未接入流水线） |
+| 本地 llama.cpp（本地 AI 服务） | 剧本/分镜/提示词 | SYCL b12024 | MIT（llama.cpp）；模型许可按各模型卡 | `PASS_VERIFIED`（CLI 真实 P1 4 镜头）；工作台新生成路径 Phase C 重新实证 |
 
-> CosyVoice「中文男」在 R3-B 进入真实成片；「中文女」已在本地 SFT 真实合成并完成人工试听/韵律决策（Poetry B / Narration B），但未进入正式成片。R3-D 剩余项：BGM、音效、最终排版与商用授权核验；字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建。
+> CosyVoice「中文男」在 R3-B 进入真实成片；「中文女」已进入 P1 与 81.373 s 工笔，并完成人工试听/韵律决策（Poetry B / Narration B）。zero-shot 只有 2 行 E2E，未进正式成片。**PRD 最新默认是 0.5B zero-shot，SFT 仅显式可选。** R3-D 剩余项：BGM、音效、最终排版与所有声音的商用授权核验。
 
 ### 2.1 Python 调度依赖
 
@@ -64,7 +64,7 @@
 | 推理后端 | PyTorch XPU（无 CUDA） |
 | 生成环境 | `runtime/ComfyUI/.venv` |
 | 调度环境 | 根 `.venv` |
-| 模型仓库 | `D:\AI\models`（顶层 GGUF 不能移动） |
+| 模型仓库 | `models`（顶层 GGUF 不能移动） |
 | 端口 | ComfyUI 8188；本地 LLM 8080（单端口，定时任务让路）；CosyVoice 50000 |
 
 ## 4. 性能基线（实测，非估算）
@@ -136,6 +136,6 @@
 - 1080×1920 是 FFmpeg Lanczos 放大，不是原生生成。
 - 竖屏 576×1024 已实测，但只有少量样本。
 - 多篇夜间批处理未运行。
-- 中文女声已试听并固化方案，但未进入正式成片；BGM、音效未选型；字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，但排版选型仍为 `DECISION`，R3-B 历史成片未重渲染。字体 OTF 不进入 Git，由 `scripts/fetch_fonts.py` 重建；manifest/LICENSE 可跟踪。
+- 中文女声已进入 P1/81.373 成片；PRD 默认改为 0.5B zero-shot；zero-shot 仅 2 行 E2E；BGM、音效未选型；字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，但排版选型仍为 `DECISION`，R3-B 历史成片未重渲染。字体 OTF 不进入 Git，由 `scripts/fetch_fonts.py` 重建；manifest/LICENSE 可跟踪。
 - 双核心风格（青绿工笔 / 写意水墨）已落地规范与配置（`PASS_STATIC`）；S2 各产出 1 张静帧与 1 段 20 秒 1080×1920 片段，技术检查通过、人工审美 PENDING（`PARTIAL`）；Wan 局部动态、线描显现与完整链路仍未执行。见 `docs/VISUAL_STYLE_SPEC.md` 与 `docs/S2_TEST_REPORT.md`。
 - Windows 字体/路径/代理是常见坑：localhost 探测需绕过代理，烧录字幕需显式 PlayRes。

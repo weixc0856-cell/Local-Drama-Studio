@@ -97,3 +97,28 @@ def test_check_build_writes_report(tmp_path: Path) -> None:
     assert (build / "quality_report.json").is_file()
     assert result["final"]["width"] == 1080
     assert result["final"]["height"] == 1920
+
+
+def test_check_build_accepts_a_source_video_smaller_than_the_final(tmp_path: Path) -> None:
+    root = tmp_path
+    build = root / "build-video"
+    build.mkdir()
+    final = build / "final.mp4"
+    _mp4(final, size=(1080, 1920), seconds=0.4)
+    clip = build / "wan_source.mp4"
+    _mp4(clip, size=(576, 1024), seconds=0.4)
+    mixed = build / "mixed.wav"
+    _wav(mixed)
+    manifest = build / "build_manifest.json"
+    manifest.write_text(
+        json.dumps({
+            "segments": [{"source": str(clip), "type": "video"}],
+            "outputs": {
+                "final": str(final),
+                "final_sha256": __import__("hashlib").sha256(final.read_bytes()).hexdigest(),
+                "mixed": str(mixed),
+            },
+        }), encoding="utf-8")
+    result = check_build(manifest, root=root)
+    assert result["status"] == "PASS"
+    assert result["images"][0]["path"].endswith("wan_source.mp4")

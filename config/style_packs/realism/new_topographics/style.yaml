@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: realism.new_topographics
+name: 新地形学
+group: realism
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 冷静、客观的当代纪实：无人的加油站、停车场与公路边缘，肉眼真实色温。
+layers:
+- identity
+- execution
+- consistency

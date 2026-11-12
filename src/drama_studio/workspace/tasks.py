@@ -12,6 +12,7 @@ import json
 import os
 import re
 import secrets
+import shutil
 import socket
 import subprocess
 import sys
@@ -23,6 +24,9 @@ from typing import Any, Awaitable, Callable, Literal
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from ..config import find_project_root, load_settings
+from ..style_lock import (
+    StyleLockError, assert_style_request, locked_preset_id, locked_style_id,
+)
 from .store import WorkspaceStore, now_iso
 
 ROOT = find_project_root()
@@ -59,6 +63,8 @@ class BuildParams(BaseModel):
     episode_id: str = Field(min_length=1, max_length=120)
     content_type: str | None = Field(default=None, pattern="^(poetry|narration|mixed)$")
     leading_ms: int | None = Field(default=None, ge=0, le=5000)
+    audio_timeline: str | None = Field(default=None, max_length=400)
+    audio_assets: str | None = Field(default=None, max_length=400)
 
 
 class ReviewParams(BaseModel):
@@ -72,6 +78,7 @@ class ComfyParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     jobs: str = Field(min_length=1, max_length=400)
+    episode_id: str | None = Field(default=None, max_length=120)
     only: str | None = Field(default=None, max_length=200)
     force: bool = False
     timeout: int = Field(default=1800, ge=60, le=21600)
@@ -104,13 +111,27 @@ class ScriptParams(BaseModel):
     package: str | None = Field(default=None, max_length=300)
     out: str | None = Field(default=None, max_length=300)
     speaker: str | None = Field(default=None, max_length=80)
-    speed: float = Field(default=1.0, ge=0.5, le=2.0)
+    speed: float | None = Field(default=None, ge=0.5, le=2.0)
+    voice_profile: str | None = Field(default=None, max_length=80)
     max_tokens: int = Field(default=2000, ge=256, le=8000)
     timeout: float = Field(default=900.0, ge=30, le=3600)
     image_width: int = Field(default=576, ge=256, le=2048)
     image_height: int = Field(default=1024, ge=256, le=2048)
     reuse: bool = False
     confirm: bool = False
+
+
+class VideoJobsParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    script: str | None = Field(default=None, max_length=400)
+    keyframes: str | None = Field(default=None, max_length=400)
+    out: str | None = Field(default=None, max_length=400)
+    only: str | None = Field(default=None, max_length=200)
+    frames: int = Field(default=73, ge=9, le=257)
+    width: int = Field(default=576, ge=256, le=2048)
+    height: int = Field(default=1024, ge=256, le=2048)
 
 
 class SegmentsParams(BaseModel):
@@ -122,6 +143,7 @@ class SegmentsParams(BaseModel):
     audio: str | None = Field(default=None, max_length=300)
     out: str | None = Field(default=None, max_length=300)
     clips_dir: str | None = Field(default=None, max_length=300)
+    allow_partial_clips: bool = False
     sequence: str | None = Field(default=None, max_length=300)
     align_audio: bool = False
     leading_ms: int = Field(default=0, ge=0, le=5000)
@@ -150,6 +172,11 @@ class TTSParams(BaseModel):
     speaker: str | None = Field(default=None, max_length=80)
     speed: float | None = Field(default=None, ge=0.5, le=2.0)
     mode: str | None = Field(default=None, max_length=40)
+    tts_mode: Literal["sft", "zero_shot"] | None = Field(default=None)
+    voice_profile: str | None = Field(default=None, max_length=80)
+    voices: str | None = Field(default=None, max_length=400)
+    voice_cast: str | None = Field(default=None, max_length=400)
+    allow_unapproved_voices: bool = False
     base_url: str | None = Field(default=None, max_length=300)
     force: bool = False
     timeout: float = Field(default=300.0, ge=30, le=3600)
@@ -171,6 +198,40 @@ class MotionPlanParams(BaseModel):
     gap_ms: int = Field(default=800, ge=0, le=5000)
     tail_seconds: float = Field(default=0.0, ge=0.0, le=10.0)
     transitions: bool = True
+    skip_static_gate: bool = False
+
+
+class StaticCheckParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    shot_id: str = Field(pattern=r"^shot_\d{3}$")
+    style: str | None = Field(default=None, max_length=80)
+    image: str | None = Field(default=None, max_length=400)
+    manual: str | None = Field(default=None, max_length=400)
+    aesthetic: str | None = Field(default=None, max_length=400)
+    out: str | None = Field(default=None, max_length=400)
+
+
+class StyleConsistencyParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    style: str | None = Field(default=None, max_length=80)
+    review: str | None = Field(default=None, max_length=400)
+    out: str | None = Field(default=None, max_length=400)
+
+
+class StoryCheckParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    episode_id: str = Field(min_length=1, max_length=120)
+    script: str | None = Field(default=None, max_length=400)
+    characters: str | None = Field(default=None, max_length=400)
+    shots: str | None = Field(default=None, max_length=400)
+    voices: str | None = Field(default=None, max_length=400)
+    allow_unapproved_voices: bool = False
+    out: str | None = Field(default=None, max_length=400)
 
 
 class AudioQAParams(BaseModel):
@@ -179,6 +240,8 @@ class AudioQAParams(BaseModel):
     episode_id: str = Field(min_length=1, max_length=120)
     manifest: str | None = Field(default=None, max_length=400)
     timeline: str | None = Field(default=None, max_length=400)
+    audio_timeline: str | None = Field(default=None, max_length=400)
+    audio_assets: str | None = Field(default=None, max_length=400)
 
 
 class AestheticPlanParams(BaseModel):
@@ -229,6 +292,57 @@ class MotionRenderParams(BaseModel):
     confirm: bool = False
 
 
+class FilmProjectParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    project_id: str = Field(min_length=1, max_length=120)
+    confirm: bool = False
+
+
+class FilmGenParams(FilmProjectParams):
+    only: str | None = Field(default=None, max_length=200)
+    force: bool = False
+
+
+class FilmVoiceParams(FilmProjectParams):
+    force: bool = False
+
+
+class FilmTimelineParams(FilmProjectParams):
+    planned: bool = False
+
+
+class FilmEnhanceParams(FilmProjectParams):
+    shot: str | None = Field(default=None, max_length=40)
+    backend: Literal["realesrgan-ncnn"] = "realesrgan-ncnn"
+    force: bool = False
+
+
+class FilmStaticParams(FilmProjectParams):
+    force: bool = False
+
+
+class FilmClipsParams(FilmProjectParams):
+    policy: Literal["hold_last", "slow", "trim"] = "hold_last"
+    force: bool = False
+
+
+class FilmAssembleParams(FilmProjectParams):
+    bgm_id: str | None = Field(default=None, max_length=120)
+    no_motion: bool = False
+    force_clips: bool = False
+    dry_run: bool = False
+    out: str | None = Field(default=None, max_length=300)
+
+
+class FilmQcParams(FilmProjectParams):
+    build: str | None = Field(default=None, max_length=300)
+
+
+class FilmStatusParams(FilmProjectParams):
+    write: bool = False
+
+
 class ServiceParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -266,6 +380,131 @@ class TaskKind:
             "blocked_reason": self.blocked_reason,
             "params_schema": self.params_model.model_json_schema(),
         }
+
+
+def _film_dir(params: BaseModel, store: WorkspaceStore) -> Path:
+    name = params.project_id.strip()
+    if not name or name in {".", ".."} or "/" in name or "\\" in name:
+        raise TaskError("forbidden_path", f"非法项目 id：{params.project_id!r}")
+    base = (store.root / "projects").resolve()
+    path = (base / name).resolve()
+    if not path.is_relative_to(base) or not (path / "project.json").is_file():
+        raise TaskError("not_found", f"影视项目不存在：{params.project_id}")
+    return path
+
+
+def _film_argv(command: str, params: BaseModel, extra: list[str] | None = None) -> list[str]:
+    argv = [sys.executable, "-m", "drama_studio", "film", command,
+            "--project", params.project_id]
+    return argv + list(extra or [])
+
+
+def _film_jobs_prereqs(params: FilmGenParams, store: WorkspaceStore, kind: str) -> list[str]:
+    missing: list[str] = []
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    jobs = directory / "jobs" / ("keyframes" if kind == "keyframes" else "shots") / "jobs.json"
+    if not jobs.is_file():
+        missing.append(f"缺少 {_rel(jobs)}")
+    if not _port_open("127.0.0.1", 8188):
+        missing.append("ComfyUI 8188 未监听；先用 service.comfy.start 启动")
+    return missing
+
+
+def _film_keyframe_prereqs(params: FilmGenParams, store: WorkspaceStore) -> list[str]:
+    return _film_jobs_prereqs(params, store, "keyframes")
+
+
+def _film_wan_prereqs(params: FilmGenParams, store: WorkspaceStore) -> list[str]:
+    return _film_jobs_prereqs(params, store, "shots")
+
+
+def _film_batch_argv(params: FilmGenParams, store: WorkspaceStore, kind: str) -> list[str]:
+    directory = _film_dir(params, store)
+    jobs = directory / "jobs" / ("keyframes" if kind == "keyframes" else "shots") / "jobs.json"
+    if not jobs.is_file():
+        raise TaskError("not_found", f"缺少任务文件：{_rel(jobs)}")
+    argv = [sys.executable, "scripts/r1_batch.py", "--jobs", _rel(jobs), "--timeout", "21600"]
+    if params.only:
+        argv += ["--only", params.only]
+    if params.force:
+        argv += ["--force"]
+    return argv
+
+
+def _film_voice_prereqs(params: FilmVoiceParams, store: WorkspaceStore) -> list[str]:
+    try:
+        _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if not _port_open("127.0.0.1", 50000):
+        return ["VoxCPM2 50000 未监听"]
+    return []
+
+
+def _film_build_prereqs(params: BaseModel, store: WorkspaceStore) -> list[str]:
+    missing: list[str] = []
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if not (directory / "storyboard.json").is_file():
+        missing.append("缺少 storyboard.json")
+    if not shutil.which("ffmpeg"):
+        missing.append("PATH 中没有 ffmpeg")
+    return missing
+
+
+def _film_assemble_prereqs(params: FilmAssembleParams, store: WorkspaceStore) -> list[str]:
+    missing = _film_build_prereqs(params, store)
+    try:
+        directory = _film_dir(params, store)
+    except TaskError:
+        return missing
+    if not (directory / "assets" / "audio" / "audio_manifest.json").is_file():
+        missing.append("缺少 audio_manifest.json；先运行 film.voice")
+    if params.bgm_id and not (ROOT / "assets" / "audio" / "manifest.json").is_file():
+        missing.append("缺少 assets/audio/manifest.json")
+    if params.out:
+        try:
+            _resolve_under(params.out, ("projects",), must_exist=False)
+        except TaskError as exc:
+            missing.append(exc.message)
+    return missing
+
+
+def _film_qc_prereqs(params: FilmQcParams, store: WorkspaceStore) -> list[str]:
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if params.build:
+        target = (ROOT / params.build).resolve()
+        if target.is_dir():
+            target = target / "build_manifest.json"
+        if not target.is_file():
+            return [f"构建清单不存在：{params.build}"]
+    elif not list(directory.glob("renders/build-*/build_manifest.json")):
+        return ["没有构建产物；先运行 film.assemble"]
+    return []
+
+
+def _film_after(params: BaseModel, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    directory = _film_dir(params, store)
+    state = directory / "qc" / "film_state.json"
+    if state.is_file():
+        return {"state": _rel(state)}
+    builds = sorted(directory.glob("renders/build-*"))
+    return {"build": _rel(builds[-1]) if builds else None}
+
+
+def _locked_style(episode: dict[str, Any] | None, requested: str | None = None) -> str | None:
+    try:
+        return assert_style_request(episode, requested)
+    except StyleLockError as exc:
+        raise TaskError("style_locked", str(exc)) from exc
 
 
 def _resolve_under(raw: str, allowed: tuple[str, ...], *, must_exist: bool = True) -> Path:
@@ -336,6 +575,14 @@ def _build_prereqs(params: BuildParams, store: WorkspaceStore) -> list[str]:
                     missing.append(f"音频行 {line.get('index')} 不存在：{line['file']}")
         except (OSError, json.JSONDecodeError) as exc:
             missing.append(f"audio_manifest.json 无法解析：{exc}")
+    if params.audio_timeline:
+        path = (ROOT / params.audio_timeline).resolve()
+        if not path.is_file():
+            missing.append(f"缺少 audio_timeline：{params.audio_timeline}")
+    if params.audio_assets:
+        path = (ROOT / params.audio_assets).resolve()
+        if not path.is_file():
+            missing.append(f"缺少 audio_assets：{params.audio_assets}")
     return missing
 
 
@@ -361,6 +608,10 @@ def _build_argv(params: BuildParams, task_id: str) -> list[str]:
         argv += ["--content-type", params.content_type]
     if params.leading_ms is not None:
         argv += ["--leading-ms", str(params.leading_ms)]
+    if params.audio_timeline:
+        argv += ["--audio-timeline", params.audio_timeline]
+    if params.audio_assets:
+        argv += ["--audio-assets", params.audio_assets]
     return argv
 
 
@@ -411,6 +662,25 @@ def _comfy_prereqs(params: ComfyParams, store: WorkspaceStore) -> list[str]:
         _resolve_under(params.jobs, ("experiments", "projects"))
     except TaskError as exc:
         return [exc.message]
+    if params.episode_id:
+        episode = store.get_episode(params.episode_id)
+        if not episode:
+            return [f"期数不存在：{params.episode_id}"]
+        try:
+            base = _episode_root(params.episode_id, store)
+        except TaskError as exc:
+            return [exc.message]
+        locked = locked_style_id(episode)
+        script = next((p for p in (base / "work" / "production_script.json",
+                                   base / "production_script.json") if p.is_file()), None)
+        if script is not None and locked:
+            try:
+                script_style = json.loads(script.read_text(encoding="utf-8")).get("style_id")
+            except (OSError, json.JSONDecodeError):
+                script_style = None
+            if script_style and script_style != locked:
+                missing.append(
+                    f"production_script style_id={script_style!r} 与期数锁 {locked!r} 不一致")
     if not _port_open("127.0.0.1", 8188):
         missing.append("ComfyUI 8188 未监听；先用 service.comfy.start 启动")
     return missing
@@ -603,6 +873,16 @@ def _tts_argv(params: TTSParams, task_id: str) -> list[str]:
         argv += ["--speed", str(params.speed)]
     if params.mode:
         argv += ["--mode", params.mode]
+    if params.tts_mode:
+        argv += ["--tts-mode", params.tts_mode]
+    if params.voice_profile:
+        argv += ["--voice-profile", params.voice_profile]
+    if params.voices:
+        argv += ["--voices", _rel((_STORE_REF[0].root / params.voices).resolve())]
+    if params.voice_cast:
+        argv += ["--voice-cast", _rel((_STORE_REF[0].root / params.voice_cast).resolve())]
+    if params.allow_unapproved_voices:
+        argv += ["--allow-unapproved-voices"]
     if params.base_url:
         argv += ["--base-url", params.base_url]
     if params.force:
@@ -619,9 +899,197 @@ def _tts_after(params: TTSParams, task_id: str, store: WorkspaceStore) -> dict[s
             raise TaskError("tts_manifest_mismatch", f"音频哈希不一致：{line.get('file')}")
     return {
         "manifest": _rel(manifest_path),
+        "tts_mode": data.get("tts_mode"),
+        "model_class": data.get("model_class"),
+        "model_dir": data.get("model_dir"),
         "speaker": data.get("speaker"),
+        "speaker_id": data.get("speaker_id"),
+        "voice_cast": data.get("voice_cast"),
         "lines": len(data.get("lines") or []),
         "total_seconds": round(sum(float(x.get("duration_seconds") or 0) for x in data.get("lines") or []), 3),
+    }
+
+
+def _style_consistency_paths(
+    params: StyleConsistencyParams, store: WorkspaceStore
+) -> tuple[str, list[tuple[str, Path]], Path | None, Path]:
+    base = _episode_root(params.episode_id, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
+    if not style:
+        raise TaskError("no_style", "该期未绑定风格或未映射 preset_id")
+    images_root = base / "assets" / "images"
+    shots: list[tuple[str, Path]] = []
+    if images_root.is_dir():
+        for directory in sorted(images_root.iterdir()):
+            if not directory.is_dir():
+                continue
+            files = sorted(p for p in directory.glob("*")
+                           if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp"))
+            if files:
+                shots.append((directory.name, files[0]))
+    review = (store.root / params.review).resolve() if params.review else None
+    out = (store.root / params.out).resolve() if params.out else base / "style_consistency_report.json"
+    return style, shots, review, out
+
+
+def _style_consistency_prereqs(params: StyleConsistencyParams, store: WorkspaceStore) -> list[str]:
+    try:
+        _, shots, review, _ = _style_consistency_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = []
+    if len(shots) < 2:
+        missing.append("至少需要 2 个镜头的静态图（assets/images/<shot_id>/）")
+    if review is not None and not review.is_file():
+        missing.append(f"缺少人工审片 JSON：{_rel(review)}")
+    return missing
+
+
+def _style_consistency_argv(params: StyleConsistencyParams, task_id: str) -> list[str]:
+    style, shots, review, out = _style_consistency_paths(params, _STORE_REF[0])
+    argv = [sys.executable, "-m", "drama_studio.style_consistency", "--style", style, "--out", _rel(out)]
+    for shot_id, path in shots:
+        argv += ["--shot", f"{shot_id}={_rel(path)}"]
+    if review is not None:
+        argv += ["--review", _rel(review)]
+    return argv
+
+
+def _style_consistency_after(
+    params: StyleConsistencyParams, task_id: str, store: WorkspaceStore
+) -> dict[str, Any]:
+    _, _, _, out = _style_consistency_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {
+        "report": _rel(out),
+        "style_id": data.get("style_id"),
+        "technical_status": data.get("technical_status"),
+        "aesthetic_status": data.get("aesthetic_status"),
+        "overall_status": data.get("overall_status"),
+        "shots": data.get("shot_count"),
+        "flags": data.get("flags") or [],
+    }
+
+
+def _static_paths(
+    params: StaticCheckParams, store: WorkspaceStore
+) -> tuple[Path, str, Path, Path | None, Path | None]:
+    base = _episode_root(params.episode_id, store)
+    image = (store.root / params.image).resolve() if params.image else None
+    if image is None:
+        directory = base / "assets" / "images" / params.shot_id
+        candidates = sorted(p for p in directory.glob("*") if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp")) if directory.is_dir() else []
+        if not candidates:
+            raise TaskError("not_found", f"缺少 {_rel(directory)} 下的静态图")
+        image = candidates[0]
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style) or (episode.get("style_snapshot") or {}).get("id")
+    if not style:
+        raise TaskError("no_style", "该期未绑定风格；static.check 需要 style")
+    out = (store.root / params.out).resolve() if params.out else base / "work" / "static" / params.shot_id / "static_quality.json"
+    manual = (store.root / params.manual).resolve() if params.manual else None
+    aesthetic = (store.root / params.aesthetic).resolve() if params.aesthetic else None
+    return image, str(style), out, manual, aesthetic
+
+
+def _static_prereqs(params: StaticCheckParams, store: WorkspaceStore) -> list[str]:
+    try:
+        image, _, _, manual, aesthetic = _static_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if image.is_file() else [f"缺少 {_rel(image)}"]
+    if manual is not None and not manual.is_file():
+        missing.append(f"缺少 {_rel(manual)}")
+    if aesthetic is not None and not aesthetic.is_file():
+        missing.append(f"缺少 {_rel(aesthetic)}")
+    return missing
+
+
+def _static_argv(params: StaticCheckParams, task_id: str) -> list[str]:
+    image, style, out, manual, aesthetic = _static_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "scripts/static_quality.py",
+        "--image", _rel(image), "--style", style, "--out", _rel(out),
+    ]
+    if manual is not None:
+        argv += ["--manual", _rel(manual)]
+    if aesthetic is not None:
+        argv += ["--aesthetic", _rel(aesthetic)]
+    return argv
+
+
+def _static_after(params: StaticCheckParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, out, _, _ = _static_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {
+        "report": _rel(out),
+        "shot_id": params.shot_id,
+        "overall_status": data.get("overall_status"),
+        "objective_passed": data.get("objective_passed"),
+        "aesthetic_status": data.get("aesthetic_status"),
+    }
+
+
+def _story_paths(
+    params: StoryCheckParams, store: WorkspaceStore
+) -> tuple[Path, Path, Path, Path | None, Path]:
+    base = _episode_root(params.episode_id, store)
+    script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
+    characters = ((store.root / params.characters).resolve()
+                  if params.characters else base / "character_bible.yaml")
+    shots = (store.root / params.shots).resolve() if params.shots else base / "shot_bible.yaml"
+    voices = (store.root / params.voices).resolve() if params.voices else None
+    out = (store.root / params.out).resolve() if params.out else base / "story_bible_report.json"
+    return script, characters, shots, voices, out
+
+
+def _story_prereqs(params: StoryCheckParams, store: WorkspaceStore) -> list[str]:
+    try:
+        script, characters, shots, voices, _ = _story_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = []
+    for label, path in (("production_script", script),
+                        ("character_bible", characters),
+                        ("shot_bible", shots)):
+        if not path.is_file():
+            missing.append(f"缺少 {_rel(path)}")
+    if voices is not None and not voices.is_file():
+        missing.append(f"缺少 voice library {_rel(voices)}")
+    return missing
+
+
+def _story_argv(params: StoryCheckParams, task_id: str) -> list[str]:
+    script, characters, shots, voices, out = _story_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "-m", "drama_studio.bible",
+        "--script", _rel(script),
+        "--characters", _rel(characters),
+        "--shots", _rel(shots),
+        "--out", _rel(out),
+    ]
+    if voices is not None:
+        argv += ["--voices", _rel(voices)]
+    if params.allow_unapproved_voices:
+        argv += ["--allow-unapproved-voices"]
+    return argv
+
+
+def _story_after(params: StoryCheckParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, _, _, out = _story_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    if data.get("status") != "PASS":
+        raise TaskError("story_check_failed", "故事圣经检查未通过；见报告")
+    return {
+        "report": _rel(out),
+        "status": data.get("status"),
+        "characters": data.get("characters"),
+        "shots": data.get("shots"),
+        "voice_check": data.get("voice_check", {}).get("status"),
+        "errors": data.get("errors") or [],
+        "warnings": data.get("warnings") or [],
+        "same_face_guarantee": False,
     }
 
 
@@ -722,10 +1190,13 @@ def _script_argv(params: ScriptParams, task_id: str) -> list[str]:
         "--api-key", settings.llm.api_key,
         "--timeout", str(params.timeout),
         "--max-tokens", str(params.max_tokens),
-        "--speed", str(params.speed),
     ]
     if params.speaker:
         argv += ["--speaker", params.speaker]
+    if params.speed is not None:
+        argv += ["--speed", str(params.speed)]
+    if params.voice_profile:
+        argv += ["--voice-profile", params.voice_profile]
     if params.reuse:
         argv += ["--reuse"]
     return argv
@@ -749,7 +1220,49 @@ def _script_after(params: ScriptParams, task_id: str, store: WorkspaceStore) -> 
     return result
 
 
-def _segments_paths(params: SegmentsParams, store: WorkspaceStore) -> tuple[Path, Path, Path, Path]:
+def _video_jobs_paths(
+    params: VideoJobsParams, store: WorkspaceStore
+) -> tuple[Path, Path, Path, Path]:
+    base = _episode_root(params.episode_id, store)
+    script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
+    if not script.is_file():
+        script = base / "work" / "production_script.json"
+    keyframes = (store.root / params.keyframes).resolve() if params.keyframes else base / "assets" / "images"
+    out = (store.root / params.out).resolve() if params.out else base / "comfy" / "jobs_video.json"
+    return script, keyframes, out, base
+
+
+def _video_jobs_prereqs(params: VideoJobsParams, store: WorkspaceStore) -> list[str]:
+    try:
+        script, keyframes, _, _ = _video_jobs_paths(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    missing = [] if script.is_file() else [f"缺少 {_rel(script)}"]
+    if not keyframes.is_dir():
+        missing.append(f"缺少关键帧目录 {_rel(keyframes)}")
+    return missing
+
+
+def _video_jobs_argv(params: VideoJobsParams, task_id: str) -> list[str]:
+    script, keyframes, out, _ = _video_jobs_paths(params, _STORE_REF[0])
+    argv = [
+        sys.executable, "scripts/video_jobs.py",
+        "--script", _rel(script), "--keyframes", _rel(keyframes), "--out", _rel(out),
+        "--frames", str(params.frames), "--width", str(params.width), "--height", str(params.height),
+    ]
+    if params.only:
+        argv += ["--only", params.only]
+    return argv
+
+
+def _video_jobs_after(params: VideoJobsParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    _, _, out, _ = _video_jobs_paths(params, store)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    return {"jobs": _rel(out), "count": len(data), "frames": params.frames}
+
+
+def _segments_paths(
+params: SegmentsParams, store: WorkspaceStore) -> tuple[Path, Path, Path, Path]:
     base = _episode_root(params.episode_id, store)
     script = (store.root / params.script).resolve() if params.script else base / "production_script.json"
     images = (store.root / params.images).resolve() if params.images else base / "assets" / "images"
@@ -792,6 +1305,8 @@ def _segments_argv(params: SegmentsParams, task_id: str) -> list[str]:
     ]
     if params.clips_dir:
         argv += ["--clips", _rel((_STORE_REF[0].root / params.clips_dir).resolve())]
+        if params.allow_partial_clips:
+            argv += ["--allow-partial-clips"]
     if params.sequence:
         argv += ["--sequence", _rel((_STORE_REF[0].root / params.sequence).resolve())]
     argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
@@ -886,14 +1401,17 @@ def _motion_plan_prereqs(params: MotionPlanParams, store: WorkspaceStore) -> lis
 
 
 def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
-    script, images, audio, out, regions = _motion_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, images, audio, out, regions = _motion_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "-m", "drama_studio.production", "--motion-plan",
         "--script", _rel(script), "--images", _rel(images), "--audio", _rel(audio),
         "--out", _rel(out),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if regions is not None:
         argv += ["--regions", _rel(regions)]
     argv += ["--leading-ms", str(params.leading_ms), "--gap-ms", str(params.gap_ms)]
@@ -903,12 +1421,18 @@ def _motion_plan_argv(params: MotionPlanParams, task_id: str) -> list[str]:
             argv += ["--tail-seconds", str(params.tail_seconds)]
     if not params.transitions:
         argv += ["--no-transition"]
+    if params.skip_static_gate:
+        argv += ["--skip-static-gate"]
     return argv
 
 
 def _motion_plan_after(params: MotionPlanParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
     _, _, _, out, _ = _motion_plan_paths(params, store)
     data = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and data.get("style_id") != locked:
+        raise TaskError("style_locked", f"motion plan style {data.get('style_id')!r} != locked {locked!r}")
     shots = data.get("shots") or []
     return {
         "plan": _rel(out),
@@ -989,6 +1513,14 @@ def _audio_qa_paths(params: AudioQAParams, store: WorkspaceStore) -> tuple[Path,
 
 
 def _audio_qa_prereqs(params: AudioQAParams, store: WorkspaceStore) -> list[str]:
+    if params.audio_timeline:
+        path = (store.root / params.audio_timeline).resolve()
+        missing = [] if path.is_file() else [f"缺少 {_rel(path)}"]
+        if params.audio_assets:
+            assets = (store.root / params.audio_assets).resolve()
+            if not assets.is_file():
+                missing.append(f"缺少 {_rel(assets)}")
+        return missing
     try:
         manifest, timeline = _audio_qa_paths(params, store)
     except TaskError as exc:
@@ -1000,6 +1532,13 @@ def _audio_qa_prereqs(params: AudioQAParams, store: WorkspaceStore) -> list[str]
 
 
 def _audio_qa_argv(params: AudioQAParams, task_id: str) -> list[str]:
+    if params.audio_timeline:
+        argv = [sys.executable, "-m", "drama_studio.quality",
+                "--audio-timeline", _rel((_STORE_REF[0].root / params.audio_timeline).resolve())]
+        if params.audio_assets:
+            argv += ["--audio-assets",
+                     _rel((_STORE_REF[0].root / params.audio_assets).resolve())]
+        return argv
     manifest, timeline = _audio_qa_paths(params, _STORE_REF[0])
     argv = [sys.executable, "-m", "drama_studio.quality", "--audio-manifest", _rel(manifest)]
     if timeline is not None:
@@ -1008,9 +1547,20 @@ def _audio_qa_argv(params: AudioQAParams, task_id: str) -> list[str]:
 
 
 def _audio_qa_after(params: AudioQAParams, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
-    manifest, _ = _audio_qa_paths(params, store)
-    report = manifest.parent / "audio_qa_report.json"
+    if params.audio_timeline:
+        base = (store.root / params.audio_timeline).resolve().parent
+        report = base / "audio_timeline_report.json"
+    else:
+        manifest, _ = _audio_qa_paths(params, store)
+        report = manifest.parent / "audio_qa_report.json"
     data = json.loads(report.read_text(encoding="utf-8"))
+    if params.audio_timeline:
+        return {
+            "report": _rel(report),
+            "status": data.get("status"),
+            "tracks": len(data.get("tracks") or []),
+            "duration_ms": data.get("duration_ms"),
+        }
     return {
         "report": _rel(report),
         "status": data.get("status"),
@@ -1057,7 +1607,10 @@ def _aesthetic_plan_prereqs(params: AestheticPlanParams, store: WorkspaceStore) 
 
 
 def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]:
-    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, _STORE_REF[0])
+    store = _STORE_REF[0]
+    script, designs, axes, out, snapshot_root = _aesthetic_plan_paths(params, store)
+    episode = store.get_episode(params.episode_id) or {}
+    style = _locked_style(episode, params.style)
     argv = [
         sys.executable, "scripts/aesthetic_plan.py",
         "--script", _rel(script), "--out", _rel(out),
@@ -1066,8 +1619,8 @@ def _aesthetic_plan_argv(params: AestheticPlanParams, task_id: str) -> list[str]
         "--width", str(params.width), "--height", str(params.height),
         "--steps", str(params.steps), "--cfg", str(params.cfg),
     ]
-    if params.style:
-        argv += ["--style", params.style]
+    if style:
+        argv += ["--style", style]
     if designs is not None:
         argv += ["--designs", _rel(designs)]
     if axes is not None:
@@ -1079,6 +1632,11 @@ def _aesthetic_plan_after(params: AestheticPlanParams, task_id: str, store: Work
     _, _, _, out, _ = _aesthetic_plan_paths(params, store)
     manifest_path = out.parent / "aesthetic_plan_manifest.json"
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    plan = json.loads(out.read_text(encoding="utf-8"))
+    episode = store.get_episode(params.episode_id)
+    locked = locked_preset_id(episode) or locked_style_id(episode)
+    if locked and plan.get("style_id") != locked:
+        raise TaskError("style_locked", f"aesthetic plan style {plan.get('style_id')!r} != locked {locked!r}")
     return {
         "plan": _rel(out),
         "manifest": _rel(manifest_path),
@@ -1200,6 +1758,147 @@ TASK_KINDS: dict[str, TaskKind] = {
         prerequisites=_build_prereqs,
         after_success=_build_after,
     ),
+    "film.keyframes": TaskKind(
+        key="film.keyframes",
+        label="影视关键帧生成",
+        description="执行 projects/<id>/jobs/keyframes/jobs.json（FLUX.3）；GPU 单飞。",
+        cost="每张约 2-2.5 分钟；8 镜约 20 分钟",
+        safety="只写项目 assets/keyframes/ 与 jobs 运行记录；GPU 单飞锁",
+        params_model=FilmGenParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_batch_argv(params, _STORE_REF[0], "keyframes"),
+        prerequisites=_film_keyframe_prereqs,
+        danger=True,
+    ),
+    "film.wan": TaskKind(
+        key="film.wan",
+        label="影视 Wan 镜头生成",
+        description="执行 projects/<id>/jobs/shots/jobs.json（Wan2.2 TI2V）；可选 --only 单镜头。",
+        cost="576x1024 / 121 帧约 36 分钟/镜",
+        safety="只写项目 shots/<shot_id>/；GPU 单飞锁；不自动编码",
+        params_model=FilmGenParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_batch_argv(params, _STORE_REF[0], "shots"),
+        prerequisites=_film_wan_prereqs,
+        danger=True,
+    ),
+    "film.timeline": TaskKind(
+        key="film.timeline",
+        label="影视时间轴",
+        description="按真实旁白 WAV 时长生成 audio-first 时间轴，镜头不足时自动延长。",
+        cost="秒级",
+        safety="只写项目 timeline.json / qc；不调用模型",
+        params_model=FilmTimelineParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "timeline", params, ["--planned"] if params.planned else []),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.voice": TaskKind(
+        key="film.voice",
+        label="影视配音",
+        description="逐句调用 VoxCPM2，写标准 audio_manifest.json；支持逐行 voice_profile。",
+        cost="分钟级（CPU）",
+        safety="只写项目 assets/audio；已有有效 WAV 时复用，force 才重合成",
+        params_model=FilmVoiceParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "voice", params, ["--force"] if params.force else []),
+        prerequisites=_film_voice_prereqs,
+        after_success=_film_after,
+    ),
+    "film.enhance": TaskKind(
+        key="film.enhance",
+        label="影视学习型超分",
+        description="可选增强层：外部 realesrgan-ncnn 超分；默认不进生产，缺模型即失败。",
+        cost="按帧数；不与会话内 Wan/FLUX 并发",
+        safety="只写 shots/<shot>/*_sr.mp4 与增强报告；不覆盖源帧/源剪辑；GPU 单飞锁",
+        params_model=FilmEnhanceParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_argv(
+            "upscale", params,
+            ["--backend", params.backend]
+            + (["--shot", params.shot] if params.shot else [])
+            + (["--force"] if params.force else [])),
+        prerequisites=_film_build_prereqs,
+        danger=True,
+    ),
+    "film.static": TaskKind(
+        key="film.static",
+        label="影视静帧质量门",
+        description="逐镜记录客观指标与人工语义清单；PENDING 不等于通过。",
+        cost="每镜数秒（CPU）",
+        safety="只写项目 work/static/<shot_id>/static_quality.json",
+        params_model=FilmStaticParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "static", params, ["--force"] if params.force else []),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.clips": TaskKind(
+        key="film.clips",
+        label="影视镜头编码",
+        description="把 Wan PNG 帧序列编码为镜头 MP4，并按时间轴补齐时长。",
+        cost="分钟级（纯 FFmpeg）",
+        safety="只写 shots/<shot_id>/；不改原始帧",
+        params_model=FilmClipsParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "clips", params, ["--policy", params.policy] + (["--force"] if params.force else [])),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.motion": TaskKind(
+        key="film.motion",
+        label="影视确定性运镜",
+        description="为静帧渲染确定性运镜与纹理合成，写 shots/<shot_id>/*_motion.mp4。",
+        cost="每镜头约 10-90 秒（CPU）",
+        safety="只写 shots/ 与 motion/build-<time>/；不占用 GPU",
+        params_model=FilmProjectParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv("motion", params),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.assemble": TaskKind(
+        key="film.assemble",
+        label="影视合成",
+        description="准备 segments/audio 契约并调用 r3_build，写入 renders/build-<time>/。",
+        cost="约 1-3 分钟（纯 FFmpeg）",
+        safety="只写新的 build 目录；不覆盖历史成片",
+        params_model=FilmAssembleParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "assemble", params,
+            (["--bgm-id", params.bgm_id] if params.bgm_id else [])
+            + (["--no-motion"] if params.no_motion else [])
+            + (["--force-clips"] if params.force_clips else [])
+            + (["--dry-run"] if params.dry_run else [])
+            + (["--out", params.out] if params.out else [])),
+        prerequisites=_film_assemble_prereqs,
+        after_success=_film_after,
+    ),
+    "film.status": TaskKind(
+        key="film.status",
+        label="影视状态派生",
+        description="从关键帧/镜头/构建/质量/人工审核派生状态，写 qc/film_state.json。",
+        cost="秒级",
+        safety="只读产物；只写 qc/film_state.json",
+        params_model=FilmStatusParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "status", params, ["--write"] if params.write else []),
+    ),
+    "film.qc": TaskKind(
+        key="film.qc",
+        label="影视技术质检",
+        description="对最近一次构建执行技术质量检查，写 quality_report.json。",
+        cost="秒级到 1 分钟",
+        safety="只读产物，只写 quality_report.json",
+        params_model=FilmQcParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "qc", params, (["--build", params.build] if params.build else [])),
+        prerequisites=_film_qc_prereqs,
+    ),
     "comfy.batch": TaskKind(
         key="comfy.batch",
         label="ComfyUI 批处理",
@@ -1290,6 +1989,18 @@ TASK_KINDS: dict[str, TaskKind] = {
         prerequisites=_script_prereqs,
         after_success=_script_after,
         danger=True,
+    ),
+    "video.jobs": TaskKind(
+        key="video.jobs",
+        label="Wan I2V 任务生成",
+        description="读取 ProductionScript 的 type=video 镜头与 FLUX 关键帧，生成 r1_batch 兼容的 Wan jobs；不执行生成。",
+        cost="秒级",
+        safety="只读脚本/关键帧，写本期 comfy/jobs_video.json；缺关键帧直接失败",
+        params_model=VideoJobsParams,
+        lock_key=lambda params: f"video:{params.episode_id}",
+        build_argv=_video_jobs_argv,
+        prerequisites=_video_jobs_prereqs,
+        after_success=_video_jobs_after,
     ),
     "segments.build": TaskKind(
         key="segments.build",
@@ -1387,10 +2098,46 @@ TASK_KINDS: dict[str, TaskKind] = {
         prerequisites=_quality_prereqs,
         after_success=_quality_after,
     ),
+    "style.consistency": TaskKind(
+        key="style.consistency",
+        label="跨镜头风格一致性",
+        description="对本期所有镜头静态图做调色板贴合、跨镜头 LAB 距离、亮度/饱和度/边缘密度检查；人工审片单独记录。",
+        cost="秒级",
+        safety="只读静态图，写本期 style_consistency_report.json；技术 OK 仍为 PARTIAL，需人工 APPROVED",
+        params_model=StyleConsistencyParams,
+        lock_key=lambda params: f"style:{params.episode_id}",
+        build_argv=_style_consistency_argv,
+        prerequisites=_style_consistency_prereqs,
+        after_success=_style_consistency_after,
+    ),
+    "static.check": TaskKind(
+        key="static.check",
+        label="静态质量门",
+        description="对单个镜头的静态图跑客观指标与人工语义清单，写 work/static/<shot_id>/static_quality.json。",
+        cost="秒级",
+        safety="只读图片，写本期 work/static/<shot_id>/；PENDING/PARTIAL 不算通过",
+        params_model=StaticCheckParams,
+        lock_key=lambda params: f"static:{params.episode_id}",
+        build_argv=_static_argv,
+        prerequisites=_static_prereqs,
+        after_success=_static_after,
+    ),
+    "story.check": TaskKind(
+        key="story.check",
+        label="故事圣经连续性检查",
+        description="校验 Character/Shot Bible 的镜头覆盖、人物引用、风格一致性与声音档案状态；不检查同脸。",
+        cost="秒级",
+        safety="只读脚本与两份 Bible，写本期 story_bible_report.json；失败不修改产物",
+        params_model=StoryCheckParams,
+        lock_key=lambda params: f"story:{params.episode_id}",
+        build_argv=_story_argv,
+        prerequisites=_story_prereqs,
+        after_success=_story_after,
+    ),
     "tts.synthesize": TaskKind(
         key="tts.synthesize",
         label="配音合成",
-        description="按本期 narration.json 逐句调用 CosyVoice，写入本期 audio/ 与 audio_manifest.json。",
+        description="按本期 narration.json 逐句调用 VoxCPM2，写入本期 audio/ 与 audio_manifest.json。",
         cost="分钟级（CPU）",
         safety="只写本期 audio/ 与 audio_manifest.json；已有有效 manifest 时复用，--force 才重合成",
         params_model=TTSParams,

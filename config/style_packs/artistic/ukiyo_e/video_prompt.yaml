@@ -1,0 +1,22 @@
+schema_version: '1.0'
+motion_vocabulary:
+- wave motion
+- cloud band drift
+- layer parallax
+secondary_limit: 2
+preserve:
+- flat colour
+- keyblock line
+- washi texture
+avoid:
+- 3d shading
+- photoreal
+- gradient mesh
+- readable text or cartouche
+- modern city
+- western frame
+- neon colors
+- soft focus
+- reproduction of a famous print
+- modern iron bridge
+- motor boat

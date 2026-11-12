@@ -1,0 +1,11 @@
+schema_version: '1.0'
+materials:
+- concrete
+- asphalt
+- weathered metal
+- glass
+- dry grass
+texture_cues:
+- precise detail
+- flat light
+- ordinary surfaces

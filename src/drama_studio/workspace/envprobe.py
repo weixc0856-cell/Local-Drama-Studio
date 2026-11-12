@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from ..config import Settings, load_settings
+from ..config import Settings, load_audio, load_settings
 
 PASS_VERIFIED = "PASS_VERIFIED"
 PASS_LIMITED = "PASS_LIMITED"
@@ -110,17 +110,17 @@ def _probe_tts(settings: Settings) -> dict[str, Any]:
     host, port = _host_port(tts.base_url)
     url = f"http://{host}:{port}"
     if not _port_open(host, port):
-        return _service("tts", "CosyVoice", url, NOT_RUN, f"{host}:{port} 未监听；R6 前不要求")
+        return _service("tts", "VoxCPM2", url, NOT_RUN, f"{host}:{port} 未监听；R6 前不要求")
     code, data, error = _http_json(f"{url}/health")
     if code == 200 and isinstance(data, dict):
         speakers = data.get("speakers")
         detail = f"status={data.get('status')}"
         if speakers:
             detail += f"；speakers={len(speakers)}"
-        return _service("tts", "CosyVoice", url, PASS_VERIFIED, detail, speakers=speakers)
+        return _service("tts", "VoxCPM2", url, PASS_VERIFIED, detail, speakers=speakers)
     if code is not None:
-        return _service("tts", "CosyVoice", url, PASS_LIMITED, f"端口开放但 HTTP {code}")
-    return _service("tts", "CosyVoice", url, PASS_LIMITED, f"端口开放但请求失败：{error}")
+        return _service("tts", "VoxCPM2", url, PASS_LIMITED, f"端口开放但 HTTP {code}")
+    return _service("tts", "VoxCPM2", url, PASS_LIMITED, f"端口开放但请求失败：{error}")
 
 
 def _tool(name: str, args: list[str], label: str) -> dict[str, Any]:
@@ -170,6 +170,7 @@ def probe(force: bool = False) -> dict[str, Any]:
             _tool(settings.ffmpeg.ffprobe, ["-version"], "ffprobe"),
             _tool("uv", ["--version"], "uv"),
         ]
+        tts_cfg = load_audio(settings.root).get("tts") or {}
         value = {
             "checked_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "services": services,
@@ -186,7 +187,8 @@ def probe(force: bool = False) -> dict[str, Any]:
             },
             "llm_model": settings.llm.model,
             "comfyui_url": settings.comfyui.base_url,
-            "tts_mode": settings.tts.mode,
+            "tts_mode": str(tts_cfg.get("mode") or "zero_shot"),
+            "tts_default_speaker": tts_cfg.get("default_speaker"),
         }
         _cache.update({"at": now, "value": value})
         return value

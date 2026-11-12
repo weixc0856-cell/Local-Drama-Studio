@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: retro.collage
+name: 拼贴艺术
+group: retro
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 旧纸与印刷碎片的层叠：撕边、半调网点、有限油墨色。
+layers:
+- identity
+- execution
+- consistency

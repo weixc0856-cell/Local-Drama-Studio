@@ -27,8 +27,9 @@ class ScriptGenerationError(RuntimeError):
 class DraftShot(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    type: Literal["image"] = "image"
+    type: Literal["image", "video"] = "image"
     scene_prompt: str = Field(min_length=4, max_length=1200)
+    video_prompt: str = Field(default="", max_length=1200)
     duration_seconds: float = Field(ge=1.0, le=15.0)
     motion: str = Field(default="slow push-in", max_length=80)
     line_indexes: list[int] = Field(min_length=1, max_length=6)
@@ -68,6 +69,7 @@ class ScriptShot(BaseModel):
     motion: str = Field(min_length=1, max_length=80)
     scene_prompt: str = Field(min_length=4, max_length=1200)
     visual_prompt: str = Field(min_length=4, max_length=2000)
+    video_prompt: str = Field(default="", max_length=1200)
     negative_prompt: str = Field(default="", max_length=1000)
     line_ids: list[str] = Field(min_length=1)
 
@@ -153,7 +155,9 @@ def _messages(package: dict[str, Any], style: dict[str, Any]) -> list[dict[str, 
         "line_order": [],
         "shots": [
             {
+                "type": "image 或 video；video 表示用 Wan I2V 生成连续镜头",
                 "scene_prompt": "纯视觉描述，不写文字、水印、字幕",
+                "video_prompt": "type=video 时的运动描述；保持原图构图/结构，写清云、水、雾、衣袂等如何动",
                 "duration_seconds": 3.0,
                 "motion": "slow push-in / static / slow lateral track",
                 "line_indexes": [1],
@@ -162,7 +166,9 @@ def _messages(package: dict[str, Any], style: dict[str, Any]) -> list[dict[str, 
     }
     system = (
         "你是本地短视频生产的分镜生成器。只能使用给定的 narration_lines 文本，不得新增事实、引文或作品名。"
-        "输出 3-5 个镜头，覆盖全部台词行；每个镜头至少绑定一行。只输出 JSON，不要 Markdown。"
+        "输出 3-5 个镜头，覆盖全部台词行；每个镜头至少绑定一行。"
+        "镜头 type 可以是 image（静帧+确定性运镜）或 video（Wan I2V 连续镜头）；"
+        "需要云雾/水纹/衣袂等连续运动时用 video，并写 video_prompt。只输出 JSON，不要 Markdown。"
     )
     user = (
         "输入数据：\n"
@@ -185,7 +191,8 @@ def generate_script(
     timeout_s: float = 900.0,
     max_tokens: int = 2000,
     speaker: str | None = None,
-    speed: float = 1.0,
+    speed: float | None = None,
+    voice_profile: str | None = None,
     http_client: Any = None,
 ) -> ProductionScript:
     package = json.loads(package_path.read_text(encoding="utf-8"))
@@ -269,6 +276,8 @@ def generate_script(
         "lines": [line.text for line in script.lines],
         "source_script": str(out_path.name),
     }
+    if voice_profile:
+        narration["voice_profile"] = voice_profile
     (out_path.parent / "narration.json").write_text(
         json.dumps(narration, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -305,11 +314,12 @@ def _build_script(
             ScriptShot(
                 shot_id=f"shot_{index:03d}",
                 index=index,
-                type="image",
+                type=shot.type,
                 duration_seconds=shot.duration_seconds,
                 motion=shot.motion,
                 scene_prompt=shot.scene_prompt,
                 visual_prompt=compose_visual_prompt(style, shot.scene_prompt),
+                video_prompt=shot.video_prompt,
                 negative_prompt=str(style.get("negative_prompt") or ""),
                 line_ids=line_ids,
             )
@@ -338,7 +348,9 @@ def main() -> int:
     parser.add_argument("--timeout", type=float, default=900.0)
     parser.add_argument("--max-tokens", type=int, default=2000)
     parser.add_argument("--speaker", default=None)
-    parser.add_argument("--speed", type=float, default=1.0)
+    parser.add_argument("--speed", type=float, default=None)
+    parser.add_argument("--voice-profile", default=None,
+                        help="write this voice profile into narration.json (config/voices.yaml)")
     parser.add_argument("--reuse", action="store_true", help="validate an existing production_script.json without calling the LLM")
     args = parser.parse_args()
     if args.reuse:
@@ -365,6 +377,7 @@ def main() -> int:
             max_tokens=args.max_tokens,
             speaker=args.speaker,
             speed=args.speed,
+            voice_profile=args.voice_profile,
         )
     except (ScriptGenerationError, OSError, ValueError) as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False))

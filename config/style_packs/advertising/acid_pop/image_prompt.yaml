@@ -1,0 +1,25 @@
+schema_version: '1.0'
+identity: acid pop advertising, high-saturation Memphis layout
+medium: flat vector colour blocks, type-free layout, halftone accents
+materials:
+- flat ink
+- paper
+- screen print
+composition:
+- one bold product silhouette
+- oversized geometric colour blocks
+- repeated motif or checkerboard
+- blank copy zone, no readable text
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- flat acid colour blocks
+- one bold silhouette
+- repeated graphic motif
+- a blank copy zone
+- no text

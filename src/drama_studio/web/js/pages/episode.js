@@ -72,6 +72,8 @@ function buildTable(builds) {
 }
 
 async function renderOverview(host, detail, ctx) {
+  let styles = [];
+  try { styles = (await get('/api/styles')).styles || []; } catch (err) { styles = []; }
   host.innerHTML = `
     <div class="split">
       <div>
@@ -98,9 +100,17 @@ async function renderOverview(host, detail, ctx) {
           <dt>产物目录</dt><dd class="mono">${esc(detail.artifact_root || '未绑定')}</dd>
           <dt>目录存在</dt><dd>${detail.artifact_root_exists ? '是' : '否'}</dd>
           <dt>类型</dt><dd>${esc(detail.track)}</dd>
-          <dt>风格</dt><dd>${esc(detail.style?.name || '未绑定')}</dd>
+          <dt>风格</dt><dd>${esc(detail.style?.name || '未绑定')}${detail.style?.revision ? ` · rev ${detail.style.revision}` : ''}${detail.style?.sha256 ? ` · <span class="mono tiny" title="${esc(detail.style.sha256)}">${esc(detail.style.sha256.slice(0, 12))}</span>` : ''}</dd>
           <dt>更新</dt><dd>${esc(fmtTime(detail.updated_at, { withYear: true }))}</dd>
         </dl>`) }
+        ${section('风格版本', styles.length ? `
+          <div class="note">改风格会创建新的 style revision（旧 sha 保留在 history），不会覆盖历史构建。只有显式确认才执行。</div>
+          <div class="field mt12"><label>新风格</label>
+            <select class="input" id="style-revision-select">
+              ${styles.map((s) => `<option value="${esc(s.id)}" ${s.id === detail.style?.id ? 'selected' : ''}>${esc(s.name)}${s.preset_id ? ` · ${esc(s.preset_id)}` : ''}</option>`).join('')}
+            </select></div>
+          <button class="btn btn-sm" id="style-revision-apply">创建新风格版本</button>`
+          : emptyState('没有可选风格', '先在风格管理创建或从 preset 导出。'), '受控写操作')}
       </div>
     </div>`;
   host.querySelectorAll('[data-task]').forEach((row) => {
@@ -114,6 +124,27 @@ async function renderOverview(host, detail, ctx) {
   };
   host.querySelector('#review-accept')?.addEventListener('click', () => submitReview('accept'));
   host.querySelector('#review-reject')?.addEventListener('click', () => submitReview('reject'));
+  host.querySelector('#style-revision-apply')?.addEventListener('click', async () => {
+    const select = host.querySelector('#style-revision-select');
+    const styleId = select?.value;
+    if (!styleId) return;
+    if (styleId === detail.style?.id) { toast('请选择不同的风格', 'warn'); return; }
+    const style = styles.find((s) => s.id === styleId);
+    const ok = await confirmDialog({
+      title: '创建新风格版本',
+      body: `将把本期风格切换为「${style?.name || styleId}」。revision 会 +1，旧风格 sha 保留在 history；历史构建目录不覆盖。`,
+      confirmLabel: '确认切换',
+      danger: true,
+    });
+    if (!ok) return;
+    try {
+      await patch(`/api/episodes/${encodeURIComponent(detail.id)}`, { style_id: styleId });
+      toast('已创建新风格版本');
+      if (ctx?.refresh) ctx.refresh(); else location.reload();
+    } catch (err) {
+      toast(err.message || '切换失败', 'warn');
+    }
+  });
 }
 
 async function renderContent(host, detail) {

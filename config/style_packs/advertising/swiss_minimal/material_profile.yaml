@@ -1,0 +1,11 @@
+schema_version: '1.0'
+materials:
+- matte paper
+- photographic print
+- screen ink
+- studio light
+texture_cues:
+- grid
+- matte paper
+- contact shadow
+- negative space

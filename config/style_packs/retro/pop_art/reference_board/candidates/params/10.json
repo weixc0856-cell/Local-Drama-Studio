@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a heart with halftone dots. pop art screen print, comic panel energy. halftone dots, bold black contours, flat ink colour. composition: one product-scale subject filling the frame, repeated motif grid or a hard panel divide, flat graphic background, one consistent halftone dot scale across the image, slight off-registration between colour blocks and black keyline, a small starburst or blank label band, no readable letters, clean full-bleed edges with no frame. lighting: flat commercial light, no soft shadows, neutral temperature, high contrast. materials: newsprint, halftone screen, flat ink. camera: locked-off camera, 50mm lens, flat depth of field. thick even black contour lines. flat unmodulated colour blocks. visible halftone dot pattern. primary red, yellow and blue palette. no gradients and no soft shadows. one halftone dot scale and a slight colour misregistration. a starburst or blank label shape without readable letters. no text and no speech bubble. reference board sample, no characters, no text, flat ink and halftone dots. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 6310,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/retro_pop_art/10"
+}

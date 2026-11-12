@@ -86,7 +86,7 @@
 - 历史文化准确性（时代、建筑、器物）与艺术表现分开检查；不能只靠全局负向词黑名单。
 - 当前 FLUX.2 工作流的负向条件被清零且 CFG=1.0，负向提示词不作为控制；以正向描述约束。
 
-状态：数据结构/编译 `PASS_STATIC`；真实 A/B 生成与风险检查 `PARTIAL`；人工审美 `PENDING_HUMAN_REVIEW`。证据见 [`AESTHETIC_DESIGN_REPORT.md`](AESTHETIC_DESIGN_REPORT.md)。
+状态：数据结构/编译 `PASS_STATIC`；真实 A/B 生成与风险检查 `PARTIAL`；人工审美 `PENDING_HUMAN_REVIEW`。证据见 `AESTHETIC_DESIGN_REPORT.md`（已删除，见 Git 历史）。
 
 ## 3. 内容方向与风格
 
@@ -145,7 +145,7 @@ characters/<char_id>/
 
 | 项 | v1.0 |
 |---|---|
-| 旁白/朗诵 | CosyVoice 技术链路已验证（中文男进入成片）；中文女已合成/试听并固化方案，未进入正式成片 |
+| 旁白/朗诵 | CosyVoice 技术链路已验证：R3-B 使用中文男；P1 与 81.373 s 工笔使用 SFT 中文女。PRD 默认改为 0.5B zero-shot，SFT 仅显式可选 |
 | 采样率 | 48 kHz |
 | 响度 | 对白 -16 LUFS，真峰值 ≤ -1.5 dBTP |
 | 语速 | `narration` 1.00 / `recitation` 0.92 / `classical_recitation` 0.82；按试听调整 |
@@ -155,15 +155,15 @@ characters/<char_id>/
 | 背景音乐 | `NOT_RUN` / 待选型（R3-D）；有授权音乐时才加 |
 | 音效 | `NOT_RUN` / 待选型（R3-D） |
 | 音色克隆 | `NOT_RUN` |
-| 女声选型 | `PARTIAL`：试听与韵律方案已完成；未进入正式成片；商用授权待核验 |
+| 女声选型 | `PASS_VERIFIED`（技术）：中文女已进入 P1 与 81.373 s 工笔；商用授权待核验；zero-shot 未进正式成片 |
 
-当前 R3 样片只有「中文男」朗诵，没有 BGM/音效；这是 v1.0 的已知缺口，不是“已完成”。中文女已完成本地合成、试听和韵律方案固化，但未进入正式成片，也不代表其他音色已验收。
+R3-B 样片只有「中文男」朗诵；P1（4 行）与 81.373 s 工笔（18 句）已使用 SFT「中文女」。zero-shot 只有 2 行 E2E，未进入正式成片。**PRD 最新默认是 0.5B zero-shot；SFT 仅显式可选；当前代码默认已切换并完成真实 2 行验证。**BGM/音效仍是 v1.0 的已知缺口，不是“已完成”。
 
-2026-11-04 M6 补充：`display_text` 仍禁止改字；发音修正在独立的 `acoustic_text` 层完成，只对已验证的 G2P 缺口使用同音字候选，字幕/原文不变。详见 [`M6_PRONUNCIATION_REPORT.md`](M6_PRONUNCIATION_REPORT.md)。
+2026-11-04 M6 补充：`display_text` 仍禁止改字；发音修正在独立的 `acoustic_text` 层完成，只对已验证的 G2P 缺口使用同音字候选，字幕/原文不变。详见 `M6_PRONUNCIATION_REPORT.md`（已删除，见 Git 历史）。
 
-2026-11-04 新增：标准朗诵与古典吟诵模式真实执行；`recitation` 在两种视觉风格短片中均生成 2 行旁白，波形/时长/ASR 通过。发音词典覆盖首批 14 个词组（含繁体变体），逐行报告写入 `pronunciation_report.json`。CosyVoice-300M-SFT 的 `/tts` 只接收字符、音色与语速，没有音素/拼音/音高/时长接口；因此「碣石」「潇湘」等读音无法在接口层纠正，禁止用改字伪装修复。真正吟唱（旋律、音高）为 `NOT_RUN`。详见 [`MOTION_VOICE_UPGRADE_REPORT.md`](MOTION_VOICE_UPGRADE_REPORT.md)。
+2026-11-04 新增：标准朗诵与古典吟诵模式真实执行；`recitation` 在两种视觉风格短片中均生成 2 行旁白，波形/时长/ASR 通过。发音词典覆盖首批 14 个词组（含繁体变体），逐行报告写入 `pronunciation_report.json`。CosyVoice-300M-SFT 的 `/tts` 只接收字符、音色与语速，没有音素/拼音/音高/时长接口；因此「碣石」「潇湘」等读音无法在接口层纠正，禁止用改字伪装修复。真正吟唱（旋律、音高）为 `NOT_RUN`。详见 `MOTION_VOICE_UPGRADE_REPORT.md`（已删除，见 Git 历史）。
 
-R3-D 待完成范围：女声正式成片与商用授权、标题/点缀字体、BGM、音效。字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，标题/诗词/现代解说仍为 `preview_only`，排版仍为 `DECISION`；女声已试听并固化方案但未入正式成片；BGM/音效未完成。
+R3-D 待完成范围：zero-shot 正式成片与所有声音的商用授权、标题/点缀字体、BGM、音效。字体候选已完成来源/许可/覆盖/预览验证，字幕已接入正式构建，标题/诗词/现代解说仍为 `preview_only`，排版仍为 `DECISION`；SFT 中文女已进入 P1/81.373；BGM/音效未完成。
 
 ## 7. 字幕规范
 

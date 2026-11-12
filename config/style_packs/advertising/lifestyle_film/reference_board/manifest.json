@@ -1,0 +1,20 @@
+{
+  "style": "advertising.lifestyle_film",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "hands tying a shoe by a sunny window",
+    "hands holding a coffee cup at a warm kitchen table",
+    "a bicycle in a golden-hour kitchen",
+    "a picnic blanket in late sun",
+    "a dog asleep on a linen sofa",
+    "laundry moving in afternoon sun",
+    "hands turning a book page by a window",
+    "hands chopping vegetables in warm light",
+    "a view from the back seat through the windshield at sunset",
+    "beach towels on a balcony rail",
+    "balcony plants in warm light",
+    "a breakfast table with morning sun"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

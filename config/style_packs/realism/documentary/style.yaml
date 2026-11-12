@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: realism.documentary
+name: 纪实摄影
+group: realism
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 自然光、胶片颗粒与未修饰的真实：决定性瞬间的粗粝质感。
+layers:
+- identity
+- execution
+- consistency

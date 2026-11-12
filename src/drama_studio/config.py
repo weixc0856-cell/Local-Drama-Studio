@@ -8,9 +8,48 @@ project root, which is located by walking up to the directory containing
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 
 import yaml
+
+_ENV_RE = re.compile(r"\$\{([A-Z0-9_]+)\}")
+
+
+def _load_dotenv(root: Path) -> None:
+    """Load KEY=VALUE pairs from <root>/.env without overriding real env vars."""
+    path = root / ".env"
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key.strip(), value)
+
+
+def _expand(value):
+    """Expand ${VAR} in config values; missing variables fail loudly."""
+    if isinstance(value, str):
+        def replace(match: re.Match) -> str:
+            name = match.group(1)
+            resolved = os.environ.get(name)
+            if not resolved:
+                raise ValueError(
+                    f"environment variable {name} is not set; copy .env.example to .env"
+                )
+            return resolved
+        return _ENV_RE.sub(replace, value)
+    if isinstance(value, list):
+        return [_expand(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _expand(item) for key, item in value.items()}
+    return value
+
+
+_load_dotenv(Path(__file__).resolve().parents[2])
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -54,12 +93,23 @@ class LLMSettings(BaseModel):
     max_repair_attempts: int = 2
 
 
+class ZeroShotSettings(BaseModel):
+    """Reference-audio cloning. Needs a prompt and its exact transcript."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    prompt_audio: str = "assets/audio/prompts/my_voice_clean_v1.wav"
+    prompt_text: str = ""
+    speed: float | None = None
+    runtime: str = "voxcpm2"      # which runtime must be up on 50000
+
+
 class TTSSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     base_url: str = "http://127.0.0.1:50000"
-    mode: str = "sft"
     sample_rate: int = 48000
+    zero_shot: ZeroShotSettings = Field(default_factory=ZeroShotSettings)
 
 
 class FFmpegSettings(BaseModel):
@@ -73,7 +123,7 @@ class FFmpegSettings(BaseModel):
 class PathsSettings(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    models_root: Path = Path("D:/AI/models")
+    models_root: Path = Path("models")
     runtime_root: Path = Path("runtime")
     projects_root: Path = Path("projects")
     logs_root: Path = Path("logs")
@@ -127,11 +177,12 @@ class ModelRegistry(BaseModel):
 
     models: dict[str, ModelSpec]
 
-    def resolve_against(self, root: Path) -> "ModelRegistry":
+    def resolve_against(self, root: Path, models_root: Path | None = None) -> "ModelRegistry":
+        base = models_root or root
         resolved: dict[str, ModelSpec] = {}
         for key, spec in self.models.items():
             files = {
-                name: (p if p.is_absolute() else (root / p)).resolve()
+                name: (p if p.is_absolute() else (base / p)).resolve()
                 for name, p in spec.files.items()
             }
             resolved[key] = spec.model_copy(update={"files": files})
@@ -149,7 +200,8 @@ def _read_yaml(path: Path) -> dict:
 
 def load_settings(root: Path | None = None) -> Settings:
     root = (root or find_project_root()).resolve()
-    raw = _read_yaml(root / "config" / "settings.yaml")
+    _load_dotenv(root)
+    raw = _expand(_read_yaml(root / "config" / "settings.yaml"))
     raw["root"] = root
     raw["paths"] = PathsSettings(**raw.get("paths", {})).resolve_against(root)
     return Settings(**raw)
@@ -157,8 +209,10 @@ def load_settings(root: Path | None = None) -> Settings:
 
 def load_models(root: Path | None = None) -> ModelRegistry:
     root = (root or find_project_root()).resolve()
-    raw = _read_yaml(root / "config" / "models.yaml")
-    return ModelRegistry(**raw).resolve_against(root)
+    _load_dotenv(root)
+    raw = _expand(_read_yaml(root / "config" / "models.yaml"))
+    settings = load_settings(root)
+    return ModelRegistry(**raw).resolve_against(root, settings.paths.models_root)
 
 
 def load_generation(root: Path | None = None) -> dict:

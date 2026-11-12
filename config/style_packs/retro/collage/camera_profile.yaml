@@ -1,0 +1,7 @@
+schema_version: '1.0'
+allowed_moves:
+- static
+- dolly_in
+- tracking
+preferred_lens_mm: 50
+dof_strategy: layered

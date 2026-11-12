@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_cv27_zh_32901597_20261104",
+  "asset_type": "tts_prompt",
+  "status": "TECHNICALLY_VALIDATED",
+  "approved_for_production": false,
+  "review_status": "PENDING_REVIEW",
+  "selected_role": "primary",
+  "source": {
+    "provider": "Mozilla Common Voice",
+    "dataset": "Common Voice Scripted Speech 27.0 (2026-09-11) zh-CN",
+    "dataset_version": "cv-corpus-27.0-2026-09-11",
+    "source_url": "https://commonvoice.mozilla.org/zh-CN/datasets",
+    "archive": "cv-corpus-27.0-2026-09-11-zh-CN.tar.gz",
+    "clip": "common_voice_zh-CN_32901597.mp3",
+    "up_votes": 18,
+    "down_votes": 0,
+    "duration_ms": 5868,
+    "age_label": "twenties",
+    "gender_label": "male_masculine",
+    "accent_label": "出生地：11 北京市",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "license_status": "CC0_1_0",
+    "terms_note": "Mozilla Common Voice README: CC0; by downloading you agree not to determine speaker identity. No identity inference performed.",
+    "speaker_id_hashed": "sha256:d29c3d33253a4657630744a86c430840e67100a47e409a0b3d1a094537e26936"
+  },
+  "transcript": "台湾跨县乡道列表列出台湾的跨县乡道。",
+  "audio": {
+    "path": "assets/audio/prompts/pending/cv27_zh_32901597_20261104.wav",
+    "sha256": "28009f6fd26047428fc3e36305a914d090bbe93b800413abfe35bf89c5406f90",
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "pcm_s16le"
+  },
+  "audio_qa": {
+    "verdict": "REVIEW",
+    "note": "SNR below 30 dB on the original clip; cleaned version was worse and rejected. Human listening required."
+  },
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "SELECTED_FOR_REVIEW",
+    "note": "CC0 candidate; zero-shot technical PASS; still not approved for production."
+  },
+  "zero_shot_test": {
+    "model": "CosyVoice2-0.5B",
+    "prompt_text": "台湾跨县乡道列表列出台湾的跨县乡道。",
+    "output": "experiments/voice_asset_discovery/common_voice_27/zeroshot/cv27_zh_32901597_20261104_zeroshot.wav",
+    "sha256": "a79648d28266df4609f7a5d451ba75df8d84dd75b8ce6b1e14db9957be03169b",
+    "seconds": 4.48,
+    "synth_seconds": 26.863,
+    "verdict": "PASS"
+  }
+}

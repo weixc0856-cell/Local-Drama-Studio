@@ -26,6 +26,13 @@ const STATUS_LABEL = {
   ready: '待合成',
   draft: '草稿',
   verified: '已验证',
+  planned: '已计划',
+  keyframe_generated: '有首帧',
+  keyframe_approved: '首帧通过',
+  video_generated: '有镜头',
+  video_approved: '镜头通过',
+  assembled: '已合成',
+  finalized: '已定稿',
 };
 
 const STATUS_CLASS = {
@@ -45,6 +52,13 @@ const STATUS_CLASS = {
   producing: 'b-producing',
   ready: 'b-ready',
   draft: 'b-draft',
+  planned: 'b-draft',
+  keyframe_generated: 'b-pending',
+  keyframe_approved: 'b-succeeded',
+  video_generated: 'b-pending',
+  video_approved: 'b-succeeded',
+  assembled: 'b-completed',
+  finalized: 'b-verified',
 };
 
 export function statusLabel(status) {

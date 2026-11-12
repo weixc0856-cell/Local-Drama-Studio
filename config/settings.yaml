@@ -1,6 +1,6 @@
 # Paths are resolved against the project root unless absolute.
 paths:
-  models_root: "D:/AI/models"
+  models_root: "${DRAMA_MODELS_ROOT}"
   runtime_root: "runtime"
   projects_root: "projects"
   logs_root: "logs"
@@ -23,16 +23,16 @@ llm:
   base_url: "http://127.0.0.1:8080/v1"
   api_key: "sk-local"
   model: "Qwen3-30B-A3B-Instruct-2507"
-  model_path: "D:/AI/models/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
+  model_path: "${DRAMA_MODELS_ROOT}/Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf"
   context_size: 65536
   temperature: 0.2
   max_repair_attempts: 2
 
-# CosyVoice runtime already exists at D:\AI\CosyVoice-Runtime (CPU, port 50000).
+# Local TTS service on 50000. Target backend: VoxCPM2 (VoxCPM-Runtime, 48 kHz).
 tts:
   base_url: "http://127.0.0.1:50000"
-  mode: "sft"          # sft = preset speakers; zero_shot = reference wav per character
-  sample_rate: 48000   # final mix sample rate; CosyVoice outputs 24k/22.05k
+  sample_rate: 48000   # final mix sample rate; VoxCPM2 already outputs 48 kHz
+  # Default TTS mode/voice live in config/audio.yaml (single source).
 
 ffmpeg:
   binary: "ffmpeg"

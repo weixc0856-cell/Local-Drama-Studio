@@ -144,3 +144,97 @@ def serve(
 
 if __name__ == "__main__":
     app()
+
+
+# --------------------------------------------------------------------------
+# Script-to-Film production layer (docs/FILM_PRODUCTION_GUIDE.md)
+# --------------------------------------------------------------------------
+
+# Script-to-Film commands live in film/cli.py; the root app only registers them.
+from .film.cli import film_app  # noqa: E402
+
+app.add_typer(film_app, name="film")
+
+
+# --------------------------------------------------------------------------
+# Visual Style Engine (docs/VISUAL_STYLE_ENGINE.md)
+# --------------------------------------------------------------------------
+
+style_app = typer.Typer(no_args_is_help=True, add_completion=False, help="视觉风格引擎")
+app.add_typer(style_app, name="style")
+
+
+@style_app.command("list")
+def style_list(
+    group: Annotated[str | None, typer.Option("--group", help="retro / oriental / artistic")] = None,
+) -> None:
+    """列出已注册的风格包。"""
+    from .style_engine import list_packs
+
+    root = find_project_root()
+    packs = list_packs(root, group)
+    table = Table(title="Visual Style Packs", show_lines=False)
+    table.add_column("id", style="bold")
+    table.add_column("name")
+    table.add_column("version")
+    table.add_column("status")
+    for pack in packs:
+        table.add_row(pack.identity.id, pack.identity.name, pack.identity.version, pack.identity.status)
+    console.print(table)
+    console.print(f"[dim]{len(packs)} styles[/dim]")
+
+
+@style_app.command("show")
+def style_show(style_id: Annotated[str, typer.Argument(help="例如 oriental.ink_wash")]) -> None:
+    """显示一个风格包的完整配置。"""
+    from .style_engine import get_pack
+
+    root = find_project_root()
+    pack = get_pack(root, style_id)
+    console.print_json(json.dumps(pack.model_dump(mode="json"), ensure_ascii=False))
+
+
+@style_app.command("validate")
+def style_validate(
+    style_id: Annotated[str | None, typer.Option("--style", help="只校验一个；默认全部")] = None,
+) -> None:
+    """校验风格包 Schema、id/路径、版本与数值范围。"""
+    from .style_engine import load_all, packs_root, validate_pack
+    from .style_engine.registry import load_pack
+
+    root = find_project_root()
+    base = packs_root(root)
+    problems = []
+    directories = sorted(base.glob("*/*"))
+    for directory in directories:
+        if not directory.is_dir():
+            continue
+        pack = load_pack(directory)
+        if style_id and pack.identity.id != style_id:
+            continue
+        for message in validate_pack(pack, directory):
+            problems.append({"style": pack.identity.id, "issue": message})
+    if problems:
+        console.print_json(json.dumps({"ok": False, "problems": problems}, ensure_ascii=False))
+        raise typer.Exit(1)
+    console.print_json(json.dumps({"ok": True, "packs": len(load_all(root))}, ensure_ascii=False))
+
+
+@style_app.command("check-image")
+def style_check_image(
+    style_id: Annotated[str, typer.Option("--style", help="例如 oriental.ink_wash")],
+    image: Annotated[Path, typer.Option("--image", help="待检查的图片")],
+) -> None:
+    """按风格包检查色板、饱和度、边缘密度与黑边。"""
+    from .style_engine import check_image, get_pack
+
+    root = find_project_root()
+    pack = get_pack(root, style_id)
+    issues = check_image(image, pack)
+    console.print_json(json.dumps({
+        "ok": not any(item.level == "error" for item in issues),
+        "style": style_id,
+        "image": str(image),
+        "issues": [{"level": i.level, "code": i.code, "message": i.message} for i in issues],
+    }, ensure_ascii=False))
+    raise typer.Exit(0 if not any(item.level == "error" for item in issues) else 1)

@@ -5,13 +5,14 @@
 
 ## 1. 模型与权重
 
-路径统一在 `D:\AI\models`，不进入 Git。
+路径统一在 `models`，不进入 Git。
 
 | 资产 | 文件 | 大小 | sha256 | 许可证 | 状态 |
 |---|---|---|---|---|---|
-| FLUX.2 Klein 4B | `flux-2-klein-4b-Q4_K_M.gguf` | 2.60 GB | `0b25d143c8469b34…` | Apache-2.0（HF 模型卡） | `PASS_VERIFIED` |
-| FLUX 文本编码器 | `text_encoders/qwen_3_4b.safetensors` | 8.04 GB | `6c671498573ac2f7…` | Apache-2.0 | `PASS_VERIFIED` |
-| FLUX.2 VAE | `vae/flux2-vae.safetensors` | 336 MB | `868fe7b343cc8f3a…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
+| FLUX.3 Klein distilled | `diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf` | 3.67 GB | `a0fe17e27da76608…` | FLUX Kommunity License（年营收 < 500 万美元免费商用；需内容过滤与 AI 标注） | `PASS_LIMITED`（本机 5/5 出图；风格门禁未过，见 `MODEL_UPGRADE_POC.md`） |
+| FLUX.3 文本编码器 | `text_encoders/qwen3vl_4b_int8_convrot.safetensors` | 4.86 GB | `32de113cbf8282b0…` | 随 BFL 仓库分发；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
+| FLUX.2 VAE（复用） | `vae/flux2-vae.safetensors` | 336 MB | `868fe7b343cc8f3a…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
+| ~~FLUX.2 Klein 4B~~（已退役，保留回退） | `flux-2-klein-4b-Q4_K_M.gguf` | 2.60 GB | `0b25d143c8469b34…` | Apache-2.0（HF 模型卡） | 退役，不再作为默认 |
 | Wan2.2 TI2V 5B | `Wan2.2-TI2V-5B-Q4_K_M.gguf` | 3.43 GB | `95b19697b7f98e65…` | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
 | Wan 文本编码器 | `text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 6.73 GB | `c3355d30191f1f06…` | 随 Comfy-Org 重打包；底层 UMT5 待复核 | `PASS_VERIFIED` |
 | Wan2.2 VAE | `vae/wan2.2_vae.safetensors` | 1.41 GB | `e40321bd36b97099…` | Apache-2.0（同仓库） | `PASS_VERIFIED` |
@@ -26,9 +27,9 @@
 | ComfyUI-GGUF | `6ea2651` / gguf 0.19.0 | Apache-2.0 | — |
 | PyTorch | 2.15.0+xpu | BSD-3-Clause | — |
 | torchvision / torchaudio | 0.29.2 / 2.11.1 +xpu | BSD-3-Clause | — |
-| CosyVoice | 300M-SFT 运行时 | Apache-2.0（本地 LICENSE） | 模型与预置音色条款待复核 |
+| VoxCPM2 | 2B 运行时（`VoxCPM-Runtime`） | Apache-2.0（代码与权重） | 参考音权利单独核验 |
 | FFmpeg / ffprobe | 8.1-full_build（gyan） | **GPLv3 构建** | 内部渲染；分发二进制需评估 GPL |
-| llama.cpp（D:\AI） | SYCL b12024 | MIT | 模型许可按各模型卡 |
+| llama.cpp（本地 AI 服务） | SYCL b12024 | MIT | 模型许可按各模型卡 |
 | Python 调度依赖 | 见 TECH_STACK | 各包元数据 | 未发现 copyleft 冲突 |
 
 ## 3. 视觉资产
@@ -73,29 +74,54 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 
 ## 5. 音乐与音效
 
-| 资产 | 状态 |
-|---|---|
-| BGM | `NOT_RUN` / 待选型（R3-D），当前无 |
-| 音效 | `NOT_RUN` / 待选型（R3-D），当前无 |
-| 第三方音乐 | 未使用；使用前必须登记授权 |
+| 资产 | 类型 | 文件 | 许可/来源 | 商用 | 状态 |
+|---|---|---|---|---|---|
+| `bgm_ink_strings_duo` | BGM | `assets/audio/bgm/keynata/ink_strings_duo.wav` | Keynata Commons `classical_duo_24036`；CC0-1.0；E 小调 | 是 | `REJECTED`（小调/织体稀疏，用户否决听感） |
+| `bgm_court_strings_duo` | BGM | `assets/audio/bgm/keynata/court_strings_duo.wav` | Keynata Commons `classical_duo_24015`；CC0-1.0 | 否 | `REVOKED`（文件已删除） |
+| `bgm_shinkai_piano` | BGM | `assets/audio/bgm/keynata/shinkai_piano.wav` | Keynata Commons `classical_piano_6134`；CC0-1.0；B 小调 | 是 | `REJECTED`（小调，用户否决听感） |
+| `bgm_ghibli_quartet` | BGM | `assets/audio/bgm/keynata/ghibli_quartet.wav` | Keynata Commons `classical_quartet_25010`；CC0-1.0；F 大调 | 否 | `REVOKED`（文件已删除） |
+| `bgm_warm_pop_canon` | BGM | `assets/audio/bgm/warm/pop_canon_major.wav` | Keynata Commons `jpop_3piece_11623`；CC0-1.0；大调 canon | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_warm_strings_c` | BGM | `assets/audio/bgm/warm/strings_c_major.wav` | Keynata Commons `classical_quartet_25041`；CC0-1.0；C 大调 | 否 | `REVOKED`（文件已删除；原听感 REJECTED） |
+| `bgm_warm_piano_c` | BGM | `assets/audio/bgm/warm/piano_c_major.wav` | Keynata Commons `classical_piano_4016`；CC0-1.0；C 大调 | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_mozart_k330_piano` | BGM | `assets/audio/bgm/commons/mozart_k330_piano.wav` | Wikimedia Commons；Mozart K.330 第三乐章（Vadim Chaimovich / Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_green_leaves_guitar` | BGM | `assets/audio/bgm/commons/green_leaves_guitar.wav` | Jason Shaw / audionautix.com；CC BY 3.0 US；**需署名** | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_grieg_morning` | BGM | `assets/audio/bgm/commons/grieg_morning.wav` | Grieg《晨曲》（Musopen Symphony）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_mozart_k525_strings` | BGM | `assets/audio/bgm/commons/mozart_k525_strings.wav` | Mozart K.525（Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_schubert_d664_piano` | BGM | `assets/audio/bgm/commons/schubert_d664_piano.wav` | Schubert D.664（Paul Pitman / Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_serenity_guitar` | BGM | `assets/audio/bgm/commons/serenity_guitar.wav` | Jason Shaw / audionautix.com；CC BY 3.0 US；**需署名** | 是 | `APPROVED`（人工听感 PENDING） |
+| 旧正弦 drone ×4 | BGM | `assets/audio/bgm/*.wav` | 自生成 | — | `REJECTED`（用户明确拒绝嗡嗡声） |
+| SFX（wind/water/chime/whoosh） | SFX | `assets/audio/sfx/*.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
+| 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
+| `bgm_commons_we_never` | BGM | `assets/audio/bgm/commons/We Never.wav` | 文件标签 ZHENLOE《We Never - 若如初見 (Instrumental)》；**授权未知** | 否 | `PENDING_REVIEW`（不得生产） |
+| `prompt_announcer_sun_daolin` | 语音参考 | `assets/audio/prompts/announcers/male_sun_daolin/…` | 孙道临唐诗朗诵；第三方录像，表演者/录音权未清 | 否 | `PENDING_REVIEW` / profile `BLOCKED` |
+| `prompt_announcer_ya_kun` | 语音参考 | `assets/audio/prompts/announcers/female_ya_kun/…` | 雅坤《春江花月夜》朗诵；第三方录像，表演者/录音权未清 | 否 | `PENDING_REVIEW` / profile `BLOCKED` |
+| `prompt_blend_my80_sun20` | 语音参考 | `assets/audio/prompts/my_voice_clean_v2.wav` | 用户指定默认参考音；2026-11-07 用户确认可正常使用 | 是 | `APPROVED`（用户确认） |
+| `prompt_blend_sun80_my20` | 语音参考 | `assets/audio/prompts/blends/blend_sun80_my20_ref.wav` | 孙道临 80% + 本人 20% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my90_sun10` | 语音参考 | `assets/audio/prompts/blends/blend_my90_sun10_ref.wav` | 本人 90% + 孙道临 10% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my95_sun05` | 语音参考 | `assets/audio/prompts/blends/blend_my95_sun05_ref.wav` | 本人 95% + 孙道临 5% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my99_sun01` | 语音参考 | `assets/audio/prompts/blends/blend_my99_sun01_ref.wav` | 本人 99% + 孙道临 1% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+
+> 2026-11-07 文件清理：`bgm_ink_serene_60s`、`bgm_court_elegant_60s`、`bgm_shinkai_piano_60s`、`bgm_ghibli_pastoral_60s`、`bgm_ink_strings_duo`、`bgm_court_strings_duo`、`bgm_ghibli_quartet`、`bgm_warm_strings_c` 的本地文件已删除，manifest 条目改为 `REVOKED`（`commercial_allowed=false`），不再进入生产。
 
 ## 6. 音色
 
 | 音色 | 来源 | 状态 |
 |---|---|---|
-| 「中文男」SFT 预置音色 | CosyVoice-300M-SFT | `PASS_VERIFIED` 合成；商用/平台使用条款待复核 |
-| 「中文女」SFT 预置音色 | CosyVoice-300M-SFT | 已合成/试听并固化方案；未进入正式成片（`PARTIAL`）；商用待核验 |
+| 本人参考音克隆（`narrator_self`） | VoxCPM2，参考音 `assets/audio/prompts/my_voice_clean_v1.wav` | `PASS_VERIFIED`（技术，盲听 7/7）；商用范围见 `VOICE_RIGHTS.md` |
+| 男声参考（`announcer_sun_daolin`） | 孙道临唐诗朗诵片段，第三方录像 | `BLOCKED`（表演者/录音权未清，仅试听） |
+| 女声参考（`announcer_ya_kun`） | 雅坤古典朗诵片段，第三方录像 | `BLOCKED`（表演者/录音权未清，仅试听） |
+| ~~SFT 预置音色（中文男/中文女）~~ | CosyVoice-300M-SFT | 已退役（2026-11-06）；历史产物仅作证据保留 |
 | 自定义克隆音色 | 未使用 | `NOT_RUN` |
 
 ## 6.1 R3-D 资产选型登记（`DECISION` / `PARTIAL`）
 
-> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。女声已试听并固化方案但未进入正式成片；BGM、音效与商用授权尚未完成。
+> R3-D 已部分执行：字体候选的来源、许可、字符覆盖和预览验证完成；排版选型仍待人工审查。`narrator_self` 为唯一 `APPROVED` 生产音色。BGM 共 13 条登记：Keynata 7 条（E/B 小调 2 条 + 暖色大调 3 条均被用户否决为「阴间」→ `REJECTED`；工笔/吉卜力 2 条保留备用）与 Wikimedia Commons 6 条（4 条 Public domain + 2 条 CC BY 3.0 US，后者必须署名）。旧 drone 全部 `REJECTED`。**不抽取任何电影/动画原声**。SFX/环境音与商用授权仍未完成。
 > 下表是候选与待核验状态，**不是商用批准**；不能因为素材来自 Pixabay / Mixkit / 某个开源项目，就把整个来源标记为商用通过。
 
 | asset_id | 类型 | 名称 | 官方来源 | 提供方 | 版本 | 许可证 | 商业使用 | 署名 | 平台限制 | 下载日期 | 文件哈希 | 状态 | 证据位置 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TTS-COSY-MALE | TTS 音色 | 中文男（基线） | 本地 CosyVoice | CosyVoice-300M-SFT | — | Apache-2.0（代码）；音色条款待核验 | 待核验 | 待核验 | 待核验 | 本地 | 已有音频哈希 | `PASS_VERIFIED`（合成）/ 授权 `PARTIAL` | `experiments/r3b/audio_manifest.json` |
-| TTS-COSY-FEMALE | TTS 音色 | 中文女 | 本地 CosyVoice | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PARTIAL`（试听/决策完成，未入正式成片） | `experiments/r3d/voice/` |
+| TTS-COSY-MALE | TTS 音色 | 中文男（已退役） | 本地 CosyVoice（已停用） | CosyVoice-300M-SFT | — | Apache-2.0（代码）；音色条款待核验 | 待核验 | 待核验 | 待核验 | 本地 | 已有音频哈希 | `PASS_VERIFIED`（合成）/ 授权 `PARTIAL` | `experiments/r3b/audio_manifest.json` |
+| TTS-COSY-FEMALE | TTS 音色 | 中文女（已退役） | 本地 CosyVoice（已停用） | CosyVoice-300M-SFT | — | 同上 | 待核验 | 待核验 | 待核验 | — | — | `PASS_VERIFIED`（技术，P1/81.373）；商用待核验 | `experiments/r3d/voice/` |
 | TTS-ALI-WEN | TTS 音色 | 温怀清 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-ALI-YU | TTS 音色 | 余小云 | 阿里云 Qwen TTS | 阿里云 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
 | TTS-VOLC-BV115 | TTS 音色 | 古风少御 BV115 | 火山引擎 | 火山引擎 | 待确认 | 服务协议 | 待核验 | 待核验 | 待核验 | — | — | `DECISION` / 未试听 | 官方音色页 |
@@ -108,6 +134,10 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | BGM-PIXABAY | 音乐 | 古琴/箫/古筝候选 | https://pixabay.com/music/ | 逐曲作者 | — | Pixabay Content License | 逐曲核验 | 逐曲核验 | 注意 Content ID | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
 | BGM-MIXKIT | 音乐 | 东方氛围候选 | https://mixkit.co/free-stock-music/ | 逐曲作者 | — | Mixkit License | 逐曲核验 | 逐曲核验 | 使用场景限制 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
 | SFX-FREESOUND | 音效 | 水流/风声/鸟鸣/衣袂/钟磬 | https://freesound.org/ | 逐条作者 | — | 优先 CC0；CC BY 需署名 | 逐条核验 | CC BY 需要 | 不得用 CC BY-NC | — | — | `NOT_RUN` / 待选型 | 逐条页面 |
+| SFX-PROGRAMMATIC | 音效 | 江水/夜风/室内底噪 | 本地生成 `scripts/make_ambience.py` | — | — | 自生成，无第三方权利 | 不需要 | 不需要 | 无 | 生成脚本 sha256 | 待实现 | `NOT_RUN` / 方案已定 | [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md) §2 |
+| BGM-FREEPD | 音乐 | 东方氛围/器乐 | https://freepd.com/ | 逐曲作者 | — | 全站 CC0 | 不需要 | 不需要 | 无 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
+| BGM-MUSOPEN | 音乐 | 古典器乐 | https://musopen.org/ | 逐曲演奏者 | — | PD / CC0（录音与乐谱分开核验） | 不需要 | 不需要 | 无 | — | — | `NOT_RUN` / 待选型 | 逐曲页面 |
+| TTS-PROMPT-SELF | 语音参考 | 克隆 prompt | 自录 | — | — | 自持声音权 | 已附《声音权声明》 | — | 无 | 录音哈希 | 已有 3.35s 清理版 | `PARTIAL`（时长偏短；待补录 8–10 s） | [AUDIO_ASSET_STRATEGY.md](AUDIO_ASSET_STRATEGY.md) §9 |
 
 登记字段（新增素材时必须填全）：
 

@@ -19,6 +19,19 @@ from pathlib import Path
 _CJK = re.compile(r"[㐀-鿿]")
 
 
+class MissingDependencyError(RuntimeError):
+    """Raised when the ASR post-processing toolchain is missing."""
+
+
+def require_pypinyin() -> None:
+    try:
+        import pypinyin  # noqa: F401
+    except ImportError as exc:  # pragma: no cover - environment guard
+        raise MissingDependencyError(
+            "缺少 pypinyin：请用项目 venv 执行 `uv sync`（或 `pip install pypinyin`）后再运行本脚本"
+        ) from exc
+
+
 def pinyin_cer(reference: str, hypothesis: str) -> tuple[float, list[str], list[str]]:
     from pypinyin import Style, lazy_pinyin
 
@@ -45,6 +58,7 @@ def pinyin_cer(reference: str, hypothesis: str) -> tuple[float, list[str], list[
 
 
 def main() -> int:
+    require_pypinyin()
     parser = argparse.ArgumentParser(description="Pinyin-level ASR check")
     parser.add_argument("--qa", required=True, type=Path)
     parser.add_argument("--threshold", type=float, default=0.15)
@@ -52,6 +66,12 @@ def main() -> int:
 
     data = json.loads(args.qa.read_text(encoding="utf-8"))
     rows = data.get("lines") or []
+    if not rows:
+        raise SystemExit("QA 输入没有行数据；请先运行 scripts/tts_qa.py 生成。")
+    if not any((row.get("asr_raw") or row.get("asr_prompted")) for row in rows):
+        raise SystemExit(
+            "QA 输入缺少 ASR 文本（asr_raw / asr_prompted 全为空）；"
+            "请先运行 scripts/tts_qa.py 生成 ASR 结果。")
     ok_lines = 0
     max_cer = 0.0
     for row in rows:

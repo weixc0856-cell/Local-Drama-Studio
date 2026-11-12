@@ -1,0 +1,28 @@
+name: Python CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e . pytest
+      - name: Generate test assets
+        run: python scripts/make_ir.py --out assets/audio/ir/synthetic_hall_0.9s.wav
+      - name: Test
+        env:
+          DRAMA_MODELS_ROOT: ${{ github.workspace }}/runtime/models
+          DRAMA_AI_HOME: ${{ github.workspace }}/runtime
+        run: python -m pytest -q

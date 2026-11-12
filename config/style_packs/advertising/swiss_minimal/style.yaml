@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.swiss_minimal
+name: 瑞士国际主义
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 严格网格、巨幅留白与无衬线秩序：理性、功能主义的商业版式。
+layers:
+- identity
+- execution
+- consistency

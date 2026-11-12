@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: advertising.clay_3d
+name: 3D黏土风格
+group: advertising
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 糖果色黏土小场景：圆润倒角、柔软阴影、徽章式构图与留白。
+layers:
+- identity
+- execution
+- consistency

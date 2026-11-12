@@ -1,0 +1,80 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_aishell3_ssb1711_20261104",
+  "asset_type": "tts_prompt",
+  "status": "REJECTED",
+  "approved_for_production": false,
+  "source": {
+    "provider": "AISHELL-3 / OpenSLR SLR93",
+    "dataset": "AISHELL-3-Sample",
+    "dataset_version": "official sample archive retrieved 2026-11-04",
+    "source_url": "http://aishell-3.oss-cn-beijing.aliyuncs.com/AISHELL-3-Sample.rar",
+    "official_page": "https://openslr.org/93/",
+    "archive_sha256": "4879c25bc00da3477e34ae2d8fd0496112835958f63fb18a4e2f7ed8753c0343",
+    "archive_bytes": 75587143,
+    "source_file": "AISHELL-3-Sample/test/SSB1711/SSB17110133.wav",
+    "source_sha256": "e5cf06a3462f6042eb2934ac16cd3434eeb7d1e3856e4e8032125f868fdea73d",
+    "license": "OpenSLR page states Apache License v2.0",
+    "license_status": "REJECTED_COMMERCIAL_RISK",
+    "license_note": "A third-party mirror (PaddleSpeech README) states academic-only without permission, conflicting with the OpenSLR Apache-2.0 label. Commercial use needs written clarification from the data provider. This candidate is not approved.",
+    "speaker_id": "SSB1711",
+    "gender_label": "UNKNOWN_NOT_PRESENT_IN_SAMPLE",
+    "age_label": "UNKNOWN_NOT_PRESENT_IN_SAMPLE",
+    "speaker_note": "The sample archive does not include the full AISHELL-3 speaker-info file. Gender/age were not inferred from audio."
+  },
+  "audio": {
+    "path": "assets/audio/prompts/pending/aishell3_ssb1711_20261104.wav",
+    "sha256": "e20e10317ceb2ff59d28f3e48b929814575a2aed7ad13d06d5eb1a89be8e0c23",
+    "duration_ms": 3832,
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "wav",
+    "source_duration_ms": 3832,
+    "source_sample_rate": 44100,
+    "source_channels": 1
+  },
+  "transcript": {
+    "text": "杭州之江金都极地海洋公园",
+    "source_transcript": "AISHELL-3-Sample/test/content.txt: 杭 hang2 州 zhou1 之 zhi1 江 jiang1 金 jin1 都 du1 极 ji2 地 di4 海 hai3 洋 yang2 公 gong1 园 yuan2",
+    "verification_status": "DATASET_TEXT_PENDING_HUMAN",
+    "note": "Text comes from the dataset content file; a human must still confirm the clip is complete and unclipped."
+  },
+  "quality": {
+    "duration_check": "PASS",
+    "mono_16k_check": "PASS",
+    "clipping_check": "PASS",
+    "max_volume_db": -16.1,
+    "mean_volume_db": -31.4,
+    "internal_silence_ms": 0,
+    "background_noise_check": "NOT_RUN",
+    "speech_completeness": "PENDING_HUMAN",
+    "gain_normalization": "NOT_APPLIED",
+    "human_review": "PENDING",
+    "note": "Quiet recording; no clipping. Level normalization and listening are still required."
+  },
+  "validation": {
+    "cosyvoice_zero_shot": {
+      "status": "PASS",
+      "model_class": "CosyVoice2",
+      "model_dir": "D:\\AI\\CosyVoice-Runtime\\pretrained_models\\CosyVoice2-0.5B",
+      "text": "白日依山尽",
+      "output": "experiments/voice_asset_discovery/zeroshot_aishell_candidate.wav",
+      "output_sha256": "041ff8d0887b20a4aede6b1f96c9315341760d24a5f3faa70151cade63b1ec15",
+      "duration_ms": 2260,
+      "sample_rate": 24000,
+      "note": "Prompt accepted by local CosyVoice2-0.5B; technical usability only, not aesthetic or production approval."
+    }
+  },
+  "blocked_reasons": [
+    "AISHELL-3 commercial-use terms need written confirmation (Apache-2.0 page vs third-party academic-only note)",
+    "speaker gender/age labels are not present in the sample archive",
+    "human listening and exact completeness review are pending"
+  ],
+  "created_at": "2026-11-04",
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "REJECTED",
+    "reason": "AISHELL-3 Apache-2.0 标签与第三方 academic-only 说法冲突，声音/表演者商业权利未明确；不承担商业侵权风险。"
+  }
+}

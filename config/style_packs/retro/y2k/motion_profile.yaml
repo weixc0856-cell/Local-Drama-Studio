@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- chrome rotation
+- reflection sweep
+- liquid morph
+secondary_motions:
+- flare drift
+secondary_limit: 2

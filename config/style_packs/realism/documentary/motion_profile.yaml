@@ -1,0 +1,8 @@
+schema_version: '1.0'
+primary_motions:
+- wind in cloth
+- dust drift
+- water ripple
+secondary_motions:
+- cloud shadow
+secondary_limit: 2

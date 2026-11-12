@@ -85,7 +85,7 @@ export default {
                 <dt>版本</dt><dd class="mono">${esc(health.version)}</dd>
                 <dt>LLM</dt><dd class="mono">${esc(env.llm_model || '—')}</dd>
                 <dt>ComfyUI</dt><dd class="mono">${esc(env.comfyui_url || '—')}</dd>
-                <dt>CosyVoice 模式</dt><dd class="mono">${esc(env.tts_mode || '—')}</dd>
+                <dt>VoxCPM2 默认模式</dt><dd class="mono">${esc(env.tts_mode || '—')} · 48 kHz · CPU</dd>
                 <dt>GPU / XPU</dt><dd>${gpu.name
                   ? `${esc(gpu.name)} · ${esc(gpu.vram_free_gib)} / ${esc(gpu.vram_total_gib)} GiB`
                   : esc(gpu.detail || 'UNKNOWN')}</dd>
@@ -101,14 +101,14 @@ export default {
               <div class="note">产物状态：每次请求从 <span class="mono">assets/</span>、<span class="mono">experiments/</span>、
                 <span class="mono">literary_intelligence/</span> 的真实文件派生，不写回。</div>
               <div class="note">任务日志：<span class="mono">logs/workspace/tasks/</span>；缩略图缓存：<span class="mono">logs/workspace/thumbs/</span>。</div>
-              <div class="note">LLM 只使用 8080；ComfyUI 8188；CosyVoice 50000。工作台不创建第二个端口。</div>
+              <div class="note">LLM 只使用 8080；ComfyUI 8188；VoxCPM2 50000。工作台不创建第二个端口。</div>
             </div>
           </div>
 
           <div class="panel">
             <div class="panel-head"><span class="panel-title">已知限制</span></div>
             <div class="panel-body col" style="gap:8px">
-              <div class="note">内容与分镜当前只读：ContentPackage → R3 输入 Adapter 尚未实现。</div>
+              <div class="note">内容包与分镜由 package.build / script.generate 任务生成；页面只读展示真实产物。</div>
               <div class="note">TTS 任务未启用：scripts/r3_tts.py 仍硬编码 experiments/r3b。</div>
               <div class="note">人工验收没有写入入口；期数页会显示 NOT_RUN。</div>
             </div>

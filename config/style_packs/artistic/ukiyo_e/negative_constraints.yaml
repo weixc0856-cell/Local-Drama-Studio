@@ -1,0 +1,14 @@
+schema_version: '1.0'
+forbidden:
+- 3d shading
+- photoreal
+- gradient mesh
+- readable text or cartouche
+- modern city
+- western frame
+- neon colors
+- soft focus
+- reproduction of a famous print
+- modern iron bridge
+- motor boat
+note: For validator and human checklist only; prompts use positive anchors.

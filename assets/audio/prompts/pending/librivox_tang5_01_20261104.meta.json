@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1",
+  "asset_id": "prompt_librivox_tang5_01_20261104",
+  "asset_type": "tts_prompt",
+  "status": "PENDING_REVIEW",
+  "approved_for_production": false,
+  "source": {
+    "provider": "librivox",
+    "dataset": "Three Hundred Tang Poems, Volume 5 (唐诗三百首 卷五)",
+    "dataset_version": "archive.org item three_hundred_tang_poems_volume_5_1501_librivox",
+    "track": "01 - 224 Deer-park Hermitage",
+    "source_url": "https://archive.org/download/three_hundred_tang_poems_volume_5_1501_librivox/300tangpoems5_01_various_128kb.mp3",
+    "item_url": "https://archive.org/details/three_hundred_tang_poems_volume_5_1501_librivox",
+    "license": "Public Domain Mark 1.0",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "license_status": "VERIFIED_US_ONLY",
+    "license_note": "LibriVox states recordings are public domain in the USA and does not require attribution; it warns they may not be public domain in other countries. Commercial use is permitted by LibriVox's public-domain statement. This is not a China-specific legal opinion.",
+    "reader": "not identified for this individual track; item credits multiple readers",
+    "reader_identified": false
+  },
+  "audio": {
+    "path": "assets/audio/prompts/pending/librivox_tang5_01_20261104.wav",
+    "sha256": "c0e2f9e51bf93a0e2beee1decec2db0278d04221cd85743df5f000e0ef5b5a1b",
+    "duration_ms": 5250,
+    "sample_rate": 16000,
+    "channels": 1,
+    "format": "wav",
+    "source_duration_ms": 40474,
+    "source_sha256": "3020b8355fccbc92b02bffa308364064e4f4143c8a9ae89aaa7113d8e5d095a3"
+  },
+  "transcript": {
+    "text": "返景入深林，复照青苔上。",
+    "source_transcript": "唐诗三百首 卷五 第224首《鹿柴》后两句（王维）",
+    "verification_status": "ASR_MATCH_PENDING_HUMAN",
+    "asr_model": "whisper base, language=zh, initial_prompt=full poem",
+    "asr_text": "返景入深林，复照青苔上。",
+    "note": "ASR matched the known poem; a human must still confirm the exact words and that no intro/outro remains."
+  },
+  "quality": {
+    "duration_check": "PASS",
+    "mono_16k_check": "PASS",
+    "clipping_check": "PASS",
+    "max_volume_db": -0.8,
+    "mean_volume_db": -20.7,
+    "internal_silence_ms": 827,
+    "background_noise_check": "NOT_RUN",
+    "speech_completeness": "PENDING_HUMAN",
+    "human_review": "PENDING",
+    "note": "No music detected by inspection; background noise and naturalness require listening."
+  },
+  "blocked_reasons": [
+    "LibriVox public domain is stated for the USA; China commercial use needs a jurisdiction review",
+    "individual reader for this track is not identified in the item metadata",
+    "human listening and exact transcript review are pending"
+  ],
+  "created_at": "2026-11-04",
+  "validation": {
+    "cosyvoice_zero_shot": {
+      "status": "PASS",
+      "model_class": "CosyVoice2",
+      "model_dir": "D:\\AI\\CosyVoice-Runtime\\pretrained_models\\CosyVoice2-0.5B",
+      "text": "白日依山尽",
+      "output": "experiments/voice_asset_discovery/zeroshot_candidate.wav",
+      "output_sha256": "d6060526fe17a68744f3667a78ced90c7453d00d11ae85fd23cdc1a010f84ec2",
+      "duration_ms": 4120,
+      "sample_rate": 24000,
+      "note": "Prompt accepted by local CosyVoice2-0.5B; this proves technical usability, not aesthetic quality or production approval."
+    }
+  },
+  "review_status": "PENDING_REVIEW",
+  "decision": {
+    "decided_at": "2026-11-04",
+    "decided_by": "project_owner",
+    "decision": "PENDING_REVIEW",
+    "reason": "需进一步核查录制者法域、表演者邻接权与中国辖区商用；未完成前不进入生产。"
+  }
+}

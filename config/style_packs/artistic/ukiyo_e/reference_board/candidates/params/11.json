@@ -1,0 +1,9 @@
+{
+  "positive_prompt": "a castle on a hill above mist. Japanese ukiyo-e woodblock print, Edo period manner. multi-block woodblock print, flat pigment on washi paper, visible grain. composition: strong silhouette and diagonal composition, flat colour areas contained by a clear keyblock outline, large flat sky or water band, asymmetric cropped view, clean full-bleed edges with no decorative border. lighting: flat even light, no modelled shadows, neutral temperature, medium contrast. materials: washi paper, woodblock ink, flat pigment. camera: locked-off camera, 50mm lens, flat depth of field. flat woodblock colour areas with even fill. clear dark keyblock outlines around every shape. visible washi paper grain and slight ink bleed. strong silhouette and diagonal composition. limited indigo, vermilion, ochre and rice palette. original composition, not a reproduction of a famous print. no realistic shading and no cartouche. reference board sample, no text and no cartouche, flat woodblock colour and washi grain. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
+  "seed": 6211,
+  "width": 576,
+  "height": 1024,
+  "steps": 16,
+  "cfg": 1.0,
+  "filename_prefix": "refboard/artistic_ukiyo_e/11"
+}

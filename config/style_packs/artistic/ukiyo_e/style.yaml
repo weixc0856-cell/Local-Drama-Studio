@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: artistic.ukiyo_e
+name: 浮世绘
+group: artistic
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 木版画平涂：主版黑线、靛蓝与朱红限色、和纸纤维与强剪影。
+layers:
+- identity
+- execution
+- consistency
