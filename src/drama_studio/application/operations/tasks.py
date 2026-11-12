@@ -26,7 +26,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from drama_studio import paths
 from drama_studio.config import load_settings
 from drama_studio.domain.style.lock import StyleLockError, assert_style_request, locked_preset_id, locked_style_id
-from drama_studio.workspace.store import WorkspaceStore, now_iso
+from drama_studio.infrastructure.storage.store import WorkspaceStore, now_iso
 
 ROOT = paths.output_root()
 REPO_ROOT = paths.repo_root()

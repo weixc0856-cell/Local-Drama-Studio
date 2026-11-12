@@ -10,7 +10,7 @@ from drama_studio.domain.style.lock import (
     locked_style_id,
     style_sha256,
 )
-from drama_studio.workspace.store import WorkspaceStore
+from drama_studio.infrastructure.storage.store import WorkspaceStore
 
 
 def _store(tmp_path: Path) -> WorkspaceStore:
@@ -131,7 +131,7 @@ def test_task_helper_surfaces_style_lock_as_task_error(tmp_path: Path) -> None:
 
 
 def test_discovery_exposes_style_lock(tmp_path: Path) -> None:
-    from drama_studio.workspace.discovery import _style_view
+    from drama_studio.infrastructure.storage.discovery import _style_view
 
     store = _store(tmp_path)
     _style(store, "ink_wash", "水墨")

@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from drama_studio.locks import FileLock, LockHeld
+from drama_studio.infrastructure.locks import FileLock, LockHeld
 
 
 def test_lock_is_exclusive_and_releases(tmp_path) -> None:

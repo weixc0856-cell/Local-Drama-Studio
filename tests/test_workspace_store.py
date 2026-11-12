@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.workspace.store import WorkspaceStore, now_iso
+from drama_studio.infrastructure.storage.store import WorkspaceStore, now_iso
 
 
 def make_store(tmp_path: Path) -> WorkspaceStore:

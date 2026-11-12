@@ -23,7 +23,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from drama_studio.locks import FileLock, LockHeld
+from drama_studio.infrastructure.locks import FileLock, LockHeld
 from drama_studio.paths import output_root
 
 ROOT = Path(__file__).resolve().parents[1]

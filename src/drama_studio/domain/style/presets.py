@@ -38,7 +38,7 @@ if not sys.stdout.isatty():
     except (AttributeError, ValueError):
         pass
 
-# Keep in sync with drama_studio.workspace.store.STYLE_FIELDS; a test asserts
+# Keep in sync with drama_studio.infrastructure.storage.store.STYLE_FIELDS; a test asserts
 # equality so a preset can always be handed to the workspace style API.
 STYLE_ENTITY_FIELDS = (
     "name",

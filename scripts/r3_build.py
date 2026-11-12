@@ -11,7 +11,7 @@ Outputs (experiments/r3b/renders/):
   build_manifest.json
 
 Timeline and subtitle times come from drama_studio.application.voice.timeline.
-Subtitle font role comes from config/fonts.yaml via drama_studio.fonts.
+Subtitle font role comes from config/fonts.yaml via drama_studio.infrastructure.fonts.
 No new dependencies: pysubs2 is already in the project venv.
 """
 
@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pysubs2
 
-from drama_studio.fonts import FontConfigurationError, load_font_config
+from drama_studio.infrastructure.fonts import FontConfigurationError, load_font_config
 from drama_studio.paths import is_repo_path, output_root
 from drama_studio.application.voice.timeline import (
     build_timeline,

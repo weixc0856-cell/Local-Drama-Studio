@@ -17,7 +17,7 @@ os.environ.setdefault("VOXCPM_RUNTIME", str(_ROOT / "runtime" / "VoxCPM-Runtime"
 import pytest
 from PIL import Image
 
-from drama_studio.workspace.store import WorkspaceStore
+from drama_studio.infrastructure.storage.store import WorkspaceStore
 
 SHORT_TEXT = "白日依山尽"
 

@@ -9,7 +9,7 @@ from drama_studio.domain.style.presets import (
     STYLE_ENTITY_FIELDS,
     load_style_presets,
 )
-from drama_studio.workspace.store import STYLE_FIELDS
+from drama_studio.infrastructure.storage.store import STYLE_FIELDS
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE_STYLES = {"court_green_fine_line", "ink_wash"}

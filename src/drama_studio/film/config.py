@@ -1,11 +1,16 @@
 """Compatibility shim: re-points to ``drama_studio.application.film.config``.
 
-The module object is replaced, so private names and module-level state
-stay shared with the implementation while the migration is in progress.
-New code must import from the layer path.
+The module object is replaced, so private names and module-level state stay
+shared with the implementation while the migration is in progress. New code
+must import from the layer path.
 """
 
 import importlib
 import sys
 
-sys.modules[__name__] = importlib.import_module("drama_studio.application.film.config")
+_impl = importlib.import_module("drama_studio.application.film.config")
+_parent_name, _, _leaf = __name__.rpartition(".")
+_parent = sys.modules.get(_parent_name)
+if _parent is not None:
+    setattr(_parent, _leaf, _impl)
+sys.modules[__name__] = _impl
