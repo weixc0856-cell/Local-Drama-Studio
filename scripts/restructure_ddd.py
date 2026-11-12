@@ -154,7 +154,8 @@ def rewrite_relative_imports(path: Path, old_mod: str, mapping: dict[str, str], 
         )
         package = f"drama_studio.{new_target}" if new_target else "drama_studio"
         statement = f"from {package} import {names}"
-        edits.append((node.lineno, node.end_lineno or node.lineno, statement))
+        indent = re.match(r"[ 	]*", lines[node.lineno - 1]).group(0)
+        edits.append((node.lineno, node.end_lineno or node.lineno, indent + statement))
     for start, end, statement in sorted(edits, reverse=True):
         lines[start - 1:end] = [statement]
     if edits:
@@ -215,11 +216,23 @@ def main() -> None:
         if shim.exists():
             continue
         shim.parent.mkdir(parents=True, exist_ok=True)
-        shim.write_text(
-            f'"""{ACK.format(target=f"drama_studio.{new}")}"""\n\n'
-            f"from drama_studio.{new} import *  # noqa: F401,F403\n",
-            encoding="utf-8",
-        )
+        if shim.name == "__init__.py":
+            body = (
+                f'"""{ACK.format(target=f"drama_studio.{new}")}"""\n\n'
+                f"from drama_studio.{new} import *  # noqa: F401,F403\n"
+            )
+        else:
+            body = (
+                f'"""Compatibility shim: re-points to ``drama_studio.{new}``."""\n\n'
+                "import importlib\nimport sys\n\n"
+                f'_impl = importlib.import_module("drama_studio.{new}")\n'
+                '_parent_name, _, _leaf = __name__.rpartition(".")\n'
+                '_parent = sys.modules.get(_parent_name)\n'
+                "if _parent is not None:\n"
+                "    setattr(_parent, _leaf, _impl)\n"
+                "sys.modules[__name__] = _impl\n"
+            )
+        shim.write_text(body, encoding="utf-8")
         print(f"shim {shim.relative_to(REPO)}")
 
 

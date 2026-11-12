@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Iterator
 
 from drama_studio.paths import output_root
-from drama_studio.style_lock import attach_lock
+from drama_studio.domain.style.lock import attach_lock
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta (

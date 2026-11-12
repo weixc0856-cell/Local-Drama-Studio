@@ -112,3 +112,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) | 硬件、端口、环境 |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | ADR（含 ADR-016…021） |
 | [docs/README.md](docs/README.md) | 文档索引与状态规则 |
+
+## Repository layout
+
+Code, config and docs live in this checkout; every generated artifact (projects, renders, reference boards, logs) lives under `DRAMA_OUTPUT_ROOT` (default `D:\DramaStudio`). See [docs/REPO_LAYOUT.md](docs/REPO_LAYOUT.md).
