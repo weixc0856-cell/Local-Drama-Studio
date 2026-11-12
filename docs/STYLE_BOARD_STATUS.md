@@ -3,6 +3,7 @@
 > 本文件是跨会话的工作台账：每套风格按「定义 → 12 主体 → 渲染 → 客观检查 → 人工复查 → 评审记录」推进。
 > 参考图只在本地，不进 Git；提交的是风格包 YAML、params/jobs、manifest 与 review 文档。
 > **2026-11-07 状态：21 套风格全部完成参考板（12 张/套）并返工，客观检查全过，等待人工审片。**
+> **2026-11-08：新增 `animation.xuanji_3d`（玄机式 3D 国漫），12 张参考板已出并经一轮返工（06–09 补环境/材质景别），客观检查全过，等待人工审片；合计 23 套。**
 > 2026-11-07 评审返工：按人工评审意见，10 套风格正在逐套修改提示词并重渲（开窗形制、景别/云形/时段、材质反转、刀触、笔触节奏、月亮与船型、拼贴布局、网点与套印、视角与 VHS、Y2K 年代感）。
 
 ## 1. 进度
@@ -30,6 +31,7 @@
 | `advertising.lifestyle_film` | 新增 | 已生成 | 12/12 | 全过 | `reference_board/review-2026-11-07.md` | `PENDING_REVIEW` |
 | `advertising.clay_3d` | 新增 | 已生成 | 12/12 | 全过 | `reference_board/review-2026-11-07.md` | `PENDING_REVIEW` |
 | `advertising.oriental_minimal` | 新增 | 已生成 | 12/12 | 全过 | `reference_board/review-2026-11-07.md` | `PENDING_REVIEW` |
+| `animation.xuanji_3d` | 新增（玄机式 3D 国漫） | 已生成 | 12/12（06–09 返工） | 全过 | `reference_board/review-2026-11-08.md` | `PENDING_REVIEW` |
 
 ## 2. 每套流程
 

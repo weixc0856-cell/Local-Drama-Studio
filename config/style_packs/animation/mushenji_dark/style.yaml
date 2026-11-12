@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: animation.mushenji_dark
+name: 牧神记 · 暗黑国风 3D
+group: animation
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 牧神记式暗黑国风 3D 动画：棕黑低饱和、残垣断壁与良渚茅草屋/玉琮纹、假天空、石像、水墨渗染与书法笔势；UE5 动画帧，不是写实概念图。
+layers:
+- identity
+- execution
+- consistency

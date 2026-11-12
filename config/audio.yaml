@@ -5,9 +5,9 @@ tts:
   default_speaker: "中文女"     # 已退休：仅旧配置兼容，不发给运行时
   zero_shot:
     # 只有显式选择 zero_shot 时才会使用；必须与参考音逐字一致。
-    prompt_audio: "assets/audio/prompts/my_voice_clean_v1.wav"
-    prompt_text: "希望你以后能够做的比我还好呦。"
-    speed: 0.90                # 0.5B 本身偏慢；0.82 会拉长到 7.2s，0.90 更接近镜头长度
+    prompt_audio: "assets/audio/prompts/my_voice_clean_v2.wav"
+    prompt_text: "清晨的山谷里，风穿过竹林，远处传来水声。"
+    speed: 1.0
     runtime: voxcpm2          # 50000 上的唯一运行时；旧 CosyVoice2-0.5B 已停用
   sample_rate: 48000        # resample all tracks to 48 kHz for FFmpeg
   speakers:                 # 已退休：voice_id -> 旧 SFT 音色，仅作历史映射

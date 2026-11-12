@@ -1,0 +1,19 @@
+schema_version: '1.0'
+forbidden:
+- photoreal
+- live-action
+- realistic skin pores
+- concept art
+- gritty war photography
+- glossy plastic skin
+- idol face
+- bright pastel
+- saturated neon
+- clean anime
+- western cartoon
+- ornate gold everywhere
+- readable text
+- watermark
+- low-poly
+- deformed face
+note: For validator and human checklist only; prompts use positive anchors.

@@ -265,7 +265,7 @@ SUBJECTS_BY_STYLE = {
         "laundry moving in afternoon sun",
         "hands turning a book page by a window",
         "hands chopping vegetables in warm light",
-        "a car interior at sunset",
+        "a view from the back seat through the windshield at sunset",
         "beach towels on a balcony rail",
         "balcony plants in warm light",
         "a breakfast table with morning sun",
@@ -297,6 +297,20 @@ SUBJECTS_BY_STYLE = {
         "a teapot on a low stone slab",
         "a folded fan on paper",
         "a stone bowl with water",
+    ],
+    "animation.xuanji_3d": [
+        "a young swordsman in a dark embroidered robe standing on a cliff edge at dusk, seen from behind in three-quarter view",
+        "a close-up portrait of a young man with wind-blown strand hair and a gold-thread embroidered collar, backlit by warm sun",
+        "an armoured general in red and black lamellar kneeling among spears on a battlefield at sunset, low angle past the foreground soldiers",
+        "two figures facing each other in a dark bamboo forest with cold teal mist and one warm lantern",
+        "a veiled woman in layered indigo silk seated on a stone bench in a moonlit courtyard",
+        "a long ruined temple corridor lined with weathered stone guardian statues, a tiny distant figure under dust-filled shafts of light",
+        "a close desk still life of a jade seal, an ink stone, a brush and a half-open blank scroll in warm lamplight, a blurred figure far behind",
+        "a vast cloud sea with floating stone peaks and one small pavilion, a lone tiny figure on the nearest cliff edge seen from far away",
+        "a close view of armoured gauntlets and a sword hilt resting on rain-wet mossy stone, a blurred figure behind",
+        "a crowd of soldiers with raised spears and tall banners before a mountain pass at dawn",
+        "an old master in white robes standing in falling snow before a temple gate",
+        "a girl in magenta silk running through a night market of paper lanterns, sleeves blurred by motion",
     ],
 }
 
@@ -438,6 +452,7 @@ NOTES_BY_STYLE = {
         1: "faces out of frame, no readable text",
         5: "no text or logo on the sofa",
         6: "book cover is blank with no letters",
+        9: "front seats and dashboard ahead, steering wheel on the left, windshield centred, blank steering wheel emblem with no brand logo, no people",
     },
     "advertising.clay_3d": {
         1: "no screen text or logo",
@@ -447,6 +462,20 @@ NOTES_BY_STYLE = {
         1: "no label text, no ornament",
         7: "no writing on the paper",
         9: "wooden comb with no engraved characters or text",
+    },
+    "animation.xuanji_3d": {
+        1: "one figure only, no crowd, no readable text on the robe",
+        2: "the face is clearly formed with two eyes and a natural mouth, no second face, no text",
+        3: "many soldiers in the foreground but only the kneeling general in focus, banners blank",
+        4: "exactly two figures at opposite edges of the frame, no third person, no text",
+        5: "one figure only, no attendants, no plaques with characters",
+        6: "the carved statues and corridor fill the frame, the figure is small and distant with no face visible, no inscriptions",
+        7: "the desk objects are the sharp subject, the figure is soft and small with no face and no hands, the scroll is blank",
+        8: "the landscape fills the frame, the figure is very small with no face visible, no birds, the pavilion is the only architecture",
+        9: "the metal and wet stone are the sharp subject, the figure is out of focus with no hands, no engraved characters",
+        10: "the crowd stays at a distance with faces unresolved, banners blank",
+        11: "one figure only, snow falling, no attendants, the temple plaque is blank",
+        12: "one runner only, lanterns carry no characters, no crowd faces",
     },
 }
 
@@ -511,6 +540,10 @@ DEFAULT_NOTE_BY_STYLE = {
     ),
     "advertising.oriental_minimal": (
         "oriental minimal advertising, no text, no ornament, vast negative space"
+    ),
+    "animation.xuanji_3d": (
+        "reference board sample, cinematic Chinese 3D animated series frame, "
+        "original character designs, no text, no watermark, no logos"
     ),
 }
 

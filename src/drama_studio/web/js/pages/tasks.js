@@ -121,14 +121,69 @@ async function openTaskDrawer(taskId, kinds, refresh) {
   });
 }
 
-function launcherForm(kindKey, kinds, episodes) {
+function launcherForm(kindKey, kinds, episodes, films = []) {
   const kind = kinds[kindKey];
   if (!kind) return '';
   const common = kind.enabled
     ? ''
     : `<div class="error-box mt8">${esc(kind.blocked_reason || '当前不可用')}</div>`;
   let fields = '';
-  if (kindKey === 'build.rebuild') {
+  if (kindKey.startsWith('film.')) {
+    const options = films.map((project) => `<option value="${esc(project.project_id)}">${esc(project.title || project.project_id)}</option>`).join('');
+    fields = `<div class="field"><label>影视项目</label>
+      <select class="input" name="project_id">${options || '<option value="">（没有影视项目）</option>'}</select></div>`;
+    if (kindKey === 'film.keyframes' || kindKey === 'film.wan') {
+      fields += `<div class="form-row">
+        <div class="field"><label>只执行指定 job（可选）</label><input class="input mono" name="only" placeholder="S01,S02"></div>
+        <div class="field"><label>忽略完成记录</label><label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label></div>
+      </div>
+      <div class="field"><label class="row" style="gap:7px"><input type="checkbox" name="confirm"> 我确认会占用 GPU，并遵守单飞</label></div>`;
+    }
+    if (kindKey === 'film.enhance') {
+      fields += `<div class="form-row">
+        <div class="field"><label>镜头（可选）</label><input class="input mono" name="shot" placeholder="S01；留空为全部"></div>
+        <div class="field"><label>后端</label><select class="input" name="backend"><option value="realesrgan-ncnn">realesrgan-ncnn</option></select></div>
+      </div>
+      <label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label>
+      <div class="field"><label class="row" style="gap:7px"><input type="checkbox" name="confirm"> 我确认会占用 GPU，并遵守单飞</label></div>`;
+    }
+    if (kindKey === 'film.static') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="force"> 重跑已有报告</label>`;
+    }
+    if (kindKey === 'film.timeline') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="planned"> 只按分镜时长（忽略真实音频）</label>`;
+    }
+    if (kindKey === 'film.voice') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="force"> 忽略已有 WAV，全部重合成</label>`;
+    }
+    if (kindKey === 'film.clips') {
+      fields += `<div class="form-row">
+        <div class="field"><label>时长策略</label><select class="input" name="policy">
+          <option value="hold_last">hold_last · 末帧 hold（默认）</option>
+          <option value="slow">slow · 慢放</option>
+          <option value="trim">trim · 拒绝延长</option>
+        </select></div>
+        <div class="field"><label>重新编码</label><label class="row" style="gap:7px"><input type="checkbox" name="force"> force</label></div>
+      </div>`;
+    }
+    if (kindKey === 'film.assemble') {
+      fields += `<div class="field"><label>BGM asset_id（可选）</label>
+          <input class="input mono" name="bgm_id" placeholder="例如 bgm_mozart_k330_piano；留空读取 project.json"></div>
+        <div class="form-row">
+          <div class="field"><label>不渲染静帧运动</label><label class="row" style="gap:7px"><input type="checkbox" name="no_motion"> no_motion</label></div>
+          <div class="field"><label>强制重编码镜头</label><label class="row" style="gap:7px"><input type="checkbox" name="force_clips"> force_clips</label></div>
+        </div>
+        <div class="field"><label>构建目录（可选）</label>
+          <input class="input mono" name="out" placeholder="留空写 renders/build-&lt;time&gt;"></div>`;
+    }
+    if (kindKey === 'film.status') {
+      fields += `<label class="row" style="gap:7px"><input type="checkbox" name="write"> 写 qc/film_state.json</label>`;
+    }
+    if (kindKey === 'film.qc') {
+      fields += `<div class="field"><label>构建目录（可选）</label>
+        <input class="input mono" name="build" placeholder="留空取最新 renders/build-*"></div>`;
+    }
+  } else if (kindKey === 'build.rebuild') {
     fields = `<div class="field"><label>期数</label>
       <select class="input" name="episode_id">${episodes.map((e) => `<option value="${esc(e.id)}">EP${String(e.number).padStart(2, '0')} · ${esc(e.title)}</option>`).join('')}</select></div>
       <div class="field"><label>多轨音频时间轴（可选）</label>
@@ -321,15 +376,18 @@ export default {
     let kindsData;
     let tasksData;
     let episodesData;
+    let filmData;
     try {
-      [kindsData, tasksData, episodesData] = await Promise.all([
+      [kindsData, tasksData, episodesData, filmData] = await Promise.all([
         get('/api/tasks/kinds'),
         get(`/api/tasks${params.episode ? `?episode_id=${encodeURIComponent(params.episode)}` : ''}`),
         get('/api/episodes'),
+        get('/api/film/projects'),
       ]);
     } catch (err) { view.innerHTML = errorBox(err); return; }
     const kinds = Object.fromEntries((kindsData.kinds || []).map((k) => [k.key, k]));
     const episodes = episodesData.episodes || [];
+    const films = filmData.projects || [];
     const status = params.status || '';
     const tasks = (tasksData.tasks || []).filter((t) => !status || t.status === status);
 
@@ -364,7 +422,7 @@ export default {
                 ${(kindsData.kinds || []).map((k) => `<option value="${esc(k.key)}" ${k.enabled ? '' : 'disabled'}>
                   ${esc(k.label)}${k.enabled ? '' : '（不可用）'}</option>`).join('')}
               </select></div>
-            <div id="kind-form">${launcherForm((kindsData.kinds || [])[0]?.key, kinds, episodes)}</div>
+            <div id="kind-form">${launcherForm((kindsData.kinds || [])[0]?.key, kinds, episodes, films)}</div>
           </div>
         </div>
       </div>`;
@@ -380,7 +438,7 @@ export default {
 
     const selectedKind = view.querySelector('#kind-select');
     selectedKind.addEventListener('change', () => {
-      view.querySelector('#kind-form').innerHTML = launcherForm(selectedKind.value, kinds, episodes);
+      view.querySelector('#kind-form').innerHTML = launcherForm(selectedKind.value, kinds, episodes, films);
       bindLaunch();
     });
 
@@ -393,8 +451,8 @@ export default {
         const kind = kinds[kindKey];
         const paramsOut = {};
         form.querySelectorAll('input[name], select[name]').forEach((el) => {
-          if (el.name === 'confirm') {
-            paramsOut.confirm = el.checked;
+          if (el.type === 'checkbox') {
+            paramsOut[el.name] = el.checked;
           } else if (el.value !== '') {
             paramsOut[el.name] = el.type === 'number' ? Number(el.value) : el.value;
           }

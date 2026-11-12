@@ -12,6 +12,7 @@ import json
 import os
 import re
 import secrets
+import shutil
 import socket
 import subprocess
 import sys
@@ -291,6 +292,57 @@ class MotionRenderParams(BaseModel):
     confirm: bool = False
 
 
+class FilmProjectParams(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    project_id: str = Field(min_length=1, max_length=120)
+    confirm: bool = False
+
+
+class FilmGenParams(FilmProjectParams):
+    only: str | None = Field(default=None, max_length=200)
+    force: bool = False
+
+
+class FilmVoiceParams(FilmProjectParams):
+    force: bool = False
+
+
+class FilmTimelineParams(FilmProjectParams):
+    planned: bool = False
+
+
+class FilmEnhanceParams(FilmProjectParams):
+    shot: str | None = Field(default=None, max_length=40)
+    backend: Literal["realesrgan-ncnn"] = "realesrgan-ncnn"
+    force: bool = False
+
+
+class FilmStaticParams(FilmProjectParams):
+    force: bool = False
+
+
+class FilmClipsParams(FilmProjectParams):
+    policy: Literal["hold_last", "slow", "trim"] = "hold_last"
+    force: bool = False
+
+
+class FilmAssembleParams(FilmProjectParams):
+    bgm_id: str | None = Field(default=None, max_length=120)
+    no_motion: bool = False
+    force_clips: bool = False
+    dry_run: bool = False
+    out: str | None = Field(default=None, max_length=300)
+
+
+class FilmQcParams(FilmProjectParams):
+    build: str | None = Field(default=None, max_length=300)
+
+
+class FilmStatusParams(FilmProjectParams):
+    write: bool = False
+
+
 class ServiceParams(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -328,6 +380,124 @@ class TaskKind:
             "blocked_reason": self.blocked_reason,
             "params_schema": self.params_model.model_json_schema(),
         }
+
+
+def _film_dir(params: BaseModel, store: WorkspaceStore) -> Path:
+    name = params.project_id.strip()
+    if not name or name in {".", ".."} or "/" in name or "\\" in name:
+        raise TaskError("forbidden_path", f"非法项目 id：{params.project_id!r}")
+    base = (store.root / "projects").resolve()
+    path = (base / name).resolve()
+    if not path.is_relative_to(base) or not (path / "project.json").is_file():
+        raise TaskError("not_found", f"影视项目不存在：{params.project_id}")
+    return path
+
+
+def _film_argv(command: str, params: BaseModel, extra: list[str] | None = None) -> list[str]:
+    argv = [sys.executable, "-m", "drama_studio", "film", command,
+            "--project", params.project_id]
+    return argv + list(extra or [])
+
+
+def _film_jobs_prereqs(params: FilmGenParams, store: WorkspaceStore, kind: str) -> list[str]:
+    missing: list[str] = []
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    jobs = directory / "jobs" / ("keyframes" if kind == "keyframes" else "shots") / "jobs.json"
+    if not jobs.is_file():
+        missing.append(f"缺少 {_rel(jobs)}")
+    if not _port_open("127.0.0.1", 8188):
+        missing.append("ComfyUI 8188 未监听；先用 service.comfy.start 启动")
+    return missing
+
+
+def _film_keyframe_prereqs(params: FilmGenParams, store: WorkspaceStore) -> list[str]:
+    return _film_jobs_prereqs(params, store, "keyframes")
+
+
+def _film_wan_prereqs(params: FilmGenParams, store: WorkspaceStore) -> list[str]:
+    return _film_jobs_prereqs(params, store, "shots")
+
+
+def _film_batch_argv(params: FilmGenParams, store: WorkspaceStore, kind: str) -> list[str]:
+    directory = _film_dir(params, store)
+    jobs = directory / "jobs" / ("keyframes" if kind == "keyframes" else "shots") / "jobs.json"
+    if not jobs.is_file():
+        raise TaskError("not_found", f"缺少任务文件：{_rel(jobs)}")
+    argv = [sys.executable, "scripts/r1_batch.py", "--jobs", _rel(jobs), "--timeout", "21600"]
+    if params.only:
+        argv += ["--only", params.only]
+    if params.force:
+        argv += ["--force"]
+    return argv
+
+
+def _film_voice_prereqs(params: FilmVoiceParams, store: WorkspaceStore) -> list[str]:
+    try:
+        _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if not _port_open("127.0.0.1", 50000):
+        return ["VoxCPM2 50000 未监听"]
+    return []
+
+
+def _film_build_prereqs(params: BaseModel, store: WorkspaceStore) -> list[str]:
+    missing: list[str] = []
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if not (directory / "storyboard.json").is_file():
+        missing.append("缺少 storyboard.json")
+    if not shutil.which("ffmpeg"):
+        missing.append("PATH 中没有 ffmpeg")
+    return missing
+
+
+def _film_assemble_prereqs(params: FilmAssembleParams, store: WorkspaceStore) -> list[str]:
+    missing = _film_build_prereqs(params, store)
+    try:
+        directory = _film_dir(params, store)
+    except TaskError:
+        return missing
+    if not (directory / "assets" / "audio" / "audio_manifest.json").is_file():
+        missing.append("缺少 audio_manifest.json；先运行 film.voice")
+    if params.bgm_id and not (ROOT / "assets" / "audio" / "manifest.json").is_file():
+        missing.append("缺少 assets/audio/manifest.json")
+    if params.out:
+        try:
+            _resolve_under(params.out, ("projects",), must_exist=False)
+        except TaskError as exc:
+            missing.append(exc.message)
+    return missing
+
+
+def _film_qc_prereqs(params: FilmQcParams, store: WorkspaceStore) -> list[str]:
+    try:
+        directory = _film_dir(params, store)
+    except TaskError as exc:
+        return [exc.message]
+    if params.build:
+        target = (ROOT / params.build).resolve()
+        if target.is_dir():
+            target = target / "build_manifest.json"
+        if not target.is_file():
+            return [f"构建清单不存在：{params.build}"]
+    elif not list(directory.glob("renders/build-*/build_manifest.json")):
+        return ["没有构建产物；先运行 film.assemble"]
+    return []
+
+
+def _film_after(params: BaseModel, task_id: str, store: WorkspaceStore) -> dict[str, Any]:
+    directory = _film_dir(params, store)
+    state = directory / "qc" / "film_state.json"
+    if state.is_file():
+        return {"state": _rel(state)}
+    builds = sorted(directory.glob("renders/build-*"))
+    return {"build": _rel(builds[-1]) if builds else None}
 
 
 def _locked_style(episode: dict[str, Any] | None, requested: str | None = None) -> str | None:
@@ -1587,6 +1757,147 @@ TASK_KINDS: dict[str, TaskKind] = {
         build_argv=_build_argv,
         prerequisites=_build_prereqs,
         after_success=_build_after,
+    ),
+    "film.keyframes": TaskKind(
+        key="film.keyframes",
+        label="影视关键帧生成",
+        description="执行 projects/<id>/jobs/keyframes/jobs.json（FLUX.3）；GPU 单飞。",
+        cost="每张约 2-2.5 分钟；8 镜约 20 分钟",
+        safety="只写项目 assets/keyframes/ 与 jobs 运行记录；GPU 单飞锁",
+        params_model=FilmGenParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_batch_argv(params, _STORE_REF[0], "keyframes"),
+        prerequisites=_film_keyframe_prereqs,
+        danger=True,
+    ),
+    "film.wan": TaskKind(
+        key="film.wan",
+        label="影视 Wan 镜头生成",
+        description="执行 projects/<id>/jobs/shots/jobs.json（Wan2.2 TI2V）；可选 --only 单镜头。",
+        cost="576x1024 / 121 帧约 36 分钟/镜",
+        safety="只写项目 shots/<shot_id>/；GPU 单飞锁；不自动编码",
+        params_model=FilmGenParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_batch_argv(params, _STORE_REF[0], "shots"),
+        prerequisites=_film_wan_prereqs,
+        danger=True,
+    ),
+    "film.timeline": TaskKind(
+        key="film.timeline",
+        label="影视时间轴",
+        description="按真实旁白 WAV 时长生成 audio-first 时间轴，镜头不足时自动延长。",
+        cost="秒级",
+        safety="只写项目 timeline.json / qc；不调用模型",
+        params_model=FilmTimelineParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "timeline", params, ["--planned"] if params.planned else []),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.voice": TaskKind(
+        key="film.voice",
+        label="影视配音",
+        description="逐句调用 VoxCPM2，写标准 audio_manifest.json；支持逐行 voice_profile。",
+        cost="分钟级（CPU）",
+        safety="只写项目 assets/audio；已有有效 WAV 时复用，force 才重合成",
+        params_model=FilmVoiceParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "voice", params, ["--force"] if params.force else []),
+        prerequisites=_film_voice_prereqs,
+        after_success=_film_after,
+    ),
+    "film.enhance": TaskKind(
+        key="film.enhance",
+        label="影视学习型超分",
+        description="可选增强层：外部 realesrgan-ncnn 超分；默认不进生产，缺模型即失败。",
+        cost="按帧数；不与会话内 Wan/FLUX 并发",
+        safety="只写 shots/<shot>/*_sr.mp4 与增强报告；不覆盖源帧/源剪辑；GPU 单飞锁",
+        params_model=FilmEnhanceParams,
+        lock_key=lambda params: "gpu:comfy",
+        build_argv=lambda params, task_id: _film_argv(
+            "upscale", params,
+            ["--backend", params.backend]
+            + (["--shot", params.shot] if params.shot else [])
+            + (["--force"] if params.force else [])),
+        prerequisites=_film_build_prereqs,
+        danger=True,
+    ),
+    "film.static": TaskKind(
+        key="film.static",
+        label="影视静帧质量门",
+        description="逐镜记录客观指标与人工语义清单；PENDING 不等于通过。",
+        cost="每镜数秒（CPU）",
+        safety="只写项目 work/static/<shot_id>/static_quality.json",
+        params_model=FilmStaticParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "static", params, ["--force"] if params.force else []),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.clips": TaskKind(
+        key="film.clips",
+        label="影视镜头编码",
+        description="把 Wan PNG 帧序列编码为镜头 MP4，并按时间轴补齐时长。",
+        cost="分钟级（纯 FFmpeg）",
+        safety="只写 shots/<shot_id>/；不改原始帧",
+        params_model=FilmClipsParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "clips", params, ["--policy", params.policy] + (["--force"] if params.force else [])),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.motion": TaskKind(
+        key="film.motion",
+        label="影视确定性运镜",
+        description="为静帧渲染确定性运镜与纹理合成，写 shots/<shot_id>/*_motion.mp4。",
+        cost="每镜头约 10-90 秒（CPU）",
+        safety="只写 shots/ 与 motion/build-<time>/；不占用 GPU",
+        params_model=FilmProjectParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv("motion", params),
+        prerequisites=_film_build_prereqs,
+    ),
+    "film.assemble": TaskKind(
+        key="film.assemble",
+        label="影视合成",
+        description="准备 segments/audio 契约并调用 r3_build，写入 renders/build-<time>/。",
+        cost="约 1-3 分钟（纯 FFmpeg）",
+        safety="只写新的 build 目录；不覆盖历史成片",
+        params_model=FilmAssembleParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "assemble", params,
+            (["--bgm-id", params.bgm_id] if params.bgm_id else [])
+            + (["--no-motion"] if params.no_motion else [])
+            + (["--force-clips"] if params.force_clips else [])
+            + (["--dry-run"] if params.dry_run else [])
+            + (["--out", params.out] if params.out else [])),
+        prerequisites=_film_assemble_prereqs,
+        after_success=_film_after,
+    ),
+    "film.status": TaskKind(
+        key="film.status",
+        label="影视状态派生",
+        description="从关键帧/镜头/构建/质量/人工审核派生状态，写 qc/film_state.json。",
+        cost="秒级",
+        safety="只读产物；只写 qc/film_state.json",
+        params_model=FilmStatusParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "status", params, ["--write"] if params.write else []),
+    ),
+    "film.qc": TaskKind(
+        key="film.qc",
+        label="影视技术质检",
+        description="对最近一次构建执行技术质量检查，写 quality_report.json。",
+        cost="秒级到 1 分钟",
+        safety="只读产物，只写 quality_report.json",
+        params_model=FilmQcParams,
+        lock_key=lambda params: f"film:{params.project_id}",
+        build_argv=lambda params, task_id: _film_argv(
+            "qc", params, (["--build", params.build] if params.build else [])),
+        prerequisites=_film_qc_prereqs,
     ),
     "comfy.batch": TaskKind(
         key="comfy.batch",

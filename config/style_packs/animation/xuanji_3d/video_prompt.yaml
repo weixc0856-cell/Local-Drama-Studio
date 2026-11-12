@@ -1,0 +1,27 @@
+schema_version: '1.0'
+motion_vocabulary:
+- strand hair drifting
+- silk sleeve and robe hem swaying
+- light motes and dust drifting
+- volumetric mist drifting
+secondary_limit: 2
+preserve:
+- porcelain skin with subsurface scattering
+- strand hair detail
+- gold embroidery and lamellar armour
+- volumetric haze and golden rim light
+avoid:
+- photoreal live-action
+- realistic skin pores
+- 2d illustration
+- clean anime cel shading
+- western cartoon
+- low-poly
+- chibi proportions
+- glossy plastic doll skin
+- idol face
+- european medieval armour
+- readable text
+- watermark
+- deformed face
+- extra limbs

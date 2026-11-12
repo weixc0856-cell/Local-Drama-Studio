@@ -82,7 +82,7 @@ def test_project_detail_returns_storyboard_and_validation(client: TestClient, tm
     assert detail["meta"]["title"] == "测试短片"
     assert [shot["shot_id"] for shot in detail["storyboard"]["shots"]] == ["S01", "S02"]
     assert len(detail["narration"]["segments"]) == 2
-    assert detail["assets"]["S01"] == {"keyframe": None, "clip": None}
+    assert detail["assets"]["S01"] == {"keyframe": None, "clip": None, "kind": None, "frames": 0}
     # No visual_bible.yaml in this fixture: validation reports it, the endpoint still answers.
     assert detail["validation"]["ok"] is False
     assert any(issue["code"] == "bible_missing" for issue in detail["validation"]["issues"])
@@ -150,3 +150,13 @@ def test_style_pack_endpoint_reads_registry() -> None:
     detail = client.get("/api/film/styles/packs/oriental.ink_wash").json()
     assert detail["pack"]["identity"]["id"] == "oriental.ink_wash"
     assert client.get("/api/film/styles/packs/nope.style").status_code == 404
+
+
+def test_status_endpoint_derives_from_files(client: TestClient, tmp_path: Path) -> None:
+    make_film_project(tmp_path)
+    response = client.get("/api/film/projects/demo_film/status")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["project_id"] == "demo_film"
+    assert payload["overall"] == "planned"
+    assert payload["counts"]["keyframes"] == 0

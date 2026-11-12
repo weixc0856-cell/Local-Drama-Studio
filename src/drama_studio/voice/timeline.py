@@ -42,6 +42,13 @@ def build_timeline(
         duration_ms = int(round(float(seg["duration"]) * 1000))
         if duration_ms <= 0:
             raise ValueError(f"{seg['segment_id']}: duration must be > 0")
+        # A caller that owns absolute shot boundaries can place a line exactly
+        # with gap_before_ms. The default 0 preserves the existing sequential
+        # contract for every caller that does not use it.
+        gap_before = int(seg.get("gap_before_ms", 0))
+        if gap_before < 0:
+            raise ValueError(f"{seg['segment_id']}: gap_before_ms must be >= 0")
+        cursor += gap_before
         speech_start = cursor
         speech_end = speech_start + duration_ms
         pause_after = int(seg.get("pause_after_ms", 0))
@@ -59,6 +66,7 @@ def build_timeline(
             "audio_end_ms": next_speech,
             "speech_start_ms": speech_start,
             "speech_end_ms": speech_end,
+            "gap_before_ms": gap_before,
             "pause_after_ms": pause_after,
             "subtitle_start_ms": speech_start,
             "subtitle_end_ms": sub_end,

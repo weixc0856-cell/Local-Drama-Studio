@@ -1,0 +1,11 @@
+schema_version: '1.0'
+id: animation.xuanji_3d
+name: 玄机式 3D 国漫
+group: animation
+version: 1.0.0
+status: SPEC_DRAFT
+summary: 玄机科技式电影级三维国漫：瓷肌次表面散射、发丝高光、织金重彩与鳞甲、体积光与云海大景；UE5 动画帧质感，不是实拍。
+layers:
+- identity
+- execution
+- consistency

@@ -51,6 +51,20 @@ def check_continuity(storyboard: Storyboard, narration: Narration | None = None)
         if {left, right} == {"left_to_right", "right_to_left"} and current.continuity.match_cut_to is None:
             issues.append(Issue("warning", "motion_flip", current.shot_id,
                                 f"motion direction flips {left} -> {right} without a match cut"))
+        if previous.shot_size == current.shot_size and current.continuity.match_cut_to is None:
+            issues.append(Issue(
+                "warning", "same_shot_size", current.shot_id,
+                f"adjacent shots are both {current.shot_size.value}; use a size ladder or a match cut"))
+        left_move = previous.camera.move.value
+        right_move = current.camera.move.value
+        if (left_move, right_move) in (("dolly_in", "dolly_out"), ("dolly_out", "dolly_in"),
+                                       ("pan", "pan"), ("tracking", "tracking")):
+            if current.continuity.match_cut_to is None and left == right:
+                pass
+            elif current.continuity.match_cut_to is None:
+                issues.append(Issue(
+                    "warning", "camera_vector_jump", current.shot_id,
+                    f"camera vector changes {left_move} -> {right_move} without a match cut"))
         if previous.continuity.character_state != current.continuity.character_state \
                 and previous.scene_id == current.scene_id:
             issues.append(Issue("warning", "character_state_jump", current.shot_id,

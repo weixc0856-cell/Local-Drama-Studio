@@ -23,9 +23,12 @@ ROOT = find_project_root()
 
 def test_all_packs_load_and_validate() -> None:
     packs = load_all(ROOT)
-    assert len(packs) == 21
+    assert len(packs) == 23
     assert {"retro.collage", "retro.synthwave", "retro.pop_art", "retro.y2k"} <= set(packs)
     assert {"oriental.modern_chinese", "oriental.gongbi", "oriental.ink_wash"} <= set(packs)
+    assert "animation.mushenji_dark" in packs
+    assert "animation.xuanji_3d" in packs
+    assert len(list_packs(ROOT, "animation")) == 3
     assert len(list_packs(ROOT, "artistic")) == 5
     for pack in packs.values():
         assert pack.identity.version == "1.0.0"

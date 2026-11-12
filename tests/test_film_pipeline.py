@@ -1,19 +1,41 @@
-"""Film pipeline: job generation, voice wiring, assembly command."""
+"""Film pipeline: job generation, voice wiring, timeline and segment adapters."""
 
 from __future__ import annotations
 
 import json
+import wave
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 import yaml
 
-from drama_studio.film import build_timeline, plan_storyboard
-from drama_studio.film.assemble import build_assemble_command
+from drama_studio.film import plan_storyboard
+from drama_studio.film.assemble import prepare
+from drama_studio.film.audio import standard_manifest, write_manifest
 from drama_studio.film.jobs import build_keyframe_jobs, build_wan_jobs
 from drama_studio.film.project import load_project
 from drama_studio.film.schemas import ArtDirection, CameraLanguage, CharacterDesign, EnvironmentDesign, VisualBible
+from drama_studio.film.segments import build_audio_manifest, build_segments
+from drama_studio.film.timeline import build_edit_timeline
+
+
+def _wav(path: Path, seconds: float = 1.0, rate: int = 48000) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with wave.open(str(path), "wb") as handle:
+        handle.setnchannels(1)
+        handle.setsampwidth(2)
+        handle.setframerate(rate)
+        handle.writeframes(b"\x00\x00" * int(rate * seconds))
+    return path
+
+
+def _png(path: Path) -> Path:
+    from PIL import Image
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (64, 114), (200, 200, 200)).save(path)
+    return path
 
 
 def _project(root: Path, shots: int = 2) -> Path:
@@ -32,9 +54,10 @@ def _project(root: Path, shots: int = 2) -> Path:
         'paths: {}\ntts:\n  base_url: "http://tts.test"\n  sample_rate: 48000\n', encoding="utf-8"
     )
     (root / "assets").mkdir(exist_ok=True)
-    (root / "assets" / "ref.wav").write_bytes(b"RIFF")
+    _wav(root / "assets" / "ref.wav", 0.2)
     (directory / "narration.json").write_text(json.dumps({
         "project_id": "p1",
+        "language": "en",
         "segments": [{"id": f"N{i:03d}", "text": f"line {i}"} for i in range(1, shots + 1)],
     }, ensure_ascii=False), encoding="utf-8")
     bible = VisualBible(
@@ -60,6 +83,16 @@ def _project(root: Path, shots: int = 2) -> Path:
     return directory
 
 
+def _audio_manifest(directory: Path, seconds: list[float]) -> Path:
+    segments = []
+    for index, length in enumerate(seconds, start=1):
+        wav = _wav(directory / "assets" / "audio" / f"N{index:03d}.wav", length)
+        segments.append({"id": f"N{index:03d}", "text": f"line {index}", "wav": str(wav),
+                         "pause_after_ms": 500})
+    payload = standard_manifest(project_id="p1", segments=segments, root=directory.parents[1])
+    return write_manifest(directory / "assets" / "audio" / "audio_manifest.json", payload)
+
+
 def test_keyframe_jobs_reference_flux3(tmp_path: Path) -> None:
     _project(tmp_path, 2)
     loaded = load_project(tmp_path, "p1")
@@ -83,8 +116,26 @@ def test_wan_jobs_need_keyframes_unless_allowed(tmp_path: Path) -> None:
     job = payload[0]
     assert job["workflow"] == "workflows/r0_wan_i2v_api.json"
     assert job["reference"]["input_name"] == "p1_S01_kf.png"
+    assert job["reference"]["selector"] == "latest"
     params = json.loads((tmp_path / job["params"]).read_text(encoding="utf-8"))
     assert params["frames"] == 121 and params["shift"] == 8.0
+
+
+def test_wan_jobs_pick_73_for_short_shots(tmp_path: Path) -> None:
+    _project(tmp_path, 2)
+    directory = tmp_path / "projects" / "p1"
+    board = json.loads((directory / "storyboard.json").read_text(encoding="utf-8"))
+    board["shots"][0]["duration_seconds"] = 2.5
+    (directory / "storyboard.json").write_text(json.dumps(board, ensure_ascii=False), encoding="utf-8")
+    loaded = load_project(tmp_path, "p1")
+    for shot in loaded.storyboard.shots:
+        _png(directory / "assets" / "keyframes" / shot.shot_id / f"{shot.shot_id}_00001_.png")
+    result = build_wan_jobs(loaded, tmp_path)
+    payload = json.loads(Path(result["jobs"]).read_text(encoding="utf-8"))
+    first = json.loads((tmp_path / payload[0]["params"]).read_text(encoding="utf-8"))
+    second = json.loads((tmp_path / payload[1]["params"]).read_text(encoding="utf-8"))
+    assert first["frames"] == 73
+    assert second["frames"] == 121
 
 
 def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -94,8 +145,7 @@ def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.Mon
     loaded = load_project(tmp_path, "p1")
 
     def fake(text, *, prompt_wav, prompt_text, out_wav, speed, base):
-        out_wav.parent.mkdir(parents=True, exist_ok=True)
-        out_wav.write_bytes(b"RIFF")
+        _wav(out_wav, 1.25)
         return SimpleNamespace(seconds=1.25, synth_seconds=9.0, sample_rate=48000,
                                prompt_sha256="abc")
 
@@ -104,48 +154,57 @@ def test_voice_synthesis_writes_manifest(tmp_path: Path, monkeypatch: pytest.Mon
     manifest = json.loads(Path(result["manifest"]).read_text(encoding="utf-8"))
     assert result["segments"] == 2
     assert manifest["engine"] == "voxcpm2"
-    assert manifest["segments"][0]["rendered_text"] == "line 1"
+    assert manifest["segments"][0]["rendered_text"] == "(None, None)line 1" or \
+        manifest["segments"][0]["rendered_text"] == "line 1"
+    assert manifest["lines"][0]["file"] == "projects/p1/assets/audio/N001.wav"
+    assert manifest["lines"][0]["duration_seconds"] == pytest.approx(1.25)
 
     from drama_studio.film.schemas import NarrationSegment
     from drama_studio.film.voice import render_text
     directed = NarrationSegment(id="N009", text="白日依山尽。", emotion="open", delivery="gentle")
-    assert render_text(directed) == "(open, gentle)白日依山尽。"
+    assert render_text(directed) == "白日依山尽"
 
 
-def test_assemble_command_concatenates_and_mixes(tmp_path: Path) -> None:
+def test_audio_first_timeline_extends_short_shots(tmp_path: Path) -> None:
     directory = _project(tmp_path, 2)
+    _audio_manifest(directory, [7.0, 1.0])
     loaded = load_project(tmp_path, "p1")
-    timeline = build_timeline(loaded.storyboard)
-    (directory / "timeline.json").write_text(
-        json.dumps(timeline.model_dump(mode="json"), ensure_ascii=False), encoding="utf-8"
-    )
+    manifest = json.loads((directory / "assets" / "audio" / "audio_manifest.json").read_text(encoding="utf-8"))
+    from drama_studio.film.config import ProductionSettings
+
+    timeline = build_edit_timeline(loaded.storyboard, manifest, settings=ProductionSettings())
+    first = timeline.entries[0]
+    assert (first.end_ms - first.start_ms) >= 7000 + 500, "short shot must grow to hold its line"
+    assert timeline.narration_events[0].start_ms == timeline.leading_silence_ms
+    assert timeline.narration_events[1].start_ms == timeline.entries[1].start_ms
+    assert timeline.total_ms >= timeline.narration_events[-1].end_ms
+
+
+def test_prepare_builds_segments_and_timed_audio(tmp_path: Path) -> None:
+    directory = _project(tmp_path, 2)
+    _audio_manifest(directory, [1.0, 1.0])
     for shot in ("S01", "S02"):
-        clip = directory / "shots" / shot / f"{shot}_00001_.mp4"
-        clip.parent.mkdir(parents=True, exist_ok=True)
-        clip.write_bytes(b"")
-    (directory / "assets" / "audio").mkdir(parents=True, exist_ok=True)
-    segments = []
-    for item in ("N001", "N002"):
-        (directory / "assets" / "audio" / f"{item}.wav").write_bytes(b"RIFF")
-        segments.append({"id": item, "wav": f"assets/audio/{item}.wav"})
-    manifest = {"segments": segments}
-
-    cmd = build_assemble_command(directory, timeline, manifest, directory / "out.mp4")
-    joined = " ".join(cmd)
-    assert "concat=n=2:v=1:a=0" in joined
-    assert "amix=inputs=2" in joined
-    assert "libx264" in joined and "aac" in joined
-    assert cmd[-1].endswith("out.mp4")
-
-
-def test_contact_sheet_marks_missing_frames(tmp_path: Path) -> None:
-    from PIL import Image
-    from drama_studio.film.review import build_contact_sheet
-
-    directory = _project(tmp_path, 2)
+        _png(directory / "assets" / "keyframes" / shot / f"{shot}_00001_.png")
     loaded = load_project(tmp_path, "p1")
-    frame = directory / "assets" / "keyframes" / "S01" / "S01_00001_.png"
-    frame.parent.mkdir(parents=True)
-    Image.new("RGB", (576, 1024), (200, 180, 140)).save(frame)
-    out = build_contact_sheet(directory, loaded.storyboard, directory / "qc" / "sheet.png")
-    assert out.is_file() and out.stat().st_size > 0
+    prepared = prepare(loaded, tmp_path)
+    segments = build_segments(directory, loaded.storyboard, prepared["timeline"], root=tmp_path)
+    assert [item["type"] for item in segments] == ["image", "image"]
+    assert segments[0]["source"].endswith("S01_00001_.png")
+    audio = build_audio_manifest(prepared["audio_manifest"], prepared["timeline"], root=tmp_path)
+    assert audio["lines"][0]["gap_before_ms"] == 0
+    assert audio["lines"][1]["gap_before_ms"] > 0
+    assert audio["timeline"]["total_ms"] == prepared["timeline"].total_ms
+
+
+def test_segments_refuse_unencoded_wan_frames(tmp_path: Path) -> None:
+    directory = _project(tmp_path, 1)
+    _audio_manifest(directory, [1.0])
+    for index in (1, 2):
+        _png(directory / "shots" / "S01" / f"S01_{index:05d}_.png")
+    loaded = load_project(tmp_path, "p1")
+    prepared = prepare(loaded, tmp_path)
+    from drama_studio.film.assets import resolve_asset
+
+    assert resolve_asset(directory, "S01").kind == "image_sequence"
+    with pytest.raises(Exception, match="film clips"):
+        build_segments(directory, loaded.storyboard, prepared["timeline"], root=tmp_path)

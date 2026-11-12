@@ -105,6 +105,19 @@ def validate_project(root: Path, project_id: str) -> dict:
         issues.extend(check_continuity(project.storyboard, project.narration))
     if project.narration is None:
         issues.append(Issue("warning", "narration_missing", "-", "narration.json is missing; voice stage will fail"))
+    else:
+        from .text import TextCleanError, clean_spoken_text
+
+        for segment in project.narration.segments:
+            try:
+                audit = clean_spoken_text(segment.text, language=project.narration.language)
+            except TextCleanError as exc:
+                issues.append(Issue("error", "spoken_text_empty", segment.id, str(exc)))
+                continue
+            if audit.removed or audit.latin_removed:
+                issues.append(Issue(
+                    "warning", "spoken_text_cleaned", segment.id,
+                    f"TTS input will be cleaned: removed={audit.removed}, latin={audit.latin_removed}"))
     if project.bible is None:
         issues.append(Issue("error", "bible_missing", "-", "visual_bible.yaml is required"))
     if project.style_id:

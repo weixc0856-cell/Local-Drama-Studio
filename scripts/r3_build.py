@@ -63,11 +63,12 @@ def relpath(path: Path) -> str:
         return str(path)
 
 
-def build_segment(seg: dict, out: Path) -> None:
+def build_segment(seg: dict, out: Path, *, render_duration: float | None = None) -> None:
     src = ROOT / seg["source"]
     if not src.is_file():
         raise FileNotFoundError(src)
-    dur = float(seg["duration"])
+    dur = float(render_duration if render_duration is not None else seg["duration"])
+    target = float(seg["duration"])
     if seg["type"] == "image":
         frames = max(1, round(dur * FPS))
         vf = (
@@ -79,7 +80,9 @@ def build_segment(seg: dict, out: Path) -> None:
                "-vf", vf, "-t", f"{dur:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
                "-preset", "medium", "-r", str(FPS), str(out)]
     else:
-        vf = f"scale={W}:{H}:flags=lanczos,fps={FPS},format=yuv420p"
+        pad = max(0.0, dur - target)
+        pad_filter = f"tpad=stop_mode=clone:stop_duration={pad:.3f}," if pad > 0 else ""
+        vf = f"{pad_filter}scale={W}:{H}:flags=lanczos,fps={FPS},format=yuv420p"
         cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-vf", vf,
                "-t", f"{dur:.3f}", "-an", "-c:v", "libx264", "-crf", "18",
                "-preset", "medium", "-r", str(FPS), str(out)]
@@ -103,6 +106,8 @@ def main() -> int:
                              "writes audio_timeline_effective.json into --out for provenance")
     parser.add_argument("--allow-overwrite", action="store_true",
                         help="allow replacing an existing final_9x16.mp4 in --out")
+    parser.add_argument("--crossfade", type=float, default=0.5,
+                        help="crossfade seconds on dissolve cuts (0 disables)")
     args = parser.parse_args()
 
     segments = json.loads((ROOT / args.segments).read_text(encoding="utf-8"))
@@ -144,6 +149,7 @@ def main() -> int:
             "segment_id": f"line_{i:02d}",
             "duration": float(line["duration_seconds"]),
             "pause_after_ms": int(line.get("pause_after_ms", GAP_MS)),
+            "gap_before_ms": int(line.get("gap_before_ms", 0)),
             # Spoken text and on-screen text are allowed to differ (e.g. a
             # simplified TTS script with traditional subtitles).
             "subtitle_text": line.get("subtitle_text") or line["text"],
@@ -169,18 +175,55 @@ def main() -> int:
         f"leading={leading_ms}ms content={content_type} lines={len(lines)}"
     )
 
+    durations = [float(seg["duration"]) for seg in segments]
+    handles: list[float] = []
+    transitions: list[str] = []
+    for index, seg in enumerate(segments):
+        if index + 1 < len(segments):
+            nxt = segments[index + 1]
+            kind = str(nxt.get("transition_in") or "cut")
+            handles.append(args.crossfade if kind == "dissolve" else 0.04)
+            transitions.append(kind)
+        else:
+            handles.append(0.0)
+            transitions.append("end")
+
     seg_files = []
-    for seg in segments:
+    for index, seg in enumerate(segments):
         path = seg_dir / f"{seg['id']}.mp4"
-        print("build segment", seg["id"], seg["type"], seg["duration"])
-        build_segment(seg, path)
+        render_duration = durations[index] + handles[index]
+        print("build segment", seg["id"], seg["type"], seg["duration"],
+              "render", round(render_duration, 3), "next", transitions[index])
+        build_segment(seg, path, render_duration=render_duration)
         seg_files.append(path)
 
-    concat_list = out_dir / "concat.txt"
-    concat_list.write_text("".join(f"file '{p.as_posix()}'\n" for p in seg_files), encoding="utf-8")
     video_raw = out_dir / "video_raw.mp4"
-    run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_list),
-         "-c", "copy", str(video_raw)])
+    use_xfade = args.crossfade > 0 and any(kind == "dissolve" for kind in transitions)
+    if use_xfade and len(seg_files) > 1:
+        inputs: list[str] = []
+        for path in seg_files:
+            inputs += ["-i", str(path)]
+        graph_parts = [f"[{i}:v]settb=AVTB,setpts=PTS-STARTPTS[v{i}]"
+                       for i in range(len(seg_files))]
+        current = "v0"
+        for index in range(1, len(seg_files)):
+            overlap = handles[index - 1]
+            offset = sum(durations[:index])
+            label = f"x{index}"
+            graph_parts.append(
+                f"[{current}][v{index}]xfade=transition=fade:"
+                f"duration={overlap:.3f}:offset={offset:.3f}[{label}]")
+            current = label
+        run(["ffmpeg", "-y", "-v", "error", *inputs,
+             "-filter_complex", ";".join(graph_parts),
+             "-map", f"[{current}]", "-an", "-c:v", "libx264", "-crf", "18",
+             "-preset", "medium", "-pix_fmt", "yuv420p", "-r", str(FPS),
+             "-t", f"{sum(durations):.3f}", str(video_raw)])
+    else:
+        concat_list = out_dir / "concat.txt"
+        concat_list.write_text("".join(f"file '{p.as_posix()}'\n" for p in seg_files), encoding="utf-8")
+        run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(concat_list),
+             "-c", "copy", str(video_raw)])
 
     video_faded = out_dir / "video_faded.mp4"
     fade_out = max(0.0, total - 0.9)

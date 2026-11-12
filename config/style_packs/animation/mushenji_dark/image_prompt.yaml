@@ -1,0 +1,33 @@
+schema_version: '1.0'
+identity: Chinese 3D animated series frame, Tales of Herding Gods dark national style,
+  Unreal Engine 5 stylized 3D, not photoreal
+medium: stylized 3D animation still, UE5 cinematic render, PBR materials with animation-friendly
+  forms, volumetric light, subtle ink-wash atmosphere
+materials:
+- stylized weathered stone and cracked earth
+- coarse dark linen and layered cloth
+- aged iron and worn leather
+- dry thatch, moss and charred wood
+- jade-green ritual objects and subdued embroidery
+composition:
+- cinematic 3D animation keyframe with a readable character silhouette
+- ruined village of thatched stone houses and an ancient altar
+- layered ink clouds and a false twilight sky
+- foreground ruins framing the subject, large negative space
+- low-key animation lighting with volumetric mist
+prompt_order:
+- subject
+- medium
+- composition
+- lighting
+- material
+- camera
+positive_anchors:
+- stylized 3D animated character, clean animation-friendly forms
+- dark brown and charcoal palette, low saturation
+- cinematic rim light with cold grey-green mist and ember accents
+- ruined Liangzhu-style thatched structures and jade cong carvings
+- eerie weathered stone statues and broken walls
+- ink diffusion and calligraphy brush energy
+- UE5 animation keyframe, not concept art and not photoreal
+- no text and no watermark

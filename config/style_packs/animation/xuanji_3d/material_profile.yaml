@@ -1,0 +1,13 @@
+schema_version: '1.0'
+materials:
+- porcelain skin with subsurface scattering
+- silk with raised gold embroidery
+- black lacquer lamellar armour
+- jade and bronze filigree
+- strand hair catching rim light
+- mossy stone and weathered cliff rock
+texture_cues:
+- porcelain skin with subsurface scattering
+- strand hair detail
+- gold embroidery and lamellar armour
+- volumetric haze and golden rim light

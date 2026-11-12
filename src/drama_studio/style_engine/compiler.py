@@ -11,7 +11,7 @@ CAMERA_TEXT = {
     "tracking": "smooth lateral tracking move",
     "pan": "slow pan",
     "tilt": "slow tilt",
-    "crane": "crane move through the space",
+    "crane": "camera rises or descends smoothly on a hidden rig, continuous speed, no equipment in frame",
     "orbit": "slow orbit around the subject",
     "handheld": "subtle handheld camera",
 }

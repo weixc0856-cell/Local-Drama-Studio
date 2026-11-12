@@ -14,8 +14,9 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict
 
 from ..config import find_project_root
-from ..film.assets import latest_output
+from ..film.assets import latest_output, resolve_asset
 from ..film.project import STORYBOARD_FILE, load_project, validate_project
+from ..film.status import film_status
 from ..film.schemas import ShotSpec, Storyboard
 from ..style_engine import get_pack, list_packs
 
@@ -50,26 +51,31 @@ def _progress(directory: Path) -> dict[str, Any]:
     storyboard_path = directory / STORYBOARD_FILE
     storyboard = _read_json(storyboard_path) if storyboard_path.is_file() else {"shots": []}
     shots = storyboard.get("shots") or []
-    keyframes = clips = 0
+    keyframes = clips = frames = 0
     cover = None
     for shot in shots:
         shot_id = str(shot.get("shot_id", ""))
         if not shot_id:
             continue
         keyframe = latest_output(directory / "assets" / "keyframes" / shot_id, shot_id, ".png")
-        clip = latest_output(directory / "shots" / shot_id, shot_id, ".mp4")
+        asset = resolve_asset(directory, shot_id)
         if keyframe:
             keyframes += 1
             cover = cover or keyframe
-        if clip:
+        if asset and asset.kind == "video":
             clips += 1
-            cover = cover or clip
+            cover = (asset.path, 10) if asset.path else cover
+        elif asset and asset.kind == "image_sequence":
+            frames += 1
+    if isinstance(cover, tuple):
+        cover = cover[0]
     audio_dir = directory / "assets" / "audio"
     audio = len(list(audio_dir.glob("N*.wav"))) if audio_dir.is_dir() else 0
     narration_path = directory / "narration.json"
     narration = len(_read_json(narration_path).get("segments", [])) if narration_path.is_file() else 0
     timeline = (directory / "timeline.json").is_file()
-    final = bool(list((directory / "renders").glob("final*.mp4"))) if (directory / "renders").is_dir() else False
+    finals = sorted(directory.glob("renders/build-*/final_9x16.mp4")) if (directory / "renders").is_dir() else []
+    final = bool(finals)
     return {
         "shots": len(shots),
         "keyframes": keyframes,
@@ -81,6 +87,7 @@ def _progress(directory: Path) -> dict[str, Any]:
             "storyboard": storyboard_path.is_file(),
             "keyframes": f"{keyframes}/{len(shots)}" if shots else "0/0",
             "video": f"{clips}/{len(shots)}" if shots else "0/0",
+            "frame_runs": f"{frames}/{len(shots)}" if shots else "0/0",
             "voice": f"{audio}/{narration}" if narration else "0/0",
             "edit": timeline,
             "final": final,
@@ -127,10 +134,13 @@ def get_film_project(project_id: str) -> dict[str, Any]:
     if project.storyboard:
         for shot in project.storyboard.shots:
             keyframe = latest_output(directory / "assets" / "keyframes" / shot.shot_id, shot.shot_id, ".png")
-            clip = latest_output(directory / "shots" / shot.shot_id, shot.shot_id, ".mp4")
+            asset = resolve_asset(directory, shot.shot_id)
+            clip = asset.path if asset and asset.kind == "video" else None
             assets[shot.shot_id] = {
                 "keyframe": str(keyframe.relative_to(root)).replace("\\", "/") if keyframe else None,
                 "clip": str(clip.relative_to(root)).replace("\\", "/") if clip else None,
+                "kind": asset.kind if asset else None,
+                "frames": asset.frame_count if asset and asset.kind == "image_sequence" else 0,
             }
     payload["assets"] = assets
     if project.style_id:
@@ -220,6 +230,15 @@ def patch_shot(project_id: str, shot_id: str, patch: ShotPatch) -> dict[str, Any
     path.write_text(json.dumps(storyboard.model_dump(mode="json"), ensure_ascii=False, indent=2) + "\n",
                     encoding="utf-8")
     return {"shot": validated.model_dump(mode="json"), "storyboard": storyboard.model_dump(mode="json")}
+
+
+@router.get("/projects/{project_id}/status")
+def get_film_status(project_id: str) -> dict[str, Any]:
+    root = _root()
+    directory = _project_dir(root, project_id)
+    if not (directory / "project.json").is_file():
+        raise HTTPException(status_code=404, detail=f"film project not found: {project_id}")
+    return film_status(load_project(root, project_id), root)
 
 
 @router.get("/styles/packs")

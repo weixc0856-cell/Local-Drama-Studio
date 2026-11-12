@@ -64,6 +64,10 @@
 | [MODEL_UPGRADE_POC.md](MODEL_UPGRADE_POC.md) | 2026-11-06 三模型核验、FLUX.3 落地、VoxCPM2 盲听与 H3 评估 |
 | [FILM_PRODUCTION_GUIDE.md](FILM_PRODUCTION_GUIDE.md) | Script-to-Film 制作指南：十阶段、数据契约、摄影语言、连续性、声音与剪辑、QC、分阶段实施 |
 | [VISUAL_STYLE_ENGINE.md](VISUAL_STYLE_ENGINE.md) | 12 套 Style Pack、双模型约束、提示词编译、参考板、一致性检查与开发优先级 |
+| [PRODUCTION_CAPABILITY.md](PRODUCTION_CAPABILITY.md) | 当前硬件与模型下能稳定做什么、不能做什么；三种生产模式与镜头决策规则 |
+| [PLATFORM_COMFORT_ZONE.md](PLATFORM_COMFORT_ZONE.md) | 抖音/小红书舒适区：规格、内容、模板、合规与不接的活 |
+| [VIDEO_ENHANCEMENT_PLAN.md](VIDEO_ENHANCEMENT_PLAN.md) | 低清时序生成 + 后置增强的分层架构、默认 Lanczos、学习型超分取舍 |
+| [ENHANCEMENT_AB_REPORT.md](ENHANCEMENT_AB_REPORT.md) | S01 的 Lanczos / Real-ESRNet / Real-ESRGAN A/B 与兼容性结论 |
 | [ROADMAP.md](ROADMAP.md) | 阶段路线与后续候选 |
 
 ## 子目录

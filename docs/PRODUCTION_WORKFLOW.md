@@ -86,6 +86,32 @@ ProductionScript
 - 自动指标只给风险提示；人工看片前保持 `PENDING_HUMAN_REVIEW`。
 - FLUX 负向条件被清零且 CFG=1.0，负向提示词不作为控制；以正向约束为主。
 
+## 2.7 影视化链路接入（2026-11-07）
+
+```text
+任意文本
+  → film init / film script        （分句、旁白、视觉圣经、导演节拍）
+  → film prompts / keyframes       （FLUX 关键帧任务）
+  → film wan-jobs → comfy.batch    （Wan I2V，PNG 帧）
+  → film clips                     （PNG 帧 → 镜头 MP4，按时间轴补齐）
+  → film motion                    （静帧 → 确定性运镜/纹理，非静帧）
+  → film timeline                  （旁白真实时长决定镜头边界）
+  → film assemble                  （segments + audio → r3_build）
+  → film qc / quality.check_build  （技术 + 媒体 + 字幕流）
+  → film status / approve          （H2/H3 人工结论）
+```
+
+规则：
+
+- 旁白是时间基准；镜头不足时延长镜头，不压缩语速。
+- Wan 产物是帧序列，不是视频；必须经过 `film clips`。
+- 静帧必须带运动（确定性运镜或 Ken Burns），长静帧不得进入成片。
+- 字幕、混音和画面共享同一套毫秒边界；`assemble` 会校验三者起点一致。
+- TTS 前必须清洗导演备注：括号/方括号/拉丁词不得进入朗读文本。
+- 8 GB 显存使用 `safe8g`：448×768、49/65 帧；长镜头用 `film wan-chain` 末帧续接。
+- 同景别、反推向和换场切点使用 0.5 s `xfade`；持续环境声轨贯穿全片。
+- 成片只写新的 `renders/build-<time>/`，不覆盖历史；`quality.check_build` 是唯一技术门。
+
 ## 3. 当前单篇流程（R3 实测）
 
 ```text

@@ -1,0 +1,17 @@
+schema_version: '1.0'
+forbidden:
+- photoreal live-action
+- realistic skin pores
+- 2d illustration
+- clean anime cel shading
+- western cartoon
+- low-poly
+- chibi proportions
+- glossy plastic doll skin
+- idol face
+- european medieval armour
+- readable text
+- watermark
+- deformed face
+- extra limbs
+note: For validator and human checklist only; prompts use positive anchors.

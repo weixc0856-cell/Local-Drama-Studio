@@ -68,16 +68,31 @@ def stage_reference(job: dict) -> dict | None:
     ref = job.get("reference")
     if not ref:
         return None
-    source = (ROOT / ref["source"]).resolve()
-    if not source.is_file():
-        raise FileNotFoundError(f"reference image not found: {source}")
+    pinned = ref.get("pinned_source") or ref.get("source")
+    source = None
+    if ref.get("selector") == "latest" and ref.get("keyframe_dir"):
+        directory = (ROOT / ref["keyframe_dir"]).resolve()
+        matches = [p for p in directory.glob(f"{ref['shot_id']}_*.png") if p.is_file()]             if directory.is_dir() and ref.get("shot_id") else []
+        if matches:
+            source = max(matches, key=lambda p: (p.stat().st_mtime, p.name))
+    if source is None and pinned:
+        source = (ROOT / pinned).resolve()
+    if source is None or not source.is_file():
+        raise FileNotFoundError(
+            f"reference image not found for {job['id']} "
+            f"(selector={ref.get('selector')!r}, pinned={pinned!r})")
     COMFY_INPUT.mkdir(parents=True, exist_ok=True)
     target = COMFY_INPUT / ref["input_name"]
     shutil.copy2(source, target)
+    resolved_sha = sha256(source)
+    pinned_sha = ref.get("pinned_sha256")
     return {
         "source": str(source),
         "input_name": ref["input_name"],
-        "sha256": sha256(source),
+        "sha256": resolved_sha,
+        "pinned_source": str((ROOT / pinned).resolve()) if pinned else None,
+        "pinned_sha256": pinned_sha,
+        "stale_pin": bool(pinned_sha and pinned_sha != resolved_sha),
     }
 
 

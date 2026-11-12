@@ -186,7 +186,7 @@ def test_keyframe_and_video_prompts_follow_the_guide() -> None:
     assert "no text" in keyframe
 
     video = build_video_prompt(shot, _bible())
-    assert "primary motion: environment_drift" in video
+    assert "primary motion: clouds and mist drift" in video
     assert "no new characters" in video
     assert "preserve composition" in video
 
@@ -207,3 +207,28 @@ def test_character_flag_controls_keyframe_prompt() -> None:
     prompt = build_keyframe_prompt(shot, _bible())
     assert "no people, empty landscape" in prompt
     assert "protagonist:" not in prompt
+
+
+def test_continuity_flags_same_shot_size_and_camera_vector_jump() -> None:
+    from drama_studio.film.schemas import (
+        CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec, Storyboard,
+    )
+
+    def shot(shot_id: str, size: str, move: str, previous: str | None, nxt: str | None):
+        return ShotSpec(
+            shot_id=shot_id, scene_id="SC01", duration_seconds=3.0, shot_size=size,
+            camera=CameraSpec(move=move), layers=Layers(midground="ridge"),
+            motion=MotionSpec(primary="camera_push_in"),
+            continuity=ContinuitySpec(
+                lighting="dawn", environment="SC01",
+                previous_shot=previous, next_shot=nxt,
+                motion_direction="toward_camera" if move == "dolly_in" else "away_from_camera"),
+        )
+
+    board = Storyboard(project_id="p", shots=[
+        shot("S01", "ws", "dolly_in", None, "S02"),
+        shot("S02", "ws", "dolly_out", "S01", None),
+    ])
+    codes = {issue.code for issue in check_continuity(board)}
+    assert "same_shot_size" in codes
+    assert "camera_vector_jump" in codes

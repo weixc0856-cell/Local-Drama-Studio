@@ -1,0 +1,20 @@
+{
+  "style": "animation.xuanji_3d",
+  "status": "PENDING_REVIEW",
+  "subjects": [
+    "a young swordsman in a dark embroidered robe standing on a cliff edge at dusk, seen from behind in three-quarter view",
+    "a close-up portrait of a young man with wind-blown strand hair and a gold-thread embroidered collar, backlit by warm sun",
+    "an armoured general in red and black lamellar kneeling among spears on a battlefield at sunset, low angle past the foreground soldiers",
+    "two figures facing each other in a dark bamboo forest with cold teal mist and one warm lantern",
+    "a veiled woman in layered indigo silk seated on a stone bench in a moonlit courtyard",
+    "a long ruined temple corridor lined with weathered stone guardian statues, a tiny distant figure under dust-filled shafts of light",
+    "a close desk still life of a jade seal, an ink stone, a brush and a half-open blank scroll in warm lamplight, a blurred figure far behind",
+    "a vast cloud sea with floating stone peaks and one small pavilion, a lone tiny figure on the nearest cliff edge seen from far away",
+    "a close view of armoured gauntlets and a sword hilt resting on rain-wet mossy stone, a blurred figure behind",
+    "a crowd of soldiers with raised spears and tall banners before a mountain pass at dawn",
+    "an old master in white robes standing in falling snow before a temple gate",
+    "a girl in magenta silk running through a night market of paper lanterns, sleeves blurred by motion"
+  ],
+  "note": "Candidates only. Approve/reject each sample by hand; images are local and not in Git.",
+  "license": "generated locally with FLUX.3; reference images are not redistributed"
+}

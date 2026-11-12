@@ -1,0 +1,26 @@
+schema_version: '1.0'
+anchors:
+- name: deep teal
+  hex: '#16262B'
+- name: indigo
+  hex: '#3A3560'
+- name: vermilion
+  hex: '#A6322B'
+- name: gold thread
+  hex: '#C89A4B'
+- name: black lacquer
+  hex: '#15161A'
+- name: jade
+  hex: '#4E7C6A'
+- name: plum
+  hex: '#7C3F63'
+saturation_range:
+- 0.18
+- 0.45
+edge_density_range:
+- 0.05
+- 0.11
+value_range:
+- 0.1
+- 0.95
+note: Hex values are for validation only; they never enter a prompt.

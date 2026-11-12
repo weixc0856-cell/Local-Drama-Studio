@@ -1,6 +1,8 @@
 {
   "project_id": "deng_guan_que_lou",
   "sample_rate": 48000,
+  "fps": 24,
+  "leading_silence_ms": 300,
   "entries": [
     {
       "shot_id": "S01",
@@ -9,7 +11,9 @@
       "narration_ids": [
         "N001"
       ],
-      "visual_asset": null,
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S01\\S01_clip.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 6.0,
       "transition_in": "cut",
       "transition_out": "cut"
     },
@@ -20,8 +24,10 @@
       "narration_ids": [
         "N002"
       ],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S02\\S02_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 5.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
     },
     {
@@ -29,8 +35,10 @@
       "start_ms": 11000,
       "end_ms": 16000,
       "narration_ids": [],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S03\\S03_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 5.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
     },
     {
@@ -40,8 +48,10 @@
       "narration_ids": [
         "N003"
       ],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S04\\S04_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 6.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
     },
     {
@@ -51,8 +61,10 @@
       "narration_ids": [
         "N004"
       ],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S05\\S05_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 7.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
     },
     {
@@ -62,7 +74,9 @@
       "narration_ids": [
         "N005"
       ],
-      "visual_asset": null,
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S06\\S06_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 6.0,
       "transition_in": "match_cut",
       "transition_out": "match_cut"
     },
@@ -73,8 +87,10 @@
       "narration_ids": [
         "N006"
       ],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S07\\S07_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 7.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
     },
     {
@@ -82,9 +98,55 @@
       "start_ms": 42000,
       "end_ms": 47000,
       "narration_ids": [],
-      "visual_asset": null,
-      "transition_in": "cut",
+      "visual_asset": "D:\\Local-Drama-Studio\\projects\\deng_guan_que_lou\\shots\\S08\\S08_motion.mp4",
+      "asset_kind": "video",
+      "planned_duration_seconds": 5.0,
+      "transition_in": "dissolve",
       "transition_out": "cut"
+    }
+  ],
+  "narration_events": [
+    {
+      "id": "N001",
+      "shot_id": "S01",
+      "start_ms": 300,
+      "end_ms": 2967,
+      "text": "登鹳雀楼"
+    },
+    {
+      "id": "N002",
+      "shot_id": "S02",
+      "start_ms": 6000,
+      "end_ms": 9874,
+      "text": "唐代，王之涣"
+    },
+    {
+      "id": "N003",
+      "shot_id": "S04",
+      "start_ms": 16000,
+      "end_ms": 19368,
+      "text": "白日依山尽"
+    },
+    {
+      "id": "N004",
+      "shot_id": "S05",
+      "start_ms": 22000,
+      "end_ms": 25200,
+      "text": "黄河入海流"
+    },
+    {
+      "id": "N005",
+      "shot_id": "S06",
+      "start_ms": 29000,
+      "end_ms": 32091,
+      "text": "欲穷千里目"
+    },
+    {
+      "id": "N006",
+      "shot_id": "S07",
+      "start_ms": 35000,
+      "end_ms": 37435,
+      "text": "更上一层楼"
     }
   ],
   "total_ms": 47000

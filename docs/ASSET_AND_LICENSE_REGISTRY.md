@@ -77,11 +77,11 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | 资产 | 类型 | 文件 | 许可/来源 | 商用 | 状态 |
 |---|---|---|---|---|---|
 | `bgm_ink_strings_duo` | BGM | `assets/audio/bgm/keynata/ink_strings_duo.wav` | Keynata Commons `classical_duo_24036`；CC0-1.0；E 小调 | 是 | `REJECTED`（小调/织体稀疏，用户否决听感） |
-| `bgm_court_strings_duo` | BGM | `assets/audio/bgm/keynata/court_strings_duo.wav` | Keynata Commons `classical_duo_24015`；CC0-1.0 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_court_strings_duo` | BGM | `assets/audio/bgm/keynata/court_strings_duo.wav` | Keynata Commons `classical_duo_24015`；CC0-1.0 | 否 | `REVOKED`（文件已删除） |
 | `bgm_shinkai_piano` | BGM | `assets/audio/bgm/keynata/shinkai_piano.wav` | Keynata Commons `classical_piano_6134`；CC0-1.0；B 小调 | 是 | `REJECTED`（小调，用户否决听感） |
-| `bgm_ghibli_quartet` | BGM | `assets/audio/bgm/keynata/ghibli_quartet.wav` | Keynata Commons `classical_quartet_25010`；CC0-1.0；F 大调 | 是 | `APPROVED`（人工听感 PENDING） |
+| `bgm_ghibli_quartet` | BGM | `assets/audio/bgm/keynata/ghibli_quartet.wav` | Keynata Commons `classical_quartet_25010`；CC0-1.0；F 大调 | 否 | `REVOKED`（文件已删除） |
 | `bgm_warm_pop_canon` | BGM | `assets/audio/bgm/warm/pop_canon_major.wav` | Keynata Commons `jpop_3piece_11623`；CC0-1.0；大调 canon | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
-| `bgm_warm_strings_c` | BGM | `assets/audio/bgm/warm/strings_c_major.wav` | Keynata Commons `classical_quartet_25041`；CC0-1.0；C 大调 | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
+| `bgm_warm_strings_c` | BGM | `assets/audio/bgm/warm/strings_c_major.wav` | Keynata Commons `classical_quartet_25041`；CC0-1.0；C 大调 | 否 | `REVOKED`（文件已删除；原听感 REJECTED） |
 | `bgm_warm_piano_c` | BGM | `assets/audio/bgm/warm/piano_c_major.wav` | Keynata Commons `classical_piano_4016`；CC0-1.0；C 大调 | 是 | `REJECTED`（用户试听后仍判定偏暗，2026-11-05） |
 | `bgm_mozart_k330_piano` | BGM | `assets/audio/bgm/commons/mozart_k330_piano.wav` | Wikimedia Commons；Mozart K.330 第三乐章（Vadim Chaimovich / Musopen）；Public domain | 是 | `APPROVED`（人工听感 PENDING） |
 | `bgm_green_leaves_guitar` | BGM | `assets/audio/bgm/commons/green_leaves_guitar.wav` | Jason Shaw / audionautix.com；CC BY 3.0 US；**需署名** | 是 | `APPROVED`（人工听感 PENDING） |
@@ -92,12 +92,24 @@ S3-B.2 接入：`config/fonts.yaml` + `src/drama_studio/fonts.py`；`scripts/r3_
 | 旧正弦 drone ×4 | BGM | `assets/audio/bgm/*.wav` | 自生成 | — | `REJECTED`（用户明确拒绝嗡嗡声） |
 | SFX（wind/water/chime/whoosh） | SFX | `assets/audio/sfx/*.wav` | 自生成；无第三方采样 | 是 | `APPROVED`（人工听感 PENDING） |
 | 第三方音乐 | BGM | — | 未使用；使用前必须逐曲登记来源/许可/SHA-256 | 待核验 | `NOT_RUN` |
+| `bgm_commons_we_never` | BGM | `assets/audio/bgm/commons/We Never.wav` | 文件标签 ZHENLOE《We Never - 若如初見 (Instrumental)》；**授权未知** | 否 | `PENDING_REVIEW`（不得生产） |
+| `prompt_announcer_sun_daolin` | 语音参考 | `assets/audio/prompts/announcers/male_sun_daolin/…` | 孙道临唐诗朗诵；第三方录像，表演者/录音权未清 | 否 | `PENDING_REVIEW` / profile `BLOCKED` |
+| `prompt_announcer_ya_kun` | 语音参考 | `assets/audio/prompts/announcers/female_ya_kun/…` | 雅坤《春江花月夜》朗诵；第三方录像，表演者/录音权未清 | 否 | `PENDING_REVIEW` / profile `BLOCKED` |
+| `prompt_blend_my80_sun20` | 语音参考 | `assets/audio/prompts/my_voice_clean_v2.wav` | 用户指定默认参考音；2026-11-07 用户确认可正常使用 | 是 | `APPROVED`（用户确认） |
+| `prompt_blend_sun80_my20` | 语音参考 | `assets/audio/prompts/blends/blend_sun80_my20_ref.wav` | 孙道临 80% + 本人 20% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my90_sun10` | 语音参考 | `assets/audio/prompts/blends/blend_my90_sun10_ref.wav` | 本人 90% + 孙道临 10% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my95_sun05` | 语音参考 | `assets/audio/prompts/blends/blend_my95_sun05_ref.wav` | 本人 95% + 孙道临 5% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+| `prompt_blend_my99_sun01` | 语音参考 | `assets/audio/prompts/blends/blend_my99_sun01_ref.wav` | 本人 99% + 孙道临 1% 幅度混合；含第三方成分 | 否 | `BLOCKED`（仅试听研究） |
+
+> 2026-11-07 文件清理：`bgm_ink_serene_60s`、`bgm_court_elegant_60s`、`bgm_shinkai_piano_60s`、`bgm_ghibli_pastoral_60s`、`bgm_ink_strings_duo`、`bgm_court_strings_duo`、`bgm_ghibli_quartet`、`bgm_warm_strings_c` 的本地文件已删除，manifest 条目改为 `REVOKED`（`commercial_allowed=false`），不再进入生产。
 
 ## 6. 音色
 
 | 音色 | 来源 | 状态 |
 |---|---|---|
 | 本人参考音克隆（`narrator_self`） | VoxCPM2，参考音 `assets/audio/prompts/my_voice_clean_v1.wav` | `PASS_VERIFIED`（技术，盲听 7/7）；商用范围见 `VOICE_RIGHTS.md` |
+| 男声参考（`announcer_sun_daolin`） | 孙道临唐诗朗诵片段，第三方录像 | `BLOCKED`（表演者/录音权未清，仅试听） |
+| 女声参考（`announcer_ya_kun`） | 雅坤古典朗诵片段，第三方录像 | `BLOCKED`（表演者/录音权未清，仅试听） |
 | ~~SFT 预置音色（中文男/中文女）~~ | CosyVoice-300M-SFT | 已退役（2026-11-06）；历史产物仅作证据保留 |
 | 自定义克隆音色 | 未使用 | `NOT_RUN` |
 

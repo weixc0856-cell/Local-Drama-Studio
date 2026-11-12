@@ -65,10 +65,15 @@ class NarrationSegment(BaseModel):
 
     id: str
     text: str = Field(min_length=1)
+    # Spoken text and subtitle text may differ: a simplified TTS script can
+    # carry traditional subtitles without changing the reading.
+    subtitle_text: str | None = None
     emotion: str | None = None
     delivery: str | None = None
     speed: float = Field(default=1.0, ge=0.5, le=2.0)
     pause_after_ms: int = Field(default=0, ge=0, le=10000)
+    # Optional per-line voice cast; only APPROVED profiles may enter production.
+    voice_profile: str | None = None
 
     @field_validator("id")
     @classmethod
@@ -292,6 +297,8 @@ class TimelineEntry(BaseModel):
     end_ms: int = Field(gt=0)
     narration_ids: list[str] = Field(default_factory=list)
     visual_asset: str | None = None
+    asset_kind: str | None = None
+    planned_duration_seconds: float | None = None
     transition_in: Transition = Transition.CUT
     transition_out: Transition = Transition.CUT
 
@@ -302,12 +309,25 @@ class TimelineEntry(BaseModel):
         return self
 
 
+class NarrationEvent(BaseModel):
+    model_config = {"extra": "forbid"}
+
+    id: str
+    shot_id: str
+    start_ms: int = Field(ge=0)
+    end_ms: int = Field(gt=0)
+    text: str = ""
+
+
 class EditTimeline(BaseModel):
     model_config = {"extra": "forbid"}
 
     project_id: str
     sample_rate: int = 48000
+    fps: int = 24
+    leading_silence_ms: int = 0
     entries: list[TimelineEntry] = Field(min_length=1)
+    narration_events: list[NarrationEvent] = Field(default_factory=list)
     total_ms: int = Field(gt=0)
 
     @model_validator(mode="after")

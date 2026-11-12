@@ -936,7 +936,7 @@ v1.x 明确不做：
 | `PRD-FILM-005` | 剪辑时间轴由分镜生成，时间轴连续；镜头时长是剪辑目标时长 | `drama film timeline`；`EditTimeline` 校验 |
 | `PRD-FILM-006` | 成片验收按镜头语言、连续性与声音，不以图片数量或转场数量计 | 人工审片记录 + 五条硬规则 |
 
-当前状态：`PRD-FILM-001..005` 为 `IMPLEMENTED_NOT_VERIFIED`（模块、CLI、示例项目与 15 项测试已落地；示例项目已生成 8 组提示词、关键帧与 Wan 任务文件，并真实合成 6 句旁白 23.67 s；尚无关键帧与镜头产物，未出片）；`PRD-FILM-006` 为 `NOT_RUN`。
+当前状态：`PRD-FILM-001..005` 为 `IMPLEMENTED_NOT_VERIFIED`（模块、CLI、示例项目与测试已落地）。稳定成片 `renders/build-20261107-225921/`：47.0 s / 1080×1920 / 24 fps，6 字幕起点与旁白完全一致，5 个叠化切点（S02–S08 普通切点），持续环境声轨；`quality.check_build` 与 `film_acceptance` 技术检查 PASS。**内容连续性未达标**：S01 为 3 段 Wan 续接（137 干净帧，接缝 PASS），S02–S08 仍是确定性运镜 + 局部云/水/树叶运动，不是全生成动画。S02 动态 Wan 在第 17 帧将塔楼重画成墨团；S02 锁定机位 Wan 触发 ComfyUI `Windows fatal exception: access violation`；S03 人物镜头出现白色块状伪影；S04 第 2 段仅 4 干净帧。结论：A750 8 GB + Wan 5B 无法稳定支撑 5 s 级多镜头，全 Wan 生成在现有硬件上为 `BLOCKED`。视频增强 A 组 Lanczos 完成（2.12 s），Real-ESRNet/Real-ESRGAN 因未安装 ncnn 权重为 `NOT_RUN`。`PRD-FILM-006` 仍为 `PARTIAL`，且内容验收不得标记通过。
 
 ---
 
