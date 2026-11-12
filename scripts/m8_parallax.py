@@ -546,7 +546,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
         overlay_asset = Image.open(ASSET_PATH).convert("RGBA")
         overlay_box = tuple(data.get("overlay_box", [0.24, 0.58, 0.57, 1.02]))
 
-    from drama_studio.motion.local import mesh_warp, water_displacement, reflection_displacement
+    from drama_studio.application.motion.local import mesh_warp, water_displacement, reflection_displacement
 
     band = (0.495, 0.955)
     water_cfg = {
@@ -623,7 +623,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
 
     video = out_dir / f"{variant.lower()}.mp4"
     texture = out_dir / "texture_raw_paper.png"
-    from drama_studio.motion.texture import make_texture
+    from drama_studio.application.motion.texture import make_texture
     make_texture("raw_paper", texture)
 
     cmd = [
@@ -674,7 +674,7 @@ def render_variant(variant: str, data: dict, curve: dict, force: bool = False) -
 
 def render_production(data: dict) -> dict:
     """Variant A: the existing production 2D push, called unchanged."""
-    from drama_studio.motion.render import render_plan
+    from drama_studio.application.motion.render import render_plan
     from drama_studio.domain.motion.spec import CameraOverride, MotionPlan, ShotSpec
 
     plan_obj = MotionPlan(
@@ -995,7 +995,7 @@ def metrics(data: dict, curve: dict) -> dict:
     # Resampling floor: C warps the whole background frame through Pillow's
     # mesh, which resamples every pixel even where the displacement is zero.
     # Measuring that control separates the ripple from plain resampling.
-    from drama_studio.motion.local import mesh_warp
+    from drama_studio.application.motion.local import mesh_warp
     floors = {}
     for label in ("mid", "last"):
         b_img = Image.open(frames_dir / f"B_{label}.png").convert("RGB")

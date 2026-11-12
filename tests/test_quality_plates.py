@@ -6,8 +6,8 @@ import json
 import pytest
 from PIL import Image
 
-from drama_studio.motion.plates import camera_window
-from drama_studio.quality import (
+from drama_studio.application.motion.plates import camera_window
+from drama_studio.application.quality import (
     REVEAL_THRESHOLDS,
     _placed_alpha,
     _plate_scale_at,

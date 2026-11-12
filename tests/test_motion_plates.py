@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from drama_studio.motion.plates import enforce_policy
+from drama_studio.application.motion.plates import enforce_policy
 from drama_studio.domain.motion.spec import (
     Box,
     PlateAnchor,

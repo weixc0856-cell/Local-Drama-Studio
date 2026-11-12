@@ -36,7 +36,7 @@ def test_empty_after_cleaning_is_an_error() -> None:
 
 def test_narration_render_text_has_no_prefix() -> None:
     from drama_studio.domain.film.schemas import NarrationSegment
-    from drama_studio.film.voice import render_text
+    from drama_studio.application.film.voice import render_text
 
     segment = NarrationSegment(id="N001", text="白日依山尽。", emotion="open", delivery="gentle")
     assert render_text(segment) == "白日依山尽"

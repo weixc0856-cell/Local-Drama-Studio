@@ -1,3 +1,11 @@
-"""Compatibility shim. The implementation lives in drama_studio.domain.motion.spec."""
+"""Compatibility shim: re-points to ``drama_studio.domain.motion.spec``.
 
-from drama_studio.domain.motion.spec import *  # noqa: F401,F403
+The module object is replaced, so private names and module-level state
+stay shared with the implementation while the migration is in progress.
+New code must import from the layer path.
+"""
+
+import importlib
+import sys
+
+sys.modules[__name__] = importlib.import_module("drama_studio.domain.motion.spec")

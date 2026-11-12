@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from drama_studio.voice.audio_assets import AudioAssetError, load_registry
-from drama_studio.voice.audio_timeline import (
+from drama_studio.application.voice.audio_assets import AudioAssetError, load_registry
+from drama_studio.application.voice.audio_timeline import (
     AudioEvent,
     AudioTimeline,
     AudioTrack,
@@ -16,8 +16,8 @@ from drama_studio.voice.audio_timeline import (
     from_audio_manifest,
     load_timeline,
 )
-from drama_studio.voice.mix import MixError, build_filter_graph, mix_timeline
-from drama_studio.quality import check_audio_timeline
+from drama_studio.application.voice.mix import MixError, build_filter_graph, mix_timeline
+from drama_studio.application.quality import check_audio_timeline
 
 
 def _wav(path: Path, seconds: float = 1.0, value: int = 1000) -> Path:

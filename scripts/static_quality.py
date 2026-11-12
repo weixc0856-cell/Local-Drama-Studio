@@ -30,7 +30,7 @@ from pathlib import Path
 from PIL import Image, ImageChops, ImageFilter, ImageStat
 
 from drama_studio.config import find_project_root
-from drama_studio.quality import check_aesthetic_risk, image_metrics
+from drama_studio.application.quality import check_aesthetic_risk, image_metrics
 from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = find_project_root()

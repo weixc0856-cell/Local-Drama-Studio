@@ -49,6 +49,7 @@ STAGES: dict[str, dict[str, str]] = {
         "film": "application.film",
         "film.project": "application.film.project",
         "film.script": "application.film.script",
+        "film.storyboard": "application.film.storyboard",
         "film.prompts": "application.film.prompts",
         "film.jobs": "application.film.jobs",
         "film.clips": "application.film.clips",
@@ -151,7 +152,8 @@ def rewrite_relative_imports(path: Path, old_mod: str, mapping: dict[str, str], 
             alias.name + (f" as {alias.asname}" if alias.asname else "")
             for alias in node.names
         )
-        statement = f"from drama_studio.{new_target} import {names}"
+        package = f"drama_studio.{new_target}" if new_target else "drama_studio"
+        statement = f"from {package} import {names}"
         edits.append((node.lineno, node.end_lineno or node.lineno, statement))
     for start, end, statement in sorted(edits, reverse=True):
         lines[start - 1:end] = [statement]

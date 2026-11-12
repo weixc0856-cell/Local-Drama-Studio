@@ -7,7 +7,7 @@ from pathlib import Path
 
 from PIL import Image, ImageStat
 
-from drama_studio.quality import image_metrics
+from drama_studio.domain.style.metrics import image_metrics
 from drama_studio.domain.style.schemas import StylePack
 
 SAT_TOLERANCE = 0.06

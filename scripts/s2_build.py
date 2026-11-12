@@ -32,8 +32,8 @@ from pathlib import Path
 from PIL import Image, ImageFilter
 
 from drama_studio.config import find_project_root
-from drama_studio.motion.texture import make_texture as _make_texture
-from drama_studio.quality import check_image, check_video
+from drama_studio.application.motion.texture import make_texture as _make_texture
+from drama_studio.application.quality import check_image, check_video
 from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = find_project_root()

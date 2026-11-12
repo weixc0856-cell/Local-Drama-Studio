@@ -6,8 +6,8 @@ from pathlib import Path
 import httpx
 import pytest
 
-from drama_studio.content_package import build_content_package
-from drama_studio.script_engine import ScriptGenerationError, compose_visual_prompt, generate_script
+from drama_studio.application.content_package import build_content_package
+from drama_studio.application.script_engine import ScriptGenerationError, compose_visual_prompt, generate_script
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "literary_intelligence" / "tests" / "fixtures" / "corpus_short"

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from PIL import Image
 
-from drama_studio.motion.plates import (
+from drama_studio.application.motion.plates import (
     CameraState,
     LoadedPlate,
     background_pan,

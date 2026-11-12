@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from drama_studio.workspace import tasks
-from drama_studio.workspace.tasks import TASK_KINDS
+from drama_studio.application.operations.tasks import TASK_KINDS
 
 
 def test_all_film_task_kinds_are_registered() -> None:

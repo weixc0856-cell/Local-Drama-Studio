@@ -118,7 +118,7 @@ def test_snapshot_without_lock_gets_one_on_update(tmp_path: Path) -> None:
 
 
 def test_task_helper_surfaces_style_lock_as_task_error(tmp_path: Path) -> None:
-    from drama_studio.workspace.tasks import TaskError, _locked_style
+    from drama_studio.application.operations.tasks import TaskError, _locked_style
 
     store = _store(tmp_path)
     _style(store, "ink_wash", "水墨")

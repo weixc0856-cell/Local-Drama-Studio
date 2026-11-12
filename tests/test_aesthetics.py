@@ -15,8 +15,8 @@ from drama_studio.domain.aesthetics import (
     load_plan,
     write_plan,
 )
-from drama_studio.quality import check_aesthetic_risk, check_color_continuity
-from drama_studio.script_engine import ProductionScript
+from drama_studio.application.quality import check_aesthetic_risk, check_color_continuity
+from drama_studio.application.script_engine import ProductionScript
 from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -168,7 +168,7 @@ def test_color_continuity_flags_a_jump(tmp_path: Path) -> None:
 
 
 def test_snapshot_is_never_overwritten(tmp_path: Path) -> None:
-    from drama_studio.production import build_aesthetic_jobs
+    from drama_studio.application.production import build_aesthetic_jobs
 
     preset = load_style_presets(ROOT).get("ink_wash")
     script = _script("ink_wash", ["远山与江面"])
@@ -197,7 +197,7 @@ def test_non_center_base_keeps_a_side() -> None:
 
 
 def test_lab_mean_is_normalised(tmp_path: Path) -> None:
-    from drama_studio.quality import image_metrics
+    from drama_studio.application.quality import image_metrics
 
     path = tmp_path / "white.png"
     Image.new("RGB", (64, 64), (245, 245, 240)).save(path)
@@ -208,7 +208,7 @@ def test_lab_mean_is_normalised(tmp_path: Path) -> None:
 
 
 def test_dynamic_aesthetic_report_writes_and_flags_nothing(tmp_path: Path) -> None:
-    from drama_studio.quality import check_dynamic_aesthetics
+    from drama_studio.application.quality import check_dynamic_aesthetics
 
     a = tmp_path / "a.png"
     b = tmp_path / "b.png"

@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from drama_studio.production import ProductionError, build_jobs, build_segments
-from drama_studio.script_engine import ProductionScript
+from drama_studio.application.production import ProductionError, build_jobs, build_segments
+from drama_studio.application.script_engine import ProductionScript
 
 
 def _script(tmp_path: Path) -> ProductionScript:
@@ -261,7 +261,7 @@ def _motion_fixture(tmp_path: Path) -> tuple[Path, Path, ProductionScript, Path]
 
 def test_build_motion_plan_aligns_audio_and_caps_transitions(tmp_path: Path) -> None:
     from drama_studio.domain.motion.spec import load_plan
-    from drama_studio.production import build_motion_plan
+    from drama_studio.application.production import build_motion_plan
     from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
@@ -345,7 +345,7 @@ def test_motion_plan_carries_plates_from_the_regions_file(tmp_path: Path) -> Non
     import hashlib
 
     from drama_studio.domain.motion.spec import load_plan
-    from drama_studio.production import build_motion_plan
+    from drama_studio.application.production import build_motion_plan
     from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
@@ -412,7 +412,7 @@ def test_motion_plan_carries_plates_from_the_regions_file(tmp_path: Path) -> Non
 def test_header_extends_the_first_shot(tmp_path: Path) -> None:
     """The title is audio, so the first shot must cover it rather than trim it."""
     from drama_studio.domain.motion.spec import load_plan
-    from drama_studio.production import build_motion_plan
+    from drama_studio.application.production import build_motion_plan
     from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
@@ -437,7 +437,7 @@ def test_header_extends_the_first_shot(tmp_path: Path) -> None:
 
 
 def test_motion_plan_requires_a_static_report_unless_explicitly_skipped(tmp_path: Path) -> None:
-    from drama_studio.production import ProductionError, build_motion_plan
+    from drama_studio.application.production import ProductionError, build_motion_plan
     from drama_studio.domain.style.presets import load_style_presets
 
     project_root = Path(__file__).resolve().parents[1]
@@ -463,7 +463,7 @@ def test_motion_plan_requires_a_static_report_unless_explicitly_skipped(tmp_path
 
 
 def test_build_video_jobs_requires_keyframes_and_writes_wan_jobs(tmp_path: Path) -> None:
-    from drama_studio.production import build_video_jobs
+    from drama_studio.application.production import build_video_jobs
 
     root, episode, script, _ = _motion_fixture(tmp_path)
     (root / "workflows").mkdir(exist_ok=True)
@@ -493,7 +493,7 @@ def test_build_video_jobs_requires_keyframes_and_writes_wan_jobs(tmp_path: Path)
 
 
 def test_video_shot_without_keyframe_fails(tmp_path: Path) -> None:
-    from drama_studio.production import build_video_jobs
+    from drama_studio.application.production import build_video_jobs
 
     root, episode, script, _ = _motion_fixture(tmp_path)
     (root / "workflows").mkdir(exist_ok=True)

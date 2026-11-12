@@ -50,7 +50,7 @@ def main() -> int:
          "--audio", str(BASE / "audio_24.json"), "--out", str(out),
          "--audio-timeline", str(BASE / "audio_timeline_24.json"),
          "--audio-assets", "assets/audio/manifest.json"])
-    run([sys.executable, "-m", "drama_studio.quality",
+    run([sys.executable, "-m", "drama_studio.application.quality",
          "--manifest", str(out / "build_manifest.json")])
     manifest = json.loads((out / "build_manifest.json").read_text(encoding="utf-8"))
     print(json.dumps({"ok": True, "out": str(out),

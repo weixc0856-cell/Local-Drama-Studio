@@ -10,7 +10,7 @@ import httpx
 import pytest
 
 from drama_studio.domain.voice.recitation import RecitationError, mode_spec, plan_line
-from drama_studio.voice.tts import synthesize_narration
+from drama_studio.application.voice.tts import synthesize_narration
 
 
 def _root(tmp_path: Path) -> Path:
@@ -91,7 +91,7 @@ def test_recitation_synthesizes_parts_and_records_layers(
         Path(out_wav).write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake_zero_shot)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake_zero_shot)
 
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/health":

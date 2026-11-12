@@ -62,7 +62,7 @@ def test_f0_estimate_needs_voiced_frames():
 
 # --------------------------------------------------------------- zero-shot
 def test_zeroshot_requires_prompt_text(tmp_path):
-    from drama_studio.voice.zeroshot import ZeroShotError, synthesize
+    from drama_studio.application.voice.zeroshot import ZeroShotError, synthesize
 
     prompt = tmp_path / "p.wav"
     prompt.write_bytes(b"RIFF")
@@ -72,7 +72,7 @@ def test_zeroshot_requires_prompt_text(tmp_path):
 
 
 def test_zeroshot_requires_the_prompt_to_exist(tmp_path):
-    from drama_studio.voice.zeroshot import ZeroShotError, synthesize
+    from drama_studio.application.voice.zeroshot import ZeroShotError, synthesize
 
     with pytest.raises(ZeroShotError, match="参考音频不存在"):
         synthesize("春江潮水连海平", prompt_wav=tmp_path / "missing.wav",
@@ -82,6 +82,6 @@ def test_zeroshot_requires_the_prompt_to_exist(tmp_path):
 
 def test_zeroshot_health_is_none_when_nothing_is_listening():
     """The caller owns the service lifecycle; a down service must not raise."""
-    from drama_studio.voice.zeroshot import healthy
+    from drama_studio.application.voice.zeroshot import healthy
 
     assert healthy("http://127.0.0.1:59999") is None

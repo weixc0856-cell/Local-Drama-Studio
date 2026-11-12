@@ -20,7 +20,7 @@ import json
 from pathlib import Path
 
 from drama_studio.workspace.store import WorkspaceStore
-from drama_studio.workspace.tasks import TaskRunner
+from drama_studio.application.operations.tasks import TaskRunner
 
 ROOT = Path(__file__).resolve().parents[1]
 

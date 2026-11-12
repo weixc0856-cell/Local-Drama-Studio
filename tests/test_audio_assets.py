@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 
-from drama_studio.voice.audio_assets import load_registry
+from drama_studio.application.voice.audio_assets import load_registry
 
 
 def test_template_aliases_are_accepted(tmp_path):

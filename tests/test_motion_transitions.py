@@ -8,12 +8,12 @@ import pytest
 from PIL import Image
 
 from drama_studio.domain.motion.spec import MotionPlan, ShotSpec, TransitionSpec
-from drama_studio.motion.transition import (
+from drama_studio.application.motion.transition import (
     assemble_sequence,
     make_masks,
     render_transition,
 )
-from drama_studio.quality import FAIL, PASS, check_temporal_continuity
+from drama_studio.application.quality import FAIL, PASS, check_temporal_continuity
 
 ROOT = Path(__file__).resolve().parents[1]
 FPS = 24

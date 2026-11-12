@@ -7,8 +7,8 @@ from pathlib import Path
 
 import yaml
 
-from drama_studio.film.project import load_project, validate_project
-from drama_studio.film.script import build_beats, build_bible, build_narration, init_project, split_text
+from drama_studio.application.film.project import load_project, validate_project
+from drama_studio.application.film.script import build_beats, build_bible, build_narration, init_project, split_text
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -88,7 +88,7 @@ def test_beats_stay_inside_style_camera_moves(tmp_path: Path) -> None:
 
 
 def test_video_prompt_does_not_use_ambiguous_crane() -> None:
-    from drama_studio.film.prompts import CINEMATIC_VIDEO, build_video_prompt, motion_phrase
+    from drama_studio.application.film.prompts import CINEMATIC_VIDEO, build_video_prompt, motion_phrase
     from drama_studio.domain.film.schemas import (
         CameraSpec, ContinuitySpec, Layers, MotionSpec, ShotSpec,
     )
@@ -111,7 +111,7 @@ def test_video_prompt_does_not_use_ambiguous_crane() -> None:
 
 
 def test_validate_warns_when_director_notes_need_cleaning(tmp_path: Path) -> None:
-    from drama_studio.film.storyboard import plan_storyboard
+    from drama_studio.application.film.storyboard import plan_storyboard
 
     _install_pack(tmp_path)
     directory = tmp_path / "projects" / "p1"

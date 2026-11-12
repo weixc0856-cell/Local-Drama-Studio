@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from PIL import Image, ImageChops
 
-from drama_studio.motion.local import (
+from drama_studio.application.motion.local import (
     cloud_displacement,
     perspective_weight,
     prepare_layers,

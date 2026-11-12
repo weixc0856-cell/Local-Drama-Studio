@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from drama_studio.paths import output_root, output_path
-from drama_studio.voice.zeroshot import DEFAULT_BASE, synthesize  # noqa: E402
+from drama_studio.application.voice.zeroshot import DEFAULT_BASE, synthesize  # noqa: E402
 
 # Disyllabic words, not isolated syllables: on a bare syllable Whisper normalises
 # to the commonest character (森 -> 生), which measures its prior rather than the

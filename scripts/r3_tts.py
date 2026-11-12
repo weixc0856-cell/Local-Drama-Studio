@@ -1,7 +1,7 @@
 """Parameterized narration TTS entry point.
 
 All paths, speaker and speed are explicit; no episode directory is assumed.
-The implementation lives in ``drama_studio.voice.tts`` so the workspace task
+The implementation lives in ``drama_studio.application.voice.tts`` so the workspace task
 and this CLI share one code path.
 """
 
@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from drama_studio.domain.voice.recitation import RecitationError
-from drama_studio.voice.tts import TTSError, synthesize_narration
+from drama_studio.application.voice.tts import TTSError, synthesize_narration
 
 ROOT = Path(__file__).resolve().parents[1]
 

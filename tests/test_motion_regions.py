@@ -7,7 +7,7 @@ import pytest
 from PIL import Image
 from pydantic import ValidationError
 
-from drama_studio.motion.local import LayerRefused, effective_exclusions, prepare_layers
+from drama_studio.application.motion.local import LayerRefused, effective_exclusions, prepare_layers
 from drama_studio.domain.motion.spec import (
     Box,
     LocalMotionSpec,
@@ -15,7 +15,7 @@ from drama_studio.domain.motion.spec import (
     RegionSpec,
     ShotSpec,
 )
-from drama_studio.production import ProductionError, _load_regions
+from drama_studio.application.production import ProductionError, _load_regions
 from drama_studio.domain.style.presets import load_style_presets
 
 ROOT = Path(__file__).resolve().parents[1]

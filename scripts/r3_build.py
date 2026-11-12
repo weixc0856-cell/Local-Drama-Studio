@@ -10,7 +10,7 @@ Outputs (experiments/r3b/renders/):
   final_9x16.mp4 (soft subs), final_9x16_burned.mp4 (burned, optional),
   build_manifest.json
 
-Timeline and subtitle times come from drama_studio.voice.timeline.
+Timeline and subtitle times come from drama_studio.application.voice.timeline.
 Subtitle font role comes from config/fonts.yaml via drama_studio.fonts.
 No new dependencies: pysubs2 is already in the project venv.
 """
@@ -28,7 +28,7 @@ import pysubs2
 
 from drama_studio.fonts import FontConfigurationError, load_font_config
 from drama_studio.paths import is_repo_path, output_root
-from drama_studio.voice.timeline import (
+from drama_studio.application.voice.timeline import (
     build_timeline,
     leading_silence_for,
     make_srt,
@@ -244,15 +244,15 @@ def main() -> int:
          "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-r", str(FPS), str(video_faded)])
 
     # Audio: explicit multi-track timeline, or the legacy narration-only mix.
-    from drama_studio.voice.soundscape import load_settings as load_soundscape
-    from drama_studio.voice.soundscape import master as master_soundscape
+    from drama_studio.application.voice.soundscape import load_settings as load_soundscape
+    from drama_studio.application.voice.soundscape import master as master_soundscape
 
     soundscape = load_soundscape(ROOT)
     mixed = out_dir / "mixed.wav"
     mix_target = out_dir / "mixed_pre.wav" if soundscape.enabled else mixed
     audio_timeline_report = None
     if args.audio_timeline:
-        from drama_studio.voice.mix import MixError, mix_timeline
+        from drama_studio.application.voice.mix import MixError, mix_timeline
 
         timeline_arg = Path(args.audio_timeline)
         timeline_arg = timeline_arg if timeline_arg.is_absolute() else resolve_artifact(timeline_arg)

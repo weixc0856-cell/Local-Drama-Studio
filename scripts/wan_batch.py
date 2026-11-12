@@ -18,8 +18,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from drama_studio.film.project import load_project  # noqa: E402
-from drama_studio.film.wan_chain import ChainError, chain_shot  # noqa: E402
+from drama_studio.application.film.project import load_project  # noqa: E402
+from drama_studio.application.film.wan_chain import ChainError, chain_shot  # noqa: E402
 
 
 def main() -> int:

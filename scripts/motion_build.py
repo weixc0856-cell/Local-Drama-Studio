@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 from drama_studio.config import find_project_root
-from drama_studio.motion.render import render_plan
+from drama_studio.application.motion.render import render_plan
 from drama_studio.domain.motion.spec import load_plan
 
 ROOT = find_project_root()

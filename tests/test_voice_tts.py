@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from drama_studio.voice.tts import TTSError, synthesize_narration
+from drama_studio.application.voice.tts import TTSError, synthesize_narration
 
 
 def _wav_bytes(seconds: float = 0.2, rate: int = 22050) -> bytes:
@@ -67,7 +67,7 @@ def zero_shot_calls(monkeypatch: pytest.MonkeyPatch) -> list[dict]:
         Path(out_wav).write_bytes(_wav_bytes())
         return SimpleNamespace(synth_seconds=0.1)
 
-    monkeypatch.setattr("drama_studio.voice.tts.zeroshot_synthesize", fake)
+    monkeypatch.setattr("drama_studio.application.voice.tts.zeroshot_synthesize", fake)
     return calls
 
 
@@ -247,7 +247,7 @@ def test_config_mode_zero_shot_is_the_default(
 def test_header_is_spoken_before_the_body(
         tmp_path: Path, zero_shot_calls: list[dict]) -> None:
     """The title is its own segment; the body lines must start after it."""
-    from drama_studio.voice.tts import header_offset_seconds
+    from drama_studio.application.voice.tts import header_offset_seconds
 
     root = _root(tmp_path)
     narration = root / "episode" / "narration.json"

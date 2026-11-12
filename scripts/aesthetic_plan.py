@@ -28,8 +28,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from drama_studio.domain.aesthetics import generate_plan, write_plan
-from drama_studio.production import build_aesthetic_jobs
-from drama_studio.script_engine import ProductionScript
+from drama_studio.application.production import build_aesthetic_jobs
+from drama_studio.application.script_engine import ProductionScript
 from drama_studio.domain.style.presets import load_style_presets
 
 
