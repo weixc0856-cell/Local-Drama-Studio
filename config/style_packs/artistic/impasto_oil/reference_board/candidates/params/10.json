@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a bare winter tree against a low sun. contemporary impasto oil painting, sculpted paint surface. thick oil paint applied with a palette knife, canvas weave, raised ridges. composition: one strong subject filling the frame, large colour blocks built from knife planes, curved sweeping knife strokes follow the form of round objects, thin paint and exposed canvas in shadows and distance, thick impasto only in lights and foreground, shallow space with a clear light direction, clean full-bleed edges with no frame. lighting: raking studio light revealing paint relief, warm highlights, deep umber shadow, warm temperature, medium contrast. materials: oil paint, canvas, palette knife, linseed sheen. camera: locked-off camera, 85mm lens, shallow depth of field. thick raised paint with visible ridges and knife marks. palette knife planes cutting colour into solid blocks. canvas weave showing through thin passages. raking light and deep shadow across the paint relief. limited five-colour palette held consistently. curved knife strokes wrap around round forms instead of square patches. thick lights against thin darks and exposed canvas. no smooth blending and no airbrush finish. reference board sample, no characters, no text, thick paint relief and canvas weave. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 7010,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/artistic_impasto_oil/10"
-}

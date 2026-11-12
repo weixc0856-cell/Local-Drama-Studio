@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a 3D radio and a cup on a bedside table. Pixar-style stylized 3D render, physically based materials. stylized 3D animation still, subsurface scattering, cinematic lighting. composition: stylized 3D props or environment with exaggerated proportions, one clear focal object with a friendly silhouette, cinematic camera with shallow depth of field, soft ambient light and floating dust, clean full-bleed edges with no frame. lighting: cinematic soft light, warm key and cool fill, volumetric rays, warm temperature, medium contrast. materials: soft clay-like surface, fabric fuzz, brushed metal, painted wood, dust motes. camera: locked-off camera, 50mm lens, shallow depth of field. stylized 3D with exaggerated rounded shapes. physically based materials: fabric fuzz, brushed metal, soft clay. subsurface scattering in thin edges. cinematic soft light with volumetric dust. shallow depth of field and a friendly silhouette. no characters, no text and no logos. stylized 3D render, no characters, no text, no logos, cinematic soft light. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 5109,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/animation_pixar/09"
-}

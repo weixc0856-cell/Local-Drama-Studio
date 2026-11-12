@@ -1,5 +1,15 @@
 # ============================================================
 # Repository boundary
+#
+# Generated artifacts do NOT live under this checkout. They are
+# written to DRAMA_OUTPUT_ROOT (default D:/DramaStudio) by
+# drama_studio.paths. The rules below are a second line of defence:
+# if something still writes a media file here, it must not be
+# committed.
+# ============================================================
+
+# Any local output root placed inside the checkout by mistake
+outputs/
 # Tracked: development workflow (code, config, docs, tests,
 # scripts, workflows, font manifest/licenses).
 # Local only: generated evidence, real project cases, media,

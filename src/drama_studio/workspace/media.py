@@ -8,9 +8,10 @@ import re
 import subprocess
 from pathlib import Path, PurePosixPath
 
-from ..config import find_project_root
+from .. import paths
 
-ROOT = find_project_root()
+ROOT = paths.output_root()
+REPO_ROOT = paths.repo_root()
 ALLOWED_ROOTS = ("assets", "experiments", "projects", "literary_intelligence", "workflows")
 THUMB_DIR = ROOT / "logs" / "workspace" / "thumbs"
 
@@ -48,15 +49,16 @@ def content_type(path: Path) -> str:
 
 def safe_path(rel_path: str, *, must_exist: bool = True) -> Path:
     if not rel_path or rel_path.startswith(("/", "\\")) or re.match(r"^[A-Za-z]:", rel_path):
-        raise MediaError("invalid_path", "只允许仓库相对路径")
+        raise MediaError("invalid_path", "只允许工作区相对路径")
     pure = PurePosixPath(rel_path.replace("\\", "/"))
     if not pure.parts or any(part in ("..", "", ".") for part in pure.parts):
         raise MediaError("invalid_path", "路径不能包含 .. / . / 空段")
-    resolved = (ROOT / pure).resolve()
+    base = REPO_ROOT if paths.is_repo_path(pure) else ROOT
+    resolved = (base / pure).resolve()
     allowed = False
     for name in ALLOWED_ROOTS:
-        base = (ROOT / name).resolve()
-        if resolved == base or resolved.is_relative_to(base):
+        allowed_base = ((REPO_ROOT if name in ("assets", "workflows") else ROOT) / name).resolve()
+        if resolved == allowed_base or resolved.is_relative_to(allowed_base):
             allowed = True
             break
     if not allowed:

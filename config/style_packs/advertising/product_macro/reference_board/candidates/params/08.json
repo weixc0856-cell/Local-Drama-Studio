@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a brushed metal bottle in macro. high-end product macro photography. macro studio photograph, water droplets, brushed metal, precise reflections. composition: single product filling the frame, macro detail with shallow depth, one controlled highlight, blank copy zone, no text. lighting: three-point studio light, soft contact shadow, controlled specular, cool temperature, medium contrast. materials: brushed metal, glass, water droplets, matte plastic, fabric. camera: locked-off camera, 100mm lens, shallow depth of field. macro detail with real microtexture. one controlled specular highlight. soft contact shadow under the product. a blank copy zone. no text and no plastic look. product macro photograph, no text, controlled highlights, contact shadow. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 5108,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/advertising_product_macro/08"
-}

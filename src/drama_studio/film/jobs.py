@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ..paths import config_root
 from .assets import latest_output
 from .project import FilmProject
 from ..style_engine import compile_image_prompt, compile_video_prompt
@@ -52,7 +53,7 @@ def build_keyframe_jobs(
     if pack is None and project.style_id:
         try:
             from ..style_engine import get_pack
-            pack = get_pack(root, project.style_id)
+            pack = get_pack(config_root(root), project.style_id)
         except KeyError:
             pack = None
     style_meta = {
@@ -124,7 +125,7 @@ def build_wan_jobs(
     if pack is None and project.style_id:
         try:
             from ..style_engine import get_pack
-            pack = get_pack(root, project.style_id)
+            pack = get_pack(config_root(root), project.style_id)
         except KeyError:
             pack = None
     style_meta = {

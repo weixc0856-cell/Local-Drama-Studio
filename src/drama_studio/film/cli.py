@@ -12,7 +12,7 @@ from typing import Annotated
 
 import typer
 
-from ..config import find_project_root
+from ..paths import output_root, repo_root
 from .assemble import AssembleError, assemble as run_assemble
 from .audio import AudioError, load_audio_manifest
 from .clips import ClipError, build_clips
@@ -60,7 +60,7 @@ def film_init(
     """从一段文本创建影视项目：分句、旁白、视觉圣经、导演节拍与分镜。"""
     from .script import ScriptError, init_project
 
-    root = find_project_root()
+    root = output_root()
     raw = text.read_bytes()
     for encoding in ("utf-8-sig", "utf-8", "gb18030"):
         try:
@@ -102,7 +102,7 @@ def film_script(
     from .project import SOURCE_FILE
     from .script import ScriptError, build_beats, build_narration, build_screenplay, split_text
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     directory = project_dir(root, project)
     if text is not None:
@@ -126,7 +126,7 @@ def film_script(
         typer.echo("缺少 visual_bible.yaml；先运行 film init")
         raise typer.Exit(1)
     settings = load_production(_meta(directory))
-    pack = get_pack(root, loaded.style_id) if loaded.style_id else None
+    pack = get_pack(repo_root(), loaded.style_id) if loaded.style_id else None
     try:
         lines = split_text(body)
         narration = build_narration(project, lines, speed=speed)
@@ -163,7 +163,7 @@ def film_validate(
     project: Annotated[str, typer.Option("--project", help="projects/<project_id>")],
 ) -> None:
     """校验项目数据：Schema、镜头链、连续性、旁白引用。"""
-    root = find_project_root()
+    root = output_root()
     report = validate_project(root, project)
     typer.echo(json.dumps(report, ensure_ascii=False, indent=2))
     raise typer.Exit(0 if report["ok"] else 1)
@@ -176,7 +176,7 @@ def film_timeline(
     planned: Annotated[bool, typer.Option("--planned", help="忽略真实音频，只用分镜时长")] = False,
 ) -> None:
     """生成剪辑时间轴；有 audio_manifest 时以旁白真实时长为准。"""
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     try:
         timeline, settings = _timeline_for(loaded, root, planned=planned)
@@ -207,7 +207,7 @@ def film_plan(
     from .project import STORYBOARD_FILE
     from .storyboard import plan_storyboard
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     if loaded.bible is None:
         typer.echo("缺少 visual_bible.yaml")
@@ -235,7 +235,7 @@ def film_prompts(
     from ..style_engine import compile_image_prompt, compile_video_prompt, get_pack
     from .prompts import compile_shot_prompts
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     if loaded.storyboard is None or loaded.bible is None:
         typer.echo("需要 storyboard.json 与 visual_bible.yaml")
@@ -246,7 +246,7 @@ def film_prompts(
     style_id = style or loaded.style_id
     if style_id:
         try:
-            pack = get_pack(root, style_id)
+            pack = get_pack(repo_root(), style_id)
         except KeyError as exc:
             typer.echo(str(exc))
             raise typer.Exit(1)
@@ -296,10 +296,10 @@ def film_keyframes(
     from ..style_engine import get_pack
     from .jobs import build_keyframe_jobs
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     style_id = style or loaded.style_id
-    pack = get_pack(root, style_id) if style_id else None
+    pack = get_pack(repo_root(), style_id) if style_id else None
     result = build_keyframe_jobs(loaded, root, out_dir=out, pack=pack)
     typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -320,10 +320,10 @@ def film_wan_jobs(
     from ..style_engine import get_pack
     from .jobs import build_wan_jobs
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     style_id = style or loaded.style_id
-    pack = get_pack(root, style_id) if style_id else None
+    pack = get_pack(repo_root(), style_id) if style_id else None
     if profile == "safe8g":
         width, height = 448, 768
         frames = frames or 49
@@ -353,10 +353,10 @@ def film_wan_chain(
     from ..style_engine import get_pack
     from .wan_chain import ChainError, chain_shot
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     style_id = style or loaded.style_id
-    pack = get_pack(root, style_id) if style_id else None
+    pack = get_pack(repo_root(), style_id) if style_id else None
     try:
         result = chain_shot(loaded, root, shot, segments=segments, frames=frames,
                             width=width, height=height, timeout=timeout,
@@ -379,7 +379,7 @@ def film_voice(
     from ..voice.zeroshot import ZeroShotError
     from .voice import FilmVoiceError, synthesize_narration
 
-    root = find_project_root()
+    root = output_root()
     settings = load_production(_meta(project_dir(root, project)))
     allow = settings.voice_allow_noncommercial if allow_noncommercial is None else allow_noncommercial
     if allow:
@@ -402,7 +402,7 @@ def film_clips(
     force: Annotated[bool, typer.Option("--force", help="重新编码")] = False,
 ) -> None:
     """把 Wan PNG 帧序列编码为镜头 MP4，并补齐到时间轴时长。"""
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     timeline, settings = _timeline_for(loaded, root)
     directory = project_dir(root, project)
@@ -424,7 +424,7 @@ def film_static(
     """逐镜静帧质量门：客观指标 + 人工语义清单（PENDING 不等于通过）。"""
     from .static_gate import StaticGateError, run_static_gate
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     try:
         result = run_static_gate(project_dir(root, project), loaded.storyboard,
@@ -442,7 +442,7 @@ def film_motion(
     only: Annotated[str | None, typer.Option("--only", help="只渲染指定镜头，逗号分隔")] = None,
 ) -> None:
     """为静帧渲染确定性运镜（缓动/推拉/横移），输出到 shots/<id>/*_motion.mp4。"""
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     timeline, settings = _timeline_for(loaded, root)
     directory = project_dir(root, project)
@@ -472,7 +472,7 @@ def film_upscale(
     if check:
         typer.echo(json.dumps(available_backends(), ensure_ascii=False, indent=2))
         return
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     settings = load_production(_meta(project_dir(root, project)))
     chosen = backend or settings.upscale_backend
@@ -502,7 +502,7 @@ def film_assemble(
     skip_static_gate: Annotated[bool, typer.Option("--skip-static-gate", help="显式跳过静帧质量门")] = False,
 ) -> None:
     """按 audio-first 时间轴合成成片（镜头/字幕/混音/响度由 r3_build 完成）。"""
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     directory = project_dir(root, project)
     settings = load_production(_meta(directory))
@@ -526,7 +526,7 @@ def film_status_cmd(
     write: Annotated[bool, typer.Option("--write", help="写 qc/film_state.json")] = False,
 ) -> None:
     """从真实文件派生每个镜头的生产状态。"""
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     payload = film_status(loaded, root)
     if write:
@@ -553,7 +553,7 @@ def film_approve(
     if kind != "final" and not shot:
         typer.echo("--shot is required for keyframe/video")
         raise typer.Exit(1)
-    root = find_project_root()
+    root = output_root()
     reviews = record_review(project_dir(root, project), kind=kind, decision=decision,
                             shot_id=shot, note=note)
     typer.echo(json.dumps(reviews, ensure_ascii=False, indent=2))
@@ -567,7 +567,7 @@ def film_qc(
     """对最近一次构建执行技术质量检查。"""
     from .. import quality
 
-    root = find_project_root()
+    root = output_root()
     directory = project_dir(root, project)
     if build is None:
         candidates = sorted(directory.glob("renders/build-*/build_manifest.json"),
@@ -609,7 +609,7 @@ def film_contact_sheet(
     """把关键帧或镜头首/中/尾帧拼成联排图，供 H2/H3 人工审片。"""
     from .review import build_clip_contact_sheet, build_contact_sheet
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     if loaded.storyboard is None:
         typer.echo("缺少 storyboard.json")
@@ -635,7 +635,7 @@ def film_run(
     from ..voice.zeroshot import ZeroShotError
     from .voice import FilmVoiceError, synthesize_narration
 
-    root = find_project_root()
+    root = output_root()
     loaded = load_project(root, project)
     directory = project_dir(root, project)
     audio_path = directory / "assets" / "audio" / "audio_manifest.json"

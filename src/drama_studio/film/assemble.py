@@ -19,6 +19,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .. import paths
 from .. import quality
 from .assets import ShotAsset, resolve_all
 from .audio import AudioError, load_audio_manifest, write_manifest
@@ -107,9 +108,10 @@ def _r3_command(
     *,
     audio_timeline: Path | None,
 ) -> list[str]:
+    repo = paths.repo_root()
     command = [
         sys.executable,
-        str(root / "scripts" / "r3_build.py"),
+        str(repo / "scripts" / "r3_build.py"),
         "--segments", str(build_dir / "segments.json"),
         "--audio", str(build_dir / "audio_manifest.json"),
         "--out", str(build_dir),
@@ -120,7 +122,7 @@ def _r3_command(
     if audio_timeline is not None:
         command += [
             "--audio-timeline", str(audio_timeline),
-            "--audio-assets", str(root / "assets" / "audio" / "manifest.json"),
+            "--audio-assets", str(repo / "assets" / "audio" / "manifest.json"),
         ]
     return command
 

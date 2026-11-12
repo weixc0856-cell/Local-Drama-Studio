@@ -1,9 +1,0 @@
-{
-  "positive_prompt": "a cracked concrete wall with peeling paint and moss. raw documentary photography, decisive moment. 35mm film photograph, natural ambient light, fine grain, unedited. composition: one decisive moment with a clear subject, natural framing with slight imperfection, no staged symmetry, one natural light condition across the frame, authentic imperfections: dust, scratches, vignetting, slight lens distortion, clean full-bleed edges with no frame. lighting: natural ambient light only, no studio setup, neutral temperature, medium contrast. materials: 35mm film, weathered surfaces, dust and mist, worn cloth. camera: locked-off camera, 35mm lens, medium depth of field. raw documentary photograph with natural ambient light. authentic weathered surfaces: rust, cracked paint, mud and worn stone. fine 35mm grain, slight vignetting and honest color. one decisive moment, not a staged composition. real depth of field and natural lens falloff. no retouching, no illustration and no 3d render. raw documentary photograph, natural light, no text, no staged composition. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "seed": 7404,
-  "width": 576,
-  "height": 1024,
-  "steps": 16,
-  "cfg": 1.0,
-  "filename_prefix": "refboard/realism_documentary/04"
-}

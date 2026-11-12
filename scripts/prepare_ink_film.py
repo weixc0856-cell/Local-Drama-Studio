@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = ROOT / "experiments" / "ink_dream"
+BASE = output_path("experiments/ink_dream")
 INPUT = ROOT / "runtime" / "ComfyUI" / "input"
 MOVES = [
     "mist drifts slowly, ink diffuses at the edges, composition preserved",
@@ -117,7 +117,7 @@ def main() -> int:
         "sample_rate": 48000,
         "lines": [{
             "index": 1, "text": "", "subtitle_text": "",
-            "file": (ROOT / "experiments" / "shinkai_scene" / "silence_120s.wav").as_posix(),
+            "file": (output_path("experiments/shinkai_scene") / "silence_120s.wav").as_posix(),
             "duration_seconds": 120.0,
             "sha256": "c779c14bb0cbf9e62bc480f33ca3233283dd45b48bc416df46beda10ce5133ae",
             "pause_after_ms": 0,

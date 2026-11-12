@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
-from ..config import find_project_root
+from ..paths import output_root
 from ..style_lock import attach_lock
 
 SCHEMA = """
@@ -186,7 +186,7 @@ def _encode(table: str, data: dict[str, Any]) -> dict[str, Any]:
 
 class WorkspaceStore:
     def __init__(self, root: Path | None = None, db_path: Path | None = None) -> None:
-        self.root = (root or find_project_root()).resolve()
+        self.root = (root or output_root()).resolve()
         self.db_path = (db_path or self.root / "projects" / "workspace.db").resolve()
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.init_schema()

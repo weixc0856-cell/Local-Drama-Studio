@@ -23,6 +23,7 @@ from typing import Any
 
 import yaml
 
+from ..paths import config_root
 from .config import ProductionSettings
 from .schemas import (
     ArtDirection,
@@ -327,7 +328,7 @@ def init_project(
     from ..style_engine import get_pack
 
     try:
-        pack = get_pack(root, style_id)
+        pack = get_pack(config_root(root), style_id)
     except KeyError as exc:
         raise ScriptError(str(exc)) from exc
 

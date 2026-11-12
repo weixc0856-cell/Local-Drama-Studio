@@ -23,13 +23,15 @@ from typing import Any, Awaitable, Callable, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from ..config import find_project_root, load_settings
+from .. import paths
+from ..config import load_settings
 from ..style_lock import (
     StyleLockError, assert_style_request, locked_preset_id, locked_style_id,
 )
 from .store import WorkspaceStore, now_iso
 
-ROOT = find_project_root()
+ROOT = paths.output_root()
+REPO_ROOT = paths.repo_root()
 LOG_DIR = ROOT / "logs" / "workspace" / "tasks"
 CREATE_NO_WINDOW = 0x08000000 if os.name == "nt" else 0
 
@@ -465,7 +467,7 @@ def _film_assemble_prereqs(params: FilmAssembleParams, store: WorkspaceStore) ->
         return missing
     if not (directory / "assets" / "audio" / "audio_manifest.json").is_file():
         missing.append("缺少 audio_manifest.json；先运行 film.voice")
-    if params.bgm_id and not (ROOT / "assets" / "audio" / "manifest.json").is_file():
+    if params.bgm_id and not (REPO_ROOT / "assets" / "audio" / "manifest.json").is_file():
         missing.append("缺少 assets/audio/manifest.json")
     if params.out:
         try:
@@ -517,10 +519,12 @@ def _resolve_under(raw: str, allowed: tuple[str, ...], *, must_exist: bool = Tru
 
 
 def _rel(path: Path) -> str:
-    try:
-        return path.resolve().relative_to(ROOT).as_posix()
-    except ValueError:
-        return str(path)
+    for base in (ROOT, REPO_ROOT):
+        try:
+            return path.resolve().relative_to(base).as_posix()
+        except ValueError:
+            continue
+    return str(path)
 
 
 def _port_open(host: str, port: int, timeout: float = 0.35) -> bool:

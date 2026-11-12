@@ -15,9 +15,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-from ..config import find_project_root
+from .. import paths
 
-ROOT = find_project_root()
+# Generated artifacts and declared inputs live in different roots.
+ROOT = paths.output_root()
+REPO_ROOT = paths.repo_root()
 
 PASS_VERIFIED = "PASS_VERIFIED"
 PASS_STATIC = "PASS_STATIC"
@@ -49,18 +51,21 @@ _probe_cache: dict[tuple[str, int, int], dict[str, Any] | None] = {}
 
 
 def rel(path: Path) -> str:
-    try:
-        return path.resolve().relative_to(ROOT).as_posix()
-    except ValueError:
-        return str(path)
+    for base in (ROOT, REPO_ROOT):
+        try:
+            return path.resolve().relative_to(base).as_posix()
+        except ValueError:
+            continue
+    return str(path)
 
 
 def resolve(rel_path: str | None) -> Path | None:
     if not rel_path:
         return None
-    candidate = (ROOT / rel_path).resolve()
+    base = REPO_ROOT if paths.is_repo_path(rel_path) else ROOT
+    candidate = (base / rel_path).resolve()
     try:
-        candidate.relative_to(ROOT)
+        candidate.relative_to(base)
     except ValueError:
         return None
     return candidate
@@ -1255,6 +1260,8 @@ def _is_temporary(path: Path) -> bool:
     return False
 
 
+_REPO_SCAN_ROOTS = ("assets", "workflows", "literary_intelligence/corpus")
+
 _SCAN_ROOTS: tuple[tuple[str, int], ...] = (
     ("assets", 4),
     ("experiments", 6),
@@ -1328,7 +1335,8 @@ def scan_assets(store: Any, include_temporary: bool = False, limit: int = 800) -
     formal = 0
     truncated = False
     for root_name, depth in _SCAN_ROOTS:
-        root = ROOT / root_name
+        base = REPO_ROOT if root_name in _REPO_SCAN_ROOTS else ROOT
+        root = base / root_name
         if not root.is_dir():
             continue
         for path in _iter_files(root, depth):

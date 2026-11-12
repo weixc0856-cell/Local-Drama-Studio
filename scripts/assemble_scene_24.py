@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BASE = ROOT / "experiments" / "shinkai_scene"
+BASE = output_path("experiments/shinkai_scene")
 IDS = [f"s{i:02d}" for i in range(1, 25)]
 EXISTING = {
     "s02": "scene_01.mp4", "s10": "scene_02.mp4", "s11": "scene_03.mp4",
@@ -48,7 +48,7 @@ def main() -> int:
          "--segments", str(BASE / "segments_24.json"), "--clips", str(clips),
          "--out", str(BASE / "segments_24_hybrid.json"),
          "--ready-dir", str(BASE / "clips24" / "ready"), "--mode", "stretch"])
-    out = ROOT / args.out
+    out = output_path(args.out)
     run([sys.executable, "scripts/r3_build.py",
          "--segments", str(BASE / "segments_24_hybrid.json"),
          "--audio", str(BASE / "audio_24.json"), "--out", str(out),

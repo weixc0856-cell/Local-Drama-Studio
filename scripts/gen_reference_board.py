@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 from drama_studio.config import find_project_root
+from drama_studio.paths import style_boards_root
 from drama_studio.style_engine import compile_image_prompt, get_pack, packs_root
 
 SUBJECTS = [
@@ -563,7 +564,7 @@ def main() -> int:
 
     root = find_project_root()
     pack = get_pack(root, args.style)
-    directory = packs_root(root) / pack.identity.group / args.style.split(".")[1] / "reference_board"
+    directory = style_boards_root() / pack.identity.group / pack.identity.id.split(".")[1]
     candidates = directory / "candidates"
     params_dir = candidates / "params"
     params_dir.mkdir(parents=True, exist_ok=True)
@@ -590,8 +591,8 @@ def main() -> int:
         jobs.append({
             "id": f"{index:02d}",
             "workflow": "workflows/flux3_t2i_api.json",
-            "params": str(path.relative_to(root)).replace("\\", "/"),
-            "out": str((candidates / f"{index:02d}").relative_to(root)).replace("\\", "/"),
+            "params": str(path).replace("\\", "/"),
+            "out": str(candidates / f"{index:02d}").replace("\\", "/"),
         })
 
     (candidates / "jobs.json").write_text(json.dumps(jobs, ensure_ascii=False, indent=2) + "\n",

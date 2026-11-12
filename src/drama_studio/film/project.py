@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel
 
+from ..paths import config_root
 from .continuity import Issue, check_continuity
 from .schemas import Narration, Screenplay, SourceText, Storyboard, VisualBible
 
@@ -123,7 +124,7 @@ def validate_project(root: Path, project_id: str) -> dict:
     if project.style_id:
         from ..style_engine import get_pack
         try:
-            get_pack(root, project.style_id)
+            get_pack(config_root(root), project.style_id)
         except KeyError as exc:
             issues.append(Issue("error", "style_unknown", "-", str(exc)))
 

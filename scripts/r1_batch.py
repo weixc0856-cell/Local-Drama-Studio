@@ -24,6 +24,7 @@ from datetime import datetime
 from pathlib import Path
 
 from drama_studio.locks import FileLock, LockHeld
+from drama_studio.paths import output_root
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,6 +41,16 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def resolve_job_path(value: str) -> Path:
+    """Workflows and config live in the repo; generated runs live in the workspace."""
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    if str(value).replace("\\", "/").startswith(("workflows/", "config/")):
+        return (ROOT / path).resolve()
+    return (output_root() / path).resolve()
+
+
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -50,7 +61,7 @@ def write_json(path: Path, payload: dict) -> None:
 
 
 def job_is_done(job: dict) -> bool:
-    out_dir = (ROOT / job["out"]).resolve()
+    out_dir = resolve_job_path(job["out"])
     meta_path = out_dir / "job.json"
     if not meta_path.is_file():
         return False
@@ -76,7 +87,7 @@ def stage_reference(job: dict) -> dict | None:
         if matches:
             source = max(matches, key=lambda p: (p.stat().st_mtime, p.name))
     if source is None and pinned:
-        source = (ROOT / pinned).resolve()
+        source = resolve_job_path(pinned)
     if source is None or not source.is_file():
         raise FileNotFoundError(
             f"reference image not found for {job['id']} "
@@ -98,10 +109,10 @@ def stage_reference(job: dict) -> dict | None:
 
 def run_job(job: dict, force: bool = False, timeout: int = 1800) -> dict:
     job_id = job["id"]
-    out_dir = (ROOT / job["out"]).resolve()
+    out_dir = resolve_job_path(job["out"])
     out_dir.mkdir(parents=True, exist_ok=True)
-    workflow = (ROOT / job["workflow"]).resolve()
-    params_path = (ROOT / job["params"]).resolve()
+    workflow = resolve_job_path(job["workflow"])
+    params_path = resolve_job_path(job["params"])
 
     if not force and job_is_done(job):
         meta = read_json(out_dir / "job.json")

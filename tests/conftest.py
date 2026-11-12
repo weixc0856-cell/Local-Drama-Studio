@@ -59,9 +59,12 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> SimpleNamespac
     from drama_studio.workspace import api, discovery, media, tasks
 
     monkeypatch.setattr(discovery, "ROOT", tmp_path)
+    monkeypatch.setattr(discovery, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(media, "ROOT", tmp_path)
+    monkeypatch.setattr(media, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(media, "THUMB_DIR", tmp_path / "logs" / "thumbs")
     monkeypatch.setattr(tasks, "ROOT", tmp_path)
+    monkeypatch.setattr(tasks, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(tasks, "LOG_DIR", tmp_path / "logs" / "workspace" / "tasks")
     tasks.LOG_DIR.mkdir(parents=True, exist_ok=True)
     store = WorkspaceStore(root=tmp_path, db_path=tmp_path / "workspace.db")

@@ -1,6 +1,0 @@
-{
-  "shot_id": "S03",
-  "keyframe_prompt": "scene SC02. traditional Chinese ink wash painting. raw xuan paper, diluted ink, dry brush. composition: large negative space, layered distance, asymmetrical balance. lighting: atmospheric, low contrast, neutral temperature, low contrast. materials: rice paper fibre, wet ink, dry brush. camera: smooth lateral tracking move, 35mm lens, deep depth of field. foreground: robe sleeve and railing. midground: poet climbing wooden stairs. background: river and mountains. visible xuan paper grain. brush strokes dissolving into blank paper. large unpainted areas. portrait 9:16 full-frame composition, no letterbox, no black bars. unmarked surfaces, no lettering, no watermark",
-  "video_prompt": "smooth lateral tracking move. primary motion: camera_follow. style motion: ink diffusion, mist drift, water flow. preserve: brushwork, negative space, paper grain. lighting: atmospheric, low contrast, consistent direction. secondary motion: robe_sway. foreground: robe sleeve and railing. background: river and mountains. smooth continuous motion, physically plausible, no abrupt changes, preserve composition and structure, no new characters, no scene transformation",
-  "style_id": "oriental.ink_wash"
-}
