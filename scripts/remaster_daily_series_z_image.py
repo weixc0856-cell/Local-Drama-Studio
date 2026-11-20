@@ -210,6 +210,123 @@ DAY03_TASKS = [
 ]
 
 
+DAY04_TASKS = [
+    {
+        "id": "day04_01_china_coastal",
+        "title_zh": "01 · 中国 · 海南环岛公路海风白衬衫",
+        "title_en": "01 · China · Coastal Highway & White Linen Shirt",
+        "seed": 20268401,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily beautiful 20-year-old Chinese woman standing beside a sun-drenched coastal highway in tropical Hainan. "
+            "Delicate East Asian classical bone structure, smooth slender neck and graceful jawline, radiant genuine smile with bright joyful almond eyes looking towards camera. "
+            "Sun-kissed glowing skin with natural micro-texture and fine pores, natural dewy peach lips. "
+            "Long silky dark hair blown by warm ocean breeze with strands dancing across her laughing face. "
+            "Wearing a crisp oversized white linen button-down shirt fluttering in wind over simple cotton tank, sleeves loosely rolled. "
+            "Turquoise ocean waves crashing against coastal rocks and tropical palm tree shadows in bright sunny background, Leica M11 50mm f/1.4 Summilux, vibrant natural daylight, Kodak Portra 400 warmth."
+        )
+    },
+    {
+        "id": "day04_02_western_highway",
+        "title_zh": "02 · 欧美 · 加州一号公路复古敞篷",
+        "title_en": "02 · Western · Pacific Coast Highway Convertible",
+        "seed": 20268402,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of a gorgeous 22-year-old Caucasian woman seated in a vintage convertible on Pacific Coast Highway in California at golden hour. "
+            "Sculpted European bone structure, high refined cheekbones, sparkling warm hazel eyes with natural laugh lines, delicate dusting of natural freckles, authentic skin texture with visible micro-pores. "
+            "Voluminous wavy golden-blonde hair violently whipped by coastal wind with radiant golden backlit rim light, vintage tortoiseshell sunglasses pushed into hair. "
+            "Wearing a casual slouchy off-white knitted tank top, dainty layered gold chains. "
+            "Steep coastal cliffs, winding asphalt highway, and endless sparkling Pacific Ocean glowing in molten orange sunset light, Contax T2 35mm f/2.8 lens, cinematic documentary realism."
+        )
+    },
+    {
+        "id": "day04_03_japan_okinawa",
+        "title_zh": "03 · 日本 · 冲绳堤坝草帽与纯白棉裙",
+        "title_en": "03 · Japan · Okinawa Seawall Straw Hat & White Sundress",
+        "seed": 20268403,
+        "prompt": (
+            "Authentic candid Japanese film portrait of an exquisite 20-year-old Japanese young beauty standing on a concrete seawall overlooking crystal-clear turquoise sea in Okinawa. "
+            "Petite delicate Japanese features, soft youthful oval face, airy wispy fringe blown sideways by ocean breeze, big expressive dark eyes filled with summer clarity, natural fresh peach lip gloss. "
+            "Translucent fair porcelain skin with natural soft flush on sun-warmed cheeks, holding down a wide-brimmed woven straw hat with one slender hand against sea wind. "
+            "Wearing a breezy pure white cotton sleeveless sundress fluttering in wind, simple canvas shoulder tote. "
+            "Pristine bright emerald-blue ocean water sparkling in afternoon sun with white sea foam, Fujifilm Pro 400H emulation, nostalgic Japanese summer cinema aesthetic."
+        )
+    },
+    {
+        "id": "day04_04_korea_jeju",
+        "title_zh": "04 · 韩国 · 济州岛玄武岩露台度假千金",
+        "title_en": "04 · Korea · Jeju Basalt Ocean Terrace Resort Chic",
+        "seed": 20268404,
+        "prompt": (
+            "Candid editorial portrait of an extraordinarily elegant 21-year-old Korean woman standing by glass railing on oceanfront terrace of a minimalist modern cafe in Jeju Island. "
+            "Refined clean Korean facial contours, smooth elegant jawline, calm intellectual dark eyes with direct poised gaze, natural soft rose MLBB hydrated lips. "
+            "Flawless cool-tone porcelain glass skin with realistic micro-texture, zero heavy makeup, quiet understated luxury. "
+            "Sleek dark straight hair blowing gracefully in ocean wind, wearing an oversized flowing champagne silk resort shirt over white crop top and wide-leg linen trousers. "
+            "Dramatic black volcanic basalt rocks meeting deep sapphire ocean waves, modern architectural concrete lines, Hasselblad X2D 90mm lens, Vogue Korea resort editorial style."
+        )
+    }
+]
+
+
+def remaster_day04():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day04"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 04: 《海风微凉 · 沿海公路与白衬衫》 (Coastal Breeze & Highway)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY04_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/4] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day04_coastal_breeze_4grid_cn.png"
+    grid_en = day_dir / "day04_coastal_breeze_4grid_en.png"
+    print("\n[*] Assembling Bilingual 4-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 04 《海风微凉 · 沿海公路与白衬衫》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 阳光海风发丝 · 纯天然微孔光泽 · 告别塑料假面",
+        main_title_en="Coastal Breeze & Ocean Highway · Day 04 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Sunlit Coastal Hair & Skin Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=2
+    )
+    print("\n[+] Day 04 Remaster complete!")
+
+
 def remaster_day03():
     day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day03"
     remaster_dir = day_dir / "remaster_z_image"
@@ -331,6 +448,239 @@ def remaster_day02():
     print("\n[+] Day 02 Remaster complete!")
 
 
+DAY05_TASKS = [
+    {
+        "id": "day05_01_china_bookstore",
+        "title_zh": "01 · 中国 · 旧时光书店捧读侧颜",
+        "title_en": "01 · China · Vintage Bookstore Sunset Reading",
+        "seed": 20268501,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily beautiful young Chinese woman standing in a quiet vintage bookstore at golden hour. "
+            "Delicate East Asian classical bone structure, smooth slender neck and natural jawline, peaceful focused gaze reading an open hardcover book with quiet warmth and soulful intelligence. "
+            "Pristine translucent porcelain skin, natural soft peach hydrated lips, flyaway dark hair strands illuminated by low-angle golden sunset light pouring through tall wooden windows. "
+            "Wearing an oversized warm cream-beige knit sweater over a vintage white collared shirt. "
+            "Surrounded by towering warm dark mahogany bookshelves filled with antique books, dust motes dancing in warm sunbeams, Leica M11 50mm f/1.4 Summilux, Kodak Gold 200 nostalgic warmth."
+        )
+    },
+    {
+        "id": "day05_02_western_vinyl",
+        "title_zh": "02 · 英国 · 诺丁山黑胶店复古银耳麦",
+        "title_en": "02 · UK · Notting Hill Vintage Vinyl & Headphones",
+        "seed": 20268502,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of a gorgeous 22-year-old British woman browsing vintage vinyl records in a cozy retro record store in London. "
+            "Sculpted European bone structure, high refined cheekbones, sparkling amber-hazel eyes with a playful gentle smile, delicate dusting of light freckles across her nose and cheeks, authentic skin texture with visible micro-pores. "
+            "Voluminous wavy golden-brown hair spilling naturally over classic vintage silver over-ear headphones, backlit by warm golden sunset light streaming through the storefront glass. "
+            "Wearing a slouchy distressed brown leather bomber jacket over a striped cotton tee, fingers casually flipping through a wooden crate of vinyl records. "
+            "Colorful vinyl record album covers and retro music posters softly blurred in the background, Contax T2 35mm f/2.8 lens, authentic documentary warmth."
+        )
+    },
+    {
+        "id": "day05_03_japan_jimbocho",
+        "title_zh": "03 · 日本 · 神保町古书架间澈然回眸",
+        "title_en": "03 · Japan · Jimbocho Antique Stacks & Dewy Gaze",
+        "seed": 20268503,
+        "prompt": (
+            "Authentic candid Japanese film portrait of an exquisite 20-year-old Japanese young beauty peeking from between two wooden bookshelves in a narrow vintage bookstore in Jimbocho, Tokyo. "
+            "Petite delicate Japanese features, soft oval face, airy wispy bangs gently framing her forehead, dark hair loosely gathered in a casual low bun with loose tendrils, big dewy expressive dark eyes looking directly into the camera with tender warmth, natural fresh nude-peach lip gloss. "
+            "Translucent fair porcelain skin, holding an old Japanese poetry book close to her chest. "
+            "Wearing a cozy oversized navy knit cardigan over a soft linen blouse. "
+            "Floor-to-ceiling wooden shelves stacked with weathered vintage paperbacks, warm incandescent tungsten light bulbs glowing gently overhead, Fujifilm Pro 400H emulation, nostalgic Japanese cinema mood."
+        )
+    },
+    {
+        "id": "day05_04_korea_samcheong",
+        "title_zh": "04 · 韩国 · 三清洞黑胶艺廊冷白知性",
+        "title_en": "04 · Korea · Samcheong Vinyl Lounge Minimalist Chic",
+        "seed": 20268504,
+        "prompt": (
+            "Candid editorial portrait of an extraordinarily elegant modern Korean woman seated at a minimalist natural oak table in a sunlit art bookstore and vinyl listening lounge in Samcheong-dong, Seoul. "
+            "Refined clean Korean facial contours, smooth elegant jawline and slender swan-like neck, calm intellectual dark eyes with direct poised gaze, natural soft rose MLBB hydrated lips. "
+            "Flawless cool-tone porcelain glass skin with realistic micro-pores, zero heavy makeup, quiet understated luxury. "
+            "Sleek silky dark hair parted in the middle, wearing a tailored minimalist dark charcoal double-breasted coat over a cream silk knit top. "
+            "A vintage minimalist turntable spinning a vinyl record on the wooden table beside her, warm sunset rays cutting across the concrete wall in the background, Hasselblad X2D 90mm lens, Vogue Korea editorial style."
+        )
+    }
+]
+
+
+DAY06_TASKS = [
+    {
+        "id": "day06_01_china_snow",
+        "title_zh": "01 · 中国 · 故宫角楼红墙白雪回眸",
+        "title_en": "01 · China · Forbidden City Red Wall Winter Snow",
+        "seed": 20268601,
+        "prompt": (
+            "Authentic cinematic 35mm film photograph of an extraordinarily beautiful young Chinese woman in a gentle winter snowfall beside an ancient red palace wall. "
+            "Delicate East Asian classical bone structure, smooth slender neck and graceful jawline, soulful intelligent dark almond eyes with soft snowflakes caught on her eyelashes. "
+            "Pristine translucent porcelain jade skin with subtle cold-air rosy flush on cheeks, natural pale rose hydrated lips. "
+            "Wearing an elegant long ivory-white double-faced cashmere coat and a thick cream wool scarf tucked around her neck, dark hair dusted with fine snowflakes. "
+            "Ancient vermilion palace wall and snow-dusted corner tower in soft out-of-focus background, gentle winter snowflakes drifting in the air, Leica M11 50mm f/1.4 Summilux, cinematic poetry."
+        )
+    },
+    {
+        "id": "day06_02_western_audrey_snow",
+        "title_zh": "02 · 瑞士 · 阿尔卑斯雪山木屋古典名媛",
+        "title_en": "02 · Swiss · Alpine Chalet Balcony Classic Grace",
+        "seed": 20268602,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily beautiful young European woman in a snowy alpine setting with the timeless aristocratic elegance of Audrey Hepburn and romantic French allure. "
+            "Flawless, perfectly clear smooth porcelain ivory skin, completely blemish-free and zero freckles, radiant natural winter glow. "
+            "Aristocratic classical bone structure, noble high straight nasal bridge, captivating wide deer-like hazel-brown eyes framed by long dark eyelashes, subtle natural laugh lines with an enchanting graceful smile, natural soft pink hydrated lips. "
+            "Silky chestnut brown hair loosely styled with gentle French fringe bangs, delicate crystalline snowflakes melting in her hair. "
+            "Wearing an oversized cozy cream-white chunky cable-knit mohair sweater, hands holding a warm steaming white mug. "
+            "Rustic wooden alpine chalet balcony and snow-capped pine mountains softly blurred in the bright winter sunlight, Contax T2 35mm f/2.8 lens, legendary European cinema realism."
+        )
+    },
+    {
+        "id": "day06_03_japan_otaru_snow",
+        "title_zh": "03 · 日本 · 小樽初雪白毛耳罩与纯情",
+        "title_en": "03 · Japan · Otaru First Snow & White Earmuffs",
+        "seed": 20268603,
+        "prompt": (
+            "Authentic candid Japanese film portrait of an exquisite young Japanese woman standing in a heavy quiet snowfall in Otaru, Hokkaido. "
+            "Petite delicate Japanese features, soft youthful oval face, airy wispy fringe dusted with powdery white snowflakes, big dewy expressive dark eyes looking straight into the lens with tender warmth, natural rosy peach winter lip gloss. "
+            "Translucent glowing fair skin with natural chilly winter pink flush on cheeks and nose tip. "
+            "Wearing fluffy plush white earmuffs, an oversized classic navy blue wool duffle coat with wooden toggle buttons, and a voluminous cream knitted scarf. "
+            "Soft snowy street lamps and falling snow creating gentle white bokeh circles, Fujifilm Pro 400H emulation, nostalgic Japanese winter cinema aesthetic."
+        )
+    },
+    {
+        "id": "day06_04_korea_namsan_snow",
+        "title_zh": "04 · 韩国 · 首尔南山雪景极简冷白千金",
+        "title_en": "04 · Korea · Seoul Namsan Snow & White Cashmere",
+        "seed": 20268604,
+        "prompt": (
+            "Candid editorial portrait of an extraordinarily elegant modern Korean woman standing on a snow-covered pavilion terrace overlooking winter Seoul. "
+            "Refined clean Korean facial contours, smooth noble jawline and slender neck, calm poised intellectual dark eyes, immaculate cool-tone porcelain glass skin, natural soft berry-tinted MLBB hydrated lips. "
+            "Sleek silky dark hair parted neatly, fine crystalline snow particles resting on her shoulders. "
+            "Wearing a tailored minimalist off-white double-breasted wool-cashmere trench coat belted at the waist, quiet luxury styling. "
+            "Snow-laden branches and modern Seoul city skyline softly visible through winter mist, shot on Hasselblad X2D 90mm lens, Vogue Korea winter editorial style."
+        )
+    }
+]
+
+
+def remaster_day05():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day05"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 05: 《文艺黄昏 · 黑胶唱片与复古书店》 (Golden Hour Nostalgia)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY05_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/4] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day05_vinyl_books_4grid_cn.png"
+    grid_en = day_dir / "day05_vinyl_books_4grid_en.png"
+    print("\n[*] Assembling Bilingual 4-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 05 《文艺黄昏 · 黑胶唱片与复古书店》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 暖金夕阳发丝 · 纯天然微孔光泽 · 告别塑料假面",
+        main_title_en="Golden Hour Nostalgia · Day 05 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Warm Sunset Glow & Authentic Skin Micro-Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=2
+    )
+    print("\n[+] Day 05 Remaster complete!")
+
+
+def remaster_day06():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day06"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 06: 《冬日微雪 · 纯白毛领与红墙》 (Winter Snow & Pure White)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY06_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/4] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day06_winter_snow_4grid_cn.png"
+    grid_en = day_dir / "day06_winter_snow_4grid_en.png"
+    print("\n[*] Assembling Bilingual 4-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 06 《冬日微雪 · 纯白毛领与红墙》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 晶莹初雪融发 · 冷感通透玉肌 · 告别塑料假面",
+        main_title_en="Winter Snow & Pure Cashmere · Day 06 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Winter Snowfall & Radiant Porcelain Skin · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=2
+    )
+    print("\n[+] Day 06 Remaster complete!")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--day", default="02", help="Day collection to remaster")
@@ -340,8 +690,17 @@ if __name__ == "__main__":
         remaster_day02()
     elif args.day == "03":
         remaster_day03()
+    elif args.day == "04":
+        remaster_day04()
+    elif args.day == "05":
+        remaster_day05()
+    elif args.day == "06":
+        remaster_day06()
     elif args.day == "all":
         remaster_day02()
         remaster_day03()
+        remaster_day04()
+        remaster_day05()
+        remaster_day06()
     else:
         print(f"Day {args.day} queue ready.")
