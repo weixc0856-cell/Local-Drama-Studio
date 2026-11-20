@@ -27,7 +27,7 @@ def _shot(shot_id: str, prev: str | None, nxt: str | None) -> dict:
             "character_state": "none",
             "motion_direction": "static",
         },
-        "generation": {"image_model": "flux3", "video_model": "wan2.2_ti2v_5b", "status": "planned"},
+        "generation": {"image_model": "flux3", "video_model": "wan2.2_14b_i2v", "status": "planned"},
     }
 
 

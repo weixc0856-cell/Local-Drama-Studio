@@ -32,9 +32,9 @@ asset_id, 类型, 名称, 官方来源 URL, 作者/提供方, 版本,
 | FLUX.3 Klein distilled | `diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf` | FLUX Kommunity License（年营收 < 500 万美元免费商用；需内容过滤与 AI 标注） | `PASS_LIMITED` |
 | FLUX.3 文本编码器 | `text_encoders/qwen3vl_4b_int8_convrot.safetensors` | 随 BFL 仓库分发；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
 | FLUX VAE（复用） | `vae/flux2-vae.safetensors` | Apache-2.0 | `PASS_VERIFIED` |
-| Wan2.2 TI2V 5B | `Wan2.2-TI2V-5B-Q4_K_M.gguf` | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
+| Wan 2.2-14B I2V 双专家 | `diffusion_models/wan2.1-i2v-14b-480p-Q4_K_M.gguf` | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
 | Wan 文本编码器 | `text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors` | 随 Comfy-Org 重打包；UMT5 底层待复核 | `PASS_VERIFIED` |
-| Wan VAE | `vae/wan2.2_vae.safetensors` | Apache-2.0 | `PASS_VERIFIED` |
+| Wan VAE | `vae/wan_2.1_vae.safetensors`（标准 16 通道） | Apache-2.0 | `PASS_VERIFIED` |
 | 本地 LLM | `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | 模型卡条款；接入剧本前登记 | 使用中 |
 
 ## 3. 运行时与工具

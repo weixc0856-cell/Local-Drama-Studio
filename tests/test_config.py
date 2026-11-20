@@ -21,7 +21,7 @@ def test_all_config_files_parse() -> None:
     root = find_project_root()
     assert load_settings(root).comfyui.port == 8188
     registry = load_models(root)
-    assert {"flux_3_klein", "wan_2_2_ti2v_5b"} <= set(registry.models)
+    assert {"flux_3_klein", "wan_2_2_14b_i2v"} <= set(registry.models)
     flux = registry.models["flux_3_klein"]
     assert set(flux.files) == set(flux.sizes)
     assert "profiles" in load_generation(root)

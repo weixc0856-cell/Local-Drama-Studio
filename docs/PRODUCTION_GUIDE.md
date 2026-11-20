@@ -109,8 +109,8 @@
 | 图像 | FLUX.3 Klein GGUF Q4_K_M | `workflows/flux3_t2i_api.json`，576×1024，**16 步**，CFG 1.0，Flux2Scheduler，seed 可追溯 |
 | 图像编码器 | `qwen3vl_4b_int8_convrot.safetensors` | `CLIPLoader(type=flux3, device=cpu)` |
 | 图像 VAE | `flux2-vae.safetensors` | 必须用 FLUX.2 VAE |
-| 视频 | Wan2.2 TI2V 5B Q4_K_M | **分辨率必须能被 32 整除**，**20 步**（10 步出彩虹伪影），CFG 5，shift 8，`uni_pc`/`simple` |
-| Wan 帧数 | 73（≈3 s）默认；121 有颜色漂移风险 | 竖屏 576×1024 / 73 帧 ≈ 36.4 min |
+| 视频 | Wan 2.2-14B I2V 双专家 Q4_K_M | **分辨率必须能被 32 整除**，**6 步**（LightX2V LoRA），CFG 1.0，shift 5，标准 16 通道 `wan_2.1_vae` |
+| Wan 帧数 | 须为 4n+1；73（≈3 s）/ 121（≈5 s） | 73/121 的安全边界实测自已退役的 5B，14B 上尚未复验 |
 | 文本 | Qwen3-30B-A3B-Instruct-2507 | 8080，CPU-only，64K 上下文 |
 | 语音 | VoxCPM2 | 50000，CPU，48 kHz，RTF≈9.3，zero-shot |
 

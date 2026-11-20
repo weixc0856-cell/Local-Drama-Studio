@@ -38,7 +38,6 @@
 | FLUX 文本编码器 | 提示词编码 | `qwen3vl_4b_int8_convrot.safetensors`，4.86 GB | 随 BFL 仓库；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
 | FLUX.2 VAE | 解码 | `flux2-vae.safetensors`，336 MB | Apache-2.0 | `PASS_VERIFIED` |
 | Wan2.2-14B I2V (双专家) | 旗舰图生视频 (唯一主力) | GGUF Q4_K_M，10.56 GB；6 步 (LightX2V LoRA) / CFG 1.0 / shift 5 | Apache-2.0 / 阿里开源 | `PASS_VERIFIED` (ADR-031 唯一指定) |
-| Wan2.2 TI2V 5B | 历史图生视频 | GGUF Q4_K_M，3.43 GB | Apache-2.0 | `RETIRED` (人脸崩坏率高，已被 14B 完全替代) |
 | UMT5-XXL 编码器 | Wan 提示词 | `umt5_xxl_fp8_e4m3fn_scaled`，6.73 GB | 随 Comfy-Org 重打包 | `PASS_VERIFIED` |
 | Wan2.1 VAE (16通道) | 视频解码 | `wan_2.1_vae.safetensors`，254 MB (标准16通道) | Apache-2.0 | `PASS_VERIFIED` |
 | Z-Image Turbo 6B | 写实人像/电影光影生图主引擎 | GGUF Q4_K_M，4.29 GB；8 步 / CFG 1.0 / 裸跑零 LoRA | 阿里开源 Apache-2.0 | `PASS_VERIFIED` |
@@ -85,9 +84,9 @@
 | `diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf` | 图像 |
 | `text_encoders/qwen3vl_4b_int8_convrot.safetensors` | 图像编码器 |
 | `vae/flux2-vae.safetensors` | 图像 VAE |
-| `Wan2.2-TI2V-5B-Q4_K_M.gguf` | 视频（顶层） |
+| `diffusion_models/wan2.1-i2v-14b-480p-Q4_K_M.gguf` | 视频（14B 双专家） |
 | `text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors` | Wan 编码器 |
-| `vae/wan2.2_vae.safetensors` | Wan VAE |
+| `vae/wan_2.1_vae.safetensors` | Wan VAE（标准 16 通道） |
 | `Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf` | 本地 LLM（顶层） |
 
 `config/models.yaml` 记录精确字节数；`doctor` 拒绝缺失或大小不符的文件。

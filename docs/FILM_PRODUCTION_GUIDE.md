@@ -105,7 +105,7 @@ projects/<project_id>/
     "character_state": "poet_on_tower", "motion_direction": "left_to_right",
     "match_cut_to": null
   },
-  "generation": {"image_model": "flux3", "video_model": "wan2.2_ti2v_5b", "status": "planned"}
+  "generation": {"image_model": "flux3", "video_model": "wan2.2_14b_i2v", "status": "planned"}
 }
 ```
 
@@ -174,7 +174,7 @@ projects/<project_id>/
 
 ### 6.1 本机能力边界（实测约束）
 
-- 原生 `WanFirstLastFrameToVideo` 主要在 Wan2.2 **14B** 上验证；本机是 **TI2V 5B**，不能假设首尾帧节点可用。
+- 本机已统一到 Wan2.2 **14B** I2V（ADR-031）；`WanFirstLastFrameToVideo` 首尾帧节点在本机尚未实测，不能假设可用。
 - 因此 Phase 1 的连续性依靠：**关键帧继承 + 匹配剪辑 + 剪辑规则**，而不是模型级首尾帧锁定。
 - 社区的多镜头方案（如 `Wan-SVI2Pro-FLF`、`VideoChunkTools`）依赖额外节点与 14B 权重，只能作为 Phase 2 的候选，不进入当前依赖。
 
@@ -254,7 +254,7 @@ projects/<project_id>/
 | 项 | 实测 |
 |---|---|
 | FLUX.3 576×1024 | 约 2–2.5 分钟/张 |
-| Wan 5B 576×1024 / 73 帧 | 约 36 分钟/镜 |
+| Wan 14B I2V（6 步 + Block Swap） | 尚未在本机做整镜计时；5B 时代的 36 分钟/镜不再适用 |
 | VoxCPM2 | CPU RTF ≈ 9–12 |
 
 按 40 分钟/镜估算：6 镜 ≈ 4 小时，8 镜 ≈ 5.3 小时，12 镜 ≈ 8 小时，30 镜 ≈ 20 小时，不含重试与人工审核。

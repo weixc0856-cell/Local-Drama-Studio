@@ -114,11 +114,11 @@ def test_wan_jobs_need_keyframes_unless_allowed(tmp_path: Path) -> None:
     payload = json.loads(Path(result["jobs"]).read_text(encoding="utf-8"))
     assert isinstance(payload, list)
     job = payload[0]
-    assert job["workflow"] == "workflows/r0_wan_i2v_api.json"
+    assert job["workflow"] == "workflows/wan22_14b_i2v_api.json"
     assert job["reference"]["input_name"] == "p1_S01_kf.png"
     assert job["reference"]["selector"] == "latest"
     params = json.loads((tmp_path / job["params"]).read_text(encoding="utf-8"))
-    assert params["frames"] == 121 and params["shift"] == 8.0
+    assert params["frames"] == 121 and params["shift"] == 5.0
 
 
 def test_wan_jobs_pick_73_for_short_shots(tmp_path: Path) -> None:

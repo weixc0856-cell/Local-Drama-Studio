@@ -467,7 +467,7 @@ def test_build_video_jobs_requires_keyframes_and_writes_wan_jobs(tmp_path: Path)
 
     root, episode, script, _ = _motion_fixture(tmp_path)
     (root / "workflows").mkdir(exist_ok=True)
-    (root / "workflows" / "r0_wan_i2v_api.json").write_text("{}", encoding="utf-8")
+    (root / "workflows" / "wan22_14b_i2v_api.json").write_text("{}", encoding="utf-8")
     data = script.model_dump()
     data["shots"][1]["type"] = "video"
     data["shots"][1]["video_prompt"] = "云气缓慢横向漂移，山体保持刚性"
@@ -497,7 +497,7 @@ def test_video_shot_without_keyframe_fails(tmp_path: Path) -> None:
 
     root, episode, script, _ = _motion_fixture(tmp_path)
     (root / "workflows").mkdir(exist_ok=True)
-    (root / "workflows" / "r0_wan_i2v_api.json").write_text("{}", encoding="utf-8")
+    (root / "workflows" / "wan22_14b_i2v_api.json").write_text("{}", encoding="utf-8")
     data = script.model_dump()
     data["shots"][1]["type"] = "video"
     video_script = ProductionScript.model_validate(data)

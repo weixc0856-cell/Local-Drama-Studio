@@ -1,6 +1,6 @@
 """Generate ComfyUI job files from a storyboard (no execution).
 
-Keyframes use the FLUX.3 workflow; shots use the Wan2.2 TI2V 5B workflow.
+Keyframes use the FLUX.3 workflow; shots use the Wan 2.2-14B I2V workflow.
 Running the jobs is a separate, GPU-owning step (scripts/r1_batch.py).
 """
 
@@ -17,7 +17,7 @@ from drama_studio.application.film.prompts import compile_shot_prompts
 from drama_studio.domain.film.schemas import Storyboard, VisualBible
 
 FLUX_WORKFLOW = "workflows/flux3_t2i_api.json"
-WAN_WORKFLOW = "workflows/r0_wan_i2v_api.json"
+WAN_WORKFLOW = "workflows/wan22_14b_i2v_api.json"
 
 WAN_FRAMES = {49: 49, 65: 65, 73: 73, 81: 81, 121: 121}
 
@@ -108,16 +108,16 @@ def build_wan_jobs(
     height: int = 576,
     frames: int | None = None,
     allow_missing_keyframes: bool = False,
-    steps: int = 20,
-    cfg: float = 5.0,
-    shift: float = 8.0,
+    steps: int = 6,
+    cfg: float = 1.0,
+    shift: float = 5.0,
     pack=None,
     camera_override: str | None = None,
 ) -> dict:
     if project.storyboard is None or project.bible is None:
         raise ValueError("storyboard.json and visual_bible.yaml are required")
     if frames is not None and frames not in WAN_FRAMES:
-        raise ValueError(f"frames must be one of {sorted(WAN_FRAMES)} (4n+1); 121 has known colour drift")
+        raise ValueError(f"frames must be one of {sorted(WAN_FRAMES)} (4n+1)")
     project_root = (root / "projects" / project.project_id).resolve()
     keyframes = keyframes_dir or (project_root / "assets" / "keyframes")
     target = out_dir or (project_root / "jobs" / "shots")
@@ -137,8 +137,9 @@ def build_wan_jobs(
         keyframe = latest_output(keyframes / shot.shot_id, shot.shot_id, ".png")
         if keyframe is None and not allow_missing_keyframes:
             raise FileNotFoundError(f"keyframe not found for {shot.shot_id} under {keyframes / shot.shot_id}")
-        # 73 frames is the measured safe default (3.04 s); 121 covers 5.04 s.
-        # A longer target is still generated at 121 and extended by film clips.
+        # 73 frames covers 3.04 s, 121 covers 5.04 s; longer targets are extended by film clips.
+        # NOTE: these limits were measured on the retired Wan 2.2-5B (ADR-031) and have not
+        # been re-validated on the 14B dual-expert pipeline.
         shot_frames = frames or (121 if shot.duration_seconds > 3.5 else 73)
         if width % 32 or height % 32:
             raise ValueError(f"Wan width/height must be divisible by 32, got {width}x{height}")

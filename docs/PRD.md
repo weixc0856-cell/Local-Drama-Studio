@@ -7,7 +7,7 @@
 > **2026-11-06 最新决策**：
 > 1. 图像线为 **FLUX.3 Klein**（ADR-016；GGUF Q4_K_M、16 步、CFG 1.0、`workflows/flux3_t2i_api.json`）；FLUX.2 已退役。
 > 2. TTS 为 **VoxCPM2**（端口 50000，48 kHz，CPU，参考音克隆）；CosyVoice 的 SFT 与 300M 能力全部退役，`tts_mode=sft` 直接报错。
-> 3. 视频线仍为 **Wan2.2 TI2V 5B**；MiniMax H3 为 `NOT_RUN`（已完成代码与硬件分析，未做实测）。
+> 3. 视频线为 **Wan 2.2-14B I2V 双专家**（GGUF Q4_K_M + LightX2V 6 步蒸馏 LoRA + 标准 16 通道 VAE）；Wan 2.2-5B 已退役（ADR-031）；MiniMax H3 为 `NOT_RUN`（已完成代码与硬件分析，未做实测）。
 > 4. **视觉风格与动画流程将整体重构**：现有 4 套风格配置不再作为产品方向；新风格系统设计中（规划 12 种），旧风格验证结论不自动迁移。
 > 5. 可复现证据以 `config/models.yaml`、`docs/DECISIONS.md`、`docs/ARCHIVE.md` 与真实产物为准。
 
@@ -424,9 +424,9 @@ Literary Intelligence（LI）是可选的**文学证据链与内容包前置能�
 
 ### 10.2 视频
 
-- 引擎：ComfyUI + Wan2.2 TI2V 5B（GGUF Q4_K_M）；MiniMax H3 为 `NOT_RUN`，不纳入现行生产。
-- 工作流：T2V / I2V；`Wan22ImageToVideoLatent`、`ModelSamplingSD3(shift=8)`、`uni_pc/simple`、CFG 5、20 步。
-- 分辨率必须除以 32；默认 73 帧；121 帧有颜色漂移风险。
+- 引擎：ComfyUI + Wan 2.2-14B I2V 双专家（GGUF Q4_K_M + LightX2V 6 步 LoRA + 64GB DDR5 Block Swap）；MiniMax H3 为 `NOT_RUN`，不纳入现行生产。
+- 工作流：仅 I2V（`workflows/wan22_14b_i2v_api.json`）；6 步、CFG 1.0、shift 5；标准 16 通道 `wan_2.1_vae`。5B 的 T2V 管线与 48 通道 VAE 已随 ADR-031 退役。
+- 分辨率必须除以 32；帧数须为 4n+1。73/121 帧的安全边界是在已退役的 5B 上实测的，14B 上尚未复验。
 - Wan 只承担缓慢推近/轻微运动；精确主体位移不可依赖。
 
 ### 10.3 生成纪律

@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from drama_studio.application.script_engine import ProductionScript
 
 FLUX_WORKFLOW = "workflows/flux3_t2i_api.json"
-WAN_I2V_WORKFLOW = "workflows/r0_wan_i2v_api.json"
+WAN_I2V_WORKFLOW = "workflows/wan22_14b_i2v_api.json"
 
 
 class ProductionError(RuntimeError):
@@ -111,9 +111,9 @@ def build_video_jobs(
     width: int = 576,
     height: int = 1024,
     frames: int = 73,
-    steps: int = 20,
-    cfg: float = 5.0,
-    shift: float = 8.0,
+    steps: int = 6,
+    cfg: float = 1.0,
+    shift: float = 5.0,
 ) -> dict[str, Any]:
     """Create Wan I2V jobs for ``type=video`` shots from their FLUX keyframes.
 

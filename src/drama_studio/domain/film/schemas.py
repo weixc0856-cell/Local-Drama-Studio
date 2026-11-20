@@ -221,7 +221,7 @@ class GenerationSpec(BaseModel):
     model_config = {"extra": "forbid"}
 
     image_model: str = "flux3"
-    video_model: str = "wan2.2_ti2v_5b"
+    video_model: str = "wan2.2_14b_i2v"
     status: ShotStatus = ShotStatus.PLANNED
 
 

@@ -9,7 +9,7 @@
 
 - 产品定位：东方视觉内容生产工具。
 - 内容范围：山水诗词 / 古典女性 / 神话幻想。
-- 核心栈：ComfyUI + FLUX.2 Klein 4B + Wan2.2 TI2V 5B + CosyVoice + FFmpeg。
+- 核心栈：ComfyUI + Z-Image Turbo 6B / FLUX.3 Klein + Wan 2.2-14B I2V + VoxCPM2 + FFmpeg。
 - 生产流程：单篇、人工审核、手动发布。
 - 工程约束：双 venv、模型外置、无自动发布、无新依赖。
 - 文档体系：本 8 份产品文档 + R0-R3 历史报告。

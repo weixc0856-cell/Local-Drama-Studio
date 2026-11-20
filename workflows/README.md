@@ -47,7 +47,7 @@
 ## 已实际验证
 
 - `r0_flux_t2i_api.json`：R0-C 512×512；R1 768×432 文生图（11 次任务）。
-- `r0_wan_t2v_api.json`、`r0_wan_i2v_api.json`：R0-D/R0-E，20 步。
+- `archive/r0_wan_t2v_api.json`、`archive/r0_wan_i2v_api.json`：R0-D/R0-E，20 步。**Wan 2.2-5B 已退役（ADR-031），仅作历史归档，现役视频工作流为 `wan22_14b_i2v_api.json`。**
 - `r1_flux_edit_api.json`：R1 参考图条件，`LoadImage → VAEEncode → ReferenceLatent`；768×432。
 
 ## 版本登记

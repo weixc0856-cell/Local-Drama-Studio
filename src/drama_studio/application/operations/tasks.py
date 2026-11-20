@@ -1775,7 +1775,7 @@ TASK_KINDS: dict[str, TaskKind] = {
     "film.wan": TaskKind(
         key="film.wan",
         label="影视 Wan 镜头生成",
-        description="执行 projects/<id>/jobs/shots/jobs.json（Wan2.2 TI2V）；可选 --only 单镜头。",
+        description="执行 projects/<id>/jobs/shots/jobs.json（Wan 2.2-14B I2V）；可选 --only 单镜头。",
         cost="576x1024 / 121 帧约 36 分钟/镜",
         safety="只写项目 shots/<shot_id>/；GPU 单飞锁；不自动编码",
         params_model=FilmGenParams,

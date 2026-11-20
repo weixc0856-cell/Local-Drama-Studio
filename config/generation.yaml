@@ -12,26 +12,17 @@ profiles:
     seed: 42
     batch_size: 1
 
-  r0_video_t2v:
-    model: wan_2_2_ti2v_5b
-    width: 512
-    height: 512
-    frames: 33          # Wan requires 4n+1
-    fps: 24
-    steps: 20
-    cfg: 5.0
-    shift: 8.0
-    seed: 42
-
+  # Wan 2.2-5B was retired (ADR-031): face collapse plus an incompatible 48-channel VAE.
+  # The only video engine is the 14B dual-expert I2V pipeline, so there is no T2V profile.
   r0_video_i2v:
-    model: wan_2_2_ti2v_5b
-    width: 512
-    height: 512
-    frames: 33
-    fps: 24
-    steps: 20
-    cfg: 5.0
-    shift: 8.0
+    model: wan_2_2_14b_i2v
+    width: 480
+    height: 832
+    frames: 49          # Wan requires 4n+1
+    fps: 16             # raw Wan output; post-process interpolates to 32 fps
+    steps: 6            # LightX2V distilled LoRA
+    cfg: 1.0
+    shift: 5.0
     seed: 42
 
 limits:

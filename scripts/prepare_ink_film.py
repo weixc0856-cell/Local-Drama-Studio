@@ -58,16 +58,16 @@ def main() -> int:
             "width": 576,
             "height": 1024,
             "frames": 73,
-            "steps": 20,
-            "cfg": 5.0,
-            "shift": 8.0,
+            "steps": 6,
+            "cfg": 1.0,
+            "shift": 5.0,
             "filename_prefix": f"ink_dream/wan24/{sid}",
         }
         pp = params_dir / f"{sid}.json"
         pp.write_text(json.dumps(params, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         jobs.append({
             "id": sid,
-            "workflow": "workflows/r0_wan_i2v_api.json",
+            "workflow": "workflows/wan22_14b_i2v_api.json",
             "params": pp.relative_to(ROOT).as_posix(),
             "out": f"experiments/ink_dream/wan24/{sid}",
             "reference": {"source": source.relative_to(ROOT).as_posix(), "input_name": input_name},

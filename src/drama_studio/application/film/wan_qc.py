@@ -1,7 +1,7 @@
 """Detect and drop polluted tails in Wan frame runs.
 
-Wan 2.2 5B can hold a clean shot for a while and then hallucinate a large
-structure (a dark ring, a feather-like blob) in the last frames. Feeding that
+A Wan shot can hold clean for a while and then hallucinate a large structure
+(a dark ring, a feather-like blob) in the last frames. Feeding that
 frame into the next chained segment propagates the artifact. This module keeps
 the longest clean prefix and records where and why it stopped.
 
