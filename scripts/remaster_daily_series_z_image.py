@@ -1089,6 +1089,446 @@ def remaster_day09():
     print("\n[+] Day 09 Remaster complete!")
 
 
+DAY10_TASKS = [
+    {
+        "id": "day10_01_china_editorial",
+        "title_zh": "01 · 中国 · 时尚大片影棚重磅真丝晚装",
+        "title_en": "01 · China · Studio Couture Mulberry Silk Halter Gown",
+        "seed": 20261001,
+        "prompt": (
+            "Authentic high-fashion Vogue magazine cover portrait of an extraordinarily gorgeous 21-year-old Chinese muse. "
+            "Exquisite youthful facial contours, delicate slender swan neck, high cranial top, slender straight nose, captivating dark almond eyes with quiet soulful tenderness and crystal-clear catchlights. "
+            "Naturally plump hydrated soft petal-rose lips slightly parted in relaxed breathing repose, pristine porcelain jade skin glowing from within with pure youth. "
+            "Sleek silky black hair gathered in an elegant loose couture chignon with delicate wispy strands framing her face. "
+            "Wearing an architectural ivory-white heavy mulberry silk halter gown with liquid drape, minimalist diamond ear studs. "
+            "Soft luxury beauty dish studio lighting casting gentle sculpted shadows, dark minimalist background, Hasselblad H6D-100c 100mm lens, Vogue China cover masterpiece."
+        )
+    },
+    {
+        "id": "day10_02_western_editorial",
+        "title_zh": "02 · 法国 · 巴黎高定沙龙黑丝绒抹胸裙",
+        "title_en": "02 · France · Parisian Couture Salon Black Velvet Corset",
+        "seed": 20261002,
+        "prompt": (
+            "Breathtaking high-fashion editorial portrait of an extraordinarily stunning 21-year-old French muse in a Parisian couture salon. "
+            "Perfect feminine youthful facial proportions, soft rounded chin, slender straight nose, captivating large sparkling hazel-green doe eyes with natural lush dark lashes looking directly into the lens. "
+            "Plump soft rosy-peach hydrated lips with subtle natural sweetness, completely blemish-free smooth porcelain ivory skin with soft youthful glow, zero freckles. "
+            "Voluminous wavy honey-brown hair falling casually over one shoulder, wearing an off-the-shoulder minimalist black velvet corset dress with ivory silk organza trim. "
+            "Soft directional Rembrandt window light from Parisian floor-to-ceiling balcony, creamy neutral studio background, Leica M11 50mm f/1.4 Summilux, timeless European cinema glamour."
+        )
+    },
+    {
+        "id": "day10_03_japan_editorial",
+        "title_zh": "03 · 日本 · 自然光艺术影棚粉彩羊绒与白牡丹",
+        "title_en": "03 · Japan · Tokyo Daylight Studio Blush Cashmere & Peony",
+        "seed": 20261003,
+        "prompt": (
+            "Breathtaking high-fashion Japanese magazine cover photograph of an extraordinarily gorgeous 20-year-old Japanese youthful beauty. "
+            "Dainty delicate feminine face, soft smooth jawline, large clear dewy dark expressive eyes filled with innocent sweet charm, petite straight nose. "
+            "Naturally plump glossy strawberry-pink lips, luminous translucent porcelain skin with natural youthful blush, completely smooth and clear. "
+            "Dark silky hair with soft air bangs, wearing a soft blush-pink fine cashmere knit and draped sheer silk scarf, holding a delicate white peony bloom near her cheek. "
+            "Soft diffused Japanese natural daylight, creamy warm pastel studio background, Hasselblad X2D 90mm lens, iconic Japanese beauty magazine perfection."
+        )
+    },
+    {
+        "id": "day10_04_korea_editorial",
+        "title_zh": "04 · 韩国 · 清潭洞高定艺廊香槟液体真丝",
+        "title_en": "04 · Korea · Cheongdam Gallery Champagne Liquid Silk Blazer",
+        "seed": 20261004,
+        "prompt": (
+            "Breathtaking high-fashion Vogue Korea editorial photograph of an extraordinarily stunning 21-year-old Korean heiress. "
+            "Impeccably proportioned soft oval face, full youthful cheeks without any hollows, delicate dainty straight nose, captivating clear dark almond eyes radiating calm aristocratic warmth. "
+            "Plump hydrated dewy petal-pink lips, long slender swan neck, radiant translucent glass skin glowing with pure luxury hydration. "
+            "Voluminous glossy dark espresso hair with soft side-swept waves, wearing a tailored champagne-gold liquid silk satin blazer dress, minimalist diamond tennis choker. "
+            "Soft luxury key lighting with delicate silver fill, warm architectural gallery background, Leica M11 50mm f/1.4 Summilux, luxury Korean fashion editorial."
+        )
+    },
+    {
+        "id": "day10_05_mediterranean_editorial",
+        "title_zh": "05 · 意大利 · 罗马古堡暖阳露台祖母绿真丝",
+        "title_en": "05 · Italy · Roman Villa Terrace Emerald Green Silk",
+        "seed": 20261005,
+        "prompt": (
+            "Breathtaking high-fashion editorial portrait of an extraordinarily gorgeous 21-year-old Italian Mediterranean youthful goddess. "
+            "Delicate soft feminine heart-shaped face, refined smooth jawline, straight slender nose, captivating large velvety-dark almond eyes with long naturally lush lashes and warm radiant sparkle. "
+            "Plump naturally defined soft berry-rose lips, completely smooth clear warm-porcelain skin with healthy sun-kissed youthful radiance, zero wrinkles or hollows. "
+            "Bouncy dark chocolate glossy curls cascading around her shoulders in warm Italian afternoon light. "
+            "Wearing an emerald-green liquid silk slip dress with delicate gold jewelry. "
+            "Warm golden rim lighting, antique Roman marble architecture softly blurred in background, Contax T2 35mm f/2.8 lens, Dolce & Gabbana luxury editorial masterpiece."
+        )
+    },
+    {
+        "id": "day10_06_slavic_editorial",
+        "title_zh": "06 · 奥地利 · 维也纳古典沙龙午夜蓝缎面抹胸",
+        "title_en": "06 · Austria · Vienna Classical Salon Midnight Navy Satin",
+        "seed": 20261006,
+        "prompt": (
+            "Breathtaking high-fashion magazine cover portrait of an extraordinarily stunning 20-year-old Slavic Eastern European doll-like beauty. "
+            "Soft delicate feminine oval face, smooth tapered chin, petite straight nose, hypnotic clear bright emerald-green almond eyes filled with youthful sparkle and gentle warmth. "
+            "Plump soft natural rose-pink lips, radiant clear porcelain milk skin with natural youthful flush, completely blemish-free and zero freckles. "
+            "Silky light ash-brown wavy hair styled with soft natural movement over bare shoulders. "
+            "Wearing a midnight-navy blue liquid satin off-the-shoulder gown, delicate diamond drop earrings. "
+            "Soft flattering studio glamour lighting, classical dark baroque backdrop with subtle warm gold accents, Leica M11 50mm f/1.4 Summilux, European haute couture perfection."
+        )
+    }
+]
+
+
+DAY11_TASKS = [
+    {
+        "id": "day11_01_china_campus",
+        "title_zh": "01 · 中国 · 百年图书馆红木窗边清冷校花",
+        "title_en": "01 · China · Historic Library Mahogany Window Collegiate Muse",
+        "seed": 91820101,
+        "prompt": (
+            "Authentic Vogue magazine cover bust portrait of an extraordinarily gorgeous 20-year-old Chinese university student. "
+            "Large detailed facial framing, perfect golden ratio facial symmetry, delicate slender swan neck, high cranial top, slender straight nose bridge. "
+            "Soulful clear dark almond eyes looking directly into the camera with crystal-clear catchlights and quiet intelligent tenderness. "
+            "Naturally plump hydrated soft petal-rose lips slightly parted in relaxed breathing repose, pristine porcelain jade skin glowing from within with pure youth. "
+            "Silky dark raven hair falling over her shoulders, wearing a crisp white collared cotton shirt under a classic navy-blue fine wool collegiate vest with neat collar. "
+            "Warm golden afternoon sunlight streaming from tall library windows, soft blurred mahogany bookshelves in warm cinematic bokeh, Hasselblad H6D-100c 100mm lens, Vogue China cover masterpiece."
+        )
+    },
+    {
+        "id": "day11_02_western_campus",
+        "title_zh": "02 · 英国 · 剑桥古老石柱回廊英伦羊绒",
+        "title_en": "02 · UK · Cambridge Gothic Cloister Cream Cashmere Knit",
+        "seed": 82739202,
+        "prompt": (
+            "Breathtaking high-fashion magazine cover portrait of an extraordinarily stunning 20-year-old European university student in an Oxford or Cambridge cloister. "
+            "Large detailed bust portrait framing, perfect feminine youthful facial proportions, soft rounded chin, slender straight nose, captivating large sparkling hazel-green doe eyes looking straight into the lens with natural dark lashes and brilliant catchlights. "
+            "Plump soft rosy-peach hydrated lips with natural sweetness, completely blemish-free smooth porcelain ivory skin with soft youthful glow, zero freckles. "
+            "Lush wavy honey-brown hair framing her graceful face in cool English breeze. "
+            "Wearing an oversized chunky-knit cream cashmere sweater with soft ribbed crewneck over a crisp collared shirt. "
+            "Gothic stone archway softly blurred in creamy golden hour background, Leica M11 50mm f/1.4 Summilux, legendary European academic beauty."
+        )
+    },
+    {
+        "id": "day11_03_japan_campus",
+        "title_zh": "03 · 日本 · 早稻田红砖拱门纯氧文学少女",
+        "title_en": "03 · Japan · Waseda Red Brick Archway Oatmeal Knit Cardigan",
+        "seed": 73628303,
+        "prompt": (
+            "Breathtaking Japanese beauty magazine cover portrait of an extraordinarily gorgeous 19-year-old Japanese university student. "
+            "Detailed close-up bust portrait framing, dainty delicate feminine facial structure, perfectly symmetrical smooth jawline, large clear dewy dark expressive eyes gazing directly at viewer with bright clear catchlights and innocent sweet charm. "
+            "Naturally plump glossy strawberry-pink lips, luminous translucent porcelain skin with natural youthful pink blush, completely smooth and clear. "
+            "Dark silky hair with soft air bangs, wearing a soft pale oatmeal-cream knit cardigan with a neat round collar. "
+            "Warm morning natural daylight, soft red-brick university archway and golden ginkgo foliage in creamy bokeh, Hasselblad X2D 90mm lens, iconic Japanese campus youth aesthetic."
+        )
+    },
+    {
+        "id": "day11_04_korea_campus",
+        "title_zh": "04 · 韩国 · 延世常春藤古建筑西装名媛",
+        "title_en": "04 · Korea · Yonsei Ivy Hall Preppy Wool Blazer",
+        "seed": 64519404,
+        "prompt": (
+            "Breathtaking Vogue Korea magazine cover bust portrait of an extraordinarily beautiful 20-year-old Korean top-university heiress. "
+            "Prominent detailed facial framing, impeccably proportioned soft oval face, full youthful cheeks without any hollows, delicate straight dainty nose, captivating clear dark almond eyes looking straight at camera with calm aristocratic intelligence. "
+            "Plump hydrated dewy petal-pink lips, long slender swan neck, radiant translucent glass skin glowing with pure luxury hydration. "
+            "Voluminous glossy dark espresso hair styled in elegant soft waves, wearing a tailored charcoal-grey wool preppy blazer with neat lapels over an ivory silk mock-neck top. "
+            "Historic ivy-covered stone collegiate building and warm autumn sunlight, Leica M11 50mm f/1.4 Summilux, luxury Korean collegiate realism."
+        )
+    },
+    {
+        "id": "day11_05_mediterranean_campus",
+        "title_zh": "05 · 意大利 · 博洛尼亚古拱廊橄榄绿知性校花",
+        "title_en": "05 · Italy · Bologna Ancient Portico Olive Wool Blazer",
+        "seed": 55428505,
+        "prompt": (
+            "Breathtaking Italian Vogue magazine cover portrait of an extraordinarily gorgeous 20-year-old Italian university student in Bologna. "
+            "Prominent bust portrait framing, delicate soft feminine heart-shaped face, refined smooth jawline, straight slender nose, captivating large velvety-dark almond eyes looking directly into camera with long naturally lush lashes and warm radiant catchlights. "
+            "Plump naturally defined soft berry-rose lips, completely smooth clear warm-porcelain skin with healthy sun-kissed youthful radiance, zero wrinkles or hollows. "
+            "Bouncy dark chocolate glossy curls cascading around her shoulders in warm Italian afternoon sun. "
+            "Wearing a tailored olive-green wool blazer over an ivory silk top with clean neckline. "
+            "Ancient arched stone porticoes and sunlit cobblestone courtyard in creamy background, Contax T2 35mm f/2.8 lens, Italian academic cinema masterwork."
+        )
+    },
+    {
+        "id": "day11_06_ivy_campus",
+        "title_zh": "06 · 美国 · 耶鲁哥特式回廊深蓝常春藤学霸",
+        "title_en": "06 · USA · Yale Gothic Cloister Navy Ivy League Crewneck",
+        "seed": 46317606,
+        "prompt": (
+            "Breathtaking Harper's Bazaar cover portrait of an extraordinarily stunning 20-year-old Ivy League student at Yale University. "
+            "Detailed close-up bust portrait framing, soft delicate feminine oval face, smooth tapered chin, petite straight nose, hypnotic clear bright emerald-green almond eyes looking directly into the lens with youthful sparkle and intellectual brilliance. "
+            "Plump soft natural rose-pink lips, radiant clear porcelain milk skin with natural youthful flush, completely blemish-free and zero freckles. "
+            "Silky light ash-brown wavy hair styled naturally over her shoulders, wearing a classic deep navy-blue collegiate crewneck sweater with neat white collared shirt underneath. "
+            "Majestic Gothic stone arches of Yale University and warm autumn sunlight in soft creamy bokeh, Leica M11 50mm f/1.4 Summilux, Ivy League collegiate perfection."
+        )
+    }
+]
+
+
+DAY12_TASKS = [
+    {
+        "id": "day12_01_china_cinema",
+        "title_zh": "01 · 中国 · 王家卫式雨夜弄堂拱门回眸",
+        "title_en": "01 · China · Wong Kar-wai Rainy Alley Emerald Silk Qipao",
+        "seed": 20261221,
+        "prompt": (
+            "Award-winning cinematic 35mm film still of an extraordinarily gorgeous 21-year-old Chinese leading actress walking in a 1960s vintage Shanghai alleyway. "
+            "Dynamic over-the-shoulder three-quarter angle, walking under an ancient brick archway creating natural architectural sub-framing. "
+            "Delicately holding a dark oiled bamboo umbrella in one slender hand, showing slender waist and graceful posture. "
+            "Sparkling dark almond eyes filled with warm lively intelligence, sweet captivating gentle smile with upturned lip corners, relaxed open brow. "
+            "Wearing a tailored high-neck emerald-green liquid silk jacquard qipao. "
+            "Rain-slicked cobblestone street, soft amber streetlamp backlighting casting a golden rim on her hair, wet asphalt reflections, 50mm anamorphic lens, breathtaking cinematic depth."
+        )
+    },
+    {
+        "id": "day12_02_western_cinema",
+        "title_zh": "02 · 摩纳哥 · 蒙特卡洛赌场香槟吧台法式邦女郎",
+        "title_en": "02 · Monaco · Monte Carlo Casino Lounge Black Velvet Gown",
+        "seed": 20261222,
+        "prompt": (
+            "Breathtaking 35mm Panavision anamorphic film still of a stunning 21-year-old European Bond Girl in a luxurious Monte Carlo casino lounge. "
+            "Casually leaning at a 45-degree angle against a polished marble bar counter, rule of thirds composition with negative space. "
+            "Slender fingers elegantly holding the stem of a crystal champagne flute, body turned sideways showing sculpted waist and bare back silhouette. "
+            "Large sparkling hazel doe eyes looking with playful alluring confidence, radiant blooming smile full of warmth and effortless charisma. "
+            "Voluminous wavy honey-brown hair spilling luxuriously over one bare shoulder. "
+            "Wearing a backless midnight-black silk velvet cocktail gown. "
+            "Foreground soft crystal glass bokeh, warm golden chandeliers and opulent casino salon blurred in creamy background, 55mm lens, blockbuster cinema masterpiece."
+        )
+    },
+    {
+        "id": "day12_03_japan_cinema",
+        "title_zh": "03 · 日本 · 岩井俊二沿海列车木窗托腮看海",
+        "title_en": "03 · Japan · Shunji Iwai Seaside Train Wooden Window Candid",
+        "seed": 20261223,
+        "prompt": (
+            "Award-winning 35mm Japanese cinematic film still of an adorable 20-year-old Japanese leading actress inside a vintage wooden seaside train carriage. "
+            "Framed naturally inside open wooden train window, seated sideways at a three-quarter angle. "
+            "One elbow resting casually on wooden windowsill, chin resting gently on palm in a natural candid gesture, looking joyfully toward ocean breeze. "
+            "Large sparkling dark doe eyes shining with youthful happiness, sweet blooming smile with cute dimples, glowing porcelain skin with soft petal blush. "
+            "Silky dark bob with soft bangs dancing in coastal breeze. "
+            "Wearing an oversized crisp white linen button-down shirt loosely tucked into high-waist vintage blue jeans. "
+            "Sunlit turquoise Pacific Ocean waves and coastal greenery sparkling through window in warm afternoon light, 50mm f/1.4 lens, iconic Japanese cinema poetry."
+        )
+    },
+    {
+        "id": "day12_04_korea_cinema",
+        "title_zh": "04 · 韩国 · 现代豪宅露台凭栏看夜景水光千金",
+        "title_en": "04 · Korea · Penthouse Terrace Champagne Silk Satin Gown",
+        "seed": 20261224,
+        "prompt": (
+            "Cinematic 35mm film still of a gorgeous 21-year-old Korean cinema actress in a high-end luxury mystery drama. "
+            "Leaning lightly against glass and steel balustrade of a penthouse terrace overlooking city nightscape, rule of thirds diagonal pose. "
+            "Holding a minimalist ceramic warm coffee cup with both hands on railing, body turned sideways at 35 degrees, showing slender hourglass waist. "
+            "Clear sparkling dark almond eyes looking calmly into glittering night sky with intelligent poise, subtle elegant smile, luminous glass skin glowing under terrace ambient lights. "
+            "Glossy espresso hair flowing down over one shoulder, wearing a bespoke champagne-ivory silk satin wrap gown with a cinched belt. "
+            "Panoramic city lights shimmering in cool cyan and warm amber bokeh behind glass, Leica M11 50mm Summilux lens, prestige cinema realism."
+        )
+    },
+    {
+        "id": "day12_05_mediterranean_cinema",
+        "title_zh": "05 · 意大利 · 西西里托斯卡纳石阶回廊提果篮",
+        "title_en": "05 · Italy · Sicilian Stone Staircase Terracotta Linen Sundress",
+        "seed": 20261225,
+        "prompt": (
+            "Award-winning 35mm cinematic film still of a stunning 21-year-old Italian leading actress in a Mediterranean romantic masterpiece. "
+            "Descending an ancient sun-drenched limestone staircase framed by arched Roman pillars, turning back gracefully toward warm golden sunlight with dynamic body curvature. "
+            "One hand carrying a rustic woven wicker basket of fresh purple figs, other hand lightly touching terracotta linen dress, slender waist and sunkissed collarbones. "
+            "Large velvety-dark hazel eyes sparkling with vibrant zest, wide radiant joyful smile full of lively Mediterranean warmth. "
+            "Bouncy dark chocolate curls dancing in sea wind, wearing a fitted terracotta-red fine linen sundress with a sweetheart neckline. "
+            "Ancient stone architecture, shimmering turquoise Mediterranean Sea and olive groves in golden hour glow, Contax 50mm f/1.4 lens, Italian auteur cinema romance."
+        )
+    },
+    {
+        "id": "day12_06_scifi_cinema",
+        "title_zh": "06 · 欧美 · 银翼沙石赛博天台翡翠猫眼女英雄",
+        "title_en": "06 · Sci-Fi · Cyber Sky-Terrace Black Leather Jacket & Emerald Eyes",
+        "seed": 20261226,
+        "prompt": (
+            "Breathtaking 65mm IMAX cinematic film still of a striking 20-year-old sci-fi epic heroine on an aerial skyscraper terrace in a futuristic city. "
+            "Leaning casually back against a luminous metallic sky-terrace barrier, dynamic diagonal silhouette, rule of thirds placement. "
+            "One hand resting casually in pocket of tailored cropped black leather jacket, other hand resting on railing, revealing toned slender waist. "
+            "Hypnotic clear bright emerald-green almond eyes looking with keen vibrant intellect, subtle confident playful smirk, flawless porcelain milk skin glistening with atmospheric rain mist. "
+            "Silky ash-blonde hair with wispy strands framing her cheekbones. "
+            "Futuristic neon skyscrapers, airborne vehicle light trails, and misty holographic cyan and amber anamorphic bokeh in vast background, ARRI Alexa 65 50mm lens, IMAX sci-fi blockbuster masterwork."
+        )
+    }
+]
+
+
+def remaster_day10():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day10"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 10: 《芳华初绽 · 高定时尚杂志大片》 (In Full Bloom 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY10_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day10_in_full_bloom_6grid_cn.png"
+    grid_en = day_dir / "day10_in_full_bloom_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 10 《芳华初绽 · 高定时尚杂志大片》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 高定面料剪裁 · 纯天然毛孔透气感 · 告别塑料假面",
+        main_title_en="In Full Bloom Editorial · Day 10 6-Pack Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · High-Fashion Textures & Natural Skin Radiance · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Day 10 Remaster complete!")
+
+
+def remaster_day11():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day11"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 11: 《象牙塔晨光 · 名校校花特写神颜》 (Campus Reverie Muses 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY11_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day11_campus_muses_6grid_cn.png"
+    grid_en = day_dir / "day11_campus_muses_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 11 《象牙塔晨光 · 名校校花特写神颜》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 学院知性风骨 · 纯天然微孔光泽 · 告别塑料假面",
+        main_title_en="Campus Reverie Muses · Day 11 6-Pack Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Collegiate Intellectual Elegance & Real Skin Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Day 11 Remaster complete!")
+
+
+def remaster_day12():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day12"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 12: 《光影造梦 · 殿堂级电影神颜大片》 (Cinema Muses 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY12_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day12_cinema_muses_6grid_cn.png"
+    grid_en = day_dir / "day12_cinema_muses_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 12 《光影造梦 · 殿堂级电影神颜大片》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 殿堂级电影摄影构图与光影 · 告别塑料假面",
+        main_title_en="Cinema Muses Showcase · Day 12 6-Pack (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Master Cinematic Lighting & Pure Skin Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Day 12 Remaster complete!")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--day", default="02", help="Day collection to remaster")
@@ -1110,6 +1550,12 @@ if __name__ == "__main__":
         remaster_day08()
     elif args.day == "09":
         remaster_day09()
+    elif args.day == "10":
+        remaster_day10()
+    elif args.day == "11":
+        remaster_day11()
+    elif args.day == "12":
+        remaster_day12()
     elif args.day == "all":
         remaster_day02()
         remaster_day03()
@@ -1119,5 +1565,8 @@ if __name__ == "__main__":
         remaster_day07()
         remaster_day08()
         remaster_day09()
+        remaster_day10()
+        remaster_day11()
+        remaster_day12()
     else:
         print(f"Day {args.day} queue ready.")
