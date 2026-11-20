@@ -681,6 +681,270 @@ def remaster_day06():
     print("\n[+] Day 06 Remaster complete!")
 
 
+DAY07_TASKS = [
+    {
+        "id": "day07_01_china_silk",
+        "title_zh": "01 · 中国 · 水榭暮色新中式真丝白月光",
+        "title_en": "01 · China · Twilight Lotus Pavilion White Silk",
+        "seed": 20268701,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily stunning young Chinese woman standing by a tranquil lotus pond pavilion at twilight. "
+            "Delicate East Asian classical bone structure, smooth slender swan neck and graceful jawline, soulful clear dark almond eyes looking back with quiet breathtaking depth and gentle warmth. "
+            "Pristine translucent porcelain jade skin glowing softly in evening dusk, natural soft peach hydrated lips. "
+            "Long silky raven hair partially pinned in an elegant loose updo with delicate loose strands dancing in evening lake breeze. "
+            "Wearing an exquisite minimalist ivory-white mulberry silk modern qipao dress with subtle water-ripple sheen, flowing gracefully. "
+            "Reflective dark water, ancient carved stone balustrade, and soft warm lantern glow in background, Leica M11 50mm f/1.4 Summilux, cinematic poetry."
+        )
+    },
+    {
+        "id": "day07_02_western_audrey_sophie",
+        "title_zh": "02 · 法国 · 巴黎露台黑丝绒经典神颜",
+        "title_en": "02 · France · Parisian Terrace Black Velvet Elegance",
+        "seed": 20268702,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily gorgeous Caucasian woman standing on an ornate Parisian mansion stone balcony at dusk, combining the timeless aristocratic elegance of Audrey Hepburn and romantic French allure. "
+            "Flawless, perfectly clear smooth porcelain ivory skin, completely blemish-free and zero freckles, luminous natural evening glow. "
+            "Exquisite classical bone structure, noble high straight nasal bridge, captivating wide deer-like hazel eyes with long natural dark lashes, gentle enigmatic smile with natural rosy lips. "
+            "Chestnut brown hair styled in an elegant loose French chignon with soft wispy fringe bangs grazing her brow. "
+            "Wearing a timeless minimalist black silk velvet evening dress with delicate thin straps, accentuating her slender collarbone and swan-like neck, single natural baroque pearl pendant. "
+            "Parisian skyline, Eiffel Tower silhouette, and soft purple-gold twilight sky blurred in creamy bokeh, Contax T2 35mm f/2.8 lens, legendary European cinema realism."
+        )
+    },
+    {
+        "id": "day07_03_japan_akina_ryoko",
+        "title_zh": "03 · 日本 · 京都幽竹石灯昭和和风",
+        "title_en": "03 · Japan · Kyoto Twilight Bamboo & Indigo Silk",
+        "seed": 20268703,
+        "prompt": (
+            "Authentic candid 35mm Japanese film photograph of an extraordinarily beautiful young Japanese woman capturing nostalgic Showa-era film warmth. "
+            "Petite delicate Japanese facial contours, soft oval jawline, slightly tearful dewy expressive dark eyes looking directly into camera with profound tender emotion, natural fresh nude-peach lips. "
+            "Translucent glowing fair porcelain skin with subtle evening chill flush on cheeks, zero blemish, natural clear complexion. "
+            "Dark silky hair styled in soft vintage wavy layers with airy wispy bangs gently lifted by mountain breeze. "
+            "Wearing a refined minimalist indigo-navy silk modern kimono-inspired wrap dress, tied loosely with silk ribbon. "
+            "Twilight bamboo grove with soft warm stone lantern glow in background, subtle film grain, Fujifilm Pro 400H aesthetic, iconic Japanese cinema masterpiece."
+        )
+    },
+    {
+        "id": "day07_04_korea_song_hye_kyo",
+        "title_zh": "04 · 韩国 · 首尔江南露台香槟缎面名媛",
+        "title_en": "04 · Korea · Gangnam Skyline Champagne Silk Slip",
+        "seed": 20268704,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily gorgeous Korean woman embodying timeless natural beauty. "
+            "Refined Korean facial contours, smooth elegant jawline, perfectly proportioned straight high nasal bridge, deep calm intellectual almond eyes filled with captivating charisma, naturally full hydrated soft rose MLBB lips. "
+            "Immaculate cool-tone porcelain glass skin, radiant and clear with realistic micro-texture, zero heavy makeup, quiet effortless luxury. "
+            "Sleek silky black hair swept smoothly over one shoulder, wearing a tailored minimalist champagne-gold bias-cut liquid silk slip dress that drapes effortlessly. "
+            "Modern architectural glass lines, warm interior amber glow, and city night lights sparkling in creamy background bokeh, shot on Hasselblad X2D 90mm lens, Vogue Korea high-fashion editorial style."
+        )
+    }
+]
+
+
+DAY08_TASKS = [
+    {
+        "id": "day08_01_china_skyline",
+        "title_zh": "01 · 中国 · 外滩天际线露台真丝长裙",
+        "title_en": "01 · China · Shanghai Bund Skyline Pearl Silk",
+        "seed": 20268801,
+        "prompt": (
+            "Breathtaking cinematic 35mm film photograph of an extraordinarily stunning young Chinese woman at an open-air rooftop lounge overlooking the Shanghai Bund skyline at twilight. "
+            "Delicate East Asian classical bone structure, smooth slender swan neck and graceful collarbone, soulful clear dark almond eyes looking back with quiet breathtaking depth and gentle warmth. "
+            "Pristine translucent porcelain jade skin illuminated by warm flickering candle glow and cool city bokeh. "
+            "Long silky raven hair blown gracefully by high-altitude river breeze with loose strands dancing in air. "
+            "Wearing an elegant modern pearl-white silk halterneck slip dress, holding a slender crystal flute of champagne with gentle bubbles. "
+            "Glistening Huangpu River reflections and glowing historic colonial architecture in creamy out-of-focus background, Leica M11 50mm f/1.4 Summilux, cinematic poetry."
+        )
+    },
+    {
+        "id": "day08_02_western_rooftop",
+        "title_zh": "02 · 法国 · 蒙马特露台塞纳河暮色鸡尾酒",
+        "title_en": "02 · France · Montmartre Rooftop Twilight French 75",
+        "seed": 20268802,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily gorgeous European woman seated at an intimate Parisian rooftop terrace bar at dusk. "
+            "Flawless, perfectly clear smooth porcelain ivory skin, completely blemish-free and zero freckles, luminous soft candlelight illumination. "
+            "Exquisite classical bone structure, noble high straight nasal bridge, captivating wide deer-like hazel-brown eyes with long natural dark lashes, gentle enchanting smile. "
+            "Chestnut brown wavy hair casually swept into loose French chignon with delicate wispy bangs. "
+            "Wearing an off-the-shoulder minimalist black silk top with delicate spaghetti straps, delicate gold pendant, holding a chilled French 75 cocktail glass. "
+            "Warm amber candle on small bistro table, purple-navy twilight Paris skyline and distant glowing Eiffel Tower lights softly blurred, Contax T2 35mm f/2.8 lens, legendary European cinema realism."
+        )
+    },
+    {
+        "id": "day08_03_japan_roppongi",
+        "title_zh": "03 · 日本 · 六本木高空露台东京塔微醺",
+        "title_en": "03 · Japan · Roppongi Rooftop Tokyo Tower Highball",
+        "seed": 20268803,
+        "prompt": (
+            "Breathtaking candid 35mm Japanese film photograph of an extraordinarily beautiful young Japanese woman leaning gently against the glass balcony of a high-rise Tokyo rooftop lounge. "
+            "Petite delicate Japanese facial contours, soft oval jawline, slightly dewy expressive dark eyes looking thoughtfully at viewer with profound tender emotion, natural fresh nude-peach lip gloss. "
+            "Translucent glowing fair porcelain skin softly reflecting warm ambient fairy lights, zero blemish, natural clear complexion. "
+            "Dark silky shoulder-length hair gently swept by Tokyo night breeze, wearing an elegant midnight-blue silk camisole and draped fine cream cashmere cardigan. "
+            "Holding a highball glass with an oversized clear ice sphere, glowing Tokyo Tower warm orange silhouette bokeh in twilight distance, Hasselblad X2D 90mm lens, cinematic Japanese drama atmosphere."
+        )
+    },
+    {
+        "id": "day08_04_korea_gangnam",
+        "title_zh": "04 · 韩国 · 清潭洞顶层露天汉江晚霞千金",
+        "title_en": "04 · Korea · Cheongdam Rooftop Han River Sunset Bellini",
+        "seed": 20268804,
+        "prompt": (
+            "Breathtaking candid 35mm photograph of an extraordinarily stunning Korean heiress on a high-end rooftop gallery terrace in Cheongdam-dong overlooking sunset over Han River. "
+            "Flawless luminous glass skin with exquisite natural dewy hydration, perfectly symmetrical refined feminine jawline, captivating clear dark almond eyes reflecting warm golden sunset, naturally plush hydrated petal-rose lips. "
+            "Voluminous glossy dark espresso hair with soft side-swept waves framing high cheekbones. "
+            "Wearing an impeccably tailored ivory-cream fine cashmere blazer draped over oyster-silk slip camisole. "
+            "Holding a chilled bellini cocktail with a thin peach slice, warm golden hour sun dipping below Seoul skyline, Leica M11 50mm f/1.4 Summilux, Vogue Korea luxury editorial realism."
+        )
+    },
+    {
+        "id": "day08_05_mediterranean_amalfi",
+        "title_zh": "05 · 意大利 · 阿马尔菲悬崖海景Aperol微风",
+        "title_en": "05 · Italy · Amalfi Cliffside Sunset Aperol Spritz",
+        "seed": 20268805,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily gorgeous Mediterranean woman on a cliffside terrace in Amalfi at golden sunset. "
+            "Flawless smooth porcelain-olive skin glowing in warm golden hour sunset light, completely clear of blemishes or freckles. "
+            "Sculpted symmetrical classical bone structure, noble straight nasal bridge, captivating large velvety-brown expressive eyes with natural dark lashes, gentle enchanting smile. "
+            "Glossy thick dark brunette wavy hair cascading naturally over bare shoulders in sea breeze. "
+            "Wearing a terracotta-orange pure linen slip dress with delicate straps, holding a chilled Aperol spritz in a large crystal goblet with an orange slice. "
+            "Rustic stone balustrade, potted lemon trees, and shimmering Tyrrhenian Sea reflecting golden pink sunset clouds, Contax T2 35mm f/2.8 lens, Italian holiday cinema masterpiece."
+        )
+    },
+    {
+        "id": "day08_06_slavic_prague",
+        "title_zh": "06 · 捷克 · 布拉格金色哥特尖顶香槟暮光",
+        "title_en": "06 · Czech · Prague Rooftop Golden Spire Champagne",
+        "seed": 20268806,
+        "prompt": (
+            "Breathtaking candid 35mm film photograph of an extraordinarily beautiful Eastern European woman at an elevated terrace overlooking Prague at golden twilight. "
+            "Flawless golden ratio facial symmetry, razor-sharp delicate jawline, noble straight nose, captivating piercing emerald-green almond eyes reflecting golden sunlight, soft hydrated nude-rose lips. "
+            "Glossy ash-brown wavy hair gently lifted by evening breeze, falling elegantly over high-neck emerald-green liquid silk blouse. "
+            "Holding a slender crystal flute of sparkling white wine, leaning gracefully against antique wrought-iron terrace railing. "
+            "Historic red rooftops, Charles Bridge, and glowing spires of Prague bathed in molten golden sunset light, Leica M11 50mm f/1.4 Summilux, timeless European editorial realism."
+        )
+    }
+]
+
+
+def remaster_day07():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day07"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 07: 《流光真丝 · 月下水榭与法式黑裙》 (Silk Elegance)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY07_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/4] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day07_silk_elegance_4grid_cn.png"
+    grid_en = day_dir / "day07_silk_elegance_4grid_en.png"
+    print("\n[*] Assembling Bilingual 4-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 07 《流光真丝 · 月下水榭与法式黑裙》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 缎面流光微澜 · 纯天然凝脂皮相 · 告别塑料假面",
+        main_title_en="Silk Elegance & Velvet Twilight · Day 07 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Liquid Silk Sheen & Natural Skin Micro-Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=2
+    )
+    print("\n[+] Day 07 Remaster complete!")
+
+
+def remaster_day08():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day08"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 08: 《暮色微醺 · 天台夜景与鸡尾酒》 (Twilight Cocktails 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY08_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day08_twilight_cocktails_6grid_cn.png"
+    grid_en = day_dir / "day08_twilight_cocktails_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 08 《暮色微醺 · 天台夜景与鸡尾酒》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 城市流光斑斓 · 纯天然毛孔与呼吸感 · 告别塑料假面",
+        main_title_en="Twilight Cocktails & Skyline · Day 08 6-Pack Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · City Skyline Bokeh & Real Skin Radiance · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Day 08 Remaster complete!")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--day", default="02", help="Day collection to remaster")
@@ -696,8 +960,20 @@ if __name__ == "__main__":
         remaster_day05()
     elif args.day == "06":
         remaster_day06()
+    elif args.day == "07":
+        remaster_day07()
+    elif args.day == "08":
+        remaster_day08()
     elif args.day == "all":
         remaster_day02()
+        remaster_day03()
+        remaster_day04()
+        remaster_day05()
+        remaster_day06()
+        remaster_day07()
+        remaster_day08()
+    else:
+        print(f"Day {args.day} queue ready.")
         remaster_day03()
         remaster_day04()
         remaster_day05()
