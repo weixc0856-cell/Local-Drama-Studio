@@ -5,7 +5,7 @@ Downloads vetted, commercially-permissive audio foundation models via ModelScope
 1. Stability AI · Stable Audio Open 1.0 (Community License, free <$1M commercial)
 2. ACE Studio & StepFun · ACE-Step 1.5 XL Turbo (MIT License, completely unencumbered commercial)
 
-Target Location: D:/AI/models/audio/
+Target Location: os.environ.get("DRAMA_MODELS_ROOT", "./models") + "/audio/"
 """
 
 import sys
@@ -13,7 +13,7 @@ import os
 import time
 from pathlib import Path
 
-TARGET_BASE = Path("D:/AI/models/audio")
+TARGET_BASE = Path(os.environ.get("DRAMA_MODELS_ROOT", "models")) / "audio"
 
 def download_audio_models():
     TARGET_BASE.mkdir(parents=True, exist_ok=True)
@@ -64,7 +64,7 @@ def download_audio_models():
                 local_dir=str(ace_dir)
             )
 
-    print("\n[SUCCESS] Audio foundation models are ready in D:/AI/models/audio/!")
+    print("\n[SUCCESS] Audio foundation models are ready in os.environ.get("DRAMA_MODELS_ROOT", "./models") + "/audio/"!")
 
 if __name__ == "__main__":
     download_audio_models()

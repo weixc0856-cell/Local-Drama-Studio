@@ -2,7 +2,7 @@ import urllib.request
 from pathlib import Path
 
 url = "https://huggingface.co/XLabs-AI/flux-RealismLora/resolve/main/lora.safetensors"
-dst = Path(r"d:\Local-Drama-Studio\runtime\ComfyUI\models\loras\flux_realism_xlabs.safetensors")
+dst = Path(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "models" / "loras" / "flux_realism_xlabs.safetensors")
 
 print(f"Downloading {url} to {dst}...", flush=True)
 

@@ -93,6 +93,6 @@
 
 ## 5. 工作流文件与调用规范
 
-- **单 LoRA 基础工作流**：[workflows/flux3_lora_t2i_api.json](file:///d:/Local-Drama-Studio/workflows/flux3_lora_t2i_api.json)
-- **双 LoRA 组合工作流**：[workflows/flux3_dual_lora_t2i_api.json](file:///d:/Local-Drama-Studio/workflows/flux3_dual_lora_t2i_api.json)
-- **排版合成引擎**：[scripts/r4_poster_typeset.py](file:///d:/Local-Drama-Studio/scripts/r4_poster_typeset.py)
+- **单 LoRA 基础工作流**：[workflows/flux3_lora_t2i_api.json](workflows/flux3_lora_t2i_api.json)
+- **双 LoRA 组合工作流**：[workflows/flux3_dual_lora_t2i_api.json](workflows/flux3_dual_lora_t2i_api.json)
+- **排版合成引擎**：[scripts/r4_poster_typeset.py](scripts/r4_poster_typeset.py)

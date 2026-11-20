@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from modelscope.hub.file_download import model_file_download
 
-DEST_DIR = Path(r"D:\AI\models\diffusion_models\wan")
+DEST_DIR = Path(os.environ.get("DRAMA_MODELS_ROOT", "models")) / "diffusion_models" / "wan"
 DEST_DIR.mkdir(parents=True, exist_ok=True)
 TARGET_FILE = DEST_DIR / "wan2.1-i2v-14b-480p-Q4_K_M.gguf"
 

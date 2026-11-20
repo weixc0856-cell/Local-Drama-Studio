@@ -1,6 +1,6 @@
 # 影视化制作指南（Script-to-Film）
 
-> 2026-11-12：模块路径已更新为 `application/film/`；项目数据位于产出根 `D:\DramaStudio\projects\`；技术栈见 [ENVIRONMENT.md](ENVIRONMENT.md)，生产流程见 [PRODUCTION_GUIDE.md](PRODUCTION_GUIDE.md)。
+> 2026-11-12：模块路径已更新为 `application/film/`；项目数据位于产出根 `<DRAMA_OUTPUT_ROOT>/projects/`；技术栈见 [ENVIRONMENT.md](ENVIRONMENT.md)，生产流程见 [PRODUCTION_GUIDE.md](PRODUCTION_GUIDE.md)。
 
 > 状态：`DECISION` / 2026-11-06 立项。
 > 定位：本文件是制作方法论与数据契约的唯一入口；技术选型见 `ENVIRONMENT.md`，需求见 `PRD.md`。
@@ -303,7 +303,7 @@ projects/<project_id>/
 | 质量门 | `film qc` / `quality.check_build` | `final` / 8 个镜头 / 音频全部 PASS |
 | 生产状态 | `film status` / `application/film/status.py` | 从文件与人工审核派生；H2/H3 结论写 `qc/reviews.json` |
 | 工作台任务 | 10 个 `film.*`（keyframes / wan / timeline / voice / static / clips / motion / assemble / status / qc） | 与 CLI 同一套命令；GPU 任务走 `gpu:comfy` 单飞锁 |
-| 首次成片 | `D:\DramaStudio\projects\deng_guan_que_lou/renders/build-20261107-183625/` | 47.0 s / 1080×1920 / 24 fps / 8 镜头 / 6 句旁白 / quality PASS |
+| 首次成片 | `<DRAMA_OUTPUT_ROOT>/projects/deng_guan_que_lou/renders/build-20261107-183625/` | 47.0 s / 1080×1920 / 24 fps / 8 镜头 / 6 句旁白 / quality PASS |
 
 补充：成片时长由文本量和 TTS 语速决定。`film init --duration` 只决定镜头规划节奏（默认上限 12 s/镜），不会把一段 30 秒的文本拉成 5 分钟；要更长成片需要更多文本或显式放慢语速。
 
@@ -333,7 +333,7 @@ projects/<project_id>/
 
 默认音色（2026-11-07 用户指定）：`config/voices.yaml` 的 `narrator_blend_my80_sun20`，参考音 `assets/audio/prompts/my_voice_clean_v2.wav`（7.52 s，参考文本「清晨的山谷里，风穿过竹林，远处传来水声。」），状态 `APPROVED`，用户已确认可正常使用。
 
-最终稳定版（S01 Wan + 其余镜头确定性运镜/局部大气运动）：`D:\DramaStudio\projects\deng_guan_que_lou/renders/build-20261107-225921/`。注意：这不是全 Wan 生成动画；S02–S08 仍是静帧运动。S02/S03/S04 的 Wan 尝试分别出现塔楼墨团、白色块状伪影、第 2 段仅 4 干净帧，已确认 A750 8 GB + Wan 5B 无法稳定覆盖 5 s 级多镜头。，47.0 s / 1080×1920 / 24 fps / 6 字幕事件，起点与 6 句旁白完全一致；S01 为 3 段 Wan 续接（137 干净帧，截掉 10 帧污染帧，接缝 3.31/2.80 均 PASS），其余镜头为确定性运镜；`quality.check_build` PASS，`film_acceptance` 技术检查 PASS。
+最终稳定版（S01 Wan + 其余镜头确定性运镜/局部大气运动）：`<DRAMA_OUTPUT_ROOT>/projects/deng_guan_que_lou/renders/build-20261107-225921/`。注意：这不是全 Wan 生成动画；S02–S08 仍是静帧运动。S02/S03/S04 的 Wan 尝试分别出现塔楼墨团、白色块状伪影、第 2 段仅 4 干净帧，已确认 A750 8 GB + Wan 5B 无法稳定覆盖 5 s 级多镜头。，47.0 s / 1080×1920 / 24 fps / 6 字幕事件，起点与 6 句旁白完全一致；S01 为 3 段 Wan 续接（137 干净帧，截掉 10 帧污染帧，接缝 3.31/2.80 均 PASS），其余镜头为确定性运镜；`quality.check_build` PASS，`film_acceptance` 技术检查 PASS。
 
 ### 11.4 低清时序生成 + 后置超分：现状与取舍
 
@@ -360,7 +360,7 @@ Wan 448x768 / 576x1024（算运动与结构）
 |---|---|---|
 | 后端探测 | `drama film upscale --check` / `application/film/upscale.py` | `lanczos` 可用；`realesrgan-ncnn` 未安装，明确显示 `available=false` |
 | Lanczos + 轻度时域降噪 | `application/film/upscale.py` | 已验证；`hqdn3d=1.2:1.2:5:5` 后接 Lanczos |
-| 外部 ncnn 超分 | `REALESRGAN_NCNN` 或 `D:/AI/tools/realesrgan-ncnn-vulkan` | 适配器已写；缺可执行文件时**报错，不静默回退** |
+| 外部 ncnn 超分 | `REALESRGAN_NCNN` 或 `<AI_TOOLS_ROOT>/realesrgan-ncnn-vulkan` | 适配器已写；缺可执行文件时**报错，不静默回退** |
 | 合成接入 | `project.json production.upscale_backend` | 默认 `lanczos`（r3_build 一次完成）；设为 `realesrgan-ncnn` 时先写 `<shot>_sr.mp4` 再进 build |
 
 建议的下一步：安装 ncnn-vulkan 版 Real-ESRGAN（外部可执行文件，不碰根 venv），先对 S01 的 6 秒 Wan 片段做 A/B，人工确认无闪烁、无过度锐化后，再设 `upscale_backend=realesrgan-ncnn`。

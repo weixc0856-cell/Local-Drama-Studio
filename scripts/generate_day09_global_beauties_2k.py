@@ -14,12 +14,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties_day09"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 TARGET_W = 1152
 TARGET_H = 2048
@@ -217,9 +217,9 @@ def make_6grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -386,7 +386,7 @@ def update_master_index():
             new_lines = []
             for l in lines:
                 if "Day 09" in l:
-                    new_lines.append("| **Day 09** | **《秋意浓郁 · 金叶长廊与经典风衣 (20岁巅峰神颜 · 2K)》**<br>古都红墙银杏天仙、塞纳河畔法式甜欲少女、京都岚山20岁初恋神颜、三清洞温润千金、西西里21岁明艳少女、维也纳20岁极光瓷娃娃 | [`experiments/global_beauties_day09/`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day09/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day09/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/global_beauties_day09/day09_autumn_trench_6grid.png) | 6 张超清原图 |")
+                    new_lines.append("| **Day 09** | **《秋意浓郁 · 金叶长廊与经典风衣 (20岁巅峰神颜 · 2K)》**<br>古都红墙银杏天仙、塞纳河畔法式甜欲少女、京都岚山20岁初恋神颜、三清洞温润千金、西西里21岁明艳少女、维也纳20岁极光瓷娃娃 | [`experiments/global_beauties_day09/`](experiments/global_beauties_day09/) | [`PATREON_POST.md`](experiments/global_beauties_day09/PATREON_POST.md) | [6 宫格母版大图](experiments/global_beauties_day09/day09_autumn_trench_6grid.png) | 6 张超清原图 |")
                 else:
                     new_lines.append(l)
             table_part = "\n".join(new_lines)

@@ -19,13 +19,13 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 BASE_URL = "http://127.0.0.1:8188"
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 WF_SINGLE_LORA = ROOT / "workflows" / "flux3_lora_t2i_api.json"
 WF_DUAL_LORA = ROOT / "workflows" / "flux3_dual_lora_t2i_api.json"
 WF_BASE = ROOT / "workflows" / "flux3_t2i_api.json"
 
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties_day11"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 TARGET_W = 1152
 TARGET_H = 2048
@@ -252,9 +252,9 @@ def make_6grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -419,7 +419,7 @@ def update_master_index():
         table_part = parts[0]
         rest_part = marker + parts[1]
         
-        new_row = """| **Day 11** | **《象牙塔晨光 · 全球在校女大学生神颜特辑 (全新写实摄影 2K)》**<br>北大未名银杏道抱书回眸、牛津图书馆石窗晨光、早稻田单车初恋、首尔现代校园端咖啡、博洛尼亚古石阶画板、斯坦福长廊漫步 | [`experiments/global_beauties_day11/`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day11/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day11/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/global_beauties_day11/day11_campus_muses_6grid.png) | 6 张超清原图 |
+        new_row = """| **Day 11** | **《象牙塔晨光 · 全球在校女大学生神颜特辑 (全新写实摄影 2K)》**<br>北大未名银杏道抱书回眸、牛津图书馆石窗晨光、早稻田单车初恋、首尔现代校园端咖啡、博洛尼亚古石阶画板、斯坦福长廊漫步 | [`experiments/global_beauties_day11/`](experiments/global_beauties_day11/) | [`PATREON_POST.md`](experiments/global_beauties_day11/PATREON_POST.md) | [6 宫格母版大图](experiments/global_beauties_day11/day11_campus_muses_6grid.png) | 6 张超清原图 |
 ---
 
 """

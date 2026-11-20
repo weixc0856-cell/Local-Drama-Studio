@@ -16,12 +16,12 @@ from pathlib import Path
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_SINGLE = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
+WF_SINGLE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 EP1_DIR = ROOT / "experiments" / "luoshenfu_true_ep01"
 SCENES_DIR = EP1_DIR / "scenes"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 VOICE_AUDIO = EP1_DIR / "tts" / "true_ep01_narration_yunxi.mp3"
 BGM = ROOT / "assets" / "audio" / "bgm" / "commons" / "serenity_guitar.wav"
@@ -348,7 +348,7 @@ def main():
                         for img_meta in node_out["images"]:
                             fn = img_meta["filename"]
                             sub = img_meta.get("subfolder", "")
-                            src_path = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", sub, fn)
+                            src_path = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), sub, fn)
                             shutil.copyfile(src_path, dst_path)
                             shutil.copyfile(src_path, art_path)
                             elapsed = time.time() - start_time

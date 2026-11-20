@@ -8,7 +8,7 @@
 | 根 | 默认位置 | 内容 | 进 Git |
 |---|---|---|---|
 | `repo_root()` | 本仓库检出目录 | `src/` `config/` `docs/` `tests/` `workflows/` `scripts/`、`assets/` 中的输入登记表与许可证 | 是 |
-| `output_root()` | `D:/DramaStudio`（`DRAMA_OUTPUT_ROOT` 可改） | projects、experiments、style_boards、logs、literary runs、工作区 DB | 否 |
+| `output_root()` | `<DRAMA_OUTPUT_ROOT>/`（`DRAMA_OUTPUT_ROOT` 可改） | projects、experiments、style_boards、logs、literary runs、工作区 DB | 否 |
 
 `drama_studio.paths` 是唯一的解析入口：
 
@@ -29,7 +29,7 @@ from drama_studio.paths import (
 产出根布局：
 
 ```
-D:/DramaStudio/
+<DRAMA_OUTPUT_ROOT>/
   projects/<project_id>/            # 项目工作区：契约 JSON、分镜、关键帧、Wan、渲染
   experiments/<name>/               # 实验
   style_boards/<group>/<pack>/candidates/   # 生成的风格参考板

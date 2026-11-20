@@ -13,11 +13,11 @@ from PIL import Image, ImageDraw, ImageFont
 def load_font(font_name: str, size: int) -> ImageFont.FreeTypeFont:
     """Load system font or fallback to basic font."""
     font_paths = [
-        Path(f"C:/Windows/Fonts/{font_name}"),
-        Path(f"C:/Windows/Fonts/{font_name.lower()}"),
-        Path(f"C:/Windows/Fonts/Deng.ttf"),
-        Path(f"C:/Windows/Fonts/msyh.ttc"),
-        Path(f"C:/Windows/Fonts/arial.ttf"),
+        Path(fstr(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "{font_name}")),
+        Path(fstr(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "{font_name.lower()}")),
+        Path(fstr(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "Deng.ttf")),
+        Path(fstr(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")),
+        Path(fstr(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "arial.ttf")),
     ]
     for p in font_paths:
         if p.exists():

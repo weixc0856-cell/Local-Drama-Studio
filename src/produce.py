@@ -13,7 +13,7 @@ Capabilities:
    - Post-process: 2x Lanczos super-res to 2K + FFmpeg minterpolate 32fps optical flow interpolation
    - Commercial Audio Mux: Pure CPU Stable Audio Open 1.0 (BGM + Foley SFX) -> Master Audiovisual MP4
 3. Physical Path Decoupling:
-   - Output paths dynamically routed to D:/DramaStudio (projects/, build/, deliver/)
+   - Output paths dynamically routed to output root (studio_data/ or configured via config/local-paths.yaml)
 
 Usage:
   python src/produce.py image --project <id> --type portrait --prompt "..."
@@ -50,10 +50,12 @@ def load_paths_config() -> dict:
                 return yaml.safe_load(f) or {}
         except Exception as e:
             print(f"[Warn] Failed to parse {cfg_file}: {e}")
-    return {"output_root": "D:/DramaStudio"}
+    env_root = os.environ.get("DRAMA_OUTPUT_ROOT", str(REPO_ROOT / "studio_data"))
+    return {"output_root": env_root}
 
 PATHS_CFG = load_paths_config()
-OUTPUT_ROOT = Path(PATHS_CFG.get("output_root", "D:/DramaStudio"))
+OUTPUT_ROOT = Path(PATHS_CFG.get("output_root", os.environ.get("DRAMA_OUTPUT_ROOT", str(REPO_ROOT / "studio_data"))))
+
 PROJECTS_DIR = OUTPUT_ROOT / "projects"
 BUILD_DIR = OUTPUT_ROOT / "build"
 DELIVER_DIR = OUTPUT_ROOT / "deliver"

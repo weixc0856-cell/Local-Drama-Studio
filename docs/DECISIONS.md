@@ -345,7 +345,7 @@
 **决策**：
 
 - `repo_root()` 只放代码、配置、文档、测试、工作流与小文本清单。
-- `output_root()`（`DRAMA_OUTPUT_ROOT`，默认 `D:/DramaStudio`）承载 projects、experiments、style_boards、logs、literary runs 与工作区 DB。
+- `output_root()`（`DRAMA_OUTPUT_ROOT`，默认 `<DRAMA_OUTPUT_ROOT>/`）承载 projects、experiments、style_boards、logs、literary runs 与工作区 DB。
 - `drama_studio.paths` 是唯一解析入口；`config_root()` 让工作区根也能找到仓库配置。
 - `scripts/check_repo_hygiene.py` 在 CI 中拒绝被跟踪媒体、>512 KiB 文件与仓库内的产出根。
 
@@ -519,7 +519,7 @@
 1. **全面废除 Wan 2.2-5B 管线**：从所有核心生产配置（`pipelines.yaml`、`models.yaml`）及统一 CLI（`src/produce.py`）中剔除 Wan 5B；
 2. **唯一锁定 Wan 2.2-14B 双专家 I2V** 作为系统唯一视频生成标准引擎；
 3. **彻底统一度量衡**：VAE 唯一采用官方 16 通道 `wan_2.1_vae.safetensors`，消灭 48 通道潜在通道冲突；
-4. 归档 Wan 5B 相关历史脚本与配置文件至 `D:\DramaStudio\archive\`。
+4. 归档 Wan 5B 相关历史脚本与配置文件至 `<DRAMA_OUTPUT_ROOT>/archive/`。
 
 **后果**：
 - 生产视频的人脸崩塌率与五官融化率彻底归零；

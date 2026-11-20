@@ -2,7 +2,7 @@ import urllib.request
 from pathlib import Path
 
 url = "https://huggingface.co/alvdansen/flux_film_foto/resolve/main/araminta_k_flux_film_foto.safetensors"
-dst = Path(r"d:\Local-Drama-Studio\runtime\ComfyUI\models\loras\flux_film_foto.safetensors")
+dst = Path(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "models" / "loras" / "flux_film_foto.safetensors")
 
 print(f"Downloading {url} to {dst}...", flush=True)
 

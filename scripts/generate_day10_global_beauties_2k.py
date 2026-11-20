@@ -18,12 +18,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties_day10"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 TARGET_W = 1152
 TARGET_H = 2048
@@ -221,9 +221,9 @@ def make_6grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -387,7 +387,7 @@ def update_master_index():
         table_part = parts[0]
         rest_part = marker + parts[1]
         
-        new_row = """| **Day 10** | **《芳华初绽 · 顶级杂志封面与二十岁黄金神颜 (10期盛典 · 2K)》**<br>东方天仙重磅真丝、巴黎高定沙龙法式浪漫、昭和纯氧初恋牡丹、清潭水光千金缎面、西西里明艳罗马暮色、维也纳极光翡翠瓷娃娃 | [`experiments/global_beauties_day10/`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day10/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day10/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/global_beauties_day10/day10_in_full_bloom_6grid.png) | 6 张超清原图 |
+        new_row = """| **Day 10** | **《芳华初绽 · 顶级杂志封面与二十岁黄金神颜 (10期盛典 · 2K)》**<br>东方天仙重磅真丝、巴黎高定沙龙法式浪漫、昭和纯氧初恋牡丹、清潭水光千金缎面、西西里明艳罗马暮色、维也纳极光翡翠瓷娃娃 | [`experiments/global_beauties_day10/`](experiments/global_beauties_day10/) | [`PATREON_POST.md`](experiments/global_beauties_day10/PATREON_POST.md) | [6 宫格母版大图](experiments/global_beauties_day10/day10_in_full_bloom_6grid.png) | 6 张超清原图 |
 ---
 
 """

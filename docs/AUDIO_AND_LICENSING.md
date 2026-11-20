@@ -2,7 +2,7 @@
 
 > 状态：`DECISION` / 2026-11-12 由 `ASSET_AND_LICENSE_REGISTRY.md` 与 `AUDIO_ASSET_STRATEGY.md` 合并。
 > 台账是记录，不等于法律意见；商业发布前做一次正式授权复核。
-> 原始两份文档已归档到 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
+> 原始两份文档已归档到 `<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/`（见 [ARCHIVE.md](ARCHIVE.md)）。
 
 ## 1. 登记规则
 
@@ -25,7 +25,7 @@ asset_id, 类型, 名称, 官方来源 URL, 作者/提供方, 版本,
 
 ## 2. 模型与权重
 
-权重统一在 `models`（本机默认 `D:/AI/models`），不进入 Git。完整哈希见本地 `logs/model-sha256.txt`。
+权重统一在 `models`（本机默认 `<DRAMA_MODELS_ROOT>/`），不进入 Git。完整哈希见本地 `logs/model-sha256.txt`。
 
 | 资产 | 文件 | 许可证 | 状态 |
 |---|---|---|---|

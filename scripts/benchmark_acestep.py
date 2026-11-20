@@ -6,7 +6,7 @@ import torch
 import soundfile as sf
 from diffusers import AceStepPipeline
 
-MODEL_DIR = Path("D:/AI/models/audio/acestep-v15-xl-turbo-diffusers")
+MODEL_DIR = Path(os.environ.get("DRAMA_MODELS_ROOT", "models")) / "audio" / "acestep-v15-xl-turbo-diffusers"
 OUT_DIR = Path("outputs/audio_benchmark")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -10,7 +10,7 @@ Supported backends:
 
 * ``lanczos`` (default, verified): FFmpeg scale + optional light denoise.
 * ``realesrgan-ncnn``: any local ``realesrgan-ncnn-vulkan`` executable
-  (``REALESRGAN_NCNN`` or ``D:/AI/tools/realesrgan-ncnn-vulkan``). This is an
+  (``REALESRGAN_NCNN`` or ``tools/realesrgan-ncnn-vulkan``). This is an
   external tool, not a Python dependency.
 
 A requested backend that is missing fails loudly; it never silently falls back.
@@ -40,8 +40,8 @@ def _find_ncnn() -> Path | None:
     if configured:
         candidates.append(Path(configured))
     candidates += [
-        Path("D:/AI/tools/realesrgan-ncnn-vulkan/realesrgan-ncnn-vulkan.exe"),
-        Path("D:/AI/tools/realesrgan/realesrgan-ncnn-vulkan.exe"),
+        Path("tools/realesrgan-ncnn-vulkan/realesrgan-ncnn-vulkan.exe"),
+        Path("tools/realesrgan/realesrgan-ncnn-vulkan.exe"),
     ]
     for candidate in candidates:
         if candidate.is_file():
@@ -85,7 +85,7 @@ def _ncnn(src: Path, out: Path, *, width: int, height: int, denoise: bool,
     exe = _find_ncnn()
     if exe is None:
         raise UpscaleError(
-            "realesrgan-ncnn-vulkan not found; set REALESRGAN_NCNN or install it under D:/AI/tools")
+            "realesrgan-ncnn-vulkan not found; set REALESRGAN_NCNN or install it under tools/realesrgan-ncnn-vulkan")
     with tempfile.TemporaryDirectory() as directory:
         frames = Path(directory) / "in"
         upscaled = Path(directory) / "out"

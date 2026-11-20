@@ -19,13 +19,13 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 BASE_URL = "http://127.0.0.1:8188"
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 WF_SINGLE_LORA = ROOT / "workflows" / "flux3_lora_t2i_api.json"
 WF_DUAL_LORA = ROOT / "workflows" / "flux3_dual_lora_t2i_api.json"
 WF_BASE = ROOT / "workflows" / "flux3_t2i_api.json"
 
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 TARGET_W = 1152
 TARGET_H = 2048
@@ -212,9 +212,9 @@ def make_4grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:

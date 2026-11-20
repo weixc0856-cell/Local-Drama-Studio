@@ -12,7 +12,7 @@
 > 5. 可复现证据以 `config/models.yaml`、`docs/DECISIONS.md`、`docs/ARCHIVE.md` 与真实产物为准。
 
 > **2026-11-12 结构更新（不改变需求编号）**：
-> 1. 产出物迁出仓库：`DRAMA_OUTPUT_ROOT`（默认 `D:\DramaStudio`）承载 projects / experiments / style_boards / logs / workspace.db；仓库只保留代码、配置、文档与小型 manifest（ADR-022）。
+> 1. 产出物迁出仓库：`DRAMA_OUTPUT_ROOT`（默认 `<DRAMA_OUTPUT_ROOT>/`）承载 projects / experiments / style_boards / logs / workspace.db；仓库只保留代码、配置、文档与小型 manifest（ADR-022）。
 > 2. 源码按 DDD 分层：`domain/`、`application/`、`infrastructure/`、`interfaces/`、`web/`（ADR-023）。
 > 3. Git 历史已移除媒体文件并 force-push（ADR-024）。
 > 4. 文档收敛为 14 份当前文档，31 份历史文档归档到产出根，索引见 `docs/ARCHIVE.md`（ADR-025）。

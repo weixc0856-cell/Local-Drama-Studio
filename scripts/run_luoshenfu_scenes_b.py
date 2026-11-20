@@ -13,11 +13,11 @@ import urllib.request
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_SINGLE = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_DUAL = r"d:\Local-Drama-Studio\workflows\flux3_dual_lora_t2i_api.json"
+WF_SINGLE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_DUAL = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_dual_lora_t2i_api.json")
 
-OUTPUT_DIR = r"d:\Local-Drama-Studio\experiments\luoshenfu_style_comparison\scenes"
-ARTIFACTS_DIR = r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3"
+OUTPUT_DIR = str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "luoshenfu_style_comparison\scenes")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -214,7 +214,7 @@ def main():
                         for img_meta in node_out["images"]:
                             fn = img_meta["filename"]
                             sub = img_meta.get("subfolder", "")
-                            src_path = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", sub, fn)
+                            src_path = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), sub, fn)
                             shutil.copyfile(src_path, dst_path)
                             shutil.copyfile(src_path, art_path)
                             elapsed = time.time() - start_time

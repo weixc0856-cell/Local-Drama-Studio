@@ -17,12 +17,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties_day03"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -175,9 +175,9 @@ def make_4grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:

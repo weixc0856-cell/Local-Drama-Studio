@@ -1,7 +1,7 @@
 # 操作与开发指南
 
 > 状态：`DECISION` / 2026-11-12 由 `USER_GUIDE.md`、`DEVELOPER_GUIDE.md`、`TROUBLESHOOTING.md` 合并。
-> 原始文档归档在 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
+> 原始文档归档在 `<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/`（见 [ARCHIVE.md](ARCHIVE.md)）。
 > 原则：先取证再修复；不删除历史产物；不把失败伪装成成功。
 
 ## 1. 环境与服务
@@ -42,7 +42,7 @@ scripts\cosyvoice_server.ps1 -Action stop
 - 期数“视觉”Tab 可换代风格快照；旧 `style_id`/`style_sha256` 写入 `_style_lock.history`，历史构建不覆盖。
 - 任务中心只执行注册表里的任务；危险任务需勾选确认。执行模型：参数校验 → 单飞锁 → 前置条件 → 子进程/在进程 handler → 实时日志 → `after_success` 校验 → 成功/失败/取消。
 
-数据位置：项目与渲染在 `D:\DramaStudio\projects\...`，任务日志在 `D:\DramaStudio\logs\workspace\tasks\`；仓库里没有产出物（见 [REPO_LAYOUT.md](REPO_LAYOUT.md)）。
+数据位置：项目与渲染在 `<DRAMA_OUTPUT_ROOT>/projects/...`，任务日志在 `<DRAMA_OUTPUT_ROOT>/logs/workspace\tasks\`；仓库里没有产出物（见 [REPO_LAYOUT.md](REPO_LAYOUT.md)）。
 
 ## 3. 代码结构与入口
 
@@ -119,9 +119,9 @@ curl.exe -s -m 3 http://127.0.0.1:50000/health
 | 负向提示词无效 | CFG 1.0 + `ConditioningZeroOut` 是设计；用正向约束 |
 | 字体缺字 / 回退 | `font_manifest.json` 校验；`r3_build` 拒绝静默 fallback |
 | 音频哈希不一致 | 重新登记 manifest，不覆盖旧证据 |
-| 任务中断 | 任务日志在 `D:\DramaStudio\logs\workspace\tasks\`；取消会 taskkill 并写 `CANCELLED` |
+| 任务中断 | 任务日志在 `<DRAMA_OUTPUT_ROOT>/logs/workspace\tasks\`；取消会 taskkill 并写 `CANCELLED` |
 | 风格不生效 | 期数风格是 DB 快照；`motion.plan` / `aesthetic.plan` 需要 `config/styles.yaml` 里有同名 preset |
-| 历史路径缺失 | 产出物已迁到 `D:\DramaStudio`；用 `paths.output_root()` 解析，不要在仓库里找 |
+| 历史路径缺失 | 产出物已迁到 `<DRAMA_OUTPUT_ROOT>/`；用 `paths.output_root()` 解析，不要在仓库里找 |
 
 ## 7. 约定
 

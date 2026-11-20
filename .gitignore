@@ -2,7 +2,7 @@
 # Repository boundary
 #
 # Generated artifacts do NOT live under this checkout. They are
-# written to DRAMA_OUTPUT_ROOT (default D:/DramaStudio) by
+# written to DRAMA_OUTPUT_ROOT (default <local_output_root>) by
 # drama_studio.paths. The rules below are a second line of defence:
 # if something still writes a media file here, it must not be
 # committed.

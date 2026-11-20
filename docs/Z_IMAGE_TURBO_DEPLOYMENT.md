@@ -5,12 +5,12 @@
 
 ---
 
-## 一、物理权重存放与 ComfyUI 路径映射（D:\AI）
+## 一、物理权重存放与 ComfyUI 路径映射（<AI_HOME_ROOT>/）
 
-为确保 8GB 显存安全并杜绝模型误加载，所有权重统一收敛于外部模型根目录 `D:\AI\models\`：
+为确保 8GB 显存安全并杜绝模型误加载，所有权重统一收敛于外部模型根目录 `<DRAMA_MODELS_ROOT>/`：
 
 ```text
-D:\AI\models/
+<DRAMA_MODELS_ROOT>/
 ├── diffusion_models/
 │   ├── flux3/
 │   │   └── flux-3-image-klein-Q4_K_M.gguf      # 管线 A：FLUX.3 Klein

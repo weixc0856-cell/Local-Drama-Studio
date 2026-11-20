@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 BOARD_PATH = ROOT / "outputs" / "model_benchmark" / "comparison_boards" / "case01_triple_lora_revelation.jpg"
 
 img1_path = ROOT / "outputs" / "model_benchmark" / "raw" / "flux3_klein_20261101_flux3_klein_20261101_00003_.png"

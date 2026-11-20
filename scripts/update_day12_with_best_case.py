@@ -2,10 +2,10 @@ import shutil
 from pathlib import Path
 from PIL import Image, ImageFilter, ImageEnhance
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 EXP_DIR = ROOT / "experiments" / "portrait_quality_ab_test"
 DAY12_DIR = ROOT / "experiments" / "global_beauties_day12"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 src = EXP_DIR / "case4_ultra_native_864.png"
 dst_day12 = DAY12_DIR / "day12_01_china_cinema.png"

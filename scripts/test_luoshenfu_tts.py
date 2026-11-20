@@ -8,8 +8,8 @@ import os
 import asyncio
 import edge_tts
 
-OUTPUT_DIR = r"d:\Local-Drama-Studio\experiments\luoshenfu_style_comparison\tts"
-ARTIFACTS_DIR = r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3"
+OUTPUT_DIR = str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "luoshenfu_style_comparison\tts")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 SAMPLE_TEXT = (
     "黄昏日暮，洛水苍茫。"

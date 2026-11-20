@@ -75,7 +75,7 @@ def main() -> int:
         if backend != "lanczos" and not avail["realesrgan-ncnn"]["available"]:
             record["reason"] = (
                 "realesrgan-ncnn exe/weights not installed; set REALESRGAN_NCNN "
-                "or install under D:/AI/tools/realesrgan-ncnn-vulkan")
+                "or install under tools/realesrgan-ncnn-vulkan")
             results.append(record)
             continue
         target = out_dir / f"{args.shot or source.stem}_{version['name']}_1080p.mp4"

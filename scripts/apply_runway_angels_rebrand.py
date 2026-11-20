@@ -14,17 +14,17 @@ import shutil
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-ROOT = Path(r"d:\Local-Drama-Studio")
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ROOT = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 def get_fonts():
     font_bold = None
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -362,8 +362,8 @@ def update_index():
 
 | 特辑期数 | 主题与核心场景 | 文件夹位置 | 发帖配置文件 | 封面母版 | 单张超清附件数量 |
 | :---: | :--- | :--- | :--- | :--- | :---: |
-| **特辑 01** | **《秀场天使 01：后台流光丝袍与黄金T台》**<br>南美琥珀蜜糖古铜、粉白条纹纯情天使、东欧翡翠猫眼女王、东方冷白皮流光轻翼、北欧冰蓝健美天使、意式复古丝绒晚裙 | [`experiments/supermodel_vs_special01/`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/vs01_supermodel_showcase_6grid.png) | 6 张超清原图 |
-| **特辑 02** | **《秀场天使 02：梦幻羽翼与巅峰T台流光》**<br>南美鎏金展翅天神、北欧极地冰晶战袍、东方牡丹薄纱轻羽、欧美传奇纯白天鹅巨翼、西西里巴洛克雕金赤颜、东欧粉红地毯庆功女王 | [`experiments/supermodel_vs_special02/`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/vs02_supermodel_showcase_6grid.png) | 6 张超清原图 |
+| **特辑 01** | **《秀场天使 01：后台流光丝袍与黄金T台》**<br>南美琥珀蜜糖古铜、粉白条纹纯情天使、东欧翡翠猫眼女王、东方冷白皮流光轻翼、北欧冰蓝健美天使、意式复古丝绒晚裙 | [`experiments/supermodel_vs_special01/`](experiments/supermodel_vs_special01/) | [`PATREON_POST.md`](experiments/supermodel_vs_special01/PATREON_POST.md) | [6 宫格母版大图](experiments/supermodel_vs_special01/vs01_supermodel_showcase_6grid.png) | 6 张超清原图 |
+| **特辑 02** | **《秀场天使 02：梦幻羽翼与巅峰T台流光》**<br>南美鎏金展翅天神、北欧极地冰晶战袍、东方牡丹薄纱轻羽、欧美传奇纯白天鹅巨翼、西西里巴洛克雕金赤颜、东欧粉红地毯庆功女王 | [`experiments/supermodel_vs_special02/`](experiments/supermodel_vs_special02/) | [`PATREON_POST.md`](experiments/supermodel_vs_special02/PATREON_POST.md) | [6 宫格母版大图](experiments/supermodel_vs_special02/vs02_supermodel_showcase_6grid.png) | 6 张超清原图 |
 """
     final_content = base_part + new_section
     with open(index_file, "w", encoding="utf-8") as f:

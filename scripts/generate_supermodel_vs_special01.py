@@ -18,12 +18,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "supermodel_vs_special01"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -179,9 +179,9 @@ def make_4grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -322,7 +322,7 @@ def update_master_index():
     with open(index_file, "r", encoding="utf-8") as f:
         content = f.read()
     if "超模特辑 01" not in content:
-        vs_section = "\n---\n\n## 💎 全球超模·维密专栏 (Victoria's Elite Supermodel Special Series)\n\n| 特辑期数 | 主题与核心场景 | 文件夹位置 | 发帖配置文件 | 封面母版 | 单张超清附件数量 |\n| :---: | :--- | :--- | :--- | :--- | :---: |\n| **特辑 01** | **《维密天使后台晨袍与T台流光》**<br>巴西天神(吉娘娘+利马)、维密糖糖(粉白条纹丝袍)、东欧冷艳(伊莉娜黑丝缎)、东方仙姑(何穗冷白皮流光双翼) | [`experiments/supermodel_vs_special01/`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/PATREON_POST.md) | [4 联排大图](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special01/vs01_supermodel_showcase_4grid.png) | 4 张超清原图 |\n"
+        vs_section = "\n---\n\n## 💎 全球超模·维密专栏 (Victoria's Elite Supermodel Special Series)\n\n| 特辑期数 | 主题与核心场景 | 文件夹位置 | 发帖配置文件 | 封面母版 | 单张超清附件数量 |\n| :---: | :--- | :--- | :--- | :--- | :---: |\n| **特辑 01** | **《维密天使后台晨袍与T台流光》**<br>巴西天神(吉娘娘+利马)、维密糖糖(粉白条纹丝袍)、东欧冷艳(伊莉娜黑丝缎)、东方仙姑(何穗冷白皮流光双翼) | [`experiments/supermodel_vs_special01/`](experiments/supermodel_vs_special01/) | [`PATREON_POST.md`](experiments/supermodel_vs_special01/PATREON_POST.md) | [4 联排大图](experiments/supermodel_vs_special01/vs01_supermodel_showcase_4grid.png) | 4 张超清原图 |\n"
         content = content + vs_section
         with open(index_file, "w", encoding="utf-8") as f:
             f.write(content)

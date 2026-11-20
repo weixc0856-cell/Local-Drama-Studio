@@ -16,10 +16,10 @@ import urllib.request
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WORKFLOW_SINGLE_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WORKFLOW_DUAL_LORA = r"d:\Local-Drama-Studio\workflows\flux3_dual_lora_t2i_api.json"
-OUTPUT_DIR = r"d:\Local-Drama-Studio\experiments\luoshenfu_style_comparison\output"
-ARTIFACTS_DIR = r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3"
+WORKFLOW_SINGLE_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WORKFLOW_DUAL_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_dual_lora_t2i_api.json")
+OUTPUT_DIR = str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "luoshenfu_style_comparison\output")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -52,7 +52,7 @@ def ensure_comfy_started():
         return None
     
     print("[INFO] Starting ComfyUI server in background...")
-    comfy_dir = r"d:\Local-Drama-Studio\runtime\ComfyUI"
+    comfy_dir = str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI")
     comfy_py = os.path.join(comfy_dir, ".venv", "Scripts", "python.exe")
     args = [comfy_py, "main.py", "--listen", "127.0.0.1", "--port", "8188", "--disable-auto-launch"]
     proc = subprocess.Popen(args, cwd=comfy_dir, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -170,7 +170,7 @@ def main():
                             for img_meta in node_out["images"]:
                                 fn = img_meta["filename"]
                                 sub = img_meta.get("subfolder", "")
-                                src_path = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", sub, fn)
+                                src_path = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), sub, fn)
                                 dst_path = os.path.join(OUTPUT_DIR, f"{task['id']}.png")
                                 art_path = os.path.join(ARTIFACTS_DIR, f"{task['id']}.png")
                                 shutil.copyfile(src_path, dst_path)

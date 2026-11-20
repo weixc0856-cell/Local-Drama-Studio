@@ -18,11 +18,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "supermodel_vs_special02"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -193,9 +193,9 @@ def make_6grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -351,7 +351,7 @@ def update_master_index():
     with open(index_file, "r", encoding="utf-8") as f:
         content = f.read()
     
-    new_row = "| **特辑 02** | **《维密天神降临与梦幻羽翼 (6张全集)》**<br>南美鎏金羽翼天神、北欧极地冰晶天使、东方粉彩国风薄纱轻羽、欧美传奇纯白天鹅巨翼、西西里巴洛克赤金神颜、东欧粉红地毯庆功女王 | [`experiments/supermodel_vs_special02/`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/PATREON_POST.md) | [6 宫格母版大图](file:///d:/Local-Drama-Studio/experiments/supermodel_vs_special02/vs02_supermodel_showcase_6grid.png) | 6 张超清原图 |\n"
+    new_row = "| **特辑 02** | **《维密天神降临与梦幻羽翼 (6张全集)》**<br>南美鎏金羽翼天神、北欧极地冰晶天使、东方粉彩国风薄纱轻羽、欧美传奇纯白天鹅巨翼、西西里巴洛克赤金神颜、东欧粉红地毯庆功女王 | [`experiments/supermodel_vs_special02/`](experiments/supermodel_vs_special02/) | [`PATREON_POST.md`](experiments/supermodel_vs_special02/PATREON_POST.md) | [6 宫格母版大图](experiments/supermodel_vs_special02/vs02_supermodel_showcase_6grid.png) | 6 张超清原图 |\n"
     
     if "特辑 02" not in content:
         content += new_row

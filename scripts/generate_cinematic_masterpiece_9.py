@@ -14,9 +14,9 @@ import urllib.request
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WORKFLOW_TEMPLATE = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-OUTPUT_DIR = r"d:\Local-Drama-Studio\experiments\cinematic_masterpiece_9\output"
-ARTIFACTS_DIR = r"C:\Users\99236\.gemini\antigravity\brain\69cb1483-b218-425d-98a1-13a968bbcdfe"
+WORKFLOW_TEMPLATE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+OUTPUT_DIR = str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "cinematic_masterpiece_9\output")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -39,14 +39,14 @@ SCENES = [
     {
         "id": "01_wo_shuang_hui_mou",
         "title": "握霜回眸 · 幽林斜阳",
-        "pre_existing": r"d:\Local-Drama-Studio\experiments\aloof_winter_9\output\03_wo_shuang_hui_mou.png",
+        "pre_existing": str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "aloof_winter_9\output\03_wo_shuang_hui_mou.png"),
         "seed": 20261102,
         "prompt": "girlslikeflux_jjy, medium close-up cinematic portrait, 3/4 over-the-shoulder angle of an exquisite young Chinese woman turning back in a winter forest (中近景回眸、过肩光影、灵动有神). Delicate slender fingers softly tucking the thick cream-white cashmere woolen scarf closer to her neck. Soft wispy air bangs and cheek-framing flyaway hair blowing gently in the winter breeze. Clear dark almond eyes looking back with piercing intelligence and quiet aloof calm, brilliant direct sunlight catchlights reflecting in her pupils. Natural sheer peach lips in relaxed repose. Dark evergreen pine trees blurred softly in deep out-of-focus bokeh background, golden winter rim lighting, 85mm f/1.4, authentic film grain."
     },
     {
         "id": "02_xian_yang_fu_mian",
         "title": "斜阳拂面 · 细雪微温",
-        "pre_existing": r"d:\Local-Drama-Studio\experiments\winter_aloof_test\output\winter_aloof_02_00001_.png",
+        "pre_existing": str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "winter_aloof_test\output\winter_aloof_02_00001_.png"),
         "seed": 20261120,
         "prompt": "girlslikeflux_jjy, breathtaking cinematic 35mm film photograph of an exquisite young Chinese woman with effortless natural beauty and quiet aloof grace (纯正东方骨相、小清新伪素颜、清冷疏离、毫无假感与死感). Quintessential delicate East Asian facial features, smooth flat brow bone with zero deep eye sockets, delicate petite nose with soft refined tip, small slender V-line oval face with a dainty pointed chin and smooth jawline. Soft wispy air bangs and delicate face-framing tendrils casually draping across her forehead and temples, windblown fine flyaways dancing across cheek and eyes. Clear luminous dark brown almond eyes with crisp direct winter sunlight catchlights reflecting in her pupils, pure soulful gaze, quiet aloof composure yet breathing with vivid life. Tender naturally relaxed lips softly parted by a millimeter (透气微张), subtle sheer peach hydration, completely natural lip lines, no smile, no sadness, peaceful living presence. Thick cozy cream-white fluffy cashmere knit scarf wrapped around neck and chin, off-white wool sweater. Golden winter sunlight slicing at a 45-degree angle creating warm rim lights and soft cinematic depth, authentic 35mm film grain, 85mm portrait, masterpiece."
     },
@@ -149,7 +149,7 @@ def main():
             continue
 
         # Check if already generated in ComfyUI output
-        potential_comfy = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", f"master_{scene['id']}_00001_.png")
+        potential_comfy = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), f"master_{scene['id']}_00001_.png")
         if os.path.exists(potential_comfy) and os.path.getsize(potential_comfy) > 100000:
             print(f"Found existing output in ComfyUI output, copying: {potential_comfy}")
             shutil.copyfile(potential_comfy, dst_path)
@@ -185,7 +185,7 @@ def main():
                         for img_meta in node_out["images"]:
                             fn = img_meta["filename"]
                             sub = img_meta.get("subfolder", "")
-                            src_path = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", sub, fn)
+                            src_path = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), sub, fn)
                             shutil.copyfile(src_path, dst_path)
                             shutil.copyfile(src_path, art_path)
                             elapsed = time.time() - start_time

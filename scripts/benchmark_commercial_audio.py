@@ -6,7 +6,7 @@ Evaluates vetted commercial-permissive models for two core production lines:
 1. Local-Drama-Studio: Tokyo Rain Night Cinematic Ambient Score + Rain SFX
 2. CourseWorkspace: Minimalist Contemporary Classical Piano Explainer BGM
 
-Target Audio Directory: D:/AI/models/audio/
+Target Audio Directory: os.environ.get("DRAMA_MODELS_ROOT", "./models") + "/audio/"
 Outputs: outputs/audio_benchmark/
 """
 
@@ -19,7 +19,7 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-AUDIO_MODEL_DIR = Path("D:/AI/models/audio")
+AUDIO_MODEL_DIR = Path(os.environ.get("DRAMA_MODELS_ROOT", "models")) / "audio"
 OUTPUT_DIR = ROOT / "outputs" / "audio_benchmark"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

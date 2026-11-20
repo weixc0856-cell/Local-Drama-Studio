@@ -1,7 +1,7 @@
 # 04 · 生产流程与配置
 
 > 状态：`DECISION` / 2026-11-12 由 `PRODUCTION_WORKFLOW.md`、`PRODUCTION_PIPELINE_GUIDE.md`、`PRODUCTION_CONFIG_GUIDE.md` 合并并校正到当前栈。
-> 原始文档归档在 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
+> 原始文档归档在 `<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/`（见 [ARCHIVE.md](ARCHIVE.md)）。
 > 原则：**实际配置、推荐值、历史实测分开写**；推荐值不等于已生效值。
 
 ## 1. 四条生产路径
@@ -75,7 +75,7 @@
 .venv\Scripts\drama.exe film status --project <id> --write
 ```
 
-项目数据在产出根：`D:\DramaStudio\projects\<id>\`（见 [REPO_LAYOUT.md](REPO_LAYOUT.md)）。
+项目数据在产出根：`<DRAMA_OUTPUT_ROOT>/projects/<id>\`（见 [REPO_LAYOUT.md](REPO_LAYOUT.md)）。
 
 规则：
 

@@ -45,5 +45,5 @@
 
 - 一份事实只在一处维护；其他文档链接过去，不复制。
 - 状态必须跟证据走：没有执行日志/产物路径的结论不得写 `PASS_VERIFIED`。
-- 历史材料归档到 `D:\DramaStudio\archive\docs\<date>\`，仓库只留 [ARCHIVE.md](ARCHIVE.md) 索引。
-- 文档中的命令以当前统一 CLI（`src/produce.py`）和产出根（`D:\DramaStudio`）为准。
+- 历史材料归档到 `<DRAMA_OUTPUT_ROOT>/archive/docs\<date>\`，仓库只留 [ARCHIVE.md](ARCHIVE.md) 索引。
+- 文档中的命令以当前统一 CLI（`src/produce.py`）和产出根（`<DRAMA_OUTPUT_ROOT>/`）为准。

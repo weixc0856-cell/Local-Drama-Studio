@@ -28,14 +28,14 @@
 
 ```mermaid
 flowchart TD
-    subgraph Repo["开发管线仓 (D:\\Local-Drama-Studio)"]
+    subgraph Repo["开发管线仓 (./)"]
         CLI["统一生产入口 CLI<br><b>src/produce.py</b>"]
         CFG["路径与管线配置<br><b>config/*.yaml</b>"]
         WF["工作流模板库<br><b>workflows/*.json</b>"]
         JUNCTION["Windows 目录联接<br><b>studio_data/ (mklink /J)</b>"]
     end
 
-    subgraph PhysicalRoot["物理内容产物根 (D:\\DramaStudio - Git 彻底忽略)"]
+    subgraph PhysicalRoot["物理内容产物根 (DRAMA_OUTPUT_ROOT - Git 彻底忽略)"]
         P1["<b>projects/</b><br>分镜脚本 / 结构化提示词清单"]
         P2["<b>build/</b><br>480P原始视频 / 关键帧 / 单轨音频 / 对比切片"]
         P3["<b>deliver/</b><br>2K超分成片 / 32fps插帧视频 / 视听母带 / SBS对比板"]
@@ -65,7 +65,7 @@ python src/produce.py image --project demo01 --type portrait --prompt "A candid 
 python src/produce.py image --project car01 --type industrial --prompt "Engineering cutaway diagram of a high-performance twin-turbo V8 engine, technical illustration, labeled components"
 
 # 4. Wan 14B 视频端到端生产（内置 16:9 景别防糊保护 + 2K 超分 + 32fps 光流补帧 + 商业音频混流）
-python src/produce.py video --project demo01 --image "D:/DramaStudio/deliver/demo01/anchor.png" --aspect 16:9
+python src/produce.py video --project demo01 --image "studio_data/deliver/demo01/anchor.png" --aspect 16:9
 ```
 
 ---
@@ -88,9 +88,9 @@ python src/produce.py video --project demo01 --image "D:/DramaStudio/deliver/dem
 | :--- | :---: | :--- |
 | `src/produce.py` | 核心 | 统一生产调度 CLI（支持 `status`, `image`, `video`） |
 | `src/drama_studio/` | 核心 | Python 制作层领域模型（contracts / style / voice / motion / paths） |
-| `config/local-paths.yaml` | 本地 | 本地物理路径配置文件（由 Git 严格忽略，指向 `D:\DramaStudio`） |
+| `config/local-paths.yaml` | 本地 | 本地物理路径配置文件（由 Git 严格忽略，配置本地 output_root 与 model 路径） |
 | `config/pipelines.yaml` | 规范 | 场景路由、双引擎比拼策略、Wan 14B 视频与商业音频配置 |
 | `config/models.yaml` | 规范 | Canonical 外部模型清单与加载器映射 |
 | `workflows/` | 模版 | ComfyUI API 格式工作流（`z_image_turbo_api.json`, `flux3_klein_api.json`, `wan22_14b_i2v_api.json`） |
-| `studio_data/` | 联接 | Windows 目录联接（指向 `D:\DramaStudio`，Git 忽略） |
+| `studio_data/` | 联接 | Windows 目录联接（映射本地产物根 DRAMA_OUTPUT_ROOT，Git 忽略） |
 | `docs/` | 规范 | 架构决策 (ADR)、全维评测报告、横屏规范与拍摄指南 |

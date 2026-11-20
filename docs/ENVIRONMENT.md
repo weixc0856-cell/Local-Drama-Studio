@@ -2,7 +2,7 @@
 
 > 状态：`DECISION` / 2026-11-12 由 `ENVIRONMENT.md` 与 `TECH_STACK.md` 合并。
 > 以下"已核实"项均由本机命令实际执行得到，不是推断；冻结不等于所有组件都通过生产验证。
-> 原始文档归档在 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
+> 原始文档归档在 `<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/`（见 [ARCHIVE.md](ARCHIVE.md)）。
 
 ## 1. 冻结原则
 
@@ -73,12 +73,12 @@
 ### 4.3 ComfyUI（8188）
 
 - 生成环境：`runtime/ComfyUI/.venv`；`scripts\start.ps1` 等待 `/system_stats`，`scripts\stop.ps1` 只杀本项目进程树。
-- 模型经 `runtime/ComfyUI/extra_model_paths.yaml` 映射到 `D:/AI/models`：`diffusion_models` 同时暴露顶层与 `diffusion_models/` 子目录，`text_encoders`、`vae` 各自映射。
+- 模型经 `runtime/ComfyUI/extra_model_paths.yaml` 映射到 `<DRAMA_MODELS_ROOT>/`：`diffusion_models` 同时暴露顶层与 `diffusion_models/` 子目录，`text_encoders`、`vae` 各自映射。
 - 模型切换不需要重启；`/free` 通常是 no-op（自动卸载）。
 
 ## 5. 模型目录
 
-权重统一在 `models`（本机 `D:/AI/models`），不进入 Git。两个扩散 GGUF 必须在**顶层**，因为 `本地 AI 服务\start_server.bat` 只扫描顶层 `*.gguf`。
+权重统一在 `models`（本机 `<DRAMA_MODELS_ROOT>/`），不进入 Git。两个扩散 GGUF 必须在**顶层**，因为 `本地 AI 服务\start_server.bat` 只扫描顶层 `*.gguf`。
 
 | 文件/目录 | 用途 |
 |---|---|
@@ -98,10 +98,10 @@
 
 | 变量 | 用途 |
 |---|---|
-| `DRAMA_MODELS_ROOT` | 模型仓库（默认 `D:/AI/models`） |
-| `DRAMA_AI_HOME` | 本地 AI 服务目录（`D:/AI`） |
-| `DRAMA_OUTPUT_ROOT` | 产出根（默认 `D:/DramaStudio`） |
-| `VOXCPM_RUNTIME` | `D:/AI/VoxCPM-Runtime` |
+| `DRAMA_MODELS_ROOT` | 模型仓库（默认 `<DRAMA_MODELS_ROOT>/`） |
+| `DRAMA_AI_HOME` | 本地 AI 服务目录（`<AI_HOME_ROOT>/`） |
+| `DRAMA_OUTPUT_ROOT` | 产出根（默认 `<DRAMA_OUTPUT_ROOT>/`） |
+| `VOXCPM_RUNTIME` | `<AI_HOME_ROOT>/VoxCPM-Runtime` |
 | `DRAMA_ROOT` | 可选，显式项目根 |
 
 ## 7. 端口

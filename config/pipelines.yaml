@@ -121,7 +121,7 @@ audio_engine:
     stable_audio_open_1_0:
       name: "Stable Audio Open 1.0"
       license: "Stability Community License (<$1M Commercial Free)"
-      model_dir: "D:/AI/models/audio/stable-audio-open-1.0"
+      model_dir: "models/audio/stable-audio-open-1.0"
       backend: "diffusers"
       device: "cpu"
       default_steps: 25
@@ -134,7 +134,7 @@ audio_engine:
     acestep_1_5_xl:
       name: "ACE-Step 1.5 XL Turbo"
       license: "MIT / Apache 2.0"
-      model_dir: "D:/AI/models/audio/acestep-v15-xl-turbo-diffusers"
+      model_dir: "models/audio/acestep-v15-xl-turbo-diffusers"
       backend: "diffusers"
       device: "cpu"
       default_steps: 8

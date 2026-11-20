@@ -36,4 +36,4 @@
 ---
 
 ## 🛠️ 执行规范保障：
-每次重绘一律直接调用公共生产引擎 [`scripts/portrait_engine.py`](file:///d:/Local-Drama-Studio/scripts/portrait_engine.py)，并在交付后自动填报 [`docs/PORTRAIT_QA_CHECKLIST.md`](file:///d:/Local-Drama-Studio/docs/PORTRAIT_QA_CHECKLIST.md)，形成验收报告闭环。
+每次重绘一律直接调用公共生产引擎 [`scripts/portrait_engine.py`](scripts/portrait_engine.py)，并在交付后自动填报 [`docs/PORTRAIT_QA_CHECKLIST.md`](docs/PORTRAIT_QA_CHECKLIST.md)，形成验收报告闭环。

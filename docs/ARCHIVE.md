@@ -2,7 +2,7 @@
 
 本仓库只保留**当前有效**的规格与指南。历史报告、一次性审计、旧设计稿和已合并的来源文档已移出检出目录。
 
-- 归档位置：`D:\DramaStudio\archive\docs\2026-11-12\`（`DRAMA_OUTPUT_ROOT` 下）
+- 归档位置：`<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/`（`DRAMA_OUTPUT_ROOT` 下）
 - 清单与哈希：同目录 `MANIFEST.json`（文件名、字节数、sha256、归档原因）
 - **归档文件不进 Git、不进远程仓库**
 - 归档工具：`scripts/archive_docs.py`（可复现；`--apply` 才移动）
@@ -45,6 +45,6 @@
 
 ## 需要旧内容时
 
-1. 到 `D:\DramaStudio\archive\docs\2026-11-12\` 直接打开；
+1. 到 `<DRAMA_OUTPUT_ROOT>/archive/docs/2026-11-12/` 直接打开；
 2. 用 `MANIFEST.json` 的 sha256 确认版本；
 3. 不要把归档文件复制回 `docs/`；需要长期保留的结论请写进当前规格文档并补充测试或证据。

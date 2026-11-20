@@ -1,6 +1,6 @@
 """
 Finalize and register "luoshenfu_gongbi" into official production project repository:
-Path: D:\\DramaStudio\\projects\\luoshenfu_gongbi
+Path: <DRAMA_OUTPUT_ROOT>/projects/luoshenfu_gongbi
 Including:
 - project.json
 - visual_bible.yaml
@@ -17,8 +17,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-ROOT = Path(r"d:\Local-Drama-Studio")
-OUTPUT_ROOT = Path(r"D:\DramaStudio\projects")
+ROOT = Path(__file__).resolve().parent.parent
+OUTPUT_ROOT = Path(os.environ.get("DRAMA_OUTPUT_ROOT", str(ROOT / "studio_data"))) / "projects"
 PROJ_DIR = OUTPUT_ROOT / "luoshenfu_gongbi"
 
 SRC_EXP = ROOT / "experiments" / "luoshenfu_style_1_gongbi"

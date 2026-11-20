@@ -2,7 +2,7 @@
 
 Run this with the environment that has ``openai-whisper`` installed, e.g.::
 
-    D:\\AI\\VoxCPM-Runtime\\venv\\Scripts\\python.exe scripts\\tts_qa.py ^
+    os.environ.get("VOXCPM_PYTHON", "python") scripts\\tts_qa.py ^
         --manifest projects/<project>/episodes/<episode>/audio_manifest.json
 
 Whisper is a proxy, not an ear: classical Chinese homophones are easy for it to
@@ -80,7 +80,7 @@ def main() -> int:
         print(json.dumps({
             "ok": False,
             "error": "openai-whisper 未安装。请在 VoxCPM 运行时 venv 中安装后再执行本脚本：\n"
-                     "D:\\AI\\VoxCPM-Runtime\\venv\\Scripts\\python.exe -m pip install openai-whisper",
+                     "os.environ.get("VOXCPM_PYTHON", "python") -m pip install openai-whisper",
         }, ensure_ascii=False))
         return 2
 

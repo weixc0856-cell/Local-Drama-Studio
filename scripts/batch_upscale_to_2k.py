@@ -14,8 +14,8 @@ import shutil
 from pathlib import Path
 from PIL import Image, ImageFilter, ImageEnhance
 
-ROOT = Path(r"d:\Local-Drama-Studio")
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ROOT = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 TARGET_W = 1152
 TARGET_H = 2048

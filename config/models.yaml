@@ -1,6 +1,6 @@
 # ==============================================================================
 # Local Drama Studio - Model Registry
-# Canonical models stored at external paths (e.g. D:/AI/models/)
+# Canonical models stored at external paths (configured via config/local-paths.yaml or DRAMA_MODELS_ROOT)
 # ==============================================================================
 
 models:
@@ -52,7 +52,7 @@ models:
     family: stable-audio
     license: "Stability Community License (<$1M Commercial Free)"
     files:
-      weights: "D:/AI/models/audio/stable-audio-open-1.0/model.safetensors"
+      weights: "audio/stable-audio-open-1.0/model.safetensors"
     notes: "100% commercial-permissive ambient score and foley sfx. Pure CPU inference."
 
   acestep_1_5_xl:
@@ -60,5 +60,5 @@ models:
     family: acestep
     license: "MIT / Apache 2.0"
     files:
-      transformer: "D:/AI/models/audio/acestep-v15-xl-turbo-diffusers/transformer"
+      transformer: "audio/acestep-v15-xl-turbo-diffusers/transformer"
     notes: "5B guidance-distilled flow-matching DiT. 8 steps on CPU. Commercial permissive orchestral soundtrack."

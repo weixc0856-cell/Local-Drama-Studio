@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 COMFY_DIR = ROOT / "runtime" / "ComfyUI"
 COMFY_INPUT = COMFY_DIR / "input"
 COMFY_OUTPUT = COMFY_DIR / "output"
-TEST_OUT = ROOT / "experiments" / "wan22_14b_test"
+TEST_OUT = Path(os.environ.get("DRAMA_OUTPUT_ROOT", str(ROOT / "studio_data"))) / "deliver" / "wan22_14b_test"
 WORKFLOW_TEMPLATE = ROOT / "workflows" / "wan22_14b_i2v_api.json"
 COMFY_URL = "http://127.0.0.1:8188"
 

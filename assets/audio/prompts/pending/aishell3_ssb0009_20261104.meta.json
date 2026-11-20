@@ -56,7 +56,7 @@
     "cosyvoice_zero_shot": {
       "status": "PASS",
       "model_class": "CosyVoice2",
-      "model_dir": "D:\\AI\\CosyVoice-Runtime\\pretrained_models\\CosyVoice2-0.5B",
+      "model_dir": "models/audio/CosyVoice2-0.5B",
       "text": "白日依山尽",
       "output": "experiments/voice_asset_discovery/zeroshot_aishell_female_candidate.wav",
       "output_sha256": "836e498ec7115b3f3c27910e1ce965e3b619822785fce92e956f9ff9c7780a5c",

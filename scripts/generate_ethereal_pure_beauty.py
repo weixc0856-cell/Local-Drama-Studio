@@ -18,11 +18,11 @@ from pathlib import Path
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_SINGLE = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
+WF_SINGLE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "ethereal_fairy"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -111,7 +111,7 @@ def main():
                         comfy_out = comfy_out / subfolder
                     src_file = comfy_out / fname
                     if not src_file.exists():
-                        d_output = Path(r"D:\DramaStudio\ComfyUI\output")
+                        d_output = Path(os.environ.get("DRAMA_OUTPUT_ROOT", "./studio_data")) / "ComfyUI/output"
                         if subfolder:
                             d_output = d_output / subfolder
                         src_file = d_output / fname

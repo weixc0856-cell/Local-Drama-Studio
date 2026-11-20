@@ -3,7 +3,7 @@
 scripts/test_z_image_turbo.py
 End-to-end automated testing runner for Z-Image Turbo on Intel Arc A750.
 Steps:
-1. Verify / fetch required models from ModelScope / HuggingFace to D:\\AI\\models
+1. Verify / fetch required models to ${DRAMA_MODELS_ROOT}
 2. Ensure ComfyUI background instance is running (port 8188)
 3. Submit Z-Image Turbo 8-step test prompt
 4. Verify execution, download result image, and run postprocessing
@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-MODELS_DIR = Path(r"D:\AI\models")
+MODELS_DIR = Path(os.environ.get("DRAMA_MODELS_ROOT", "models"))
 Z_UNET_DIR = MODELS_DIR / "diffusion_models" / "z_image"
 Z_CLIP_DIR = MODELS_DIR / "text_encoders"
 Z_UNET_FILE = Z_UNET_DIR / "z-image-turbo-Q4_K_M.gguf"
@@ -36,7 +36,7 @@ OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 
 def check_and_prepare_models():
-    print("[1/5] Checking model weights in D:\\AI\\models...")
+    print(f"[1/5] Checking model weights in {MODELS_DIR}...")
     Z_UNET_DIR.mkdir(parents=True, exist_ok=True)
     Z_CLIP_DIR.mkdir(parents=True, exist_ok=True)
 

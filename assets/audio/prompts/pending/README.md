@@ -14,7 +14,7 @@
 
 ## Mozilla Common Voice 27.0（2026-11-04 筛选）
 
-从本机 `C:/Users/99236/Downloads/1789498250119-cv-corpus-27.0-2026-09-11-zh-CN.tar.gz` 中筛选；
+从 Common Voice 语料包 `cv-corpus-27.0-2026-09-11-zh-CN.tar.gz` 中筛选；
 未镜像/再分发数据集，仓库只登记候选元数据，WAV 留在本地。Common Voice 为 CC0-1.0，
 但 README 明确要求不得反推说话人身份；本项目只使用数据集自带标签，不做身份推断。
 

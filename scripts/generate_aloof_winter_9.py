@@ -15,9 +15,9 @@ import urllib.request
 from PIL import Image
 
 BASE_URL = "http://127.0.0.1:8188"
-WORKFLOW_TEMPLATE = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-OUTPUT_DIR = r"d:\Local-Drama-Studio\experiments\aloof_winter_9\output"
-ARTIFACTS_DIR = r"C:\Users\99236\.gemini\antigravity\brain\69cb1483-b218-425d-98a1-13a968bbcdfe"
+WORKFLOW_TEMPLATE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+OUTPUT_DIR = str(Path(os.environ.get("DRAMA_OUTPUT_ROOT", Path(__file__).resolve().parent.parent / "studio_data")) / "experiments" / "aloof_winter_9\output")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 # Never route localhost through system/env proxy
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -150,7 +150,7 @@ def main():
                         for img_meta in node_out["images"]:
                             fn = img_meta["filename"]
                             sub = img_meta.get("subfolder", "")
-                            src_path = os.path.join(r"d:\Local-Drama-Studio\runtime\ComfyUI\output", sub, fn)
+                            src_path = os.path.join(str(Path(__file__).resolve().parent.parent / "runtime" / "ComfyUI" / "output"), sub, fn)
                             shutil.copyfile(src_path, dst_path)
                             shutil.copyfile(src_path, art_path)
                             elapsed = time.time() - start_time

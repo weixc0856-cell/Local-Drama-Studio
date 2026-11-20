@@ -12,7 +12,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-MODELS_ROOT = Path(r"D:\AI\models")
+MODELS_ROOT = Path(Path(os.environ.get("DRAMA_MODELS_ROOT", "./models")))
 COMFYUI_DIR = ROOT / "runtime" / "ComfyUI"
 
 
@@ -33,7 +33,7 @@ def inspect_environment():
 
 def inspect_model_store():
     print("\n" + "=" * 60)
-    print(" 2. Model Store Checklist (D:\\AI\\models)")
+    print(" 2. Model Store Checklist (${DRAMA_MODELS_ROOT})")
     print("=" * 60)
 
     # 1. FLUX.3 Klein
@@ -75,18 +75,18 @@ def generate_download_commands(status: dict):
 # 请在具有外部磁盘写入权限的 PowerShell 窗口中执行以下命令创建目录并下载：
 
 # 1. 确保子目录存在：
-New-Item -ItemType Directory -Path "D:\\AI\\models\\diffusion_models\\z_image" -Force -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path "D:\\AI\\models\\text_encoders" -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "${DRAMA_MODELS_ROOT}\\diffusion_models\\z_image" -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path "${DRAMA_MODELS_ROOT}\\text_encoders" -Force -ErrorAction SilentlyContinue
 
 # 2. 方式 A：通过 huggingface-cli 下载 (推荐)
 pip install -U huggingface_hub
-huggingface-cli download unsloth/Z-Image-Turbo-GGUF z-image-turbo-Q4_K_M.gguf --local-dir D:\\AI\\models\\diffusion_models\\z_image
-huggingface-cli download unsloth/Z-Image-Turbo-GGUF zimage_qwen3_4b_Q4.gguf --local-dir D:\\AI\\models\\text_encoders
+huggingface-cli download unsloth/Z-Image-Turbo-GGUF z-image-turbo-Q4_K_M.gguf --local-dir "${DRAMA_MODELS_ROOT}\\diffusion_models\\z_image"
+huggingface-cli download unsloth/Z-Image-Turbo-GGUF zimage_qwen3_4b_Q4.gguf --local-dir "${DRAMA_MODELS_ROOT}\\text_encoders"
 
 # 3. 方式 B：国内用户通过 ModelScope (高速镜像)
 pip install -U modelscope
-modelscope download --model unsloth/Z-Image-Turbo-GGUF z-image-turbo-Q4_K_M.gguf --local_dir D:\\AI\\models\\diffusion_models\\z_image
-modelscope download --model unsloth/Z-Image-Turbo-GGUF zimage_qwen3_4b_Q4.gguf --local_dir D:\\AI\\models\\text_encoders
+modelscope download --model unsloth/Z-Image-Turbo-GGUF z-image-turbo-Q4_K_M.gguf --local_dir "${DRAMA_MODELS_ROOT}\\diffusion_models\\z_image"
+modelscope download --model unsloth/Z-Image-Turbo-GGUF zimage_qwen3_4b_Q4.gguf --local_dir "${DRAMA_MODELS_ROOT}\\text_encoders"
 """)
 
 

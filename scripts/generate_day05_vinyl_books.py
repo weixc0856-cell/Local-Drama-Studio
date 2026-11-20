@@ -17,12 +17,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_URL = "http://127.0.0.1:8188"
-WF_LORA = r"d:\Local-Drama-Studio\workflows\flux3_lora_t2i_api.json"
-WF_BASE = r"d:\Local-Drama-Studio\workflows\flux3_t2i_api.json"
+WF_LORA = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_lora_t2i_api.json")
+WF_BASE = str(Path(__file__).resolve().parent.parent / "workflows" / "flux3_t2i_api.json")
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "experiments" / "global_beauties_day05"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 PLACEHOLDER = re.compile(r"^\{\{(\w+)\}\}$")
@@ -175,9 +175,9 @@ def make_4grid_board(image_paths, board_path, art_board_path):
     font_med = None
     font_sm = None
     for fpath in [
-        r"C:\Windows\Fonts\msyhbd.ttc",
-        r"C:\Windows\Fonts\simhei.ttf",
-        r"C:\Windows\Fonts\msyh.ttc"
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyhbd.ttc"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "simhei.ttf"),
+        str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts" / "msyh.ttc")
     ]:
         if os.path.exists(fpath):
             try:
@@ -314,7 +314,7 @@ def update_master_index():
     with open(index_file, "r", encoding="utf-8") as f:
         content = f.read()
     if "Day 05" not in content:
-        day05_row = "| **Day 05** | **《文艺黄昏 · 黑胶唱片与复古书店》**<br>独立老书店窗边、伦敦黑胶唱片行、神保町古书架、首尔三清洞黑胶艺廊 | [`experiments/global_beauties_day05/`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day05/) | [`PATREON_POST.md`](file:///d:/Local-Drama-Studio/experiments/global_beauties_day05/PATREON_POST.md) | [4 联排大图](file:///d:/Local-Drama-Studio/experiments/global_beauties_day05/day05_vinyl_books_4grid.png) | 4 张超清原图 |\n"
+        day05_row = "| **Day 05** | **《文艺黄昏 · 黑胶唱片与复古书店》**<br>独立老书店窗边、伦敦黑胶唱片行、神保町古书架、首尔三清洞黑胶艺廊 | [`experiments/global_beauties_day05/`](experiments/global_beauties_day05/) | [`PATREON_POST.md`](experiments/global_beauties_day05/PATREON_POST.md) | [4 联排大图](experiments/global_beauties_day05/day05_vinyl_books_4grid.png) | 4 张超清原图 |\n"
         content = content.replace("## 🚀 每次发帖 3 步操作指引", day05_row + "\n---\n\n## 🚀 每次发帖 3 步操作指引")
         with open(index_file, "w", encoding="utf-8") as f:
             f.write(content)

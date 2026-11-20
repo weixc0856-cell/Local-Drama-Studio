@@ -9,10 +9,10 @@ import os
 import subprocess
 from pathlib import Path
 
-ROOT = Path(r"d:\Local-Drama-Studio")
+ROOT = Path(__file__).resolve().parent.parent
 SCENES_DIR = ROOT / "experiments" / "luoshenfu_style_comparison" / "scenes"
 TTS_DIR = ROOT / "experiments" / "luoshenfu_style_comparison" / "tts"
-ARTIFACTS_DIR = Path(r"C:\Users\99236\.gemini\antigravity\brain\d1169d61-a3c4-438c-b9fb-7026d0aa29b3")
+ARTIFACTS_DIR = Path(os.environ.get("DRAMA_ARTIFACTS_DIR", "./studio_data/artifacts"))
 
 S01_IMG = SCENES_DIR / "S01_luo_river_dusk.png"
 S02_IMG = SCENES_DIR / "S02_scholar_rocks.png"
