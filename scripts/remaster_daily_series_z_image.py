@@ -945,6 +945,150 @@ def remaster_day08():
     print("\n[+] Day 08 Remaster complete!")
 
 
+DAY09_TASKS = [
+    {
+        "id": "day09_01_china_autumn",
+        "title_zh": "01 · 中国 · 古都红墙银杏长廊风衣回眸",
+        "title_en": "01 · China · Golden Ginkgo Alley & Camel Trench",
+        "seed": 20268901,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily gorgeous 21-year-old Chinese muse standing by ancient red palace walls surrounded by glowing golden ginkgo trees in autumn. "
+            "Exquisite youthful facial contours, smooth soft jawline, high cranial top, delicate slender nose, crystal-clear dark almond eyes with soulful radiant tenderness. "
+            "Plump hydrated natural rose lips slightly parted in soft breathing repose, pristine porcelain jade skin glowing with pure youth. "
+            "Long silky raven hair flowing in gentle autumn breeze, wearing an elegant tailored camel cashmere trench coat over an ivory silk blouse. "
+            "Golden autumn sunlight and drifting yellow ginkgo leaves in creamy background, Leica M11 50mm f/1.4 Summilux, cinematic masterpiece."
+        )
+    },
+    {
+        "id": "day09_02_western_autumn",
+        "title_zh": "02 · 法国 · 巴黎塞纳河畔林荫风衣绝色",
+        "title_en": "02 · France · Seine River Embankment Trench Allure",
+        "seed": 20268902,
+        "prompt": (
+            "Breathtaking candid 35mm film portrait of an extraordinarily gorgeous 21-year-old French European beauty standing along the Seine in Paris in autumn. "
+            "Flawless youthful feminine facial proportions, soft rounded chin, delicate straight slender nose, captivating large sparkling hazel-green doe eyes with natural dark lashes. "
+            "Plump soft rosy-peach lips with subtle natural tenderness, completely blemish-free smooth porcelain ivory skin with soft youthful glow, zero freckles. "
+            "Lush wavy honey-brown hair tossed effortlessly by breeze, wearing a tailored honey-tan gabardine trench coat over a soft knit. "
+            "Golden chestnut leaves drifting over stone embankment, creamy vintage Parisian autumn bokeh, Contax T2 35mm f/2.8 lens, legendary French cinema beauty."
+        )
+    },
+    {
+        "id": "day09_03_japan_autumn",
+        "title_zh": "03 · 日本 · 京都岚山古寺红枫石阶初恋",
+        "title_en": "03 · Japan · Kyoto Arashiyama Scarlet Maples & Wool Coat",
+        "seed": 20268903,
+        "prompt": (
+            "Breathtaking candid 35mm Japanese film photograph of an extraordinarily stunning 20-year-old Japanese young beauty on stone steps in Kyoto beneath scarlet autumn maples. "
+            "Dainty delicate feminine face, soft smooth jawline, large clear dewy dark expressive eyes filled with innocent sweet charm, petite straight nose. "
+            "Naturally plump glossy strawberry-pink lips, luminous translucent porcelain skin with youthful blush, zero blemish. "
+            "Dark silky hair with soft wispy bangs, wearing an oatmeal-cream wool coat, holding a warm wooden cup of roasted green tea with both hands. "
+            "Mossy stone lanterns and vibrant red maple leaves in soft golden autumn mist, Hasselblad X2D 90mm lens, cinematic Japanese youth drama perfection."
+        )
+    },
+    {
+        "id": "day09_04_korea_autumn",
+        "title_zh": "04 · 韩国 · 首尔三清洞古石墙路水光千金",
+        "title_en": "04 · Korea · Samcheong Stone Wall Cream Cashmere",
+        "seed": 20268904,
+        "prompt": (
+            "Breathtaking candid 35mm photograph of an extraordinarily beautiful 21-year-old Korean heiress walking along Samcheong-dong stone wall in autumn. "
+            "Softly contoured oval face, full youthful cheeks without any hollows, delicate dainty straight nose, captivating dark almond eyes with gentle clear warmth. "
+            "Plump hydrated dewy petal-pink lips, long slender swan neck, radiant translucent glass skin glowing in autumn sunlight. "
+            "Voluminous glossy dark espresso hair with soft side-swept waves, wearing a tailored cream-white double-faced cashmere coat with wide lapels. "
+            "Golden ginkgo leaves and ancient stone wall in warm golden hour glow, Leica M11 50mm f/1.4 Summilux, Vogue Korea luxury realism."
+        )
+    },
+    {
+        "id": "day09_05_mediterranean_autumn",
+        "title_zh": "05 · 意大利 · 托斯卡纳金秋柏树道明艳少女",
+        "title_en": "05 · Italy · Tuscany Cypress Sunset Olive Trench",
+        "seed": 20268905,
+        "prompt": (
+            "Breathtaking cinematic 35mm film portrait of an extraordinarily gorgeous 21-year-old Italian Mediterranean youthful goddess in Tuscany at golden autumn sunset. "
+            "Delicate soft feminine heart-shaped face, refined smooth jawline, straight slender nose, captivating large velvety-dark almond eyes with long naturally lush lashes and warm radiant sparkle. "
+            "Plump naturally defined soft berry-rose lips, completely smooth clear warm-porcelain skin with healthy sun-kissed youthful radiance, zero wrinkles or hollows. "
+            "Bouncy dark chocolate glossy curls cascading around her shoulders in warm sunset breeze. "
+            "Wearing an olive-green belted wool trench coat, holding a small wicker basket of purple figs. "
+            "Golden rolling Tuscan hills and tall cypress trees bathed in warm amber backlight, Contax T2 35mm f/2.8 lens, Italian romantic cinema masterpiece."
+        )
+    },
+    {
+        "id": "day09_06_slavic_autumn",
+        "title_zh": "06 · 奥地利 · 维也纳美泉宫深林风衣芭比",
+        "title_en": "06 · Austria · Vienna Schönbrunn Forest Green Trench",
+        "seed": 20268906,
+        "prompt": (
+            "Breathtaking candid 35mm photograph of an extraordinarily stunning 20-year-old Slavic Eastern European doll-like beauty in Vienna in autumn. "
+            "Soft delicate feminine oval face, smooth tapered chin, petite straight nose, hypnotic clear bright emerald-green almond eyes filled with youthful sparkle and gentle warmth. "
+            "Plump soft natural rose-pink lips, radiant clear porcelain milk skin with natural youthful flush, completely blemish-free and zero freckles. "
+            "Silky light ash-brown wavy hair blowing softly in autumn wind. "
+            "Wearing a tailored deep forest-green wool trench coat with dark buttons. "
+            "Golden cathedral canopy of Schönbrunn autumn trees and historic palace statues in soft golden bokeh, Leica M11 50mm f/1.4 Summilux, European fairy-tale realism."
+        )
+    }
+]
+
+
+def remaster_day09():
+    day_dir = OUTPUT_ROOT / "experiments" / "global_beauties_day09"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Day 09: 《秋风微凉 · 经典风衣与金秋落叶》 (Autumn Trench 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(DAY09_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "day09_autumn_trench_6grid_cn.png"
+    grid_en = day_dir / "day09_autumn_trench_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="象牙塔晨光 · Day 09 《秋风微凉 · 经典风衣与金秋落叶》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 经典风衣面料质感 · 纯天然微孔光泽 · 告别塑料假面",
+        main_title_en="Autumn Trench & Golden Foliage · Day 09 6-Pack Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Classic Wool Trench & Authentic Skin Texture · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Day 09 Remaster complete!")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--day", default="02", help="Day collection to remaster")
@@ -964,6 +1108,8 @@ if __name__ == "__main__":
         remaster_day07()
     elif args.day == "08":
         remaster_day08()
+    elif args.day == "09":
+        remaster_day09()
     elif args.day == "all":
         remaster_day02()
         remaster_day03()
@@ -972,5 +1118,6 @@ if __name__ == "__main__":
         remaster_day06()
         remaster_day07()
         remaster_day08()
+        remaster_day09()
     else:
         print(f"Day {args.day} queue ready.")
