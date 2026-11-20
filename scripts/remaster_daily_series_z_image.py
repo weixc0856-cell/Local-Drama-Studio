@@ -974,9 +974,3 @@ if __name__ == "__main__":
         remaster_day08()
     else:
         print(f"Day {args.day} queue ready.")
-        remaster_day03()
-        remaster_day04()
-        remaster_day05()
-        remaster_day06()
-    else:
-        print(f"Day {args.day} queue ready.")
