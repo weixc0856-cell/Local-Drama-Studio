@@ -92,3 +92,12 @@ config/style_packs/*/*/reference_board/candidates/jobs_manifest.json
 
 # Local environment (machine paths). Track .env.example instead.
 .env
+config/local-paths.yaml
+
+# Physical content output junction
+studio_data/
+
+# Additional binary and audio formats
+*.bin
+*.flac
+

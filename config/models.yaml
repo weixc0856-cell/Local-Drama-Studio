@@ -1,11 +1,23 @@
-# Canonical model store lives outside the repo
-#
-# IMPORTANT: the local LLM launcher scans only the TOP LEVEL of the model store
-# for *.gguf. Diffusion GGUFs used by ComfyUI live under diffusion_models/ and
-# are exposed through runtime/ComfyUI/extra_model_paths.yaml.
-# New companion files go into text_encoders/ and vae/ subfolders, and ComfyUI
-# sees both layouts through runtime/ComfyUI/extra_model_paths.yaml.
+# ==============================================================================
+# Local Drama Studio - Model Registry
+# Canonical models stored at external paths (e.g. D:/AI/models/)
+# ==============================================================================
+
 models:
+  z_image_turbo:
+    role: image
+    family: z-image-turbo
+    loader_node: UnetLoaderGGUF
+    files:
+      unet_gguf: "diffusion_models/z_image/z-image-turbo-Q4_K_M.gguf"
+      text_encoder: "text_encoders/Qwen3-4B-Q4_K_M.gguf"
+      vae: "vae/ae.safetensors"
+    sizes:
+      unet_gguf: 4294967296
+      text_encoder: 2707514144
+      vae: 336211292
+    notes: "Z-Image Turbo 6B distilled DiT: 8 steps, CFG 1.0, euler/simple. Qwen3-4B on CPU. Primary engine for portrait and cinematic realism. Zero LoRA required."
+
   flux_3_klein:
     role: image
     family: flux3-klein
@@ -18,18 +30,35 @@ models:
       unet_gguf: 3666908064
       text_encoder: 4858559240
       vae: 336211292
-    notes: "FLUX.3 Klein distilled: 16 steps, CFG 1.0, er_sde/simple. Qwen3-VL-4B encoder runs on CPU. The official 9B prompt upsampler is unusable on this machine; production uses the local Qwen caption stage (docs/DECISIONS.md (ADR-016))."
+    notes: "FLUX.3 Klein distilled: 16 steps, CFG 1.0, er_sde/simple. Qwen3-VL-4B on CPU. Best for industrial mechanics, aerodynamics, typography AB comparison."
 
-  wan_2_2_ti2v_5b:
+  wan_2_2_14b_i2v:
     role: video
-    family: wan2.2-ti2v-5b
+    family: wan2.2-i2v-14b
     loader_node: UnetLoaderGGUF
     files:
-      unet_gguf: "Wan2.2-TI2V-5B-Q4_K_M.gguf"
+      unet_gguf: "diffusion_models/wan2.1-i2v-14b-480p-Q4_K_M.gguf"
       text_encoder: "text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
-      vae: "vae/wan2.2_vae.safetensors"
+      vae: "vae/wan_2.1_vae.safetensors"
+      lora: "loras/wan2.1_i2v_lightx2v_4steps_lora.safetensors"
     sizes:
-      unet_gguf: 3433116000
+      unet_gguf: 11339178496
       text_encoder: 6735906897
-      vae: 1409400960
-    notes: "TI2V-5B is not a scaled-down 14B. Use its own VAE and latent workflow; no CLIP vision required."
+      vae: 254143424
+    notes: "Wan 2.2-14B I2V: 6 steps with LightX2V LoRA. ComfyUI-GGUF Block Swap to 64GB DDR5 memory. Standard video pipeline engine."
+
+  stable_audio_open_1_0:
+    role: audio
+    family: stable-audio
+    license: "Stability Community License (<$1M Commercial Free)"
+    files:
+      weights: "D:/AI/models/audio/stable-audio-open-1.0/model.safetensors"
+    notes: "100% commercial-permissive ambient score and foley sfx. Pure CPU inference."
+
+  acestep_1_5_xl:
+    role: audio
+    family: acestep
+    license: "MIT / Apache 2.0"
+    files:
+      transformer: "D:/AI/models/audio/acestep-v15-xl-turbo-diffusers/transformer"
+    notes: "5B guidance-distilled flow-matching DiT. 8 steps on CPU. Commercial permissive orchestral soundtrack."

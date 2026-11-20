@@ -30,10 +30,22 @@ def repo_root() -> Path:
 def output_root() -> Path:
     """The one place generated artifacts live. Never inside the repo."""
     raw = os.environ.get("DRAMA_OUTPUT_ROOT")
+    if not raw:
+        local_cfg = repo_root() / "config" / "local-paths.yaml"
+        if local_cfg.exists():
+            try:
+                import yaml
+                with open(local_cfg, "r", encoding="utf-8") as f:
+                    data = yaml.safe_load(f)
+                    if data and "output_root" in data:
+                        raw = data["output_root"]
+            except Exception:
+                pass
     root = Path(raw).expanduser() if raw else DEFAULT_OUTPUT_ROOT
     if not root.is_absolute():
         root = repo_root() / root
     return root.resolve()
+
 
 
 def output_dir(*parts: str) -> Path:
@@ -73,6 +85,23 @@ def projects_root() -> Path:
     return output_dir("projects")
 
 
+def build_root() -> Path:
+    return output_dir("build")
+
+
+def deliver_root() -> Path:
+    return output_dir("deliver")
+
+
+def build_dir(project_id: str) -> Path:
+    return output_dir("build", project_id)
+
+
+def deliver_dir(project_id: str) -> Path:
+    return output_dir("deliver", project_id)
+
+
+
 def experiments_root() -> Path:
     return output_dir("experiments")
 
@@ -101,6 +130,8 @@ def ensure_layout() -> Path:
     """Create the standard output layout and return the root."""
     for parts in (
         ("projects",),
+        ("build",),
+        ("deliver",),
         ("experiments",),
         ("style_boards",),
         ("logs",),

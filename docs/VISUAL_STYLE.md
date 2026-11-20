@@ -1,103 +1,98 @@
-# 09 · 视觉风格引擎与风格规范
+# 09 · 视觉风格引擎与 LoRA 规范指南 (V2.1)
 
-> 状态：`DECISION` / 2026-11-12 由 `VISUAL_STYLE_SPEC.md`、`VISUAL_STYLE_ENGINE.md`、`STYLE_BOARD_STATUS.md` 及四份风格笔记合并。
-> 原始文档归档在 `D:\DramaStudio\archive\docs\2026-11-12\`（见 [ARCHIVE.md](ARCHIVE.md)）。
+> 状态：`DECISION / APPROVED` (2026-11-18 升级重构)  
+> 历史废弃说明：原 23 套纯文本提示词风格包（包含 `advertising` 6 套、`oriental`、`retro`、`artistic` 等，基于 Wishful Prompting / 许愿式开发）全面归档废弃。纯靠 Prompt 堆砌修饰词在量化底模上无法稳定控脸、控材质，且无法排版复杂中文，易导致“大头娃娃”或乱码。新体系转为 **“物理 LoRA 注入 + 分工解耦：AI 负责光影材质与留白底图 + 确定性工程节点负责排版与 VFX 调度”**。
 
-## 1. 原则
+---
 
-- 风格是**配置**，不是代码分支。任何风格差异只能来自 `config/style_packs/` 与 `config/styles.yaml`；不允许在代码里写 `if style == ...`。
-- 两条核心管线共享一套技术栈：**A = 水墨 `oriental.ink_wash`**，**B = 宋代院体青绿工笔 `oriental.court_green_fine_line`**。
-- 风格必须同时作用于 FLUX（首帧/静帧）与 Wan（视频提示词），否则同一片会分裂成两种质感。
-- 人工审美评审是唯一的质量裁决；客观检查只做守门，不给 `PASS_VERIFIED`。
+## 1. 核心架构：双 LoRA 黄金法则与显存边界
 
-## 2. Style Pack 结构
+在 8GB 显存安全线（`--profile safe8g`，Intel Arc A750 + FLUX.3 Klein Q4_K_M）下，**最多同时挂载 2 个 LoRA，总权重严格控制在 1.20 ~ 1.40 之间**，实现角色一致性、高级画风与商业质感的稳定平衡。
 
-```
-config/style_packs/<group>/<name>/
-  style.yaml              id / name / group / version / status / summary / layers
-  image_prompt.yaml       identity, medium, materials, composition, prompt_order, positive_anchors
-  video_prompt.yaml       镜头运动与物理感约束
-  color_profile.yaml      anchors(hex, 仅校验用) + saturation/edge/value 区间
-  lighting_profile.yaml   key / temperature / contrast
-  material_profile.yaml   材质与纹理线索
-  camera_profile.yaml     允许机位运动、焦段、景深
-  motion_profile.yaml     确定性运动策略
-  negative_constraints.yaml  禁止项（校验与人工清单用，CFG 1.0 下不进 prompt）
-  reference_board/        manifest.json、评审记录（图片在产出根，不进 Git）
-```
-
-`src/drama_studio/domain/style/`：`schemas.py`（严格 Pydantic）、`registry.py`（id/version 校验）、`compiler.py`（按 `prompt_order` 编译 FLUX/Wan 提示词并强制机位词汇）、`consistency.py` + `metrics.py`（客观一致性）。
-
-常用命令：
-
-```powershell
-.venv\Scripts\drama.exe style list
-.venv\Scripts\drama.exe style show animation.xuanji_3d
-.venv\Scripts\drama.exe style validate
-.venv\Scripts\drama.exe style check-image --style animation.xuanji_3d --image <png>
+```text
+[UnetLoaderGGUF (FLUX.3 Klein 底模)] 
+       │
+       ▼
+[槽位 A: 角色/主体 LoRA (0.70 ~ 0.80)] ───► 锁定面容骨相、发际线神态 或 核心产品形态 (空镜时置空)
+       │
+       ▼
+[槽位 B: 美学/光影/材质 LoRA (0.45 ~ 0.65)] ─► 注入商业布光、宣纸水墨或特定微观材质 (全片/全系统一)
+       │
+       ▼
+[KSampler (16~20 步, CFG 1.0)] ──────────► 干净视觉底图 (预留排版负空间 Negative Space)
+       │
+       ▼
+[确定性工程层 (Python Pillow / r3_build)] ──► 矢量 Logo、高精度中文排版、网格线与时间轴特效调度
 ```
 
-## 3. 23 套风格
+### 槽位职责与边界
 
-| 组 | 风格 | 备注 |
-|---|---|---|
-| oriental | `ink_wash` 水墨、`gongbi` 工笔、`modern_chinese` 当代新中式 | 核心管线 A/B |
-| artistic | `impasto_oil`、`impressionism`、`japanese_soft`（新海诚式）、`surrealism`、`ukiyo_e` | 参考板已完成 |
-| retro | `collage`、`pop_art`、`synthwave`、`y2k` | 参考板已完成，返工一轮 |
-| realism | `documentary`、`new_topographics` | 参考板已完成 |
-| animation | `pixar` 皮克斯式 3D、`xuanji_3d` 玄机式 3D 国漫、`mushenji_dark` 牧神记·暗黑国风 | 3D 质感方向 |
-| advertising | `acid_pop`、`clay_3d`、`lifestyle_film`、`oriental_minimal`、`product_macro`、`swiss_minimal` | 参考板已完成 |
+| 槽位 | 控制目标 | 推荐权重 | 生命周期与触发策略 |
+|---|---|---|---|
+| **槽位 A：角色/主体 LoRA** | 锁定人物面部骨相神态 或 商业主体结构 | **0.70 ~ 0.80** | 绑定 `character_bible`；仅在主体镜头启用，**风景空镜/纯景深自动置空**以节省显存。 |
+| **槽位 B：美学/光影/材质 LoRA** | 注入全片统一的艺术媒介、影棚布光或特定微观材质 | **0.45 ~ 0.65** | 绑定 `style_pack`；作为画风与质感铺底，不抢主体特征。 |
+| **构图与留白** | **提示词强制预留负空间** | — | FLUX 原生具备优异的空间理解力，通过 `clean negative space on top/bottom for typography` 约束生成留白。 |
 
-`style list` 是唯一权威清单（含版本与状态）。
+> [!CAUTION] 权重红线与防打架机制
+> - **严禁同时挂载 3 个以上 LoRA**：多 LoRA 动态合并会引发 XPU 显存抖动，导致 Out-Of-Memory 或大幅拖慢推理；
+> - **总权重上限守门**：$\text{Strength}_{\text{A}} + \text{Strength}_{\text{B}} \le 1.40$。超过上限会导致画面过锐、边缘噪点黑边或塑料假面感。
 
-## 4. 两条核心管线
+---
 
-### A · 水墨 `oriental.ink_wash`
+## 2. 广告设计、海报与视觉特效：4 类高价值 LoRA 规范
 
-- 宣纸颗粒、干湿笔触、大面积留白、墨分五色；边缘密度低、饱和度低。
-- 构图靠留白与虚实，不靠满画面细节；Wan 只用于纯风景/云雾/水面。
-- 运动：慢推 8–12%、云/雾/水/树叶局部微动、0.5 s 叠化；禁止快速位移。
+在商业广告、海报视觉包装场景中，LoRA 仅负责“局部材质、美学光影与特定视觉元素”，严禁用于硬磕排版：
 
-### B · 宋代院体青绿工笔 `oriental.court_green_fine_line`
+| LoRA 细分类型 | 核心作用与解决痛点 | 典型应用场景 | 推荐权重 |
+|---|---|---|---|
+| **1. 商业产品摄影棚光影 LoRA**<br>*(Studio Lighting)* | 注入软箱高光、金属拉丝反射、玻璃焦散、暗调奢华光影，彻底消除廉价塑料感。 | 3C 数码、美妆护肤、酒水茶饮、汽车工业主视觉。 | `0.55 ~ 0.70` |
+| **2. 平面排版与网格构图 LoRA**<br>*(Poster Layout / Grid)* | 强制画面形成瑞士网格（Swiss Grid）、极简留白（Negative Space）与几何张力。 | 活动主视觉海报（KV）、电商首图、杂志封面底图。 | `0.50 ~ 0.65` |
+| **3. 材质与微观肌理 LoRA**<br>*(Material / Macro Texture)* | 精准强化液态水花飞溅（Splash）、磨砂玻璃、丝绸流动、碳纤维等物理微观纹理。 | 饮品飞溅、精华液拉丝质感、微距工业细节。 | `0.50 ~ 0.65` |
+| **4. 粒子与能量特效 LoRA**<br>*(VFX / Particle / Elemental)* | 生成金色粒子流、烟雾弥漫、雷电火焰、赛博全息光斑等非实体视觉元素。 | 国风片头包装、高燃转场背景、发布会宣传底图。 | `0.55 ~ 0.75` |
 
-- 石青石绿、泥金、绢本底色、细线勾勒；高频边缘、较低饱和但色彩层次清楚。
-- 构图强调界画式结构（亭台、栏杆、山石）与可读的服饰纹样。
-- 运动：同一套确定性运镜；建筑镜头必须避免 Wan 直接生成（结构会坏），改用 2.5D 分层视差。
+---
 
-两套风格的机位词汇、焦段、景深与 `.yaml` 阈值都在 `config/styles.yaml` 与各自 style pack 中；代码只读取策略，不写死风格。
+## 3. 必须纠偏：海报与特效中“绝对不要指望 LoRA”的 3 件事
 
-## 5. 参考板生产
+在商业广告与影视后期工作流中，以下 3 个环节若依赖 LoRA 属于严重的工程错配，必须由外部确定性节点接管：
 
-每套 12 个主体，流程：
+### 1. 商业海报的“精准中文与多行文案排版” → 交给 Python Pillow / HTML 渲染层
+- **事实**：FLUX 原生对简单英文短词尚可理解，但对**复杂中文汉字、小字号价格标签、多行文案**必然产生笔画粘连或乱码；
+- **确定性工程解**：
+  1. AI 层（FLUX + 构图 LoRA）仅负责生成**带干净负空间（Negative Space）的高质感纯图**；
+  2. 确定性排版层（Python `PIL.ImageDraw` / SVG / Remotion）读取设计系统模板，将矢量 Logo、中文标题（思源黑体/等线）、副标题、英文注解精准叠加上去，实现**100% 零乱码、可批量替换文案**。
 
-```powershell
-.venv\Scripts\python.exe scripts\gen_style_packs.py --only <style.id>       # 重新生成 pack（改 STYLES 条目后）
-.venv\Scripts\python.exe scripts\gen_reference_board.py --style <style.id> --limit 12
-.venv\Scripts\python.exe scripts\r1_batch.py --jobs <board>/candidates/jobs.json --timeout 7200
-.venv\Scripts\python.exe scripts\board_contact_sheet.py --style <style.id>
-.venv\Scripts\drama.exe style check-image --style <style.id> --image <png>
+### 2. 具体商业产品的“Logo 与工业结构 100% 还原” → 交给 ControlNet 或后期贴图
+- **事实**：通用“产品摄影 LoRA”会擅自修改特定品牌耳机的转轴弧度、化妆品瓶身专属凹槽或 Logo 字母；
+- **确定性工程解**：通过真实白底产品图提取 ControlNet Canny/Depth 边缘约束，或先用 AI 生成影棚光影背景，再通过 Alpha 遮罩将真实产品合成融入。
+
+### 3. “视觉特效调度（VFX Scheduling）” → 属于时间轴引擎，不属于静态 LoRA
+- **事实**：LoRA 是静态权重补丁，无法控制时间轴上“第 1.5 秒震屏 + 粒子爆发 + 字幕卡点”的时序调度；
+- **确定性工程解**：
+  1. **动态素材层**：利用特效 LoRA 批量出黑底粒子/火焰图，或程序化生成透明序列帧；
+  2. **时序调度层**：在 `storyboard.json` 中配置 VFX 事件轨道，由 `r3_build` 调用 FFmpeg `filter_complex`（`screen/add` 混合模式、震屏、闪白、色散）按毫秒级音频节拍完成精确合成。
+
+---
+
+## 4. 人物画幅与防“大头娃娃”解剖学规范
+
+在古典人物（如林黛玉、薛宝钗等闺秀角色）生成中，为杜绝二次元平涂导致的“大头娃娃（Chibi/Doll）”与窄肩失真，确立以下硬性解剖学约束：
+
+```text
+❌ 严禁引入的致畸关键词与 LoRA：
+- 关键词禁令：anime girl, chibi, oversized eyes, baby face, cute doll, 3d figurine, shoujo manga
+- LoRA 禁令：严禁在写实/半写实古风人物上叠加日系赛璐璐/少女漫平涂 LoRA (如 chinese_manhua_v1)
+
+✅ 必须注入的解剖与构图锚点：
+- 景别约束：waist-up portrait, medium shot (半身/中景，严禁面部大特写 headshot)
+- 比例约束：natural adult bone structure, proportional head-to-shoulder ratio, graceful natural shoulders, realistic anatomical features
+- 姿态构图：three-quarter profile view, looking gracefully to the side, leaning near carved lattice window
 ```
 
-产出位置：`D:\DramaStudio\style_boards\<group>\<pack>\candidates\`（图片本地，不进 Git）；仓库保留 `reference_board/manifest.json` 与评审记录。
+---
 
-**当前状态（2026-11-12）**：23 套风格全部完成 12 张参考板与至少一轮返工，客观检查全过；**人工审片仍为 `PENDING_REVIEW`**（水墨/工笔为历史 `REVIEWED/ACCEPTED`）。2026-11-04 已批准 4 个测试镜头的 A/B 选择（court `A/A`、ink `B/A`），全片审美评审仍待做。客观阈值按实测每套调整并写入评审记录（例：新海诚式饱和度上限 0.38 → 0.50；玄机式边缘密度 0.05–0.11）。
+## 5. 工作流文件与调用规范
 
-## 6. 风格要点（研究记录）
-
-- **玄机式 3D 国漫 `animation.xuanji_3d`**：UE5 风格化三维、瓷肌次表面散射、发丝逆光、织金重彩与黑漆鳞甲、体积光与云海大景；冷暖对撞（深青/靛蓝 + 暖金）；竖构图 9:16 直接组织。已知风险：人物占比偏高、面部偏偶像化、发际线偶有接片感。
-- **新海诚式 `artistic.japanese_soft`**：高饱和天空、逆光薄雾、城市光斑、细腻云层；只做风格研究，不复制具体影片镜头。
-- **当代新中式 `oriental.modern_chinese`**：宋韵极简、留白、器物与材质，不做古画赝品；参考宋氏美学研究（器物、色釉、版式）。
-- **超现实主义 `artistic.surrealism`**：写实梦境、尺度错置、安静的不合理；避免恐怖化。
-- **方向教训**：把「新中式」做成古画赝品会失败；方向先定，再调提示词。
-
-## 7. 客观一致性与阈值
-
-`domain/style/consistency.py` 检查：色板 LAB 距离、平均饱和度、平均明度、边缘密度、黑边/letterbox、序列漂移。阈值来自各 pack 的 `color_profile`，初值沿用工笔类（edge 0.12–0.35），实测后按风格下调（水墨/3D 类 0.05–0.11）。差异必须在评审记录里说明原因。
-
-## 8. 已知限制
-
-- **无同脸能力**：项目只锁定质感/光照/构图，不承诺跨镜头角色一致性；参考图/角色 LoRA/首尾帧均未接入。
-- **CFG 1.0 下负向词不生效**：`negative_constraints` 只用于校验与人工清单，必须用正向约束压制（如「mature heroic face, natural skin, not a doll face」）。
-- **空镜会被拉回人物**：编译器固定追加 hero silhouette / expressive face 锚点；真正的空镜需要引擎级开关（未实现）。
-- **Wan 建筑/人物不可靠**：结构类镜头改用静帧 + 2.5D 分层视差。
-- 任何风格质量在人工评审记录之前不得标 `PASS_VERIFIED`。
+- **单 LoRA 基础工作流**：[workflows/flux3_lora_t2i_api.json](file:///d:/Local-Drama-Studio/workflows/flux3_lora_t2i_api.json)
+- **双 LoRA 组合工作流**：[workflows/flux3_dual_lora_t2i_api.json](file:///d:/Local-Drama-Studio/workflows/flux3_dual_lora_t2i_api.json)
+- **排版合成引擎**：[scripts/r4_poster_typeset.py](file:///d:/Local-Drama-Studio/scripts/r4_poster_typeset.py)
