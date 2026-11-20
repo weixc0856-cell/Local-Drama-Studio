@@ -1,0 +1,23 @@
+# Local Drama Studio - Path Decoupling Configuration Example
+# Copy this file to config/local-paths.yaml and configure for your local environment.
+
+# Base output root for content production (outside git tracking)
+output_root: "D:/DramaStudio"
+
+# Standard subdirectories inside output_root
+subdirs:
+  projects: "projects"   # Project scripts, scene breakdown and prompt files
+  build: "build"         # Intermediate anchor keyframes, raw 480P videos, temp audio
+  deliver: "deliver"     # Final 2K upscaled 32fps videos, SBS comparison boards, mixed master clips
+
+# Model root directories
+models:
+  diffusion_models: "D:/AI/models/diffusion_models"
+  audio_models: "D:/AI/models/audio"
+  lora_models: "D:/AI/models/loras"
+  vae_models: "D:/AI/models/vae"
+  text_encoders: "D:/AI/models/text_encoders"
+
+# Service endpoints
+endpoints:
+  comfyui: "http://127.0.0.1:8188"

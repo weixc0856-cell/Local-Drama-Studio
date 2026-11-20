@@ -1,0 +1,13 @@
+{
+  "positive_prompt": "Cinematic camera slowly pushes in on the young woman, natural wind blowing hair, soft eye blinking and gentle breathing motion, raindrops falling on umbrella with reflections, photorealistic 8k video.",
+  "negative_prompt": "blurry, jerky motion, bad anatomy, distorted face, extra limbs, deformed fingers, low resolution, artifacts",
+  "input_image": "anchor_tokyo_rain_first_frame.png",
+  "seed": 20261401,
+  "width": 480,
+  "height": 832,
+  "frames": 49,
+  "steps": 6,
+  "cfg": 1.0,
+  "shift": 5.0,
+  "filename_prefix": "wan14b/rainy_night"
+}

@@ -1,0 +1,145 @@
+# ==============================================================================
+# Local Drama Studio - Standard Production Pipelines Configuration
+# Architecture: Dual Engine Image (Z-Image Turbo & FLUX.3 Klein) + Wan 14B Video + Commercial Audio
+# Target Hardware: Intel Core i7-13700K + 64GB DDR5 + Intel Arc A750 (8GB VRAM)
+# ==============================================================================
+
+routing_strategy:
+  portrait:
+    engine: "z_image_turbo"
+    ab_compare: false
+    description: "East Asian & candid realistic portrait, cinematic skin pores, natural light"
+  cinematic:
+    engine: "z_image_turbo"
+    ab_compare: false
+    description: "Atmospheric mood storytelling, rainy night, Wong Kar-wai style film tones"
+  editorial:
+    engine: "z_image_turbo"
+    ab_compare: false
+    description: "High-fashion editorial, authentic studio lighting, zero plastic sheen"
+
+  industrial:
+    engine: "dual_compare"
+    ab_compare: true
+    primary: "z_image_turbo"
+    secondary: "flux3_klein"
+    description: "Hard-surface mechanical modeling, engine internal cutaways, structural precision"
+  aero:
+    engine: "dual_compare"
+    ab_compare: true
+    primary: "z_image_turbo"
+    secondary: "flux3_klein"
+    description: "Wind tunnel aerodynamic streamline simulation, smoke path physics"
+  typography:
+    engine: "dual_compare"
+    ab_compare: true
+    primary: "z_image_turbo"
+    secondary: "flux3_klein"
+    description: "Technical infographic layout, bilingual typography, slide negative space"
+  poster:
+    engine: "dual_compare"
+    ab_compare: true
+    primary: "z_image_turbo"
+    secondary: "flux3_klein"
+    description: "Commercial key visual poster, Swiss grid composition, negative space"
+
+image_engines:
+  z_image_turbo:
+    name: "Z-Image Turbo (Alibaba 6B Single-Stream DiT)"
+    model_family: "z_image"
+    workflow: "workflows/z_image_turbo_api.json"
+    unet_path: "diffusion_models/z_image/z-image-turbo-Q4_K_M.gguf"
+    clip_path: "text_encoders/Qwen3-4B-Q4_K_M.gguf"
+    clip_device: "cpu"
+    vae_path: "vae/ae.safetensors"
+    default_steps: 8
+    cfg: 1.0
+    sampler: "euler"
+    scheduler: "simple"
+    use_lora: false
+    native_strength: "Exceptional skin pores, candid realism, East Asian bone structure, zero-LoRA needed"
+
+  flux3_klein:
+    name: "FLUX.3 Klein (Distilled 16-step DiT)"
+    model_family: "flux3"
+    workflow: "workflows/flux3_klein_api.json"
+    unet_path: "diffusion_models/flux3/flux-3-image-klein-Q4_K_M.gguf"
+    clip_path: "text_encoders/qwen3vl_4b_int8_convrot.safetensors"
+    clip_device: "cpu"
+    vae_path: "vae/flux2-vae.safetensors"
+    default_steps: 16
+    cfg: 1.0
+    sampler: "er_sde"
+    scheduler: "simple"
+    mandatory_prompt_upsample: true
+    default_lora: "flux_realism_xlabs.safetensors"
+    lora_strength: 0.35
+    native_strength: "Rigid perspective, geometric mechanics, English character layout"
+
+video_engine:
+  wan22_14b_i2v:
+    name: "Wan 2.2-14B I2V Dual-Expert Pipeline"
+    workflow: "workflows/wan22_14b_i2v_api.json"
+    model_path: "diffusion_models/wan2.1-i2v-14b-480p-Q4_K_M.gguf"
+    text_encoder: "text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    vae_path: "vae/wan_2.1_vae.safetensors"
+    lora_path: "loras/wan2.1_i2v_lightx2v_4steps_lora.safetensors"
+    lora_strength: 1.0
+    steps: 6
+    cfg: 1.0
+    frames: 49
+    fps_raw: 16
+    fps_interpolated: 32
+    block_swap: true
+    memory_allocation:
+      vram_limit_gb: 8.0
+      system_ram_gb: 64.0
+    widescreen_guard:
+      enabled: true
+      aspect_ratio: "16:9"
+      enforce_shot_scale: "medium_close_up"
+      auto_prompt_modifiers:
+        - "medium close-up, waist-up composition"
+        - "cinematic shallow depth of field, creamy bokeh"
+        - "softly blurred background"
+      reason: "Prevents token dilution in 480p latent space (30 tokens vertical height)"
+    postprocess:
+      upscale_method: "lanczos_2x"
+      optical_flow_interpolation: "minterpolate_32fps"
+
+audio_engine:
+  commercial_compliance:
+    blacklist_licenses:
+      - "CC-BY-NC-4.0"
+      - "Non-Commercial"
+    blacklisted_models:
+      - "Meta-MusicGen"
+      - "HKUST-YuE-2.0"
+    compliance_statement: "100% Permissive Commercial License enforced across all outputs"
+
+  models:
+    stable_audio_open_1_0:
+      name: "Stable Audio Open 1.0"
+      license: "Stability Community License (<$1M Commercial Free)"
+      model_dir: "D:/AI/models/audio/stable-audio-open-1.0"
+      backend: "diffusers"
+      device: "cpu"
+      default_steps: 25
+      best_for:
+        - "cinematic_ambient_bgm"
+        - "foley_sfx_rain_wind_traffic"
+        - "documentary_minimalist_piano"
+      max_duration_sec: 47.0
+
+    acestep_1_5_xl:
+      name: "ACE-Step 1.5 XL Turbo"
+      license: "MIT / Apache 2.0"
+      model_dir: "D:/AI/models/audio/acestep-v15-xl-turbo-diffusers"
+      backend: "diffusers"
+      device: "cpu"
+      default_steps: 8
+      best_for:
+        - "orchestral_soundtrack"
+        - "structured_instrumental"
+        - "dramatic_score"
+      max_duration_sec: 180.0

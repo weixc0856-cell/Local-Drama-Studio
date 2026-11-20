@@ -37,9 +37,14 @@
 | FLUX.3 Klein distilled | 静帧 | GGUF Q4_K_M，3.67 GB；16 步 / CFG 1.0 | FLUX Kommunity License | `PASS_LIMITED` |
 | FLUX 文本编码器 | 提示词编码 | `qwen3vl_4b_int8_convrot.safetensors`，4.86 GB | 随 BFL 仓库；Qwen3-VL-4B 本体 Apache-2.0 | `PASS_LIMITED` |
 | FLUX.2 VAE | 解码 | `flux2-vae.safetensors`，336 MB | Apache-2.0 | `PASS_VERIFIED` |
-| Wan2.2 TI2V 5B | 图生/文生视频 | GGUF Q4_K_M，3.43 GB；20 步 / CFG 5 / shift 8 | Apache-2.0（Comfy-Org 模型卡） | `PASS_VERIFIED` |
-| UMT5-XXL 编码器 | Wan 提示词 | `umt5_xxl_fp8_e4m3fn_scaled`，6.73 GB | 随 Comfy-Org 重打包；底层 UMT5 待复核 | `PASS_VERIFIED` |
-| Wan2.2 VAE | 解码 | `wan2.2_vae.safetensors`，1.41 GB | Apache-2.0 | `PASS_VERIFIED` |
+| Wan2.2-14B I2V (双专家) | 旗舰图生视频 (唯一主力) | GGUF Q4_K_M，10.56 GB；6 步 (LightX2V LoRA) / CFG 1.0 / shift 5 | Apache-2.0 / 阿里开源 | `PASS_VERIFIED` (ADR-031 唯一指定) |
+| Wan2.2 TI2V 5B | 历史图生视频 | GGUF Q4_K_M，3.43 GB | Apache-2.0 | `RETIRED` (人脸崩坏率高，已被 14B 完全替代) |
+| UMT5-XXL 编码器 | Wan 提示词 | `umt5_xxl_fp8_e4m3fn_scaled`，6.73 GB | 随 Comfy-Org 重打包 | `PASS_VERIFIED` |
+| Wan2.1 VAE (16通道) | 视频解码 | `wan_2.1_vae.safetensors`，254 MB (标准16通道) | Apache-2.0 | `PASS_VERIFIED` |
+| Z-Image Turbo 6B | 写实人像/电影光影生图主引擎 | GGUF Q4_K_M，4.29 GB；8 步 / CFG 1.0 / 裸跑零 LoRA | 阿里开源 Apache-2.0 | `PASS_VERIFIED` |
+| Stable Audio Open 1.0 | 电影氛围配乐与雨声拟音 | 4.85 GB / 纯 CPU (AVX2) / 25 步 | Stability Community (<$1M免费商用) | `PASS_VERIFIED` |
+| ACE-Step 1.5 XL Turbo | 影视管弦乐纯器乐编曲 | 8.33 GB (5B DiT) / 纯 CPU / 8 步 | MIT / Apache-2.0 永久商用 | `PASS_VERIFIED` |
+
 | VoxCPM2 | 中文旁白（zero-shot 克隆） | 2B 运行时，48 kHz，CPU | Apache-2.0（代码与权重） | 技术 `PASS_VERIFIED`；商用授权 `UNVERIFIED` |
 | FFmpeg / ffprobe | 剪辑/混音/字幕/放大 | 8.1 full build | **GPLv3 构建** | `PASS_VERIFIED` |
 | llama.cpp（本地 AI 服务） | 剧本/分镜 | SYCL b12024 | MIT（llama.cpp）；模型按模型卡 | `PASS_VERIFIED` |
