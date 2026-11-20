@@ -1529,6 +1529,292 @@ def remaster_day12():
     print("\n[+] Day 12 Remaster complete!")
 
 
+VS01_TASKS = [
+    {
+        "id": "vs01_01_amber_bronze_goddess",
+        "title_zh": "01 · 巴西 · 黄金古铜肌九头身天神超模",
+        "title_en": "01 · Brazil · Sun-Kissed Honey-Bronze Runway Goddess",
+        "seed": 20262101,
+        "prompt": (
+            "Authentic candid 35mm photograph of an extraordinarily gorgeous Brazilian supermodel, capturing the legendary runway power of Gisele Bündchen and fierce feline sensuality. "
+            "Sculpted European-Latina bone structure, noble straight high nasal bridge, deep alluring dark hazel eyes with intense magnetic gaze, natural full hydrated lips. "
+            "Glowing sun-kissed honey-bronze skin with natural micro-texture and subtle body shimmer, toned athletic abdomen and slender sculpted collarbones. "
+            "Voluminous sun-bleached golden-brown beach waves violently whipped by runway wind machines with glowing backlit highlights. "
+            "Wearing an unbuttoned champagne-gold liquid satin dressing robe over an exquisite golden crystal lingerie set, backstage golden runway light beams cutting through atmospheric haze, shot on Hasselblad H6D-100c 100mm lens, Vogue runway editorial masterpiece."
+        )
+    },
+    {
+        "id": "vs01_02_blonde_angelic_muse",
+        "title_zh": "02 · 南非 · 黄金腰臀芭比神颜与粉白条纹袍",
+        "title_en": "02 · South Africa · Candice Sugar Angel & Pink Striped Robe",
+        "seed": 20262102,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily stunning South African Victoria's Secret Angel, embodying iconic beauty and baby-doll supermodel facial proportions. "
+            "Flawless clear porcelain skin with luminous natural glow, completely blemish-free and zero freckles. "
+            "High refined cheekbones, captivating sparkling sapphire-blue eyes with natural long dark lashes, enchanting sweet playful smile, natural glossy soft pink lips. "
+            "Cascading voluminous honey-blonde beach waves falling effortlessly over her shoulders. "
+            "Wearing the iconic candy-pink and white striped satin backstage kimono robe loosely tied, revealing toned collarbones. "
+            "Standing before a glowing backstage Hollywood vanity mirror surrounded by warm round light bulbs, holding a vintage crystal perfume atomizer bottle, Contax T2 35mm f/2.8 lens, legendary backstage realism."
+        )
+    },
+    {
+        "id": "vs01_03_slavic_emerald_siren",
+        "title_zh": "03 · 东欧 · 游艇露台黑丝缎猫系绿眸超模",
+        "title_en": "03 · Slavic · Riviera Yacht Black Silk Slip & Emerald Eyes",
+        "seed": 20262103,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily gorgeous Eastern European supermodel, capturing razor-sharp high-fashion glamour and aristocratic feline beauty. "
+            "Flawless smooth porcelain skin with natural radiant glow, completely clear and smooth with zero freckles. "
+            "High chiseled cheekbones, sharp elegant jawline, captivating piercing emerald-green eyes with intense feline magnetism, naturally full plump nude-rose hydrated lips. "
+            "Sleek glossy dark chocolate-brown hair with soft wind-blown waves. "
+            "Wearing a tailored black liquid silk slip gown with thin straps and a daring high side slit, standing on teak deck of a luxury yacht in French Riviera at dusk. "
+            "Twilight Mediterranean sea breeze, distant Cannes city lights glowing in soft creamy bokeh, Leica M11 50mm f/1.4 Summilux, high-fashion editorial perfection."
+        )
+    },
+    {
+        "id": "vs01_04_east_asian_celestial_muse",
+        "title_zh": "04 · 东方 · 聚光灯流光白翼发光冷白皮仙姑",
+        "title_en": "04 · East Asia · Luminous Cool-White Runway Angel & Crystal Wings",
+        "seed": 20262104,
+        "prompt": (
+            "Authentic cinematic 35mm photograph of an extraordinarily stunning East Asian supermodel on the runway, capturing iconic incandescent glowing cool-white skin and ethereal elegance. "
+            "Delicate East Asian classical high-fashion bone structure, smooth noble jawline and slender swan-like neck, soulful deep dark almond eyes looking directly into the camera with radiant confidence, dimpled charming smile, natural hydrated rose petal lips. "
+            "Luminous, almost glowing cool-white porcelain jade skin that reflects runway spotlights, completely smooth and translucent. "
+            "Silky dark hair parted in the middle and blowing gracefully behind her in runway breeze. "
+            "Wearing a translucent sheer moon-white and silver crystal lingerie set with flowing diaphanous organza cape that billows like wings. "
+            "Reflective glossy runway catwalk floor, brilliant spotlight beams illuminating sparkling airborne glitter dust, Hasselblad X2D 90mm lens, legendary runway moment."
+        )
+    },
+    {
+        "id": "vs01_05_nordic_ice_blue_goddess",
+        "title_zh": "05 · 北欧 · 金发冰蓝健美天使阳光露台",
+        "title_en": "05 · Nordic · Icy Crystal-Blue Eyes Sunlit Marble Terrace",
+        "seed": 20262105,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily gorgeous Nordic Angel, embodying athletic goddess power and high-fashion beauty. "
+            "Flawless clear porcelain skin with luminous natural sunlit glow, completely blemish-free and zero freckles. "
+            "Strong refined Nordic bone structure, noble high straight nasal bridge, captivating icy crystal-blue eyes with intense radiance, warm confident smile, natural soft nude-rose hydrated lips. "
+            "Voluminous thick sunlit golden-blonde beach waves casually falling over her shoulders. "
+            "Wearing an open ivory-cream silk satin kimono robe over a minimalist champagne lingerie set, toned athletic abs and sculpted collarbones. "
+            "Standing on a sunlit marble terrace overlooking sparkling turquoise ocean water in bright afternoon sun, Contax T2 35mm f/2.8 lens, legendary Summer Glamour realism."
+        )
+    },
+    {
+        "id": "vs01_06_mediterranean_velvet_siren",
+        "title_zh": "06 · 澳洲 · 甜美酒窝猫系水蓝真丝后台晨袍",
+        "title_en": "06 · Australia · Dimpled Sweetheart Baby-Blue Silk Satin Robe",
+        "seed": 20262106,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an extraordinarily stunning Angel, capturing signature doll-like dimpled charm and feline innocence. "
+            "Flawless smooth porcelain skin with natural peach flush on cheeks, zero blemish and zero freckles. "
+            "Round delicate baby-doll facial structure with enchanting deep dimples on both cheeks, captivating bright azure-blue cat-like almond eyes, sweet radiant smile, naturally full glossy pink lips. "
+            "Glossy dark caramel-brown wavy hair gently lifted by runway wind machine. "
+            "Wearing an exquisite pastel baby-blue silk satin dressing robe loosely tied, adorned with delicate crystal embroidery along lapels, backstage Hollywood vanity lights softly blurred, Leica M11 50mm f/1.4 Summilux, iconic backstage perfection."
+        )
+    }
+]
+
+
+VS02_TASKS = [
+    {
+        "id": "vs02_01_golden_angel_runway",
+        "title_zh": "01 · 南美 · 梦幻大秀T台终点鎏金羽翼定点",
+        "title_en": "01 · South America · Climax Runway Golden Filigree Angel Wings",
+        "seed": 20263201,
+        "prompt": (
+            "Authentic high-fashion runway editorial photograph of an extraordinarily gorgeous South American runway supermodel posing at the climax of the runway. "
+            "Flawless golden ratio facial symmetry, smooth refined heart-shaped jawline, straight slender nose, captivating dark hazel-amber almond eyes radiating magnetic runway authority, naturally full hydrated soft rose lips in relaxed breathing repose. "
+            "Radiant sun-kissed honey-bronze glowing skin with subtle specular runway highlight, toned athletic abs and slender sculpted collarbones. "
+            "Grand dramatic golden filigree feather angel wings arching majestically behind her back. "
+            "Wearing an exquisite gold-leaf metallic corset bustier, long voluminous espresso wavy hair caught in dynamic wind machine breeze, golden confetti drifting through warm stage spotlights, Hasselblad H6D-100c 90mm lens, Vogue runway masterwork."
+        )
+    },
+    {
+        "id": "vs02_02_crystalline_ice_angel",
+        "title_zh": "02 · 北欧 · 极地冰晶透明羽翼冷艳银瀑",
+        "title_en": "02 · Nordic · Crystalline Ice-Feather Wings & Platinum Ponytail",
+        "seed": 20263202,
+        "prompt": (
+            "Authentic 35mm runway photograph of a stunning Nordic high-fashion supermodel walking down the catwalk. "
+            "Flawless clear porcelain skin with luminous smooth glow, completely free of blemishes or freckles. "
+            "Chiseled high cheekbones, refined dainty jawline, piercing icy turquoise-blue eyes with intense high-fashion focus, elegant neutral relaxed lips. "
+            "Sleek platinum blonde high ponytail swaying with her athletic catwalk stride. "
+            "Wearing sculptural transparent crystalline ice-feather wings catching prismatic rainbow spotlights, and a sheer silvery metallic embroidered catsuit, crisp editorial rim lighting, Hasselblad X2D 100mm lens, razor-sharp magazine detail."
+        )
+    },
+    {
+        "id": "vs02_03_ethereal_peony_wings",
+        "title_zh": "03 · 东方 · 璀璨T台粉彩薄纱国风羽翼发光冷白皮",
+        "title_en": "03 · East Asia · Translucent Organza Peony Petal Wings & Cool-White Skin",
+        "seed": 20263203,
+        "prompt": (
+            "Authentic runway photograph of an extraordinarily beautiful East Asian high-fashion supermodel gracing the catwalk. "
+            "Flawless luminous cool-white porcelain skin, symmetrical delicate oval face, smooth elegant jawline, captivating almond-shaped dark eyes with gentle radiant sparkle, soft blush-pink lips with natural charming smile. "
+            "Silky jet-black hair styled in flowing high-fashion waves. "
+            "Wearing voluminous floating pale-pink and rose-gold translucent organza peony petal wings floating effortlessly behind her, sheer crystal-beaded rose-gold lingerie set, glossy mirrored runway floor reflecting stage lights, Contax T2 35mm f/2.8 lens, dreamlike ethereal glamour."
+        )
+    },
+    {
+        "id": "vs02_04_classic_swan_wings",
+        "title_zh": "04 · 欧美 · 经典八英尺纯白天鹅巨翼飞吻定点",
+        "title_en": "04 · USA · Iconic 8-Foot Pure White Feathered Swan Wings Air-Kiss",
+        "seed": 20263204,
+        "prompt": (
+            "Authentic candid 35mm film photograph of an iconic American blonde Angel blowing a kiss at the runway edge. "
+            "Flawless porcelain skin with radiant peach glow, zero freckles, perfectly symmetrical soft feminine jawline, sparkling baby-blue eyes crinkling with infectious joyful warmth, lush glossy pink lips gracefully formed into a gentle air-kiss gesture. "
+            "Cascading thick sun-bleached golden blonde beach waves tossed by runway wind machines. "
+            "Wearing legendary massive 8-foot pure white feathered angel wings spanning wide, sparkling diamond-encrusted sheer silver corset, warm stage spotlights and thousands of cheering audience silhouettes, Leica M11 50mm f/1.4 Summilux."
+        )
+    },
+    {
+        "id": "vs02_05_baroque_gilded_siren",
+        "title_zh": "05 · 地中海 · 西西里罗马柱赤金雕花羽翼酒红丝绒",
+        "title_en": "05 · Mediterranean · Baroque Sculpted Gold Wings & Wine-Red Velvet",
+        "seed": 20263205,
+        "prompt": (
+            "Authentic runway editorial of an extraordinarily stunning Italian Mediterranean supermodel walking past antique gilded Roman columns on runway. "
+            "Flawless smooth porcelain-olive skin, sculpted high cheekbones, deep seductive dark-brown almond eyes with bold classic feline eyeliner, full hydrated soft berry lips. "
+            "Voluminous glossy dark chocolate curls cascading luxuriously over bare shoulders. "
+            "Wearing ornate baroque sculpted gold-leaf feathered wings and a deep wine-red velvet and black lace bustier, toned athletic hourglass silhouette, warm golden candlelight and warm stage amber footlights, Hasselblad H6D-100c 100mm lens."
+        )
+    },
+    {
+        "id": "vs02_06_afterparty_champagne_queen",
+        "title_zh": "06 · 东欧 · 纽约粉红地毯庆功宴露背墨绿丝缎",
+        "title_en": "06 · Slavic · Pink Carpet Afterparty Backless Emerald Silk Gown",
+        "seed": 20263206,
+        "prompt": (
+            "Authentic high-society candid photograph of an extraordinarily gorgeous Eastern European supermodel at the Pink Carpet Afterparty in New York. "
+            "Flawless golden ratio facial symmetry, razor-sharp delicate jawline, captivating piercing emerald-green cat eyes, elegant poised relaxed smile, hydrated nude-rose lips. "
+            "Glossy dark-brunette hair in a sleek wet-look finger wave over one shoulder. "
+            "Wearing a backless liquid emerald-green silk slip gown with crystal diamond straps, holding a delicate crystal flute of vintage champagne, surrounded by flashing paparazzi camera strobes and soft pink ambient party glow, Leica M11 50mm f/1.4 Summilux, Met Gala luxury realism."
+        )
+    }
+]
+
+
+def remaster_supermodel_vs01():
+    day_dir = OUTPUT_ROOT / "experiments" / "supermodel_vs_special01"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Supermodels VS01: 《天使大秀 · 全球传奇超模后台特辑》 (Runway Angels 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(VS01_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "vs01_supermodel_showcase_6grid_cn.png"
+    grid_en = day_dir / "day01_supermodel_showcase_6grid_en.png"
+    # also save as vs01_supermodel_showcase_6grid_en.png for consistency
+    grid_en_standard = day_dir / "vs01_supermodel_showcase_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="维密大秀特辑 · VS01 《天使后台 · 传奇超模神颜与丝袍》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 黄金比例九头身 · 发光冷白皮与古铜光泽 · 告别塑料假面",
+        main_title_en="Runway Angels Backstage · VS01 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Supermodel Glow & Satin Texture · Zero Plastic Artificiality",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en_standard,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Supermodels VS01 Remaster complete!")
+
+
+def remaster_supermodel_vs02():
+    day_dir = OUTPUT_ROOT / "experiments" / "supermodel_vs_special02"
+    remaster_dir = day_dir / "remaster_z_image"
+    remaster_dir.mkdir(parents=True, exist_ok=True)
+
+    print("=" * 70)
+    print(" Remastering Supermodels VS02: 《梦幻羽翼 · 维密巅峰大秀定点大片》 (Runway Wings 6-Pack)")
+    print(" Engine: Z-Image Turbo 6B (Native Zero-LoRA) | Dual-Language Boards")
+    print(f" Output: {remaster_dir}")
+    print("=" * 70)
+
+    generated = []
+    titles_zh = []
+    titles_en = []
+
+    for idx, item in enumerate(VS02_TASKS, 1):
+        task_id = item["id"]
+        title_zh = item["title_zh"]
+        title_en = item["title_en"]
+        prompt = sanitize_prompt(item["prompt"])
+        seed = item["seed"]
+
+        titles_zh.append(title_zh)
+        titles_en.append(title_en)
+
+        out_img = remaster_dir / f"{task_id}.png"
+        print(f"\n[{idx}/6] Generating: {title_zh} ...")
+
+        t0 = time.time()
+        res_path = produce_z_image_turbo(
+            prompt=prompt,
+            width=768,
+            height=1360,
+            seed=seed,
+            prefix=f"remaster_{task_id}"
+        )
+        import shutil
+        shutil.copy(res_path, out_img)
+        print(f"    Done in {time.time() - t0:.1f}s -> {out_img.name}")
+        generated.append(out_img)
+
+    grid_zh = day_dir / "vs02_supermodel_showcase_6grid_cn.png"
+    grid_en = day_dir / "vs02_supermodel_showcase_6grid_en.png"
+    print("\n[*] Assembling Bilingual 6-Grid boards...")
+    build_bilingual_grid(
+        image_paths=generated,
+        titles_zh=titles_zh,
+        titles_en=titles_en,
+        main_title_zh="维密大秀特辑 · VS02 《梦幻羽翼 · 巅峰大秀定点大片》 (全新Z-Image 6B重制版)",
+        sub_title_zh="标准：100% 零 LoRA 裸跑直出 · 巨型羽翼结构与流光镜面 · 东方仙姑与天神霸主 · 告别塑料假面",
+        main_title_en="Runway Wings Climax · VS02 Showcase (Z-Image Turbo 6B Remaster)",
+        sub_title_en="Standard: 100% Native Zero-LoRA · Master Runway Wings & Catwalk Lighting · Zero Plastic",
+        output_path_zh=grid_zh,
+        output_path_en=grid_en,
+        cols=2,
+        rows=3
+    )
+    print("\n[+] Supermodels VS02 Remaster complete!")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--day", default="02", help="Day collection to remaster")
@@ -1556,6 +1842,13 @@ if __name__ == "__main__":
         remaster_day11()
     elif args.day == "12":
         remaster_day12()
+    elif args.day in ("vs01", "supermodel01"):
+        remaster_supermodel_vs01()
+    elif args.day in ("vs02", "supermodel02"):
+        remaster_supermodel_vs02()
+    elif args.day in ("supermodels", "all_vs"):
+        remaster_supermodel_vs01()
+        remaster_supermodel_vs02()
     elif args.day == "all":
         remaster_day02()
         remaster_day03()
@@ -1568,5 +1861,7 @@ if __name__ == "__main__":
         remaster_day10()
         remaster_day11()
         remaster_day12()
+        remaster_supermodel_vs01()
+        remaster_supermodel_vs02()
     else:
         print(f"Day {args.day} queue ready.")
