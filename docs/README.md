@@ -15,6 +15,8 @@
 | [WIDESCREEN_VIDEO_GENERATION_GUIDELINES.md](WIDESCREEN_VIDEO_GENERATION_GUIDELINES.md) | **16:9 横屏视频防糊工程规范**（潜空间 Token 载荷、景别控制、景深虚化） | `PASS_VERIFIED` |
 | [PORTRAIT_PRODUCTION_SOP.md](PORTRAIT_PRODUCTION_SOP.md) | **人像全流程生产 SOP 标准**（Z-Image Turbo 裸跑原生肤质控制） | `PASS_VERIFIED` |
 | [Z_IMAGE_TURBO_DEPLOYMENT.md](Z_IMAGE_TURBO_DEPLOYMENT.md) | **阿里 Z-Image Turbo 部署与运行手册**（Qwen3-4B CPU 卸载，8步蒸馏） | `PASS_VERIFIED` |
+| [Z_IMAGE_TURBO_STYLE_ATLAS.md](Z_IMAGE_TURBO_STYLE_ATLAS.md) | **Z-Image 视觉风格图谱**（38 套配方 / 7 维度词典 / 零负面提示词 / 实测工作台，自动生成） | `DECISION` |
+| [Z_IMAGE_STYLE_FINDINGS.md](Z_IMAGE_STYLE_FINDINGS.md) | **Z-Image 风格实测结论**（58 张实拍、五维评分、5 类失败模式与已验证修法、吞吐基线） | `PASS_VERIFIED` |
 | [CONTENT_SPEC.md](CONTENT_SPEC.md) | 视觉/人物/声音/视频/字幕规范；内容包边界 | `DECISION` |
 | [PRODUCTION_GUIDE.md](PRODUCTION_GUIDE.md) | 14 步流程、Script-to-Film 链路、配置与参数、失败降级 | `DECISION` |
 | [FILM_PRODUCTION_GUIDE.md](FILM_PRODUCTION_GUIDE.md) | Script-to-Film 方法（分镜规划、连续性、剪辑时间轴） | `DECISION` |

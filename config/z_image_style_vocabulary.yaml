@@ -1,0 +1,285 @@
+# config/z_image_style_vocabulary.yaml
+# Z-Image Turbo 七维度视觉词典 (7-Dimension Visual Vocabulary Bank)
+#
+# 用途：风格配方（config/z_image_styles.yaml）是「成品菜」，本文件是「调料架」。
+# 当现有 38 套配方都不满足需求时，用这里的词条按 7 维度组装新风格，而不是继续堆标签。
+#
+# 规则（与 Z-Image Turbo 官方提示词规范一致）：
+# 1. 每个词条都是可直接嵌入自然语言段落的客观视觉描述，不是抽象比喻。
+# 2. 禁止 masterpiece / 8k / best quality 一类无视觉信息的标签。
+# 3. 否定意图写成正向语言（clean / uncluttered / without graphic overlays）。
+# 4. 一次只锁定一个主媒介（medium_style），不要同时要求水墨 + 3D 卡通 + 写实摄影。
+#
+# 调用：
+#   python scripts/run_z_image_style_atlas.py vocab --dimension lighting
+#   python scripts/run_z_image_style_atlas.py compile -s song_aesthetics \
+#       --vocab "lighting:soft_window_north,color_texture:celadon_mineral"
+
+schema_version: "1.0"
+model_target: "z_image_turbo"
+
+dimensions:
+
+  # ---------------------------------------------------------------- 01 Subject
+  subject:
+    east_asian_woman_natural:
+      en: a young East Asian woman with natural facial features, authentic skin pores and a relaxed unposed expression
+      cn: 东亚年轻女性，自然骨相与真实皮肤质感
+      note: 项目人像基准主体，零 LoRA 抓拍写实
+    middle_aged_man_weathered:
+      en: a middle-aged man with weathered facial features and a restrained reflective expression
+      cn: 中年男性，面部有岁月痕迹
+      note: 黑白与黑色电影人像的稳定主体
+    hanfu_woman_round_fan:
+      en: a Chinese woman in a red hanfu with a phoenix hair ornament, holding a round silk fan
+      cn: 红色汉服女性，凤凰头饰，手持团扇
+      note: 官方示例同款主体，国风与工笔人像通用
+    lone_traveler_small_scale:
+      en: a small solitary traveler seen from behind, deliberately tiny against the environment
+      cn: 背影独行者，刻意缩小以强调环境尺度
+      note: 史诗 / 山水 / 科幻的空间尺度锚点
+    ceramic_vessel_handmade:
+      en: a handcrafted ceramic vessel with subtle organic irregularities and a delicate glaze
+      cn: 手作陶器，微妙不规则与细腻釉面
+      note: 宋式美学与商业静物的通用主体
+    performance_sedan_silver:
+      en: a silver performance sedan with realistic body proportions and precise panel gaps
+      cn: 银色高性能轿车，比例真实、缝隙精准
+      note: 工业与汽车广告对照主体
+    perfume_bottle_smoked_glass:
+      en: a transparent smoked-glass perfume bottle revealing the liquid inside
+      cn: 透明烟熏玻璃香水瓶，可见内部液体
+      note: 奢侈品广告布光测试主体
+    matcha_dessert_ceramic:
+      en: an elegant matcha dessert on a handmade ceramic plate dusted with fine green tea powder
+      cn: 手作陶盘上的抹茶甜点，表面筛有细茶粉
+      note: 美食广告浅景深测试主体
+
+  # ---------------------------------------------------------------- 02 Scene
+  scene:
+    minimal_interior_window:
+      en: beside a large floor-to-ceiling window in a contemporary minimalist architectural interior
+      cn: 现代极简建筑室内，落地窗旁
+    wet_street_after_rain:
+      en: on a crowded urban pedestrian street after rainfall, shop lights reflecting on wet asphalt
+      cn: 雨后城市街道，湿地面反射店铺灯光
+    misty_mountain_valley:
+      en: above a mist-covered mountain valley where distant cliffs dissolve into layers of fog
+      cn: 云雾山谷，远崖隐入雾层
+    song_scholar_studio:
+      en: on a dark wooden table in a quiet scholar's studio with plain plaster walls
+      cn: 文人书斋，深色木案与素墙
+    orbital_station_abandoned:
+      en: inside a vast abandoned orbital station with observation windows facing a distant blue planet
+      cn: 废弃轨道空间站，舷窗外是蓝色行星
+    neon_alley_midnight:
+      en: in a narrow city alley at midnight under red and blue neon signage
+      cn: 午夜窄巷，红蓝霓虹
+    seamless_studio_backdrop:
+      en: against a seamless deep black studio backdrop with controlled reflections
+      cn: 无缝深黑影棚背景，反射可控
+    coastal_town_summer:
+      en: along a quiet coastal town shoreline beneath enormous summer cumulus clouds
+      cn: 海岸小镇，巨大夏日积云
+    ancient_forest_giant_trees:
+      en: inside an ancient forest of enormous moss-covered trees with a narrow stone path
+      cn: 巨木古林，苔藓与窄石径
+
+  # ---------------------------------------------------------------- 03 Composition
+  composition:
+    medium_close_up_waist:
+      en: medium close-up waist-up framing with shallow depth of field and a clear visual center
+      cn: 半身近景（腰以上），浅景深
+      note: 16:9 480P 视频锚帧强制构图（Widescreen Guard）
+    intimate_close_up:
+      en: intimate close-up framing that fills the frame with the face and shoulders
+      cn: 面部特写
+    full_body_environmental:
+      en: full-body environmental portrait where the surrounding space stays readable
+      cn: 全身环境人像，空间信息保留
+    wide_anamorphic_establishing:
+      en: wide anamorphic establishing composition with distinct foreground, middle-ground and background layers
+      cn: 宽幅变形宽银幕建立镜头，前中后景分层
+    negative_space_asymmetric:
+      en: asymmetric composition with extensive negative space and a single off-center focal point
+      cn: 非对称留白构图，单一偏心视觉中心
+    symmetrical_central_axis:
+      en: symmetrical composition organized along a strict central axis
+      cn: 中轴对称构图
+    top_down_flat_lay:
+      en: top-down flat-lay composition with objects arranged on a clean orthogonal grid
+      cn: 俯视平铺，正交网格排布
+    low_angle_monumental:
+      en: low camera angle emphasizing monumental scale against the sky
+      cn: 低角度仰拍，强调纪念碑式尺度
+    candid_imperfect_framing:
+      en: slightly imperfect candid framing with natural edge cropping
+      cn: 抓拍式不完美构图，自然切边
+    modular_grid_editorial:
+      en: strict modular grid alignment with generous white space and clear editorial hierarchy
+      cn: 严格模块网格，大量白空间与清晰层级
+
+  # ---------------------------------------------------------------- 04 Lighting
+  lighting:
+    soft_window_north:
+      en: soft directional north-facing window daylight creating gentle gradual shadows
+      cn: 北向窗光，柔和方向性日光
+    hard_side_chiaroscuro:
+      en: strong hard side lighting carving facial contours while the opposite side falls into deep shadow
+      cn: 硬质侧光，明暗对照法
+    low_key_neon:
+      en: low-key lighting from red and blue neon sources with carefully controlled highlights
+      cn: 低调霓虹光，红蓝光源，高光受控
+    volumetric_golden_god_rays:
+      en: volumetric golden light beams with visible dust particles floating through the air
+      cn: 体积金色光束，可见空气尘埃
+    direct_on_camera_flash:
+      en: harsh direct on-camera flash producing crisp shadows and slightly blown highlights
+      cn: 机顶直闪，硬阴影与轻微过曝
+      note: 2026 直闪趋势核心光型
+    large_softbox_commercial:
+      en: large softbox lighting with broad even falloff and controlled specular reflections
+      cn: 大柔光箱商业布光，宽均匀衰减
+    narrow_golden_spotlight:
+      en: a narrow golden spotlight isolating the subject against deep surrounding darkness
+      cn: 窄束金色聚光，主体从暗背景中剥离
+    overcast_diffused_ambient:
+      en: overcast diffused ambient light with almost no directional shadow
+      cn: 阴天漫射环境光，几乎无方向性阴影
+    candle_warm_practical:
+      en: warm practical candlelight flickering close to the subject with rapid falloff
+      cn: 近距离暖色烛光，快速衰减
+    backlit_rim_halo:
+      en: strong backlight forming a bright rim halo around hair and shoulders with gentle halation
+      cn: 强逆光轮廓光晕，轻微光渗
+
+  # ---------------------------------------------------------------- 05 Medium & Style
+  medium_style:
+    medium_format_editorial:
+      en: medium-format fashion photography with a refined magazine editorial aesthetic
+      cn: 中画幅时尚摄影，杂志编辑质感
+    documentary_35mm_film:
+      en: unposed 35mm film documentary photography with authentic photojournalistic language
+      cn: 35mm 胶片纪实摄影
+    anamorphic_cinema_still:
+      en: cinematic film still shot on anamorphic lenses with restrained production design
+      cn: 变形宽银幕电影剧照
+    ink_wash_xuan_paper:
+      en: traditional Chinese ink wash painting on handmade xuan paper with expressive brushwork
+      cn: 宣纸水墨，写意笔法
+    gongbi_mineral_silk:
+      en: meticulous Chinese gongbi painting with fine outlines and layered mineral pigments on silk
+      cn: 绢本工笔，细线勾勒与矿物颜料叠染
+    song_academy_landscape:
+      en: Song dynasty academy landscape painting with delicate contour lines and mineral blue-green pigments
+      cn: 宋代院体青绿山水
+    dunhuang_mural_plaster:
+      en: ancient Dunhuang mural painting on aged plaster with rhythmic flowing ornamental lines
+      cn: 敦煌壁画，老化泥壁与流动装饰线
+    cel_shaded_anime:
+      en: Japanese animation cel shading with precise clean line art over a hand-painted background
+      cn: 日系赛璐璐动画，干净线稿 + 手绘背景
+    hand_painted_animation_bg:
+      en: hand-painted animated film background art with watercolor-like environmental textures
+      cn: 手绘动画电影背景美术
+    stylized_3d_feature:
+      en: polished stylized 3D feature animation rendering with appealing rounded proportions
+      cn: 风格化 3D 动画电影渲染
+    commercial_still_life:
+      en: high-end commercial studio still-life photography with sophisticated product styling
+      cn: 高端商业静物摄影
+    swiss_modernist_print:
+      en: Swiss international typographic style print design with precise modernist geometry
+      cn: 瑞士国际主义平面设计
+    classical_oil_canvas:
+      en: classical European oil painting on canvas with visible expressive brush strokes
+      cn: 古典油画，可见笔触
+    watercolor_botanical:
+      en: transparent botanical watercolor painting with soft bleeding edges on textured paper
+      cn: 植物水彩，透明叠色与晕染边
+    risograph_two_color:
+      en: two-color risograph print with slightly misregistered ink layers and coarse halftone
+      cn: 双色孔版印刷，轻微套印错位
+
+  # ---------------------------------------------------------------- 06 Color & Texture
+  color_texture:
+    neutral_low_saturation:
+      en: an elegant neutral low-saturation palette with realistic skin texture and subtle makeup
+      cn: 中性低饱和，真实皮肤质感
+    monochrome_silver_gelatin:
+      en: monochromatic silver gelatin tones with rich grayscale gradation and organic silver grain
+      cn: 银盐黑白，丰富灰阶与有机颗粒
+    portra_faded_warm:
+      en: muted greens and warm beige tones with gentle highlight halation and fine film grain
+      cn: Portra 风格褪色暖调，光渗与细颗粒
+    teal_orange_restrained:
+      en: restrained teal-and-orange cinematic grading with protected skin tones
+      cn: 克制的青橙电影调色，保护肤色
+    ink_monochrome_gray:
+      en: a monochromatic black and gray ink palette with wet diffusion and dry brush texture
+      cn: 纯水墨黑灰，湿晕与干笔质感
+    ink_pure_monochrome:
+      en: pure black sumi ink dilutions on untouched white xuan paper, the entire image restricted to ink black, gray washes and bare paper white, with handmade fiber flecks
+      cn: 纯墨强制排他：全画面只用墨黑、灰晕与纸白
+      note: "试过用来修 09 号水墨山水色偏，**实测无效**——山水主体的青绿设色先验压不住。保留作为措辞参考；真正的修法是 style 的 postprocess: grayscale（色偏只在色度，转灰度即还原纯墨）"
+    celadon_mineral:
+      en: mineral blue and green pigments with delicate contour lines and aged silk texture
+      cn: 青绿矿物色，细轮廓线与绢本旧感
+    dunhuang_vermilion_ochre:
+      en: muted vermilion, turquoise, ochre and golden accents on cracked aged plaster
+      cn: 敦煌朱红、绿松石、赭石与金，龟裂泥壁
+    cyan_magenta_neon:
+      en: cyan and magenta neon lighting with layered atmospheric haze and wet specular streets
+      cn: 青紫霓虹，分层大气雾与湿地高光
+    warm_green_solarpunk:
+      en: a warm green and cream palette with bright optimistic natural daylight
+      cn: 暖绿与奶油色，明亮乐观日光
+    limited_spot_inks:
+      en: a limited two-ink palette of orange and dark teal with visible paper fibers
+      cn: 橙 + 深青双油墨限量色，可见纸纤维
+    impasto_warm_shadow:
+      en: rich layered pigments with subtle impasto ridges and deep warm shadows
+      cn: 厚涂颜料脊线与深暖阴影
+    tactile_paper_collage:
+      en: tactile layered paper collage textures with torn edges and handmade imperfections
+      cn: 触感纸拼贴，撕边与手工不完美
+
+  # ---------------------------------------------------------------- 07 Constraints
+  constraints:
+    candid_realism_zero_lora:
+      en: authentic unretouched skin pores, natural asymmetry, no oversaturation and no plastic synthetic smoothing
+      cn: 零 LoRA 抓拍写实：真实毛孔、自然不对称、无塑料感
+      note: 项目人像默认约束
+    clean_frame_no_overlay:
+      en: a clean uncluttered frame without graphic overlays, watermarks or caption bars
+      cn: 画面干净，无叠加图形、水印与字幕条
+      note: 替代 no watermark / no text 的正向写法
+    widescreen_guard_16x9:
+      en: waist-up medium close-up framing with shallow depth of field so the subject stays dominant in a wide frame
+      cn: 16:9 宽幅守卫：半身近景 + 浅景深，主体不被稀释
+      note: 对应 docs/WIDESCREEN_VIDEO_GENERATION_GUIDELINES.md
+    single_subject_count_lock:
+      en: exactly one subject in the frame, with no duplicated figures or mirrored copies
+      cn: 画面仅一个主体，无重复人物
+    text_render_lock:
+      en: the designated text is rendered accurately with correct letterforms and consistent spacing
+      cn: 指定文字字形准确、间距一致
+      note: 与 compile --text 搭配使用
+    material_fidelity:
+      en: physically believable material response with accurate reflections, refractions and surface roughness
+      cn: 材质物理可信：反射、折射与粗糙度准确
+    historical_costume_accuracy:
+      en: historically plausible costume construction with correct fabric drape and period-accurate ornament
+      cn: 服饰史实可信：垂坠与纹样符合时代
+    flat_print_purity:
+      en: flat color areas with no photographic gradients and no simulated 3D lighting
+      cn: 平涂色块，无摄影渐变与伪 3D 光照
+      note: 版画 / 平面风格纯度保护
+    ink_monochrome_discipline:
+      en: strict monochrome ink discipline where every rock, tree and cliff is rendered only in ink brushwork, with authentic ink bleed and traditional literati brush aesthetics
+      cn: 全画面墨法纪律：山石树木一律只以墨笔写出
+      note: 与 ink_pure_monochrome 搭配，压制山水主体的设色先验
+    pigment_medium_shading:
+      en: form modeled through layered pigment and line density rather than photographic light patches, keeping the picture surface flat and even
+      cn: 以颜料叠染与线密度造型，而非摄影光斑
+      note: 把摄影布光借进工笔/版画等平涂媒介时必加，否则脸上会出现literal光斑（实测 mix 工笔×时尚布光）

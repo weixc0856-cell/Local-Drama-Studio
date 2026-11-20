@@ -1,0 +1,864 @@
+# config/z_image_styles.yaml
+# Z-Image Turbo 官方视觉风格图谱与 7 维度 Prompt 实验库 (Visual Style Atlas)
+#
+# 设计原则：
+# 1. 采用完整自然语言长描述，拒绝无意义的标签堆砌（如 8k, masterpiece, best quality）。
+# 2. Z-Image Turbo 采用 8 步 DiT 前向推理，零 CFG/少步蒸馏，严禁依赖独立 Negative Prompt，
+#    负向约束一律通过自然语言（例如 a clean empty background without graphic overlays）融入正向提示词。
+# 3. 画面若包含指定文字，必须使用英文双引号标记（例如 "STATION"）。
+# 4. 严格按照 7 维度视觉结构建模：
+#    (1) Subject (2) Scene (3) Composition (4) Lighting (5) Medium & Style (6) Color & Texture (7) Constraints
+#
+schema_version: "2.0"
+model_target: "z_image_turbo"
+
+categories:
+  A:
+    name: 写实摄影与人物肖像
+    name_en: Portrait & Photography
+    priority: HIGHEST
+  B:
+    name: 影视与电影概念艺术
+    name_en: Cinematic & Film Aesthetics
+    priority: HIGHEST
+  C:
+    name: 中国传统美学与国风
+    name_en: Traditional Chinese & Oriental Aesthetics
+    priority: HIGHEST
+  D:
+    name: 动漫与动画电影
+    name_en: Anime & Animation Art
+    priority: HIGHEST
+  E:
+    name: 商业广告与产品摄影
+    name_en: Commercial Advertising & Product Photography
+    priority: HIGH
+  F:
+    name: 平面设计与编辑插画
+    name_en: Graphic Design & Editorial Illustration
+    priority: HIGH
+  G:
+    name: 奇幻、超现实与实验艺术
+    name_en: Fantasy, Surreal & Experimental Art
+    priority: MEDIUM_HIGH
+  H:
+    name: 手工媒介与复古风格
+    name_en: Traditional Mediums & Vintage Art
+    priority: MEDIUM_HIGH
+  T:
+    name: 2026 前瞻视觉趋势
+    name_en: 2026 Visual Design Trends
+    priority: HIGH
+
+styles:
+  # ============================================================================
+  # A. 写实摄影与人物肖像
+  # ============================================================================
+  editorial_fashion:
+    id: editorial_fashion
+    code: "01"
+    category: A
+    name: 高级时尚人像
+    name_en: Editorial Fashion
+    application: 社交媒体、人物封面、高端时尚广告、品牌写真
+    dimensions:
+      subject: a young East Asian woman with natural facial features and relaxed confident expression, wearing a minimalist black tailored outfit
+      scene: beside a large floor-to-ceiling window in a contemporary minimalist architectural interior
+      composition: medium close-up composition, elegant spatial balance
+      lighting: soft directional daylight illuminating the face, creating gentle natural shadows
+      medium_style: medium-format fashion photography, refined magazine editorial aesthetic
+      color_texture: elegant neutral color palette, realistic skin texture, subtle makeup
+      constraints: authentic unretouched skin pores, no oversaturation, clean uncluttered frame
+    positive_prompt: >-
+      A sophisticated editorial fashion portrait of a young East Asian woman with natural facial features,
+      wearing a minimalist black tailored outfit. She stands beside a large window in a contemporary
+      architectural interior. Soft directional daylight illuminates her face, creating gentle shadows.
+      Medium close-up composition, relaxed confident expression, subtle makeup, realistic skin texture,
+      elegant neutral color palette, medium-format fashion photography, refined magazine editorial aesthetic.
+
+  street_documentary:
+    id: street_documentary
+    code: "02"
+    category: A
+    name: 街头纪实摄影
+    name_en: Street Documentary
+    application: 纪实短片、人文摄影、真实生活感视觉素材
+    dimensions:
+      subject: a young Asian woman in everyday casual clothes carrying a canvas bag, candid unposed expression
+      scene: crowded urban pedestrian street after rainfall, shop lights reflecting on wet asphalt
+      composition: slightly imperfect candid street framing, dynamic depth of field with walking pedestrians
+      lighting: direct ambient street light, natural daylight with warm store illumination
+      medium_style: unposed street documentary photography, authentic photojournalism
+      color_texture: subtle 35mm film grain, authentic street color rendition, realistic wet pavement texture
+      constraints: authentic motion blur in background pedestrians, unposed natural posture, no synthetic plastic look
+    positive_prompt: >-
+      A candid documentary photograph of a young Asian woman walking through a crowded urban street after rainfall.
+      She wears ordinary everyday clothes and carries a canvas bag. Reflections of shop lights appear on the wet
+      pavement, pedestrians move naturally in the background. Slightly imperfect framing, direct available light,
+      authentic facial expressions, subtle 35mm film grain, natural colors, unposed street photography.
+
+  black_white_noir:
+    id: black_white_noir
+    code: "03"
+    category: A
+    name: 黑白电影人像
+    name_en: Black and White Noir
+    application: 悬疑影视、戏剧人物特写、艺术黑白画册
+    dimensions:
+      subject: a middle-aged man with weathered facial features, restrained reflective expression
+      scene: dimly lit atmospheric interior, subtle background shadows
+      composition: intimate close-up framing, classic chiaroscuro portrait composition
+      lighting: strong directional side lighting carving facial contours, other side falling into deep shadow
+      medium_style: classic black and white cinema portrait, timeless fine-art portrait photography
+      color_texture: monochromatic silver gelatin print tones, rich grayscale gradation, subtle organic silver grain
+      constraints: deep rich blacks without clipping, high tonal contrast, authentic skin texture
+    positive_prompt: >-
+      A dramatic black and white portrait of a middle-aged man standing in a dimly lit interior. Strong side
+      lighting reveals the texture of his face while the other side falls into deep shadow. Classic chiaroscuro,
+      subtle silver grain, rich tonal gradation, intimate close-up framing, restrained expression, timeless
+      fine-art portrait photography.
+
+  vintage_film:
+    id: vintage_film
+    code: "04"
+    category: A
+    name: 复古胶片
+    name_en: Vintage Film
+    application: 怀旧短片、日常写真、温暖生活感视觉
+    dimensions:
+      subject: a relaxed young woman with subtle natural smile sitting comfortably
+      scene: beside a sunlit cafe window with wooden frame and rustic elements
+      composition: relaxed eye-level medium shot, authentic everyday framing
+      lighting: warm natural sunlight pouring through glass, gentle highlight halation
+      medium_style: Kodak Portra 400 inspired analog 35mm film photography
+      color_texture: muted greens and warm beige tones, slightly faded pastel palette, visible fine film grain
+      constraints: natural chromatic halation on bright highlights, organic analog depth, authentic paper print texture
+    positive_prompt: >-
+      A relaxed portrait of a young woman sitting beside a sunlit cafe window. Warm natural sunlight, slightly
+      faded colors, gentle highlight halation, soft shadows, visible fine film grain, muted greens and warm beige
+      tones, Kodak Portra 400 inspired analog film aesthetic, authentic everyday moment, 35mm film photography.
+
+  # ============================================================================
+  # B. 影视与电影美学
+  # ============================================================================
+  scifi_cinematic:
+    id: scifi_cinematic
+    code: "05"
+    category: B
+    name: 科幻电影剧照
+    name_en: Sci-Fi Cinematic Still
+    application: 科幻影视、太空探索概念、未来主题短剧
+    dimensions:
+      subject: a lone astronaut in detailed functional spacesuit standing resolutely
+      scene: inside a vast abandoned orbital space station with massive observation windows revealing a distant blue planet
+      composition: wide anamorphic cinematic establishing shot, strong foreground middle-ground separation
+      lighting: narrow beams of cold volumetric light piercing through dust particles in microgravity
+      medium_style: atmospheric science fiction cinematography, 2.39:1 widescreen movie still
+      color_texture: restrained blue-gray color grading with subtle warm amber indicator accents, realistic industrial metal finishes
+      constraints: realistic physical production design, volumetric atmospheric haze, no cartoon elements
+    positive_prompt: >-
+      A cinematic film still showing a lone astronaut standing inside a vast abandoned orbital station. Large
+      observation windows reveal a distant blue planet. Dust particles float through narrow beams of cold light.
+      Strong foreground, middle-ground and background separation, wide anamorphic composition, restrained
+      blue-gray color grading, realistic production design, atmospheric science fiction cinematography.
+
+  wuxia_cinema:
+    id: wuxia_cinema
+    code: "06"
+    category: B
+    name: 东方武侠电影
+    name_en: Wuxia Cinema
+    application: 武侠古装短剧、历史动作影视、国风分镜
+    dimensions:
+      subject: a lone swordswoman wearing flowing ivory traditional robes, wind moving her loose hair
+      scene: on an ancient weathered wooden bridge suspended above a mist-covered mountain canyon, distant peaks shrouded in fog
+      composition: wide cinematic establishing shot, sweeping atmospheric landscape composition
+      lighting: diffused natural overcast mountain daylight, soft shadows filtered through dense mist
+      medium_style: cinematic historical wuxia film still, classic martial arts cinema aesthetic
+      color_texture: restrained earthy color palette, ivory, charcoal, muted forest green, cinematic 35mm film grain
+      constraints: authentic historical garment layers and fabric weave, realistic atmospheric fog, no neon fantasy glow
+    positive_prompt: >-
+      A cinematic historical wuxia film still. A lone swordswoman wearing flowing ivory robes stands on a
+      wooden bridge above a mist-covered mountain valley. Ancient Chinese architecture is barely visible through
+      the fog. Wind moves the fabric and loose hair. Wide establishing shot, atmospheric natural light, restrained
+      earthy colors, elegant composition, realistic historical costume design, cinematic film grain.
+
+  neo_noir:
+    id: neo_noir
+    code: "07"
+    category: B
+    name: 黑色电影
+    name_en: Neo-Noir
+    application: 悬疑犯罪短片、城市夜景、戏剧性冲突场景
+    dimensions:
+      subject: a solitary trench-coated figure walking with purposeful steps
+      scene: narrow wet city alleyway at midnight, distant silhouettes disappearing into ambient fog
+      composition: low-angle perspective, dynamic depth with deep shadows and reflective puddles
+      lighting: low-key chiaroscuro lighting, vibrant red and cyan neon signs casting sharp reflections on wet asphalt
+      medium_style: neo-noir cinematic still, 35mm anamorphic lens with subtle horizontal streak character
+      color_texture: high contrast deep velvety blacks, saturated neon magenta and cyan highlights, wet asphalt sheen
+      constraints: moody atmospheric mist, controlled highlight spill, cinematic urban thriller production quality
+    positive_prompt: >-
+      A neo-noir cinematic still of a solitary figure walking through a narrow city alley at midnight. Rain falls
+      under red and blue neon signs. Wet asphalt reflects the lights, distant silhouettes disappear into fog.
+      Low-key lighting, deep shadows, strong color contrast, 35mm anamorphic lens character, carefully controlled
+      highlights, atmospheric urban thriller cinematography.
+
+  epic_fantasy:
+    id: epic_fantasy
+    code: "08"
+    category: B
+    name: 史诗奇幻
+    name_en: Epic Fantasy
+    application: 奇幻世界观、史诗级故事场景、大场景概念设定
+    dimensions:
+      subject: a small cloaked traveler standing on a rugged cliff ledge overlooking a monumental realm
+      scene: an enormous ancient stone fortress city carved into precipitous cliffs with snow-capped peaks in the background
+      composition: epic wide-angle panoramic vista emphasizing monumental architectural scale
+      lighting: volumetric golden hour sunlight streaming across mountain ridges, thousands of warm glowing windows
+      medium_style: epic high-fantasy production cinematic still, matte painting realism
+      color_texture: warm sunset gold, deep slate stone, pure mountain snow, atmospheric aerial haze
+      constraints: intricate stonework and bridges, layered atmospheric perspective, monumental scale contrast
+    positive_prompt: >-
+      An epic fantasy film still showing an enormous ancient stone city built along the edge of a mountain.
+      Thousands of warm lights illuminate the buildings as the sun sets behind distant snow-covered peaks.
+      A small traveler stands in the foreground, emphasizing the monumental scale. Atmospheric perspective,
+      volumetric golden light, detailed architectural design, cinematic wide shot, realistic fantasy production art.
+
+  # ============================================================================
+  # C. 中国传统绘画与国风
+  # ============================================================================
+  chinese_ink_wash:
+    id: chinese_ink_wash
+    code: "09"
+    category: C
+    name: 水墨山水
+    name_en: Ink Wash Painting
+    # 实测：山水主体会触发青绿设色先验，加强正向排他措辞仍无法压制（已验证）。
+    # 色偏只在色度上（平均饱和度 18.9/255），转灰度即可还原纯水墨，故交付时自动附纯墨版。
+    postprocess: grayscale
+    application: 国风纪录片、文化典籍分镜、高雅艺术视觉
+    dimensions:
+      subject: towering craggy mountains emerging through layers of swirling mist, a tiny wooden fishing boat on calm waters
+      scene: vast river canyon surrounded by precipitous peaks and distant pines
+      composition: classical Chinese landscape composition, dramatic balance of dense brushwork and expansive negative space
+      lighting: diffused ethereal light natural to traditional ink wash art
+      medium_style: traditional Chinese ink wash painting, expressive sumi-e brushwork, wet ink diffusion and dry brush dry-rub texture
+      color_texture: monochromatic black and charcoal tones, handmade raw xuan paper texture with organic fiber flecks
+      constraints: strict traditional brush aesthetics, authentic ink bleed, no synthetic Western shading, no modern photographic elements
+    positive_prompt: >-
+      A traditional Chinese ink wash landscape painting of towering mountains emerging through layers of mist.
+      A small wooden boat travels along a quiet river, with a tiny fisherman beneath distant cliffs. Expressive
+      brushwork, varying ink density, wet ink diffusion, dry brush textures, delicate mountain contours,
+      extensive negative space, handmade xuan paper texture, monochromatic black and gray palette.
+
+  gongbi_flower_bird:
+    id: gongbi_flower_bird
+    code: "10"
+    category: C
+    name: 工笔花鸟
+    name_en: Gongbi Painting
+    application: 传统文化插画、东方美学包装、精品国风道具视觉
+    dimensions:
+      subject: two delicate songbirds perched gracefully among blooming peony branches and budding flowers
+      scene: peaceful garden setting captured in meticulous classical stillness
+      composition: elegant asymmetrical botanical composition, balanced empty space
+      lighting: uniform soft diffused daylight illuminating every contour without harsh shadows
+      medium_style: meticulous traditional Chinese gongbi painting, delicate iron-wire and gossamer brush contours
+      color_texture: layered natural mineral pigments, cinnabar, malachite green, azurite, fine antique silk canvas grain
+      constraints: precision linework outlining every petal and feather, translucent mineral pigment washes, no rough ink splashes
+    positive_prompt: >-
+      A meticulous traditional Chinese gongbi painting of two small birds perched among blooming peony branches.
+      Every feather, leaf vein and flower petal is carefully outlined with delicate fine brushwork. Layered mineral
+      pigments, subtle color transitions, elegant botanical composition, fine silk texture, precise decorative details,
+      restrained traditional Chinese painting aesthetics.
+
+  song_landscape:
+    id: song_landscape
+    code: "11"
+    category: C
+    name: 宋代青绿山水
+    name_en: Song Dynasty Landscape
+    application: 院体山水、文化巨制视觉、高规格历史背景
+    dimensions:
+      subject: majestic layered mountain ranges, winding rivers, ancient pavilions, and winding pine bridges
+      scene: monumental panorama inspired by Northern and Southern Song court landscape masters
+      composition: traditional court three-level perspective, deep atmospheric space, balanced empty river waters
+      lighting: clear morning mountain light, gentle luminous clarity
+      medium_style: Song dynasty blue-green landscape painting, court academy style
+      color_texture: rich mineral azurite blue and malachite green pigments accented with gold dust, delicate contour lines on aged silk
+      constraints: exquisite architectural precision in pavilions and brackets, harmonious mineral tones, antique silk substrate
+    positive_prompt: >-
+      A refined Chinese Song dynasty inspired landscape painting. Majestic layered mountains rise above winding
+      rivers and quiet valleys. Tiny traditional pavilions and pine trees are carefully placed within the vast
+      landscape. Mineral blue and green pigments, delicate contour lines, intricate architectural details,
+      balanced empty space, elegant classical composition, silk painting texture.
+
+  song_aesthetics:
+    id: song_aesthetics
+    code: "12"
+    category: C
+    name: 宋式美学
+    name_en: Song-inspired Aesthetics
+    application: 东方极简生活方式、茶道香道视觉、高定国风器物展示
+    dimensions:
+      subject: a simple white Ru-ware style porcelain vase, a single plum blossom branch, an antique silk-bound book, celadon teacup
+      scene: serene scholarly study with dark weathered timber table and clean paper screen
+      composition: minimalist still-life composition, generous negative space, geometric tranquility
+      lighting: gentle directional morning window light casting soft elongated shadows
+      medium_style: Song dynasty minimalist aesthetic still life, restrained classical styling
+      color_texture: celadon glaze, eggshell white, matte dark wood grain, restrained muted earth tones
+      constraints: profound restraint, unpretentious elegance, tactile porcelain crazing, no modern clutter
+    positive_prompt: >-
+      An elegant still life inspired by the aesthetics of the Chinese Song dynasty. A simple white porcelain
+      vase, a single flowering branch, an antique book and a small celadon ceramic bowl rest on a dark wooden
+      table. Soft natural window light, restrained neutral colors, balanced negative space, subtle material
+      textures, quiet scholarly atmosphere, minimalist classical Chinese interior styling.
+
+  dunhuang_mural:
+    id: dunhuang_mural
+    code: "13"
+    category: C
+    name: 敦煌壁画
+    name_en: Dunhuang Mural
+    application: 丝路历史短剧、华丽神话场景、壁画艺术复现
+    dimensions:
+      subject: a celestial flying apsara (feitian) gliding gracefully among undulating ribbons, lotus blossoms, and stylized clouds
+      scene: celestial grotto vault with ornamental geometric borders
+      composition: rhythmic flowing spiral composition, dynamic classical dance posture
+      lighting: warm ambient subterranean cave lighting illuminating ancient pigment surfaces
+      medium_style: ancient Dunhuang Mogao Grottoes fresco mural painting, historical silk road sacred art
+      color_texture: weathered mineral pigments, rich vermilion, copper green, malachite, gold leaf foil, textured weathered plaster cracks
+      constraints: authentic plaster grain and craquelure, historical Buddhist art proportions, aged mineral oxidation
+    positive_prompt: >-
+      A decorative illustration inspired by ancient Dunhuang mural painting. A celestial apsara floats gracefully
+      among flowing ribbons and stylized clouds. Rich mineral pigments, muted vermilion, turquoise, ochre and
+      golden accents, rhythmic flowing lines, intricate ornamental patterns, aged plaster texture, historical mural composition.
+
+  woodblock_new_year:
+    id: woodblock_new_year
+    code: "14"
+    category: C
+    name: 中国传统木版年画
+    name_en: Traditional Chinese Woodblock Print
+    application: 节庆民俗短剧、民间传奇故事、传统版画风格化展示
+    dimensions:
+      subject: joyous folk celebration in a festive courtyard, playful children, symbolic carp, and hanging decorative lanterns
+      scene: vibrant traditional northern Chinese courtyard under auspicious skies
+      composition: bold planar composition, iconic folk heraldic layout
+      lighting: flat graphic illumination characteristic of relief printing
+      medium_style: traditional Chinese folk woodblock relief print (nianhua), hand-carved woodcut aesthetic
+      color_texture: vivid festive scarlet red, golden ochre, jade green, deep soot black ink, handmade mulberry paper grain
+      constraints: bold chiselled contour outlines, intentional minor block alignment shifts, unadorned folk graphic vitality
+    positive_prompt: >-
+      A traditional Chinese folk woodblock print depicting a lively festive courtyard with children, flowers
+      and decorative lanterns. Bold carved outlines, simplified symbolic forms, vivid red, warm yellow, dark green
+      and black ink, flat color areas, visible handmade paper fibers, traditional folk printmaking texture.
+
+  # ============================================================================
+  # D. 动漫与动画电影
+  # ============================================================================
+  shinkai_scenery:
+    id: shinkai_scenery
+    code: "15"
+    category: D
+    name: 日系动画电影背景美术
+    name_en: Luminous Anime Scenery
+    application: 青春动画、治愈系风景短视频、唯美壁纸级画面
+    dimensions:
+      subject: a quiet coastal town stretching along sea shoreline, telephone wires crisscrossing foreground
+      scene: seaside railway crossing and lush hillside houses under towering volumetric summer cumulonimbus clouds
+      composition: wide cinematic landscape panorama, pristine environmental perspective
+      lighting: dazzling natural summer sunlight, glistening water reflections, cinematic chromatic lens bloom
+      medium_style: hand-painted Japanese animated film background art, Makoto Shinkai inspired scenery
+      color_texture: luminous cerulean sky, emerald ocean, crisp clean gouache washes, vibrant hyper-clear palette
+      constraints: crystalline environmental clarity, detailed painted cloud volumes, no murky flat colors
+    positive_prompt: >-
+      A beautifully hand-painted Japanese animated film background. A quiet coastal town stretches along the
+      shoreline beneath enormous summer clouds. Sunlight reflects on the blue ocean, telephone wires cross the
+      foreground, and distant houses are surrounded by lush trees. Rich atmospheric perspective, expressive
+      painted clouds, luminous natural colors, delicate environmental details, cinematic wide composition.
+
+  ghibli_fantasy:
+    id: ghibli_fantasy
+    code: "16"
+    category: D
+    name: 手绘奇幻动画
+    name_en: Fantasy Hand-painted Animation
+    application: 奇幻童话短片、温暖森林探索、生态人文动画
+    dimensions:
+      subject: a young traveler walking through an enchanted primeval woodland with mossy stone path
+      scene: ancient towering trees with colossal roots, tiny gentle glowing forest spirits floating in air
+      composition: organic eye-level tracking composition, rich layered foreground leaves and deep foliage
+      lighting: dappled golden sunlight filtering through leafy canopy (komorebi)
+      medium_style: traditional cel animation hand-painted background, Studio Ghibli inspired visual aesthetic
+      color_texture: lush watercolor and gouache texture, olive green, warm amber, moss teal, organic paper tooth
+      constraints: warm nostalgic emotional tone, organic hand-drawn linework, peaceful natural vitality
+    positive_prompt: >-
+      A hand-painted fantasy animation scene showing a young traveler walking through an ancient forest filled
+      with enormous trees. Tiny glowing spirits float among moss-covered roots, soft sunlight filters through
+      the dense canopy, and a narrow stone path leads into the distance. Delicate watercolor-like background
+      textures, organic character design, warm natural colors, expressive environmental storytelling, traditional animation aesthetic.
+
+  modern_anime:
+    id: modern_anime
+    code: "17"
+    category: D
+    name: 现代日系动画电影
+    name_en: Modern Anime
+    application: 剧情向动漫短片、角色情感镜头、日系叙事分镜
+    dimensions:
+      subject: a high school student with windblown hair standing contemplatively on a train station platform
+      scene: suburban railway platform at dusk, distant commuter train approaching on glistening steel rails
+      composition: cinematic rule-of-thirds character framing, dramatic twilight sky in backdrop
+      lighting: warm golden hour backlighting creating soft rim light along character profile
+      medium_style: modern theatrical Japanese anime feature still, clean vector lines and painterly scenery
+      color_texture: crisp cel shading, gradient sunset orange and violet sky, fine line art contours
+      constraints: expressive emotional character posture, sharp precise lines, detailed painted scenery without 3D stiffness
+    positive_prompt: >-
+      A cinematic Japanese anime scene featuring a high school student standing on a railway platform at sunset.
+      Her hair moves gently in the evening breeze. A distant train approaches through warm atmospheric light.
+      Precise clean line art, carefully layered cel shading, detailed painted background, expressive character
+      acting, dramatic sky, rich yet natural color palette, cinematic framing.
+
+  stylized_3d_animation:
+    id: stylized_3d_animation
+    code: "18"
+    category: D
+    name: 3D 家庭动画
+    name_en: Stylized 3D Animation
+    application: 3D 动画电影、儿童家庭向短片、IP 角色概念
+    dimensions:
+      subject: a charming stylized little fox character wearing a hand-knitted blue wool scarf, curious large eyes
+      scene: sun-dappled colorful forest clearing with oversized mushrooms and wildflowers
+      composition: appealing character portrait with soft shallow depth of field
+      lighting: warm cinematic global illumination, soft bounce lighting, subsurface scattering on ears and fur
+      medium_style: polished 3D feature animation rendering, Pixar/Disney inspired character appeal
+      color_texture: tactile knitted yarn texture, individual soft fur grooming, vibrant saturated whimsical palette
+      constraints: rounded expressive proportions, family-friendly aesthetic, physically plausible material shaders
+    positive_prompt: >-
+      A charming stylized 3D animated character, a curious little fox wearing a blue knitted scarf, standing in
+      a colorful forest clearing. Expressive large eyes, appealing rounded proportions, soft sculpted shapes,
+      detailed fur, warm global illumination, carefully designed materials, polished feature animation rendering,
+      vibrant cinematic color palette, family-friendly character design.
+
+  # ============================================================================
+  # E. 商业广告与产品摄影
+  # ============================================================================
+  luxury_product:
+    id: luxury_product
+    code: "19"
+    category: E
+    name: 奢侈品广告
+    name_en: Luxury Product Advertising
+    application: 高端香水、珠宝首饰、顶级奢侈品牌商业海报
+    dimensions:
+      subject: a premium luxury perfume bottle made of heavy transparent smoked glass with geometric gold cap
+      scene: polished obsidian stone pedestal inside an acoustic studio setting
+      composition: centered hero product shot, pristine architectural symmetry
+      lighting: narrow golden overhead spotlight sculpting glass facets and amber internal liquid
+      medium_style: high-end commercial studio still-life photography
+      color_texture: deep velvety black backdrop, refractive amber glow, polished gold mirror reflections
+      constraints: clean dust-free glass surfaces, precise caustic refractions, restrained luxury elegance
+    positive_prompt: >-
+      A premium luxury perfume bottle made of transparent smoked glass, standing on a polished dark stone
+      pedestal. A narrow golden spotlight illuminates the bottle and reveals the liquid inside. Deep black
+      background, controlled reflections, elegant shadow gradients, sophisticated product styling, high-end
+      commercial studio photography, restrained luxury aesthetic.
+
+  automotive_ad:
+    id: automotive_ad
+    code: "20"
+    category: E
+    name: 汽车商业广告
+    name_en: Automotive Advertising
+    application: 新能源汽车、豪华轿跑、工业工业设计品宣
+    dimensions:
+      subject: a premium liquid silver performance sedan with aerodynamic body contours and illuminated LED headlights
+      scene: monumental minimalist brutalist concrete pavilion with expansive floor
+      composition: dynamic front three-quarter hero angle, grounded stable stance
+      lighting: giant overhead diffuser softbox reflecting smooth continuous light bars across car panels
+      medium_style: high-end automotive campaign studio photography
+      color_texture: multi-layer liquid metallic silver paint, carbon fiber trim, polished industrial concrete floor
+      constraints: accurate body proportions, realistic panel gaps, controlled pristine reflections, no distortion
+    positive_prompt: >-
+      A premium silver performance sedan photographed inside a monumental minimalist architectural space.
+      The vehicle is shown in a front three-quarter view, with realistic body proportions, precise panel gaps,
+      detailed headlights and metallic paint reflections. Large softbox lighting, polished concrete floor,
+      controlled highlights, sophisticated neutral color palette, luxury automotive campaign photography.
+
+  beauty_skincare:
+    id: beauty_skincare
+    code: "21"
+    category: E
+    name: 护肤品广告
+    name_en: Beauty Campaign
+    application: 美妆护肤、有机精油、生物科技品牌宣发
+    dimensions:
+      subject: an elegant frosted glass skincare serum bottle with minimalist dropper
+      scene: smooth wet ivory river stone surface surrounded by delicate dewy monstera leaf shadows
+      composition: clean organic tabletop composition with gentle diagonal balance
+      lighting: soft diffused morning daylight passing through leaves, dappled botanic shadows
+      medium_style: clean commercial beauty cosmetic campaign photography
+      color_texture: frosted translucent glass, micro condensation droplets, pale beige and eucalyptus green tones
+      constraints: pure sterile aesthetic, natural fresh hydration feel, crystal-clear liquid dropper
+    positive_prompt: >-
+      A premium skincare serum bottle placed on a smooth ivory stone surface. Translucent glass, delicate
+      condensation droplets, soft botanical shadows, pale beige and muted green color palette, diffused natural
+      daylight, refined minimalist composition, elegant cosmetic campaign photography.
+
+  food_photography:
+    id: food_photography
+    code: "22"
+    category: E
+    name: 美食广告
+    name_en: Food Photography
+    application: 餐饮品牌、精品甜点、食谱杂志封面与分镜
+    dimensions:
+      subject: an exquisite multi-layered matcha opera dessert dusted with fine ceremonial green tea powder
+      scene: rustic artisanal ceramic plate set upon a dark tactile slate tabletop
+      composition: intimate 45-degree angled macro close-up with shallow depth of field
+      lighting: directional soft window daylight from side, gentle organic rim lighting
+      medium_style: premium editorial food photography, culinary magazine aesthetic
+      color_texture: vibrant jade matcha green, rich dark chocolate ganache layers, tactile powder dusting
+      constraints: mouth-watering freshness, sharp focus on front crumb texture, natural appetizing styling
+    positive_prompt: >-
+      An elegant matcha dessert served on a handmade ceramic plate. Fine green tea powder rests on the
+      surface, revealing delicate textures and layers. Soft directional window light, natural shadows, carefully
+      arranged ingredients, shallow depth of field, premium editorial food photography, fresh restrained color palette.
+
+  # ============================================================================
+  # F. 平面设计与编辑插画
+  # ============================================================================
+  swiss_style:
+    id: swiss_style
+    code: "23"
+    category: F
+    name: 瑞士国际主义平面设计
+    name_en: Swiss Style
+    application: 现代展览海报、设计杂志、前沿品牌视觉系统
+    dimensions:
+      subject: minimalist typographic poster featuring bold geometric shapes and structured abstract forms
+      scene: clean white studio presentation backdrop
+      composition: strict modular grid alignment, generous intentional white space, strong visual hierarchy
+      lighting: uniform flat graphic lighting
+      medium_style: Swiss international typographic style poster, modernist graphic design
+      color_texture: stark black, vivid international safety orange, crisp alpine white, clean screen-printed ink finish
+      constraints: rigid alignment discipline, no superfluous ornamentation, pure modernist clarity
+    positive_prompt: >-
+      A minimalist Swiss international typographic style poster. A strict modular grid, strong geometric
+      alignment, generous white space, bold sans-serif typography, black and warm orange graphic elements,
+      a single abstract geometric focal point, clean editorial hierarchy, precise modernist graphic design.
+
+  editorial_illustration:
+    id: editorial_illustration
+    code: "24"
+    category: F
+    name: 杂志编辑插画
+    name_en: Editorial Illustration
+    application: 深度文章配图、科技哲学专栏、观念视觉概念
+    dimensions:
+      subject: a stylized human hand assembling vibrant geometric paper fragments into a glowing conceptual brain
+      scene: minimalist conceptual studio space
+      composition: thoughtful centered metaphorical composition with strong silhouette
+      lighting: gentle dimensional studio lighting casting soft shadows behind paper layers
+      medium_style: contemporary conceptual editorial illustration, layered paper cutout collage aesthetic
+      color_texture: tactile rag paper textures, curated palette of warm ochre, ivory, charcoal, and cornflower blue
+      constraints: intelligent visual metaphor, tactile cut-paper edges, sophisticated intellectual narrative
+    positive_prompt: >-
+      A conceptual editorial illustration about artificial intelligence and human creativity. A human hand
+      carefully assembles colorful geometric paper fragments into a luminous mechanical brain. Sophisticated
+      visual metaphor, layered paper collage, tactile textures, limited palette of orange, cream, charcoal
+      and muted blue, clean composition, contemporary magazine illustration.
+
+  pop_art:
+    id: pop_art
+    code: "25"
+    category: F
+    name: 波普艺术
+    name_en: Pop Art
+    application: 潮流短视频封面、年轻潮牌视觉、波普复古插画
+    dimensions:
+      subject: an iconic glamorous woman wearing oversized geometric sunglasses with vibrant reflections
+      scene: dynamic two-tone pop pattern backdrop
+      composition: high-impact graphic portrait filling the frame
+      lighting: flat graphic comic book illumination with intense graphic contrast
+      medium_style: 1960s pop art screenprint illustration, Roy Lichtenstein and Andy Warhol aesthetic
+      color_texture: primary color palette of cadmium red, sunny yellow, cobalt blue, coarse Ben-Day halftone dot texture
+      constraints: bold heavy black inked outlines, screen-printing ink registration offset, vintage comic book vitality
+    positive_prompt: >-
+      A bold pop art illustration of a woman wearing oversized sunglasses. Strong black outlines, flat
+      primary colors, exaggerated graphic shapes, coarse halftone dot patterns, screen printing texture,
+      high contrast composition, vintage comic book visual language.
+
+  # ============================================================================
+  # G. 奇幻、超现实与实验艺术
+  # ============================================================================
+  surrealism:
+    id: surrealism
+    code: "26"
+    category: G
+    name: 超现实主义
+    name_en: Surrealism
+    application: 哲学概念片、视觉实验短剧、梦境隐喻场景
+    dimensions:
+      subject: a monumental classical stone staircase rising directly out of a perfectly mirror-flat calm ocean into pastel sky
+      scene: boundless dreamscape with levitating stone architectural fragments and distant quiet clouds
+      composition: enigmatic centered composition exploring infinite metaphysical space
+      lighting: serene timeless atmospheric light with gentle diffused shadows
+      medium_style: contemporary fine-art surrealism, Rene Magritte and Salvador Dali inspired dream architecture
+      color_texture: soft muted pastel tones, pale cerulean ocean, warm sandstone, mother-of-pearl clouds
+      constraints: hyper-realistic textures combined with impossible physics, quiet contemplation, no chaotic horror
+    positive_prompt: >-
+      A surreal landscape where a monumental staircase rises from a calm ocean and disappears into a cloudy sky.
+      Small floating architectural fragments surround the structure. Precise realistic surfaces combined with
+      impossible spatial relationships, quiet atmospheric light, restrained pastel colors, dreamlike composition,
+      contemporary surrealist fine art.
+
+  cyberpunk:
+    id: cyberpunk
+    code: "27"
+    category: G
+    name: 赛博朋克
+    name_en: Cyberpunk
+    application: 近未来科幻短剧、霓虹反乌托邦都市、赛博机能视觉
+    dimensions:
+      subject: futuristic pedestrians navigating crowded multi-level street markets under towering holographic ads
+      scene: dense vertical Asian megalopolis at night, rain-slicked pavement and elevated skyway monorails
+      composition: low-angle street-level perspective capturing monumental architectural density
+      lighting: intense saturated neon glow in electric cyan, hot magenta, and amber piercing through urban rain haze
+      medium_style: cinematic cyberpunk concept art, high-tech dystopian worldbuilding
+      color_texture: glossy wet reflections, weathered metallic cables, dense particulate atmospheric haze
+      constraints: rich ambient street details, realistic damp surfaces, authentic futuristic industrial grit
+    positive_prompt: >-
+      A dense futuristic Asian metropolis at night, viewed from street level. Towering buildings covered in
+      illuminated signs, elevated transport lines, rain-soaked streets and distant flying vehicles. Rich
+      environmental detail, layered atmospheric haze, cyan and magenta lighting, cinematic science fiction concept art.
+
+  solarpunk:
+    id: solarpunk
+    code: "28"
+    category: G
+    name: 太阳朋克
+    name_en: Solarpunk
+    application: 绿色未来愿景、可持续发展生态城、乐观科幻故事
+    dimensions:
+      subject: diverse citizens strolling through shaded open-air sky bridges surrounded by flourishing gardens
+      scene: a harmonious future eco-city where curved white organic architecture merges with vertical forests and crystalline waterways
+      composition: expansive wide-angle architectural visualization capturing community and nature
+      lighting: brilliant natural sunbeams illuminating solar glass panels and lush hanging foliage
+      medium_style: optimistic solarpunk environmental concept art, bio-futurist architectural illustration
+      color_texture: warm sunlit greens, sandstone cream, sky cyan, sparkling clean water reflections
+      constraints: positive utopian mood, plausible eco-technologies, vibrant biological integration, zero dystopian grime
+    positive_prompt: >-
+      A sustainable future city where elegant architecture is integrated with lush vegetation, rooftop
+      gardens, solar panels and clean waterways. People walk through shaded public spaces surrounded by trees.
+      Bright natural daylight, warm green and cream palette, optimistic environmental concept art, detailed
+      architectural visualization.
+
+  # ============================================================================
+  # H. 手工媒介与复古风格
+  # ============================================================================
+  watercolor:
+    id: watercolor
+    code: "29"
+    category: H
+    name: 水彩
+    name_en: Watercolor
+    application: 植物绘本、自然纪录片包装、温暖抒情插画
+    dimensions:
+      subject: delicate meadow wildflowers, wild lavender, and grasses swaying gently
+      scene: sun-warmed open countryside meadow
+      composition: airy loose composition with natural breathing room
+      lighting: soft diffused ambient morning daylight
+      medium_style: traditional botanical watercolor painting, wet-on-wet washes and spontaneous bleeding
+      color_texture: translucent mineral pigment washes, natural bloom cauliflower edges, heavy textured cold-press cotton paper grain
+      constraints: organic imperfect fluid marks, visible paper tooth, clean luminous transparency
+    positive_prompt: >-
+      A delicate watercolor illustration of wildflowers growing in a meadow. Transparent pigment washes,
+      soft bleeding edges, visible paper texture, layered translucent colors, gentle brush marks, organic
+      imperfections, airy composition, traditional botanical watercolor painting.
+
+  classical_oil:
+    id: classical_oil
+    code: "30"
+    category: H
+    name: 古典油画
+    name_en: Classical Oil Painting
+    application: 欧洲历史剧集、古典名画质感人像、戏剧油画分镜
+    dimensions:
+      subject: a dignified elderly woman with wise expressive eyes and gently weathered hands resting on lap
+      scene: seated beside an antique dark wooden window in a stone room
+      composition: intimate half-length classical portrait, Rembrandt-inspired lighting triangle on cheek
+      lighting: single-source warm directional window light sculpting skin volumes, deep rich umber shadows
+      medium_style: European Old Masters classical oil painting on linen canvas
+      color_texture: rich impasto texture on highlights, luminous oil glazes, warm sienna and burnt ochre tones
+      constraints: expressive masterly brushstrokes, authentic aged craquelure, deep emotional humanity
+    positive_prompt: >-
+      A classical oil painting portrait of an elderly woman seated beside a wooden window. Warm directional
+      light illuminates her face and hands. Rich layered pigments, visible expressive brush strokes, subtle
+      impasto texture, deep warm shadows, natural skin tones, traditional European fine art painting.
+
+  risograph:
+    id: risograph
+    code: "31"
+    category: H
+    name: 孔版印刷
+    name_en: Risograph
+    application: 独立出版物插图、复古音乐海报、小众文艺短剧片头
+    dimensions:
+      subject: a charming small urban rooftop garden with potted cacti and a curious sleeping cat
+      scene: sunlit rooftop overlooking city rooftops
+      composition: stylized flat graphic composition with playful overlapping silhouettes
+      lighting: flat graphic stencil lighting
+      medium_style: two-color risograph stencil print, contemporary indie zine aesthetic
+      color_texture: fluorescent orange and deep teal riso inks, coarse halftone dot grain, slight mechanical registration misalignment
+      constraints: handmade screenprinting imperfections, visible uncoated paper fibers, authentic print shop charm
+    positive_prompt: >-
+      A playful two-color risograph print depicting a small urban garden. Bold simplified shapes, slightly
+      misregistered ink layers, visible paper fibers, coarse halftone texture, limited orange and dark teal
+      inks, handmade printmaking imperfections, contemporary independent publishing aesthetic.
+
+  colored_pencil:
+    id: colored_pencil
+    code: "32"
+    category: H
+    name: 彩铅绘本
+    name_en: Colored Pencil Illustration
+    application: 儿童绘本、温暖温情短剧片头、童年回忆故事
+    dimensions:
+      subject: a curious little brown rabbit carrying a woven wicker basket filled with forest berries
+      scene: winding dirt footpath through sunlit woodland with wild clover
+      composition: intimate eye-level storybook narrative framing
+      lighting: warm gentle morning light filtering through tree leaves
+      medium_style: traditional children's book colored pencil illustration, Beatrix Potter inspired charm
+      color_texture: delicate layered pencil hatch marks, warm earthy palette of cedar, moss, and warm cream, visible paper tooth
+      constraints: soft gentle outlines, tender tactile craftsmanship, nostalgic heartwarming atmosphere
+    positive_prompt: >-
+      A charming storybook illustration of a small rabbit carrying a basket through a woodland path. Delicate
+      colored pencil strokes, visible paper grain, layered hand-colored shading, gentle imperfect outlines,
+      warm earthy colors, intimate children's book illustration.
+
+  # ============================================================================
+  # T. 2026 前瞻视觉趋势 (Trends)
+  # ============================================================================
+  trend_direct_flash:
+    id: trend_direct_flash
+    code: "33"
+    category: T
+    name: 直闪抓拍摄影
+    name_en: Direct Flash Photography
+    application: 2026 趋势街头、青年亚文化、派对日常纪实
+    dimensions:
+      subject: stylish young friends laughing spontaneously during a late-night street gathering
+      scene: dark urban street corner outside a vintage diner
+      composition: dynamic candid snapshot, close-range framing with raw unposed energy
+      lighting: harsh on-camera direct xenon flash casting hard sharp cast shadows immediately behind subjects
+      medium_style: raw direct flash snapshot photography, 1990s disposable camera aesthetics
+      color_texture: intense color pop, rich dark backgrounds, authentic color film grain and mild lens flare
+      constraints: unpolished genuine spontaneity, sharp immediate shadows, anti-AI plastic perfection
+    positive_prompt: >-
+      A raw direct flash candid photograph of young people enjoying an evening in an urban street. Harsh
+      direct camera flash casts crisp dark shadows against the wall behind them. Authentic spontaneous expressions,
+      unposed natural body language, deep saturated colors, authentic 35mm disposable camera grain, anti-polished snapshot aesthetic.
+
+  trend_tactile_mixed:
+    id: trend_tactile_mixed
+    code: "34"
+    category: T
+    name: 触感综合媒介拼贴
+    name_en: Tactile Mixed Media
+    application: 艺术展览视觉、实验音乐海报、情绪化艺术概念
+    dimensions:
+      subject: an abstract portrait blended with torn botanical engravings and textured archival papers
+      scene: artist's craft cutting mat workshop
+      composition: layered physical collage composition with intentional raw edges
+      lighting: raking natural studio light revealing physical paper elevation and drop shadows
+      medium_style: tactile mixed-media paper collage, physical analog assemblage art
+      color_texture: torn cardboard fibers, yellowed newsprint, transparent vellum overlays, real scotch tape sheen
+      constraints: genuine physical depth between layers, visible paper tears and distress, tangible handmade texture
+    positive_prompt: >-
+      A tactile mixed-media collage blending an expressive portrait with torn vintage botanical prints,
+      corrugated cardboard, and faded paper fragments. Raking side light casts tiny realistic shadows along
+      torn edges. Visible adhesive textures, deckled paper borders, subdued earthy pigments, authentic physical assemblage art.
+
+  trend_dramatic_editorial:
+    id: trend_dramatic_editorial
+    code: "35"
+    category: T
+    name: 戏剧化舞台布光
+    name_en: Dramatic Editorial
+    application: 戏剧先锋电影海报、时尚艺术短剧、强情绪特写
+    dimensions:
+      subject: an avant-garde performer in sculptural structured garments with sharp angular shoulders
+      scene: minimalist dark theatrical stage with subtle atmospheric haze
+      composition: high-drama heroic portrait framing, stark architectural figure presence
+      lighting: sharp single spotlight beam cutting through darkness, high-contrast theatrical chiaroscuro
+      medium_style: dramatic theatrical editorial photography, high-fashion stage portraiture
+      color_texture: deep pitch black surroundings, ivory garment glow, bold crimson accent lighting
+      constraints: powerful sculptural silhouette, absolute lighting control, evocative emotional tension
+    positive_prompt: >-
+      A dramatic high-fashion editorial portrait on a minimalist stage. A sharp theatrical spotlight cuts
+      through atmospheric haze, illuminating a striking figure in architectural garments while plunging the
+      surroundings into deep shadow. Extreme tonal contrast, sculptured silhouettes, intense emotional presence,
+      refined theatrical production aesthetics.
+
+  trend_analog_nostalgia:
+    id: trend_analog_nostalgia
+    code: "36"
+    category: T
+    name: 怀旧胶片漏光
+    name_en: Analog Nostalgia
+    application: 复古青春故事、夏日公路片、暖调回忆滤镜
+    dimensions:
+      subject: a vintage convertible automobile parked on a coastal cliffside road overlooking the sea
+      scene: golden sun setting over the Pacific coastline
+      composition: wide cinematic nostalgic road-trip framing
+      lighting: warm golden sunset rays with warm organic red-orange light leaks across the film frame edge
+      medium_style: vintage 1970s Kodachrome slide photography, authentic analog film camera
+      color_texture: warm honey amber, faded turquoise sea, chemical film dye fading, soft highlight halation
+      constraints: authentic light leak streaks, subtle dust specks, nostalgic warmth without digital filters
+    positive_prompt: >-
+      A nostalgic 1970s analog photograph of a vintage automobile parked beside a golden coastal cliff at dusk.
+      Warm natural sunlight produces soft chemical halation and an organic red-orange light leak along the edge
+      of the frame. Warm faded color tones, authentic film grain, gentle dust specks, emotional nostalgic atmosphere.
+
+  trend_organic_minimalism:
+    id: trend_organic_minimalism
+    code: "37"
+    category: T
+    name: 有机侘寂极简
+    name_en: Organic Minimalism
+    application: 极简空间生活方式、自然侘寂美学、禅宗短剧
+    dimensions:
+      subject: a single handmade raw unglazed ceramic tea bowl with subtle organic asymmetry
+      scene: smooth lime-washed plaster niche overlooking a bamboo courtyard
+      composition: quiet balanced wabi-sabi composition, generous breathing empty space
+      lighting: soft diffused daylight entering through a linen curtain, delicate continuous tonal gradients
+      medium_style: organic minimalist architectural photography, wabi-sabi still life
+      color_texture: warm oat beige, tactile lime plaster texture, coarse terracotta clay, unvarnished natural wood
+      constraints: profound tranquility, appreciation of natural imperfections, tactile material authenticity
+    positive_prompt: >-
+      An organic minimalist wabi-sabi still life. A handcrafted unglazed ceramic vessel rests on a textured
+      lime-plaster surface near a softly lit window. Subtle natural daylight, warm oat and limestone tones,
+      generous negative space, imperfect organic curves, tactile physical textures, quiet contemplative atmosphere.
+
+  trend_surreal_metaphor:
+    id: trend_surreal_metaphor
+    code: "38"
+    category: T
+    name: 超现实商业视觉隐喻
+    name_en: Surreal Visual Metaphor
+    application: 创意广告大奖视觉、科技概念片、概念营销视觉
+    dimensions:
+      subject: a sleek glass hourglass wherein golden sand cascades downward, transforming into a blooming miniature pine forest
+      scene: pristine reflective horizon under infinite gradient twilight
+      composition: centered high-impact conceptual product visual
+      lighting: pristine studio lighting with luminous internal refraction inside the glass
+      medium_style: high-end conceptual advertising CGI still, thought-provoking commercial art
+      color_texture: crystal clear optical glass, rich evergreen needles, warm golden sand particles, cool twilight blue
+      constraints: poetic visual transformation, razor-sharp optical refractions, elegant conceptual wonder
+    positive_prompt: >-
+      A conceptual advertising visual showing an elegant glass hourglass where falling golden sand seamlessly
+      transforms into a flourishing miniature pine forest inside the lower chamber. Pristine optical glass,
+      illuminated refraction, clean horizon background, clever visual metaphor about time and growth, high-end commercial art.
