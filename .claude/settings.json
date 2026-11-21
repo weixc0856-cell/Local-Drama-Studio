@@ -1,5 +1,20 @@
 {
   "env": {
     "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "180000"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/scripts/hooks/token_guard.py\"",
+            "timeout": 15,
+            "statusMessage": "token-guard"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -102,3 +102,15 @@ was pure working memory. Rules to keep that cost down without touching quality:
   Every image read stays in context and is re-billed on every later call.
 - **Read/Grep/Glob over shell peeking.** Use the dedicated tools instead of Bash `cat`/`sed`/`head`
   pipelines; they bound output and keep transcripts lean.
+
+### Enforcement (harness-executed, not model-dependent)
+The rules above are enforced by a PreToolUse hook on `Bash|PowerShell|Read`
+(`.claude/settings.json` → `scripts/hooks/token_guard.py`, tested in `tests/test_token_guard.py`):
+- Foreground `produce.py image/video` and `atlas benchmark --live` calls are **denied**; re-issue
+  with `run_in_background=true`. One-off override: append `# token-guard: allow-foreground`.
+- Reading an individual image under `experiments/` when the run has `boards/` is **denied**;
+  read the board, or crop the region to a file with `crop` in its name.
+- Context >150K triggers a one-time phase-boundary reminder per session.
+The guard fails open (a guard bug never blocks work). Verify spend with
+`python scripts/token_audit.py [--days N | --session <id>]` — it reads the CC Switch proxy
+billing DB (authoritative; transcript usage fields overcount 2-3x).
