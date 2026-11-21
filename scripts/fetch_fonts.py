@@ -94,6 +94,32 @@ def extract(font: dict, archive: Path) -> None:
                 print(f"  wrote {license_target.relative_to(ROOT)}")
 
 
+def ensure_direct_weights(font: dict, *, force: bool = False) -> None:
+    """Fetch fonts published as individual files rather than a release archive.
+
+    Some upstreams (LXGW WenKai, Google Fonts) ship per-weight TTFs or a single raw
+    file. Each selected weight then carries its own ``url`` and ``sha256``.
+    """
+    for item in expected_files(font):
+        url = item.get("url")
+        if not url:
+            raise SystemExit(f"{font['asset_id']}: weight {item['weight']} has no url")
+        target = (ROOT / item["file"]).resolve()
+        if not force and target.is_file() and sha256(target) == item["sha256"]:
+            continue
+        download(url, target)
+        actual = sha256(target)
+        if actual != item["sha256"]:
+            raise SystemExit(f"sha256 mismatch: {target} expected {item['sha256']} got {actual}")
+        print(f"  wrote {item['file']}")
+    license_url = font.get("license_url")
+    if license_url:
+        license_target = (ROOT / font["selected_weights"][0]["file"]).resolve().parent / font.get("license_file", "OFL.txt")
+        if force or not license_target.is_file():
+            download(license_url, license_target)
+            print(f"  wrote {license_target.relative_to(ROOT)}")
+
+
 def ensure_font(font: dict, *, force: bool = False) -> None:
     problems = missing_or_bad(font)
     if not problems and not force:
@@ -104,7 +130,13 @@ def ensure_font(font: dict, *, force: bool = False) -> None:
     archive_meta = font.get("archive") or {}
     url = archive_meta.get("url")
     if not url:
-        raise SystemExit(f"{font['asset_id']}: manifest has no archive.url")
+        # No archive: this font publishes individual weight files.
+        ensure_direct_weights(font, force=force)
+        remaining = missing_or_bad(font)
+        if remaining:
+            raise SystemExit(f"{font['asset_id']}: still incomplete: {'; '.join(remaining)}")
+        print(f"{font['asset_id']}: ready")
+        return
     archive = CACHE / archive_meta["file"]
     if force or not archive.is_file() or sha256(archive) != archive_meta.get("sha256"):
         if archive.is_file() and archive_meta.get("sha256") and sha256(archive) != archive_meta["sha256"]:

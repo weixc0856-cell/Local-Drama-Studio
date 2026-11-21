@@ -56,7 +56,9 @@ assets/visual_style/
 
 # Font binaries are fetched by scripts/fetch_fonts.py; manifest/README/LICENSE are tracked
 assets/fonts/**/*.otf
+assets/fonts/**/*.ttf
 assets/fonts/**/*.zip
+assets/fonts/**/*.tar.gz
 
 # Logs and local reports
 logs/

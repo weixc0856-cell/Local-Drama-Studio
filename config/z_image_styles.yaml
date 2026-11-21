@@ -862,3 +862,27 @@ styles:
       A conceptual advertising visual showing an elegant glass hourglass where falling golden sand seamlessly
       transforms into a flourishing miniature pine forest inside the lower chamber. Pristine optical glass,
       illuminated refraction, clean horizon background, clever visual metaphor about time and growth, high-end commercial art.
+
+  cloud_palace_celestial:
+    id: cloud_palace_celestial
+    code: "39"
+    category: G
+    name: 云上天宫
+    name_en: Cloud Palace Celestial Realm
+    application: 东方仙境短片、神话幻想封面、天界概念场景、国风游戏宣传视觉
+    dimensions:
+      subject: a vast celestial palace of vermilion timber colonnades and white marble terraces suspended above an endless sea of clouds, with a lone windswept ancient pine on a distant cloud-borne island
+      scene: high above the cloud sea at golden hour, distant floating peaks surfacing through the mist, deep clear sky overhead
+      composition: perfectly symmetrical wide establishing composition, the colonnade framing the central vista, tiny white-robed figures acting as scale anchors, extensive negative space
+      lighting: warm low golden sunlight raking across the vermilion timber, cool blue ambient fill from the open sky, long soft shadows across the polished terrace
+      medium_style: cinematic Oriental fantasy film still, anamorphic widescreen, realistic production design
+      color_texture: a restrained palette of deep sky blue, vermilion red and white marble, mirror-like polished terrace reflections, fine atmospheric haze
+      constraints: historically plausible Tang-dynasty timber architecture, a clean frame without graphic overlays or lettering, no modern elements, figures kept distant and silhouetted
+    positive_prompt: >-
+      A cinematic Oriental fantasy film still of a vast celestial palace suspended above an endless sea of clouds.
+      Vermilion timber colonnades and white marble terraces frame a perfectly symmetrical wide composition, and a
+      lone windswept ancient pine stands on a distant cloud-borne island at the center. Tiny white-robed figures
+      stand far away as scale anchors. Warm low golden sunlight rakes across the red timber while cool blue sky
+      light fills the shadows, and the polished terrace mirrors the whole scene. Distant floating peaks surface
+      through fine atmospheric haze. Restrained deep blue, vermilion and white marble palette, historically
+      plausible Tang-dynasty timber architecture, anamorphic widescreen, clean frame without lettering.

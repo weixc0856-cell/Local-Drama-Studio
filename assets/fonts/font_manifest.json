@@ -1,10 +1,10 @@
 {
   "generated_at": "2026-11-03",
   "download_date": "2026-11-03",
-  "policy": "Official Adobe GitHub Releases only; CN subset OTF; selected weights only; no system installation; no font modification.",
+  "policy": "Official upstream releases only (Adobe GitHub releases for Source Han; lxgw/LxgwWenKai and TrionesType/zhuque releases; google/fonts ofl/ for Latin). Every font must carry a verified SIL OFL 1.1 text from its upstream repo. No system installation; no font modification.",
   "git": {
     "tracked": false,
-    "tracked_scope": "font_manifest.json, README.md, LICENSE.txt; OTF binaries are fetched",
+    "tracked_scope": "font_manifest.json, README.md, LICENSE/OFL texts; OTF/TTF binaries are fetched",
     "otf_in_git": false,
     "lfs": false,
     "decision": "OTF binaries (~58 MiB) ignored; metadata/licenses tracked; run scripts/fetch_fonts.py to reconstruct and verify"
@@ -195,6 +195,182 @@
       "preview_manifest": "experiments/r3d/fonts/preview_manifest.json",
       "rendering_evidence": "logs/s3b_render/fontselect_serif.log / fontselect_sans.log",
       "release_url": "https://github.com/adobe-fonts/source-han-sans/releases/tag/2.005R"
+    },
+    {
+      "asset_id": "FONT-KAISHU",
+      "family": "LXGW WenKai",
+      "localized_family": "霞鹜文楷",
+      "repo": "https://github.com/lxgw/LxgwWenKai",
+      "release": "v1.530",
+      "license": "SIL OFL 1.1 (verified: repo license field OFL-1.1 + upstream OFL.txt)",
+      "license_url": "https://raw.githubusercontent.com/lxgw/LxgwWenKai/main/OFL.txt",
+      "license_file": "OFL.txt",
+      "selected_weights": [
+        {
+          "weight": "Light",
+          "file": "assets/fonts/lxgw-wenkai/LXGWWenKai-Light.ttf",
+          "size_bytes": 28625516,
+          "sha256": "9a50e3f0f51fad60d68152d5191bce1a495bfc4b9ceb1cee24833835511d1dca",
+          "weight_class": 300,
+          "url": "https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKai-Light.ttf"
+        },
+        {
+          "weight": "Regular",
+          "file": "assets/fonts/lxgw-wenkai/LXGWWenKai-Regular.ttf",
+          "size_bytes": 25928940,
+          "sha256": "2d73eea94ad808999d90c0000c239a84a33b09d4bc6ab6c5b8bbf1eda8a7fc8b",
+          "weight_class": 400,
+          "url": "https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKai-Regular.ttf"
+        },
+        {
+          "weight": "Medium",
+          "file": "assets/fonts/lxgw-wenkai/LXGWWenKai-Medium.ttf",
+          "size_bytes": 25800076,
+          "sha256": "f4b8a34d1f838fe411540cb7c97b1c384ac9738a876c4104500bc42508b2312a",
+          "weight_class": 500,
+          "url": "https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKai-Medium.ttf"
+        }
+      ],
+      "roles": [
+        "film_title",
+        "narrative_subtitle",
+        "chapter_card"
+      ],
+      "coverage": {
+        "verified_glyphs": "云上天宫",
+        "method": "rendered title card; no missing-glyph boxes"
+      },
+      "status": "PASS_VERIFIED",
+      "note": "Rounded kaishu warmth; replaces printed-Song for narrative/国风 titles. Medium is the film-title default."
+    },
+    {
+      "asset_id": "FONT-FANGSONG",
+      "family": "Zhuque Fangsong",
+      "localized_family": "朱雀仿宋",
+      "repo": "https://github.com/TrionesType/zhuque",
+      "release": "v0.212",
+      "license": "SIL OFL 1.1 (verified: repo license field OFL-1.1 + upstream LICENSE.txt)",
+      "archive": {
+        "file": "ZhuqueFangsong-v0.212.zip",
+        "url": "https://github.com/TrionesType/zhuque/releases/download/v0.212/ZhuqueFangsong-v0.212.zip",
+        "size_bytes": 5743932,
+        "sha256": "bb8b661a7643d2296a72d9d10530a00949419c4e527fb61783f73c2ba1a8c062"
+      },
+      "selected_weights": [
+        {
+          "weight": "Regular",
+          "file": "assets/fonts/zhuque-fangsong/extracted/ZhuqueFangsong-Regular.ttf",
+          "size_bytes": 8824084,
+          "sha256": "558c62730844fe54ba220146ed62f859d4e2880188d92d985f8921c6e3743bc4",
+          "weight_class": 400
+        }
+      ],
+      "roles": [
+        "chapter_card",
+        "quiet_subtitle"
+      ],
+      "coverage": {
+        "verified_glyphs": "云上天宫",
+        "method": "rendered title card; no missing-glyph boxes"
+      },
+      "status": "PASS_VERIFIED",
+      "note": "Slender literati fangsong; elegant but too light to carry a large hero title on dark backgrounds."
+    },
+    {
+      "asset_id": "FONT-CINZEL",
+      "family": "Cinzel",
+      "repo": "https://github.com/google/fonts",
+      "release": "main",
+      "license": "SIL OFL 1.1 (verified: google/fonts ofl/ directory + upstream OFL.txt)",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cinzel/OFL.txt",
+      "license_file": "OFL.txt",
+      "selected_weights": [
+        {
+          "weight": "Variable",
+          "file": "assets/fonts/cinzel/Cinzel.ttf",
+          "size_bytes": 125468,
+          "sha256": "f4d83d34d1f6c741193e4acf4b3dff9531e5a67b6aa65228d00a7db72a4e0f34",
+          "weight_class": 500,
+          "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cinzel/Cinzel%5Bwght%5D.ttf"
+        }
+      ],
+      "roles": [
+        "latin_film_subtitle"
+      ],
+      "status": "PASS_VERIFIED",
+      "note": "Roman inscriptional capitals; default Latin subtitle at weight 500."
+    },
+    {
+      "asset_id": "FONT-CORMORANT",
+      "family": "Cormorant Garamond",
+      "repo": "https://github.com/google/fonts",
+      "release": "main",
+      "license": "SIL OFL 1.1 (verified: google/fonts ofl/ directory + upstream OFL.txt)",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/OFL.txt",
+      "license_file": "OFL.txt",
+      "selected_weights": [
+        {
+          "weight": "Variable",
+          "file": "assets/fonts/cormorantgaramond/CormorantGaramond.ttf",
+          "size_bytes": 1195560,
+          "sha256": "b20b7d9626dd956b2c5e558692ad328b1f19e3275e2782db4fa07670d83f35e0",
+          "weight_class": 600,
+          "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf"
+        }
+      ],
+      "roles": [
+        "latin_film_subtitle"
+      ],
+      "status": "PASS_VERIFIED",
+      "note": "High-contrast classical serif; renders visually smaller at equal px, bump size if used."
+    },
+    {
+      "asset_id": "FONT-MARCELLUS",
+      "family": "Marcellus",
+      "repo": "https://github.com/google/fonts",
+      "release": "main",
+      "license": "SIL OFL 1.1 (verified: google/fonts ofl/ directory + upstream OFL.txt)",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/marcellus/OFL.txt",
+      "license_file": "OFL.txt",
+      "selected_weights": [
+        {
+          "weight": "Regular",
+          "file": "assets/fonts/marcellus/Marcellus-Regular.ttf",
+          "size_bytes": 46004,
+          "sha256": "1cf0cd10b17d35e852729962cc1ffaffed94514895972458345e2df34abb2f81",
+          "weight_class": 400,
+          "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/marcellus/Marcellus-Regular.ttf"
+        }
+      ],
+      "roles": [
+        "latin_film_subtitle"
+      ],
+      "status": "PASS_VERIFIED",
+      "note": "Minimal flared serif; alternate for quieter cards."
+    },
+    {
+      "asset_id": "FONT-PLAYFAIR",
+      "family": "Playfair Display",
+      "repo": "https://github.com/google/fonts",
+      "release": "main",
+      "license": "SIL OFL 1.1 (verified: google/fonts ofl/ directory + upstream OFL.txt)",
+      "license_url": "https://raw.githubusercontent.com/google/fonts/main/ofl/playfairdisplay/OFL.txt",
+      "license_file": "OFL.txt",
+      "selected_weights": [
+        {
+          "weight": "Variable",
+          "file": "assets/fonts/playfairdisplay/PlayfairDisplay.ttf",
+          "size_bytes": 300724,
+          "sha256": "c40f2293766a503bc70cce9e512ef844a4ccb7cbcde792fe2ea31d191917d8d6",
+          "weight_class": 500,
+          "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf"
+        }
+      ],
+      "roles": [
+        "latin_film_subtitle"
+      ],
+      "status": "PASS_VERIFIED",
+      "note": "Strong contrast; best small-screen legibility."
     }
   ],
   "distribution": {

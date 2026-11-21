@@ -134,3 +134,143 @@ python src/produce.py atlas report --run-dir "<run>"
 - `experiments/z_image_styles/atlas_v1/` — 54 张主扫 + 分类拼版 + 报告 + `scores.csv`（含 09 号纯墨交付版）
 - `experiments/z_image_styles/mixes/` — 3 组组合实验 + 拼版 + 报告
 - `experiments/z_image_styles/fix_ink_monochrome/` — 色偏提示词修法验证（负面结果，保留作证据）
+## 七、片头字体：从「官方通告感」到电影质感（实测对比）
+
+结论前置：**画面文字必须合成，不能交给扩散模型**（见三·1）。合成用什么字、怎么排，
+实测差异同样巨大。基线是思源宋体 Bold + 纯白实心 + 紧字距，观感像学术 PPT 而非片头。
+
+### 授权核实（不采信推荐文，逐个查上游）
+
+| 字体 | 上游 | 授权核实结果 |
+| :-- | :-- | :-- |
+| 霞鹜文楷 LXGW WenKai | `lxgw/LxgwWenKai` v1.530 | GitHub license 字段 `OFL-1.1` + 上游 `OFL.txt` 正文 ✓ |
+| 朱雀仿宋 Zhuque Fangsong | `TrionesType/zhuque` v0.212 | 同上 ✓（zip 仅 5.7 MB） |
+| Cinzel / Cormorant Garamond / Marcellus / Playfair Display | `google/fonts` 的 `ofl/` 目录 | 目录分类 + 各自 `OFL.txt` 正文 ✓ |
+| **汇文明朝体 Huiwen-mincho** | 推荐文给的仓库名 | **三个名称变体全部 404**，搜索仅得无授权声明的镜像 → **不采用** |
+| 演示春风楷 / 悠然小楷 | 非 OFL 的「免费商用」声明 | 授权来源不够硬，未采用 |
+
+全部字体已登记进 `assets/fonts/font_manifest.json`（含 sha256、上游 URL、授权），
+`python scripts/fetch_fonts.py --check` 可校验，二进制不入 git。
+
+### 中文字体实测
+
+- **思源宋体 Bold（基线）**：横细竖粗、刀切感强，确实"生硬、像官方通告"。
+- **霞鹜文楷 Light**：最飘逸，但大标题在深色底上偏薄，撑不住画面。
+- **霞鹜文楷 Medium**：温润笔锋 + 足够分量，**定为片头默认**。
+- **朱雀仿宋 Regular**：清秀文人气，适合安静的章节卡/副标题，不适合撑主标题。
+
+### 英文副标题：一个需要纠正的前提
+
+推荐文判断当前英文是"偏细的普通现代衬线体"——**实测不是**。
+`PIL.ImageFont.getname()` 返回 `('Cinzel', 'Regular')`，可变轴 `Weight 400–900`。
+也就是说**字体本来就是 Cinzel，只是可变字体默认落在 400**。
+所以不需要换字体，`set_variation_by_axes([500])` 即可，推荐文的字重建议是对的、family 诊断是错的。
+
+五个候选同条件对比后：
+- **Cinzel 500**：古罗马石刻大写，横向张力最足，与文楷 Medium 的厚度最平衡 → **默认**。
+- Marcellus 400：微衬线、最干净，安静内容的备选。
+- Cormorant Garamond 600：**同字号下视觉明显偏小**（字身高度不同），换用它必须额外放大。
+- Playfair Display 500：粗细对比强，小屏播放最锐利。
+
+### 排版微调（都已实装进 `scripts/render_title_card.py`）
+
+1. 中文字距 `0.34em`，四个字拉开呼吸感。
+2. 暖金竖向渐变填充 `#F7F1E3 → #D8C39E` + 极淡同色柔光晕，字"融"进深色底而不是贴在上面。
+3. 英文副标题提亮到香槟金 `#C8B085`，字号从主标题的 0.26 提到 0.29。
+4. 分隔横线改**两端渐隐**（1px，240px 宽），不再齐平切断。
+
+### 一个实装时踩到的坑
+
+渐隐横线用 `Image.alpha_composite` 会返回**新图像对象**，此前的 `ImageDraw` 句柄仍指向被丢弃的旧图。
+之后画的字体标签全部丢失且不报错。合成后必须重建 `Draw` 句柄——已加注释与回归测试。
+
+### 复现
+
+```powershell
+python scripts/render_title_card.py --preview       --out cmp_cjk.jpg
+python scripts/render_title_card.py --latin-preview --out cmp_latin.jpg
+python scripts/render_title_card.py --font lxgw_wenkai_medium --latin cinzel --latin-weight 500 --out card.png
+```
+
+## 八、Wan 14B 运动控制：程度副词无效，首尾状态锁定有效
+
+「云上天宫」5 镜实测（832×480 / 49 帧 / 6 步 LightX2V / CFG 1.0 / shift 5）。
+
+### 吞吐实测（修正文档旧值）
+
+| 镜头 | 耗时 |
+| :-- | --: |
+| S01 云廊 | 22.5 min |
+| S02 孤松 | 29.7 min |
+| S03 白衣 | 28.8 min |
+| S04 天阶 | 29.2 min |
+| S05 远阙 | 28.9 min |
+
+均值 **27.8 min/镜**，5 镜合计 139.1 min。与 `WIDESCREEN_VIDEO_GENERATION_GUIDELINES.md`
+记的「~28–30 min」一致；S01 的 22.5 min 是显存全驻留的快档。
+后处理（2x Lanczos + 32fps 光流）每镜仅 **13–14 秒**，成本可忽略。
+
+### 核心发现：「very slow / extremely slow」不约束幅度
+
+| 镜头 | 运动提示词写法 | 结果 |
+| :-- | :-- | :-- |
+| S01 | `Extremely slow cinematic push-in` | ✓ 推进克制，对称保持 |
+| S02 | `Very slow lateral drift to the right` | ✗ **变成大幅推近**，末帧只剩树干特写，孤岛与台面全部出画 |
+| S03 | `Static camera` + 微风 | ✓ 镜头几乎不动（袖子张开略超预期，可接受） |
+| S04 | `Very slow tilt down` + `clouds pour over the steps` | ✗ **云雾过量涌起**，末帧几乎吞掉两侧阙楼 |
+| S05 | `Very slow lateral reveal` | ✓ 缓慢横移，楼阁刚性 |
+
+**规律**：唯一稳定的是 `Static camera`（S03）。凡给了移动动词，程度副词都压不住幅度，
+而且**同一写法在不同镜头上表现不一致**（S01 的 push-in 克制，S02 的 drift 失控）。
+大气元素同理——`clouds pour` 会被执行到淹没主体。
+
+**修法（已实装）**：把程度描述换成**首尾状态锁定 + 显式禁止**：
+
+```text
+Static camera, locked framing. The whole pine tree and its rocky island stay fully
+visible and centred at the same size in the last frame as in the first frame.
+Only the thin needles sway gently. No zoom, no dolly, no close-up, no change of shot scale.
+```
+
+大气也要给**空间上界**，而不是只说"慢"：
+
+```text
+Only a thin low layer of mist drifts across the bottom steps; the mist never rises
+above the base of the buildings and never covers them.
+```
+
+负面提示词同步加入 `zoom in, dolly in, extreme close-up, cropping the subject out of frame`。
+
+### 其它两条
+
+- **480P 大远景惩罚对「场景」不成立**。5 镜首尾帧质检显示斗拱、栏杆、屋檐、台阶全部刚性保持，
+  云海自然推移，大理石倒影正确跟随几何。Widescreen Guard 的人脸 token 理由在无脸场景下不适用，
+  本次**有意不套用 guard** 是成立的。守则应限定为「画面内有需要保真的人脸时」。
+- **光流补帧会缩短时长**：49 帧 @16fps = 3.0625s，`minterpolate` 后得 95 帧 @32fps = **2.968s**，
+  每镜少约 0.09s，5 镜累计约 0.47s。按帧数估算总片长会偏长，需以 ffprobe 实测为准。
+
+### 关键帧侧的一条指令偏移
+
+S02 提示词要「悬于云海中的岩岛」，Z-Image 把它放到了大理石台面上——
+**风格配方里的场景元素压过了 shot 级的 scene 覆盖**。观感不差，但说明
+`compile(style, scene=...)` 的覆盖不是硬约束，主体与场景冲突时风格先验会赢。
+
+### 修法验证结果（take2 重渲，同 seed 同关键帧）
+
+| 镜头 | take1 | take2（首尾锁定） | 判定 |
+| :-- | :-- | :-- | :-- |
+| S02 孤松 | 末帧只剩树干特写，孤岛出画 | 全树首尾同大小、居中、完整可见，台面与孤岛都在画内 | **完全修复** |
+| S04 天阶 | 云雾吞没两侧阙楼 | 左楼完全清晰，右楼薄雾半掩但结构可读，构图保住 | **大幅改善、可用**；空间上界只被部分遵守 |
+
+**结论**：首尾状态锁定对**镜头运动**是硬有效的（S02 完全修复）；
+对**大气元素的空间范围**只是软约束（S04 改善但仍越界）。
+要彻底压住雾气范围，恐怕得靠更短帧数或后处理遮罩，而不是提示词。
+
+失败 take 保留在 `frames/S02_take1`、`frames/S04_take1` 作为证据，未被覆盖。
+重渲成本：S02 29.0 min + S04 28.5 min。
+
+### 最终交付
+
+`experiments/cloud_palace/deliver/cloud_palace_master.mp4`
+**17.34 s / 1664×960 / 32 fps / H.264 + AAC / 8.5 MB**（片头 2.5s + 5 镜 × ~2.97s）
+时间线抽检确认拼接顺序正确、接缝无异常。
