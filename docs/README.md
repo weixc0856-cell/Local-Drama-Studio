@@ -27,7 +27,8 @@
 | [QUALITY_AND_METRICS.md](QUALITY_AND_METRICS.md) | 质量门、成本、平台指标、失败模式 | `DECISION` |
 | [PLATFORM_PUBLISHING.md](PLATFORM_PUBLISHING.md) | 抖音/小红书母版、双画幅适配、发布清单 | `DECISION` |
 | [ROADMAP.md](ROADMAP.md) | 冻结范围、已完成、能力边界 | `DECISION` |
-| [DECISIONS.md](DECISIONS.md) | ADR-001…026（含产出物理隔离、双引擎路由、Wan 14B 封板） | 记录 |
+| [DECISIONS.md](DECISIONS.md) | ADR-001…032（含产出物理隔离、双引擎路由、Wan 14B 封板、Token Economy 跨工具移植） | 记录 |
+| [TOKEN_ECONOMY_PORT.md](TOKEN_ECONOMY_PORT.md) | **Token Economy 跨工具交接规格**（Codex / Antigravity 配置面、守卫可移植性、分期方案、计费口径） | `DECISION` |
 | [GUIDE.md](GUIDE.md) | 启动/关闭、统一 CLI (`src/produce.py`)、开发测试排障 | `DECISION` |
 
 ---

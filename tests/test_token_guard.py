@@ -167,18 +167,43 @@ def test_equivalent_weights():
     assert audit.equivalent(1000, 100, 10_000, 1000) == 1000 + 500 + 1000 + 1250
 
 
-def test_audit_reads_proxy_db(tmp_path, capsys):
+def test_equivalent_openai_semantics_subtracts_cached_span():
+    # OpenAI-style input_tokens already contains cache_read; counting it twice
+    # inflated Codex spend ~8x before this was corrected.
+    assert audit.equivalent(6000, 100, 5000, 0, semantics=1) == 1000 + 500 + 500
+    assert audit.equivalent(6000, 100, 5000, 0, semantics=2) == 6000 + 500 + 500
+
+
+def make_db(tmp_path):
     db_path = tmp_path / "cc-switch.db"
     db = sqlite3.connect(db_path)
     db.execute("""CREATE TABLE proxy_request_logs (
-        session_id TEXT, input_tokens INTEGER, output_tokens INTEGER,
+        session_id TEXT, app_type TEXT, input_token_semantics INTEGER,
+        input_tokens INTEGER, output_tokens INTEGER,
         cache_read_tokens INTEGER, cache_creation_tokens INTEGER, created_at INTEGER)""")
-    db.execute("INSERT INTO proxy_request_logs VALUES ('abc12345-x', 100, 200, 50000, 200000, 1763600000)")
-    db.execute("INSERT INTO proxy_request_logs VALUES ('abc12345-x', 100, 200, 50000, 50000, 1763603600)")
+    return db_path, db
+
+
+def test_audit_reads_proxy_db(tmp_path, capsys):
+    db_path, db = make_db(tmp_path)
+    db.execute("INSERT INTO proxy_request_logs VALUES ('abc12345-x','claude',2,100,200,50000,200000,1763600000)")
+    db.execute("INSERT INTO proxy_request_logs VALUES ('abc12345-x','claude',2,100,200,50000,50000,1763603600)")
     db.commit()
     db.close()
     assert audit.audit(db_path, days=36500, session="abc12345") == 0
     out = capsys.readouterr().out
     assert "abc12345" in out
+    assert "claude" in out
     assert "TOTAL" in out
     assert "idle re-cache" in out
+
+
+def test_audit_codex_rows_not_double_counted(tmp_path, capsys):
+    db_path, db = make_db(tmp_path)
+    db.execute("INSERT INTO proxy_request_logs VALUES ('cdx12345-x','codex',1,6000,100,5000,0,1763600000)")
+    db.commit()
+    db.close()
+    assert audit.audit(db_path, days=36500, session=None, app="codex") == 0
+    out = capsys.readouterr().out
+    assert "2K" in out
+    assert "7K" not in out

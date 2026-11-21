@@ -525,3 +525,29 @@
 - 生产视频的人脸崩塌率与五官融化率彻底归零；
 - 维护复杂度大幅降低，消灭了双 VAE 混用引发的通道报错；
 - 释放了 12GB+ 的冗余模型权重磁盘空间。
+
+
+---
+
+## ADR-032 Token Economy 跨工具移植与计费口径统一（Claude / Codex / Antigravity）
+
+**背景**：
+2026-11-21 审计发现，一次 15h 的 atlas 会话消耗约 **12.3M 计费输入当量**（88.8M cache read + 2.66M cache create + 180K output，约 500 次调用），根因是上下文 46K→366K **全程零压缩**——中转模型对外宣称 1M 窗口，auto-compact 永不触发。交付物全在磁盘上，上下文只是工作记忆。已落地规则层、180K 压缩兜底与 PreToolUse 守卫（ADR 见 commit `c04a688`），但暴露两个新问题：
+1. **守卫是 Claude 专有**：本机同时使用 Codex CLI 与 Antigravity，`run_in_background`、`Read` 拦截、transcript 用量读取三项依赖在别的工具上不存在；直接照搬会拒掉每一次生成调用，等于停产。
+2. **计费口径不一致**：CC Switch 库中 `input_token_semantics` 为 1（OpenAI 式，input 已含缓存）与 2（Anthropic 式，input 不含缓存）两类，原审计公式一律按 2 计算，导致 Codex 花费重复计入缓存段。
+
+**决策**：
+1. **计费按语义分流**：`input_token_semantics=1` 时先减 `cache_read` 再计费，`=2` 时沿用原式；`token_audit.py` 增加 `--app` 客户端过滤，并补回归测试。
+2. **计量统一以 CC Switch 库为准**：该库除实时代理 Claude 外，还摄取 Codex (`codex_session`) 与 Antigravity (`agy_session`) 的会话日志，**不要求其他工具改 `base_url` 即可审计**。
+3. **移植分两期**：阶段 A（共享 `AGENTS.md` + Codex 压缩阈值 + 各自可实现的守卫）立即执行；阶段 B（「长任务不许前台跑」守卫）**必须等 `produce.py` 具备提交即返回的非阻塞入口后再开**，该入口复用 `application/operations/tasks.py` 既有异步任务运行器，不自建。
+4. **规格以 `docs/TOKEN_ECONOMY_PORT.md` 为唯一交接文档**，由各工具自行实施；本仓库不代改其外部配置。
+5. **未核实项一律标注 `UNVERIFIED`**，禁止凭猜测写死配置；两处已知的静默失效（Codex 未信任 hook 直接跳过、Antigravity 非法 frontmatter 直接丢弃）必须用真实调用验证。
+6. **禁止伪造节省数字**：无对照审计即如实记为「未量化」。
+
+**后果**：
+- Codex 全量历史花费由虚高的 1297.29M 修正为 **157.84M**（8.22 倍高估）；此前引用的 Claude 12.3M 基线属语义 2，不受影响，仍然有效。
+- 三个客户端首次可按 `--app` 分别对照，具备跨工具验收能力。
+- 守卫①在 Codex / Antigravity 暂不启用，避免误拒全部生成调用；Antigravity interim 用 `ask` 而非 `deny`。
+- 非阻塞 CLI 入口成为阶段 B 的前置依赖。
+- Codex 的 `cache_creation_tokens` 恒为 0，1.25x 缓存重写成本模型在其上不适用。
+- **实际节省尚未量化**，需改动前后的对照审计才可声称。

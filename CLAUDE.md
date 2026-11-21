@@ -112,5 +112,13 @@ The rules above are enforced by a PreToolUse hook on `Bash|PowerShell|Read`
   read the board, or crop the region to a file with `crop` in its name.
 - Context >150K triggers a one-time phase-boundary reminder per session.
 The guard fails open (a guard bug never blocks work). Verify spend with
-`python scripts/token_audit.py [--days N | --session <id>]` — it reads the CC Switch proxy
-billing DB (authoritative; transcript usage fields overcount 2-3x).
+`python scripts/token_audit.py [--days N | --session <id> | --app claude|codex|agy]` — it reads the
+CC Switch billing DB (authoritative; transcript usage fields overcount 2-3x). That DB covers every
+client on this machine: Claude via live proxy, Codex and Antigravity via session-log ingestion, so
+neither needs a custom `base_url` to be auditable. `input_token_semantics` decides the math
+(2 = input excludes cached; 1 = OpenAI-style input already includes it, subtract `cache_read`);
+ignoring it inflated Codex spend 8.22x.
+
+**Porting to Codex / Antigravity**: see `docs/TOKEN_ECONOMY_PORT.md` (ADR-032). Enforcement does not
+transfer as-is — Codex has PreToolUse hooks but no `run_in_background` field, Antigravity has no
+script hooks at all. Guard 1 stays off there until `produce.py` gains a submit-and-return entry point.
