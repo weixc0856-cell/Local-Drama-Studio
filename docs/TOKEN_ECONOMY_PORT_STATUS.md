@@ -10,7 +10,7 @@
 |---|---|---|---|
 | 自动压缩阈值 180K | `~/.codex/config.toml` 顶层 `model_auto_compact_token_limit = 180000` | `codex doctor --json`：parse ok、未列入 unrecognized；外科手术式仅插入该键，其余逐字节不变（备份 `config.toml.bak-token-economy` 于同目录） | ✅ |
 | 共享指令文件 | 仓库根 `AGENTS.md`（约 2.1KB，平铺无 frontmatter，Antigravity 亦可直接读） | `codex debug prompt-input`：token 规则全部出现在模型可见输入 | ✅ |
-| 守卫② board-first | `.codex/hooks.json` PreToolUse `^view_image$` → `scripts/hooks/codex_token_guard.py` | 真实 exec 会话两次：单图 view_image 被 deny，模型逐字收到理由且未重试 | ✅ |
+| 守卫② board-first | `.codex/hooks.json` PreToolUse `^view_image$` → `scripts/hooks/codex_token_guard.py` | 真实 exec 会话三次（末次不带绕过标志）：单图 view_image 被 deny，模型逐字收到理由且未重试 | ✅ |
 | 守卫③ 150K 阶段提醒 | 同文件 PostModelRequest `.*`（检测）+ PreToolUse `^(Bash\|shell\|unified_exec)$`（注入） | 真实 exec 会话（`DRAMA_TOKEN_NUDGE_TOKENS=5000` 临时降阈）：模型逐字复述 `[token-guard]` 提醒 | ✅ |
 | 守卫① 长任务不许前台 | **未启用**（阶段 B 前置未满足，交接文档 §0/§3） | 单元测试显式断言前台 `produce.py image/video` 放行 | ✅（按设计） |
 
@@ -33,12 +33,15 @@
 3. handler 字段实测可用：`command`/`timeout`/`statusMessage`（另有 `commandWindows`/`async`/`additionalContextLimit`）；matcher 组结构 `{matcher, hooks}`；PostModelRequest 配 `.*` 正常触发。
 4. **boards 实际是 `.jpg`**——Claude 守卫 `find_boards` 只 glob `*.png`，对现有 atlas run 的 board-first 守卫实际不会触发（盲点）。Codex 版认 png/jpg/jpeg/webp。Claude 侧不在本次范围，未改，留待后续。
 
-## 3. 剩余人工步骤（重要：不做等于没装）
+## 3. Hook 信任（已持久化，无需人工步骤）
 
-**Hook 信任**：本次验证用 `--dangerously-bypass-hook-trust`（仅单次调用生效，自动化审查过的 hook 源）。日常交互会话里未信任 hook 是 fail-open 静默跳过。需要用户：
-1. 在本仓库打开 Codex，运行 **`/hooks`**，信任 `scripts/hooks/codex_token_guard.py` 的全部 handler。
-2. 此后**每次改动该脚本都会变哈希 → 需重新信任**。
-3. 信任后首次真实会话即生效；可用下述探针复核。
+2026-11-21 已通过官方 app-server RPC（`hooks/list` + `config/batchWrite`，与 TUI `/hooks` 同一写入路径）为本项目三个 handler 持久化信任，并在**不带任何绕过标志**的真实 exec 会话中验证拦截生效。
+
+机制与坑（0.171.0 实测）：
+- 信任存于 `~/.codex/config.toml` 的 `hooks.state."<key>".trusted_hash`；`<key>` 取自 `hooks/list` 返回的 `key`（形如 `<hooks.json 绝对路径>:<event>:<组>:<handler>`），**大小写敏感**（盘符大写原样）。
+- `config/batchWrite` 参数：`edits:[{keyPath, value, mergeStrategy:"upsert"}]`；keyPath 引号段按 TOML 基本字符串解析，**Windows 反斜杠必须双写**，否则产生无效键。
+- `--dangerously-bypass-hook-trust` 的 exec 会话会顺手写入**小写盘符**的信任键，与查询键不匹配 → 看似信任实则无效（本机已清理）。
+- **哈希只覆盖 handler 配置（command/matcher/event/timeout 等），不含脚本内容**：实测改脚本内容哈希不变、信任保持。因此改 `codex_token_guard.py` 无需重新信任；改 `.codex/hooks.json` 的 handler 配置才需要（`/hooks` 或上述 RPC）。交接文档 §4.4「改脚本变哈希」与实测不符，以本节为准。
 
 **探针开关**（CLI 升级后复核用，无需改配置、无需重新信任）：
 - 开：在 `<tempdir>/drama-codex-hook-probe/` 建 `enabled.flag`，所有 hook payload 落盘该目录（保留最新 60 条）。
@@ -48,7 +51,7 @@
 ## 4. 基线与验收（不伪造节省数字）
 
 - 改动前基线（2026-11-21，近 7 天，CC Switch 计费库）：**codex equiv 156.57M**（claude 734.19M / agy 139.27M 仅列作参照）。
-- 本次 4 个最小验证会话合计 **70,283 equiv**（约为基线的 0.045%）。
+- 本次 5 个最小验证会话合计 **88,258 equiv**（约为基线的 0.07%），其中第 5 次不带绕过标志、验证持久化信任。
 - **节省尚未量化**。信任生效后跑一段可比工作，用 `python scripts/token_audit.py --app codex --days N` 按**每阶段 equiv** 对比；没有对照就不声称省了多少。
 
 ## 5. 阶段 B（未开工，别提前开守卫①）
