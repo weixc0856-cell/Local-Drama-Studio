@@ -1,0 +1,41 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|shell|unified_exec)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/hooks/codex_token_guard.py",
+            "timeout": 15,
+            "statusMessage": "token-guard"
+          }
+        ]
+      },
+      {
+        "matcher": "^view_image$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/hooks/codex_token_guard.py",
+            "timeout": 15,
+            "statusMessage": "token-guard"
+          }
+        ]
+      }
+    ],
+    "PostModelRequest": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python scripts/hooks/codex_token_guard.py",
+            "timeout": 15,
+            "statusMessage": "token-guard"
+          }
+        ]
+      }
+    ]
+  }
+}

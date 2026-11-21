@@ -122,3 +122,5 @@ ignoring it inflated Codex spend 8.22x.
 **Porting to Codex / Antigravity**: see `docs/TOKEN_ECONOMY_PORT.md` (ADR-032). Enforcement does not
 transfer as-is — Codex has PreToolUse hooks but no `run_in_background` field, Antigravity has no
 script hooks at all. Guard 1 stays off there until `produce.py` gains a submit-and-return entry point.
+Codex Phase A is implemented and real-call verified (2026-11-21): see
+`docs/TOKEN_ECONOMY_PORT_STATUS.md`. Codex hooks need `/hooks` trust to take effect.
