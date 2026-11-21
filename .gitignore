@@ -97,6 +97,9 @@ config/style_packs/*/*/reference_board/candidates/jobs_manifest.json
 .env
 config/local-paths.yaml
 
+# Claude Code per-machine overrides (project settings.json is tracked)
+.claude/settings.local.json
+
 # Physical content output junction
 studio_data/
 

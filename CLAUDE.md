@@ -80,3 +80,25 @@ python src/produce.py image --project <id> --type portrait --style editorial_fas
 - **Ports**: ComfyUI `8188`; local LLM `8080`; VoxCPM2 `50000`.
 - **Widescreen Rule**: Follow `docs/WIDESCREEN_VIDEO_GENERATION_GUIDELINES.md` for framing and bokeh.
 - **Repo Hygiene**: All media binaries (*.mp4, *.wav, *.png) and generated outputs must stay under output root (`studio_data/`). Never commit large files to git.
+
+## Token Economy & Session Hygiene (measured 2026-11-21)
+A 15h atlas session cost ~12.3M billable-input-equivalent tokens (proxy billing DB): 88.8M cache
+reads (context grew 46K→366K, never compacted, ~500 calls) + 2.66M cache writes, of which ~1.24M
+was four full-context re-writes after >5min idle gaps. Deliverables were all on disk; the context
+was pure working memory. Rules to keep that cost down without touching quality:
+- **One phase per session.** Benchmark, scoring, and report are separate phases. At phase end,
+  persist results (run report / findings doc / scores.csv), then `/compact` or start a fresh session
+  that reads the 2-page summary. Never drag >150K tokens of history into a new phase.
+  Backstop: `.claude/settings.json` sets `CLAUDE_CODE_AUTO_COMPACT_WINDOW=180000`, so auto-compact
+  fires near 180K even though the relay model advertises a 1M window.
+- **Long jobs run in background.** Launch generation/benchmarks with `run_in_background` (or a
+  single `atlas benchmark --resume` batch) and end the turn; resume on the completion notification.
+  No foreground blocking waits, no sleep/tail polling loops, no repeated ComfyUI `/history` curls.
+  Idle >5min expires the prompt cache: the next call re-writes the whole context at 1.25x, so a
+  small context makes every wait cheap.
+- **Board-first image review.** Judge style/purity from the category boards
+  (`run_z_image_style_atlas.py board`, 420px labeled tiles). Read an individual full-res image only
+  to resolve a specific doubt (typography, skin detail) — a few per phase, not the whole sweep.
+  Every image read stays in context and is re-billed on every later call.
+- **Read/Grep/Glob over shell peeking.** Use the dedicated tools instead of Bash `cat`/`sed`/`head`
+  pipelines; they bound output and keep transcripts lean.
